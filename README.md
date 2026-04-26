@@ -62,6 +62,9 @@ prompts/
   handoff-prompt.md
 docs/
   pattern-catalog.md
+  anti-patterns.md
+  fit-assessment.md
+  diagrams.md
   tool-adapters.md
   field-notes/
 adapters/
@@ -98,6 +101,8 @@ Or open [prompts/kickoff-prompt.md](prompts/kickoff-prompt.md) and paste it into
 For the full method, read [docs/pattern-catalog.md](docs/pattern-catalog.md). For the field notes behind the method, read [docs/field-notes/documentation-governance-method.md](docs/field-notes/documentation-governance-method.md) and [docs/field-notes/release-governance-method.md](docs/field-notes/release-governance-method.md).
 
 For the obvious-but-easy-to-miss rules, read [docs/implicit-rules.md](docs/implicit-rules.md).
+
+For method hardening, read [docs/anti-patterns.md](docs/anti-patterns.md), [docs/fit-assessment.md](docs/fit-assessment.md), and [docs/diagrams.md](docs/diagrams.md).
 
 ## Install The Codex Skill
 
@@ -163,6 +168,7 @@ Copy the files under [templates/project-control-files](templates/project-control
 - `docs/INDEX.md`: single documentation routing table.
 - `docs/Repository-Operating-Rules.md`: durable rulebook for repeated agent rules.
 - `SPEC/SPEC-COMPLETE.md`: canonical current product and implementation baseline.
+- `SPEC/adr/ADR-0001-template.md`: decision record template for durable rationale.
 - `docs/TODO-Open-Items.md`: current open implementation work.
 - `review-findings.md`: active bugs and review findings.
 - `README.md`: human-facing project summary.
@@ -177,15 +183,33 @@ Most serious AI-assisted projects need both: documentation-governance controls k
 
 ## Implicit Rules
 
-This workflow makes implicit rules explicit. Examples:
+This workflow makes implicit rules explicit. The Core 5 are:
 
 - Current active state beats historical SPEC material.
 - Evidence beats AI confidence.
 - Active scope beats interesting future ideas.
-- Release readiness beats feature count.
 - Owner decision beats AI momentum.
-- Docs drift is a bug.
-- Unverified, partial, degraded, skipped, or environment-limited behavior must be labeled.
+- Repeated pain becomes a rule, checklist, test, or template update.
+
+The Extended 15 cover larger-project risks such as docs drift, version lanes,
+release readiness, partial/degraded behavior, environment limits, cross-review,
+and risk gates.
+
+## Visual Overview
+
+```mermaid
+flowchart TD
+    A["Prior pain or product need"] --> B["Owner + AI planning"]
+    B --> C["Active SPEC"]
+    C --> D["Bounded implementation"]
+    D --> E["Cross-review"]
+    E --> F["Tests and docs evidence"]
+    F --> G["Owner decision"]
+    G --> H["Rule, TODO, finding, ADR, or archive update"]
+    H --> C
+```
+
+More diagrams are in [docs/diagrams.md](docs/diagrams.md).
 
 ## Source Of Truth
 

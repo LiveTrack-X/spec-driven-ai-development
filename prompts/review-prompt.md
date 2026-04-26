@@ -55,6 +55,7 @@ Then include:
 - version-lane or migration sync risk, if applicable,
 - high-risk domain checklist gaps, if applicable,
 - release or production-readiness blockers, if applicable,
+- missing ADRs for durable decisions, if applicable,
 - assumptions,
 - whether the change is safe to accept.
 

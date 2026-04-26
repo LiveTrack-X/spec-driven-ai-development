@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - 2026-04-26
+
+- Added anti-patterns, fit assessment, diagrams, and ADR template docs.
+- Reorganized implicit rules into Core 5 and Extended 15.
+- Updated prompts, README, templates, and validation to route agents toward
+  ADRs, anti-pattern review, fit checks, and diagrams.
+
 ## 0.2.0 - 2026-04-26
 
 - Added multi-tool adapters for Codex, Claude Code, Cursor, GitHub Copilot, and

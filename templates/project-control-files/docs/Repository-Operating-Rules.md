@@ -79,6 +79,8 @@ implementation unless reaffirmed in the active path.
 - If a review finding is closed, update `review-findings.md`.
 - If no doc content changed, state which docs were checked and why no update was
   needed.
+- Use ADRs for durable architecture, policy, release, source-of-truth, security,
+  data-boundary, or owner-approved tradeoff decisions.
 
 ## Review And Verification Rules
 

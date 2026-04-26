@@ -16,6 +16,7 @@ The handoff must let another AI session continue without guessing.
 - remaining risks,
 - current active SPEC section used, especially if older SPEC history exists,
 - implicit assumptions converted into explicit rules, if any,
+- ADRs created or needed, if any,
 - partial, degraded, skipped, or unverified behavior,
 - version-lane or migration sync status, if applicable,
 - release or production-readiness gate status, if applicable,

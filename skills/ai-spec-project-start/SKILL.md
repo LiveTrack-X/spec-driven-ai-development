@@ -50,6 +50,11 @@ When the user asks to capture "obvious" rules, reduce repeated confusion, harden
 agent behavior, or prevent stale SPEC/history mistakes, load
 `references/implicit-rules.md`.
 
+When the user asks whether SDAD fits a project, whether a project is ready for
+this workflow, or what to add before 1.0-style release, route to the public docs:
+`docs/fit-assessment.md`, `docs/anti-patterns.md`, `docs/diagrams.md`, and the
+ADR template under `templates/project-control-files/SPEC/adr/`.
+
 ## Core Assumption
 
 The owner may understand logic, architecture, product intent, risks, and user
@@ -104,6 +109,7 @@ Create or update these early:
 - `docs/INDEX.md`: the single routing table for active docs.
 - `docs/Repository-Operating-Rules.md`: durable rulebook for repeated rules.
 - `SPEC/SPEC-COMPLETE.md`: current integrated product and implementation baseline.
+- `SPEC/adr/`: decision records for durable rationale when needed.
 - `docs/TODO-Open-Items.md`: current open work only.
 - `review-findings.md`: active bug/review findings only.
 - `README.md`: human-facing current project summary.
@@ -223,6 +229,7 @@ For a new project, produce a compact bootstrap rather than a huge master plan:
 Use `references/starter-templates.md` for copyable prompts and file templates.
 Use `references/field-patterns.md` when translating previous-project lessons
 into operating rules.
+Use `references/implicit-rules.md` for Core 5 and Extended 15 rule checks.
 
 ## Guardrails
 

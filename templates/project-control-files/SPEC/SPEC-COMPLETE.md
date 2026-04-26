@@ -58,6 +58,12 @@ List security, data, operational, complexity, quality, and AI-overreach risks.
 
 List priority order for implementation.
 
+## Decision Records
+
+Record durable decisions under `SPEC/adr/`. Use ADRs when future agents need to
+know why a decision was made, what alternatives were rejected, and what older
+SPEC material was superseded.
+
 ## Completion Criteria
 
 Define tests, docs, reproducible evidence, and owner approval required for completion.

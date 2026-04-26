@@ -11,6 +11,9 @@ REQUIRED_FILES = [
     "README.md",
     "LICENSE",
     "docs/pattern-catalog.md",
+    "docs/anti-patterns.md",
+    "docs/fit-assessment.md",
+    "docs/diagrams.md",
     "docs/implicit-rules.md",
     "docs/tool-adapters.md",
     "docs/field-notes/documentation-governance-method.md",
@@ -36,6 +39,7 @@ REQUIRED_FILES = [
     "templates/project-control-files/docs/Repository-Operating-Rules.md",
     "templates/project-control-files/docs/TODO-Open-Items.md",
     "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
+    "templates/project-control-files/SPEC/adr/ADR-0001-template.md",
     "templates/project-control-files/review-findings.md",
 ]
 
@@ -110,6 +114,8 @@ def validate_templates() -> None:
             fail(f"Pattern catalog missing: {phrase}")
     implicit = read("docs/implicit-rules.md")
     for phrase in [
+        "Core 5",
+        "Extended 15",
         "Current Beats Historical",
         "Evidence Beats Confidence",
         "Owner Decision Beats AI Momentum",
@@ -117,6 +123,22 @@ def validate_templates() -> None:
     ]:
         if phrase not in implicit:
             fail(f"Implicit rules doc missing: {phrase}")
+    anti_patterns = read("docs/anti-patterns.md")
+    for phrase in ["AI Confidence As Completion", "Historical SPEC Override", "Owner Rubber Stamp"]:
+        if phrase not in anti_patterns:
+            fail(f"Anti-patterns doc missing: {phrase}")
+    fit = read("docs/fit-assessment.md")
+    for phrase in ["Score", "Very high", "Output Template"]:
+        if phrase not in fit:
+            fail(f"Fit assessment doc missing: {phrase}")
+    diagrams = read("docs/diagrams.md")
+    for phrase in ["Operating Loop", "Source Of Truth Order", "```mermaid"]:
+        if phrase not in diagrams:
+            fail(f"Diagrams doc missing: {phrase}")
+    adr = read("templates/project-control-files/SPEC/adr/ADR-0001-template.md")
+    for phrase in ["Context", "Decision", "Consequences", "Current-Over-Historical Rule"]:
+        if phrase not in adr:
+            fail(f"ADR template missing: {phrase}")
     adapters = read("docs/tool-adapters.md")
     for phrase in ["Claude Code", "Cursor", "GitHub Copilot", "Generic AI coding tool"]:
         if phrase not in adapters:

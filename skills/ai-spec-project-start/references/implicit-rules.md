@@ -4,7 +4,7 @@ Load this when the owner asks to capture obvious-but-unwritten rules, when a
 project has stale SPEC/history risk, or when creating/reviewing project control
 files.
 
-## Core Rules
+## Core 5
 
 - Current beats historical: current code, tests, active docs, and active SPEC
   sections override older SPEC history, archives, old handoffs, and chat memory.
@@ -12,9 +12,14 @@ files.
   changed files, docs checked, and remaining risks.
 - Active beats interesting: future ideas and external references are not active
   scope until promoted.
+- Owner decision beats AI momentum: mark owner decisions before scope, risk, or
+  release posture changes.
+- Repeated pain becomes a rule, checklist, test, or template update.
+
+## Extended 15
+
 - Small verified slices beat large unverified progress.
-- Open critical findings beat new feature work unless the owner explicitly
-  accepts the risk.
+- Open critical findings beat new feature work unless the owner accepts the risk.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
 - Partial, scaffolded, degraded, skipped, or unverified behavior must be labeled.
@@ -25,11 +30,9 @@ files.
 - Release readiness beats feature count.
 - Environment limits beat overclaiming.
 - Cross-review beats single-agent finality.
-- Owner decision beats AI momentum.
 - Scope-specific percent beats vague global percent.
 - Failed, missing, skipped, timed-out, or unrun tests beat narrative.
 - Risk gates beat convenience.
-- Repeated pain becomes a rule, checklist, test, or template update.
 
 ## How To Apply
 

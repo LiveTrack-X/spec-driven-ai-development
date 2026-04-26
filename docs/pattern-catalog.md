@@ -18,6 +18,11 @@ No source code is copied here. The goal is to preserve the working method.
 For the explicit list of obvious-but-easy-to-miss rules, see
 [`docs/implicit-rules.md`](implicit-rules.md).
 
+Use [`docs/anti-patterns.md`](anti-patterns.md) during review, use
+[`docs/fit-assessment.md`](fit-assessment.md) before project bootstrap, and use
+[`docs/diagrams.md`](diagrams.md) when explaining the workflow to a new owner or
+agent.
+
 ## Combined Pattern
 
 ### 1. Start From Pain
@@ -173,6 +178,19 @@ rules down when they affect execution:
 
 These rules are not bureaucracy. They protect the owner from silent scope drift,
 false completion claims, stale SPEC execution, and unclear progress reporting.
+
+### 12. Preserve Decisions With ADRs
+
+Use Architecture Decision Records for decisions that future agents must not
+re-litigate casually:
+
+- architecture direction,
+- source-of-truth changes,
+- release or migration strategy,
+- security or data boundary decisions,
+- owner-approved tradeoffs.
+
+ADRs preserve why a decision happened, not only what was chosen.
 
 ## Pattern Matrix
 

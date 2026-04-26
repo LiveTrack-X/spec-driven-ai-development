@@ -15,6 +15,7 @@ Scope: Central documentation navigation and maintenance control
 
 - Active runtime docs live under `docs/`
 - Active or planned SPECs live under `SPEC/`
+- Architecture decision records live under `SPEC/adr/`
 - Historical docs live under `docs/archive/`
 - Product notes live under `docs/product-notes/` and are references until promoted into active SPEC
 - Implicit operating rules should be promoted into `docs/Repository-Operating-Rules.md`
@@ -43,6 +44,7 @@ Use this table before handoff.
 | Roadmap, implementation status, placeholder, or gap closure | `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md` if review-related |
 | Stable/next version lane, migration, release, or rollback | release docs if present, `docs/Repository-Operating-Rules.md`, relevant SPEC |
 | High-risk domain rule such as locks, real-time path, backup, or platform boundary | module docs if present, `docs/Repository-Operating-Rules.md`, relevant tests |
+| Durable architecture, policy, release, or owner tradeoff decision | `SPEC/adr/ADR-0001-template.md` copied to a numbered ADR, relevant SPEC/docs |
 
 If no document needs a content change, handoff must state which docs were
 checked and why no update was needed.

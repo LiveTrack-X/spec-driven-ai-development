@@ -46,9 +46,11 @@ Release-governance controls keep version lanes, migrations, releases, risk domai
 Implicit rules to include:
 
 ```text
-Current beats historical. Evidence beats confidence. Active beats interesting.
-Release readiness beats feature count. Owner decision beats AI momentum.
-Docs drift is a bug. Partial or unverified behavior must be labeled.
+Core 5: Current beats historical. Evidence beats confidence. Active beats interesting.
+Owner decision beats AI momentum. Repeated pain becomes a rule.
+
+Extended rules cover docs drift, partial/degraded work, release readiness,
+environment limits, cross-review, risk gates, and scope-specific progress.
 ```
 
 ## AGENTS.md Template
@@ -110,3 +112,13 @@ Before handoff, state:
 - what is not complete,
 - owner decision needed, if any.
 ```
+
+## ADR Folder
+
+```text
+SPEC/adr/
+  ADR-0001-template.md
+```
+
+Use ADRs for durable decisions that future AI sessions should not re-litigate
+without new evidence or owner approval.

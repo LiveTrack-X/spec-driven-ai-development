@@ -16,6 +16,7 @@ Use an owner-supervised, SPEC-driven, multi-agent, evidence-based development wo
 8. Does this project need release-governance controls for version lanes, migration, release gates, or high-risk runtime rules?
 9. If the SPEC contains past-to-present history, which sections are current active instructions and which are historical rationale?
 10. Which obvious-but-unwritten rules should become explicit project rules?
+11. Does this project need ADRs for architecture, policy, release, security, or owner tradeoff decisions?
 
 If enough context is already available, proceed with reasonable assumptions and mark them clearly.
 
@@ -43,6 +44,7 @@ Create or update:
 - Important changes should receive separate review by another AI, model, or session.
 - Stable/next versions need explicit version lanes and bugfix sync rules.
 - High-risk domains need named review checks, tests, docs, and handoff evidence.
+- Durable decisions should become ADRs, not only chat memory.
 
 ## First Output
 

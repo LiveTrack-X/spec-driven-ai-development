@@ -1,0 +1,60 @@
+# Fit Assessment
+
+Status: Active reference
+Scope: Decide whether SPEC-driven AI development is appropriate for a project
+
+Use this assessment before bootstrapping a new project. Score each question:
+
+- `0`: no / not relevant
+- `1`: somewhat / likely soon
+- `2`: yes / already happening
+
+## Questions
+
+1. Will more than one AI session, model, or tool work on the project?
+2. Does the owner need to supervise direction without writing most code directly?
+3. Will the project have active SPECs, historical SPECs, product notes, or archived plans?
+4. Is there a risk that old plans could override current code or current decisions?
+5. Are docs likely to grow enough that a routing index becomes necessary?
+6. Do bugs or review findings need to survive across sessions?
+7. Will completion need evidence beyond "the AI says it is done"?
+8. Are there security, data loss, migration, tenant, backup, or destructive-action risks?
+9. Will the project need release, deployment, rollback, packaging, or production-readiness gates?
+10. Are there stable, beta, rewrite, migration, or platform lanes?
+11. Will manual or environment-specific verification be required?
+12. Are future ideas likely to be tempting but not immediately active?
+13. Does the owner want progress reported by scope rather than vague global percent?
+14. Would a future maintainer need to know why decisions were made?
+15. Has repeated project pain already happened and should become durable rules?
+
+## Score
+
+| Score | Fit | Recommendation |
+| --- | --- | --- |
+| 0-8 | Low | Use a lightweight prompt and a simple README/TODO. |
+| 9-17 | Medium | Use core control files: `AGENTS.md`, `docs/INDEX.md`, SPEC, TODO, and review findings. |
+| 18-24 | High | Use the full SDAD workflow with cross-review, source-of-truth rules, and documentation consistency checks. |
+| 25-30 | Very high | Use full SDAD plus ADRs, release gates, anti-pattern review, fit reassessment, and tool adapters. |
+
+## Output Template
+
+```text
+Project:
+Score:
+Fit:
+Recommended control files:
+Required review roles:
+Risk gates needed:
+Owner decisions needed before implementation:
+Smallest verified first slice:
+```
+
+## Reassessment
+
+Re-run this assessment when:
+
+- a project moves from prototype to release,
+- multiple AI tools start contributing,
+- historical docs begin to conflict,
+- production-readiness claims appear,
+- the owner feels progress is hard to judge.
