@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI-SPEC Project Start"
+  short_description: "Start owner-supervised, SPEC-driven AI projects."
+  default_prompt: "Use this skill to start or publish a project with an owner-supervised, SPEC-driven, multi-agent AI development workflow."
