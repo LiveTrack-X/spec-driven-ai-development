@@ -16,54 +16,6 @@ agents.
 
 ![SPEC-Driven AI Development infographic](assets/spec-driven-ai-development-infographic.png)
 
-## Choose Scale First
-
-Before installing anything, answer these:
-
-1. Will this take more than one AI session?
-2. Will you come back to this project later?
-3. Does "done" need evidence beyond "AI said so"?
-4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, user data, auth, money, or production risk?
-
-Choose the smallest scale that fits:
-
-| Yes answers | Use | Creates |
-|---|---|---|
-| 0 | One-shot prompt | No project files |
-| 1-2 | Mini SDAD | One instruction file |
-| 3 | Standard SDAD | Core control files |
-| 4-5 | Full SDAD | Full workflow, review, ADRs, gates |
-
-When unsure, choose the smaller scale. Escalate only when repeated pain,
-context loss, risk, or multiple sessions appear.
-
-Small project? Start with [Mini SDAD](docs/mini-sdad.md), not the full workflow.
-
-## Maintenance Cost
-
-SDAD files are not write-once setup files.
-
-If you choose Standard or Full SDAD, every loop must end by checking and updating
-the control files:
-
-- `SPEC/SPEC-COMPLETE.md`,
-- `docs/TODO-Open-Items.md`,
-- `review-findings.md`,
-- operating rules or ADRs when decisions or repeated pain changed,
-- `save-state.md` when a session pauses or ends, handoff is expected, owner
-  direction changes, blocked/partial/unverified state remains, or context would
-  be expensive to reconstruct.
-
-If no file needs a content change, the handoff must say which files were checked
-and why no update was needed. Do not claim completion while control files are stale.
-
-Mini SDAD also has a completion gate: changed files, checks or manual proof,
-limitations, and owner acceptance must be shown before a slice is called done.
-
-If that cost is too high, choose One-shot Prompt or [Mini SDAD](docs/mini-sdad.md).
-See [docs/maintenance-cost.md](docs/maintenance-cost.md).
-
 ## For Beginners: Use In 60 Seconds
 
 No terminal. No Git. No Python required.
@@ -161,6 +113,54 @@ English is the canonical documentation language for this repository.
 Localized READMEs are orientation guides. If a localized guide conflicts with
 the English docs, templates, or validation scripts, prefer the English canonical
 files.
+
+## Choose Scale First
+
+Before installing anything, answer these:
+
+1. Will this take more than one AI session?
+2. Will you come back to this project later?
+3. Does "done" need evidence beyond "AI said so"?
+4. Will multiple AI tools or reviewers be involved?
+5. Is there release, migration, user data, auth, money, or production risk?
+
+Choose the smallest scale that fits:
+
+| Yes answers | Use | Creates |
+|---|---|---|
+| 0 | One-shot prompt | No project files |
+| 1-2 | Mini SDAD | One instruction file |
+| 3 | Standard SDAD | Core control files |
+| 4-5 | Full SDAD | Full workflow, review, ADRs, gates |
+
+When unsure, choose the smaller scale. Escalate only when repeated pain,
+context loss, risk, or multiple sessions appear.
+
+Small project? Start with [Mini SDAD](docs/mini-sdad.md), not the full workflow.
+
+## Maintenance Cost
+
+SDAD files are not write-once setup files.
+
+If you choose Standard or Full SDAD, every loop must end by checking and updating
+the control files:
+
+- `SPEC/SPEC-COMPLETE.md`,
+- `docs/TODO-Open-Items.md`,
+- `review-findings.md`,
+- operating rules or ADRs when decisions or repeated pain changed,
+- `save-state.md` when a session pauses or ends, handoff is expected, owner
+  direction changes, blocked/partial/unverified state remains, or context would
+  be expensive to reconstruct.
+
+If no file needs a content change, the handoff must say which files were checked
+and why no update was needed. Do not claim completion while control files are stale.
+
+Mini SDAD also has a completion gate: changed files, checks or manual proof,
+limitations, and owner acceptance must be shown before a slice is called done.
+
+If that cost is too high, choose One-shot Prompt or [Mini SDAD](docs/mini-sdad.md).
+See [docs/maintenance-cost.md](docs/maintenance-cost.md).
 
 ## Start Here
 

@@ -137,10 +137,21 @@ def validate_templates() -> None:
     ]:
         if phrase not in readme:
             fail(f"README missing language guidance: {phrase}")
+    readme_order = [
+        "## For Beginners: Use In 60 Seconds",
+        "## Languages",
+        "## Choose Scale First",
+        "## Maintenance Cost",
+    ]
+    readme_positions = [readme.find(phrase) for phrase in readme_order]
+    if any(position < 0 for position in readme_positions) or readme_positions != sorted(readme_positions):
+        fail("README onboarding order must be: beginners, languages, scale, maintenance")
     localized = {
         "README.ko.md": [
             "한국어",
             "영어",
+            "save-state.md",
+            "오너 수락",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
@@ -150,6 +161,8 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
+            "save-state.md",
+            "Owner 验收",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
@@ -159,6 +172,8 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
+            "save-state.md",
+            "Owner の受け入れ",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
