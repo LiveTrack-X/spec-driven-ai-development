@@ -42,15 +42,12 @@ Small project? Start with [Mini SDAD](docs/mini-sdad.md), not the full workflow.
 
 ## For Beginners: Use In 60 Seconds
 
-No terminal. No Git. No Python. No Codex skill required.
+No terminal. No Git. No Python required.
 
 1. Open your project in an AI coding tool such as Codex, Claude Code, Cursor, or
    Copilot Chat.
 2. Paste the text below.
 3. Let the AI choose the scale and create only the files that scale needs.
-
-If you do not know what a "Codex skill" is, ignore it for now. It is only an
-optional convenience for Codex users.
 
 ```text
 Use SPEC-Driven AI Development as the project control method.

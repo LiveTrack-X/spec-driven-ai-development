@@ -115,7 +115,7 @@ def validate_templates() -> None:
         "Mini SDAD",
         "Do not infer adapter paths",
         "first 10 lines",
-        "No terminal. No Git. No Python. No Codex skill required.",
+        "No terminal. No Git. No Python required.",
         "docs/getting-started.md",
         "docs/no-clone-quick-install.md",
         "The Problem",
