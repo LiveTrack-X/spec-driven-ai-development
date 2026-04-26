@@ -48,6 +48,10 @@ REQUIRED_FILES = [
     "templates/project-control-files/review-findings.md",
 ]
 
+REQUIRED_ASSETS = [
+    "assets/spec-driven-ai-development-infographic.png",
+]
+
 
 def fail(message: str) -> None:
     print(f"ERROR: {message}", file=sys.stderr)
@@ -91,6 +95,9 @@ def validate_skill() -> None:
 def validate_templates() -> None:
     for path in REQUIRED_FILES:
         read(path)
+    for path in REQUIRED_ASSETS:
+        if not (ROOT / path).is_file():
+            fail(f"Missing required asset: {path}")
     readme = read("README.md")
     for phrase in [
         "README.ko.md",
@@ -99,6 +106,7 @@ def validate_templates() -> None:
         "canonical documentation language",
         "A control layer for AI coding",
         "For Beginners: Use In 60 Seconds",
+        "assets/spec-driven-ai-development-infographic.png",
         "No terminal. No Git. No Python. No Codex skill required.",
         "docs/getting-started.md",
         "docs/no-clone-quick-install.md",

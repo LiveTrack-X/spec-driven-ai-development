@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 - 2026-04-26
+
+- Added the README infographic asset for the SPEC-driven AI development loop.
+- Clarified README and GitHub About positioning around Codex, Claude Code,
+  Cursor, Copilot Chat, and generic AI coding agents.
+
 ## 1.0.0 - 2026-04-26
 
 - Promoted SPEC-Driven AI Development to its first stable public release.

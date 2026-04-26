@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.0` stable public release.
+Status: `1.0.1` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -13,6 +13,8 @@ agents.
     <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee">
   </a>
 </p>
+
+![SPEC-Driven AI Development infographic](assets/spec-driven-ai-development-infographic.png)
 
 ## For Beginners: Use In 60 Seconds
 
