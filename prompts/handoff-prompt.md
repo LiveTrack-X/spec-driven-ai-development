@@ -32,4 +32,8 @@ The handoff must let another AI session continue without guessing.
 - Do not bury blockers in prose. Put active defects in `review-findings.md`.
 - Do not leave future ideas mixed into active implementation work.
 - Do not claim release readiness while Critical findings remain open.
-- If work stopped mid-stream, update `save-state.md` and `next-task.md` if the project uses them.
+- Update `save-state.md` when work pauses or stops mid-stream, handoff to another
+  AI/tool/person is expected, owner direction or acceptance criteria changed,
+  blocked/partial/unverified state remains, or context would be expensive to
+  reconstruct.
+- If the project uses `next-task.md`, update it when the next slice changed.

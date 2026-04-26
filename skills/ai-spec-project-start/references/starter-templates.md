@@ -111,6 +111,10 @@ Before handoff, state:
 - remaining risks,
 - what is not complete,
 - owner decision needed, if any.
+
+Update `save-state.md` when work pauses, handoff to another AI/tool/person is
+expected, owner direction or acceptance criteria changed, blocked/partial or
+unverified state remains, or context would be expensive to reconstruct.
 ```
 
 ## ADR Folder

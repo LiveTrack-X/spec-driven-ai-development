@@ -22,6 +22,7 @@ Read:
 Current code, tests, migrations, and reproducible commands beat docs. Active
 docs beat SPEC. Current active SPEC beats older SPEC history. Handoff and
 archives are context, not authority.
+Owner decisions control scope, risk tolerance, and acceptance.
 
 ## Rules
 
@@ -37,3 +38,10 @@ archives are context, not authority.
 
 Report changed files, behavior changed, tests/commands run, docs checked,
 remaining risks, incomplete work, and owner decisions needed.
+
+## Save-State Update Triggers
+
+Update `save-state.md` when a session pauses or ends before acceptance, handoff
+to another AI/tool/person is expected, owner direction or acceptance criteria
+changed, blocked/partial/unverified state remains, or current context would be
+expensive to reconstruct. If no trigger applies, say so.

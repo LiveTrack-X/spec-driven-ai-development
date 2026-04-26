@@ -38,6 +38,10 @@ of every loop, check and update `SPEC/SPEC-COMPLETE.md`,
 `docs/TODO-Open-Items.md`, `review-findings.md`, and any rules or ADRs affected
 by the work.
 
+Update `save-state.md` when a session pauses or ends, handoff is expected, owner
+direction or acceptance criteria changed, blocked/partial/unverified state
+remains, or context would be expensive to reconstruct.
+
 If no file needs a content change, say which files were checked and why no
 update was needed.
 
@@ -264,11 +268,16 @@ Before accepting "done", check:
 - Did tests, builds, lint, or manual checks run?
 - Were docs checked or updated?
 - Are skipped, partial, degraded, or unverified items named?
+- If the project uses `save-state.md`, did a pause, handoff, direction change,
+  blocked state, or expensive context trigger require an update?
 - Are review findings either fixed or tracked?
 - Did repeated pain become a rule, checklist, test, or template update?
 
 If any answer is unclear, do not accept completion yet. Ask for evidence or move
 the item into `docs/TODO-Open-Items.md` or `review-findings.md`.
+
+For Mini SDAD, a slice is not done until the active task, changed files, check
+evidence, limitations or unverified behavior, and owner acceptance are shown.
 
 ## Common Mistakes
 

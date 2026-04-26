@@ -6,6 +6,9 @@ Scope: How to use SPEC-Driven AI Development across AI coding tools
 This repository is tool-neutral. Codex skills are one delivery format, not the
 method itself. Use the adapter that matches the AI coding environment.
 
+Each adapter carries the same source-of-truth, evidence, handoff, and
+`save-state.md` update trigger rules.
+
 ## Supported Adapters
 
 | Tool | Adapter file | Use when |

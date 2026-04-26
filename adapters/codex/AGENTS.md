@@ -23,7 +23,20 @@ Before code, SPEC, prompt, or documentation work, read:
 - Documentation consistency must be checked before handoff.
 - Owner direction, risk tolerance, and acceptance decisions are controlling.
 
+## Source Of Truth
+
+Prefer code, tests, migrations, and reproducible commands over docs. Prefer
+active docs over SPEC. Prefer current active SPEC sections over older SPEC
+history. Treat handoff and save-state files as context, not authority.
+
 ## Handoff
 
 State changed files, behavior changed, tests run, docs checked, open findings,
 remaining risks, incomplete work, and owner decisions needed.
+
+## Save-State Update Triggers
+
+Update `save-state.md` when a session pauses or ends before acceptance, handoff
+to another AI/tool/person is expected, owner direction or acceptance criteria
+changed, blocked/partial/unverified state remains, or current context would be
+expensive to reconstruct. If no trigger applies, say so.

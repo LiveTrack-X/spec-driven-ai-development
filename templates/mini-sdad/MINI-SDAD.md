@@ -26,16 +26,29 @@ Implement only the requested task or the current small slice.
 Do not expand into future ideas, rewrites, broad cleanup, or unrelated refactors
 unless the owner explicitly promotes them into active scope.
 
-## Done Means
+## Mini Slice Completion
 
-Completion requires evidence:
+A Mini SDAD slice is done only when:
 
+- the active task is restated,
 - changed files are listed,
-- tests, commands, or manual checks are shown,
+- tests, commands, or manual checks are shown, or the reason they could not run
+  is stated,
+- user-visible behavior or output is described,
 - limitations and unverified behavior are named,
+- unrelated scope was not added,
 - the owner accepts the result.
 
 AI confidence is not completion.
+
+Not done when:
+
+- the AI only says it is done,
+- checks were not run and the gap is hidden,
+- known uncertainty is not named,
+- unrelated changes were made without owner approval,
+- the owner has not explicitly accepted the result. Requested changes or
+  deferred decisions mean the slice is not done.
 
 ## Do Not
 
@@ -49,7 +62,9 @@ AI confidence is not completion.
 
 At the end of work, report:
 
+- active task,
 - what changed,
 - how it was checked,
 - what remains uncertain,
+- owner decision needed,
 - whether the project should stay Mini SDAD or escalate.

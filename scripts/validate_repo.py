@@ -48,6 +48,7 @@ REQUIRED_FILES = [
     "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
     "templates/project-control-files/SPEC/adr/ADR-0001-template.md",
     "templates/project-control-files/review-findings.md",
+    "templates/project-control-files/save-state.md",
     "templates/mini-sdad/MINI-SDAD.md",
 ]
 
@@ -88,6 +89,8 @@ def validate_skill() -> None:
         "Before fetching",
         "Codex / Claude Code / Cursor / Copilot Chat / Generic",
         "Scale Selection Rule",
+        "Save-State Update Triggers",
+        "Mini Slice Completion",
         "Source Of Truth",
         "Pain-To-Rule",
         "Evidence Rules",
@@ -118,6 +121,8 @@ def validate_templates() -> None:
         "Mini SDAD",
         "Maintenance Cost",
         "Do not claim completion while control files are stale",
+        "Mini SDAD also has a completion gate",
+        "Update save-state.md when a session pauses or ends",
         "Do not infer adapter paths",
         "Before fetching, state which adapter you are installing and why",
         "If you cannot determine the current tool",
@@ -172,6 +177,7 @@ def validate_templates() -> None:
         "Source Of Truth",
         "Handoff Rule",
         "End-Of-Loop Maintenance Rule",
+        "Save-State Update Triggers",
         "past-to-present",
         "Implicit Rules Made Explicit",
     ]:
@@ -188,9 +194,20 @@ def validate_templates() -> None:
         "Review And Verification Rules",
         "End-Of-Loop Maintenance Rule",
         "Control files have maintenance cost",
+        "Save-State Update Triggers",
     ]:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
+    save_state = read("templates/project-control-files/save-state.md")
+    for phrase in [
+        "Update Triggers",
+        "session is ending or pausing",
+        "owner changes direction",
+        "blocked, skipped, partial, degraded, or unverified",
+        "expensive to reconstruct",
+    ]:
+        if phrase not in save_state:
+            fail(f"Save-state template missing: {phrase}")
     catalog = read("docs/pattern-catalog.md")
     for phrase in [
         "Documentation-governance",
@@ -223,6 +240,8 @@ def validate_templates() -> None:
         "Install The Codex Skill",
         "Owner Acceptance Checklist",
         "Maintenance Cost",
+        "save-state.md",
+        "Mini SDAD, a slice is not done",
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
@@ -230,6 +249,8 @@ def validate_templates() -> None:
     for phrase in [
         "Step 0: Choose Scale",
         "Maintenance Cost",
+        "save-state.md",
+        "Mini SDAD still has a completion gate",
         "Before You Start",
         "What Is A Codex Skill?",
         "How To Know It Worked",
@@ -252,6 +273,8 @@ def validate_templates() -> None:
         "When To Use Mini SDAD",
         "What Mini SDAD Creates",
         "Mini SDAD Prompt",
+        "Mini Slice Completion Criteria",
+        "Not done when",
         "Before fetching",
         "Escalation Rule",
     ]:
@@ -261,6 +284,10 @@ def validate_templates() -> None:
     for phrase in [
         "Maintenance Cost",
         "End-Of-Loop Rule",
+        "Save-State Update Triggers",
+        "session is ending or pausing",
+        "owner changes direction",
+        "context would be expensive to reconstruct",
         "Do not claim completion while control files are stale",
         "Scale Implication",
         "Stale File Warning",
@@ -271,7 +298,8 @@ def validate_templates() -> None:
     for phrase in [
         "This project uses Mini SDAD",
         "Active Scope",
-        "Done Means",
+        "Mini Slice Completion",
+        "Not done when",
         "Do Not",
         "Handoff",
     ]:
@@ -297,15 +325,19 @@ def validate_templates() -> None:
     for phrase in ["Claude Code", "Cursor", "GitHub Copilot", "Generic AI coding tool"]:
         if phrase not in adapters:
             fail(f"Tool adapters doc missing: {phrase}")
+    codex = read("adapters/codex/AGENTS.md")
     claude = read("adapters/claude-code/CLAUDE.md")
     cursor = read("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc")
     copilot = read("adapters/github-copilot/.github/copilot-instructions.md")
+    generic = read("adapters/generic/AI-SESSION-INSTRUCTIONS.md")
     for path, content in [
+        ("Codex adapter", codex),
         ("Claude adapter", claude),
         ("Cursor adapter", cursor),
         ("Copilot adapter", copilot),
+        ("Generic adapter", generic),
     ]:
-        for phrase in ["Source Of Truth", "Evidence beats", "owner"]:
+        for phrase in ["Source Of Truth", "Evidence beats", "owner", "Save-State Update Triggers"]:
             if phrase not in content:
                 fail(f"{path} missing expected phrase: {phrase}")
 

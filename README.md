@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.5` stable public release.
+Status: `1.0.6` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -50,10 +50,16 @@ the control files:
 - `SPEC/SPEC-COMPLETE.md`,
 - `docs/TODO-Open-Items.md`,
 - `review-findings.md`,
-- operating rules or ADRs when decisions or repeated pain changed.
+- operating rules or ADRs when decisions or repeated pain changed,
+- `save-state.md` when a session pauses or ends, handoff is expected, owner
+  direction changes, blocked/partial/unverified state remains, or context would
+  be expensive to reconstruct.
 
 If no file needs a content change, the handoff must say which files were checked
 and why no update was needed. Do not claim completion while control files are stale.
+
+Mini SDAD also has a completion gate: changed files, checks or manual proof,
+limitations, and owner acceptance must be shown before a slice is called done.
 
 If that cost is too high, choose One-shot Prompt or [Mini SDAD](docs/mini-sdad.md).
 See [docs/maintenance-cost.md](docs/maintenance-cost.md).
@@ -128,6 +134,13 @@ owner-controlled decisions, and evidence required for completion.
 At the end of every loop, check whether SPEC-COMPLETE, TODO, review-findings,
 rules, or ADRs must be updated. If nothing changes, say which files were checked
 and why no update was needed.
+
+Update save-state.md when a session pauses or ends, handoff is expected, owner
+direction changes, blocked/partial/unverified state remains, or context would be
+expensive to reconstruct.
+
+For Mini SDAD, do not call a slice done until changed files, check evidence,
+limitations or unverified behavior, and owner acceptance are shown.
 
 Do not overwrite existing files without showing me the proposed changes.
 Completion requires evidence, not AI confidence.

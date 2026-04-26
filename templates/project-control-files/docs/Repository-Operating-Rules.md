@@ -135,5 +135,25 @@ Update operating rules or ADRs when repeated pain, architecture decisions, polic
 decisions, release decisions, security boundaries, data-boundary decisions, or
 owner-approved tradeoffs changed.
 
+Update `save-state.md` when a session pauses or ends before acceptance, handoff
+to another AI/tool/person is expected, owner direction or acceptance criteria
+changed, blocked/partial/unverified state remains, or current context would be
+expensive to reconstruct.
+
 If no control file needs a content change, state which files were checked and why
 no update was needed. Do not claim completion while control files are stale.
+
+## Save-State Update Triggers
+
+`save-state.md` is optional. If this project uses it, update it when:
+
+- a session is ending or pausing before work is fully accepted,
+- an active slice completes and the next slice is not obvious from TODO/SPEC,
+- the owner changes direction, priority, acceptance criteria, or risk tolerance,
+- work is blocked, skipped, partial, degraded, or unverified,
+- another AI tool, model, session, or person is expected to continue the work,
+- current context would be expensive to reconstruct from code and docs alone.
+
+If none of these triggers apply, say so. If `save-state.md` exists but is stale,
+update it, mark it stale, or archive it before handoff. Stale save-state is
+context, not authority.

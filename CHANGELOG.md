@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.6 - 2026-04-27
+
+- Added explicit `save-state.md` update triggers for session pause/end, handoff,
+  owner direction changes, blocked or partial state, unverified work, and
+  expensive context recovery.
+- Added a `save-state.md` project-control template so optional handoff state has
+  a concrete update contract.
+- Added Mini SDAD slice completion criteria so small projects still require
+  changed files, evidence, limitations, and owner decision before "done".
+- Updated README, getting-started, no-clone setup, maintenance-cost docs,
+  project templates, adapters, handoff prompt, and the Codex skill.
+- Expanded repository validation to preserve save-state triggers and Mini SDAD
+  completion gates.
+
 ## 1.0.5 - 2026-04-27
 
 - Added explicit maintenance-cost guidance for Standard and Full SDAD control

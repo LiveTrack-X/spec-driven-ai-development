@@ -19,3 +19,6 @@ Read:
 3. `SPEC/SPEC-COMPLETE.md`
 4. `docs/TODO-Open-Items.md`
 5. `review-findings.md`
+
+Use `save-state.md` only when work pauses, changes hands, direction changes, or
+the next session would otherwise need to reconstruct context.

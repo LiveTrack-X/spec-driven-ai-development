@@ -26,6 +26,30 @@ Mini SDAD exists because full control files have a maintenance cost. If you do
 not want to update SPEC, TODO, and review ledgers at the end of every loop, stay
 Mini.
 
+## Mini Slice Completion Criteria
+
+A Mini SDAD slice is done only when:
+
+- the active task is restated,
+- changed files are listed,
+- tests, commands, or manual checks are shown, or the reason they could not run
+  is stated,
+- user-visible behavior or output is described,
+- limitations and unverified behavior are named,
+- unrelated scope was not added,
+- the owner accepts the result.
+
+AI confidence is not completion.
+
+Not done when:
+
+- the AI only says it is done,
+- checks were not run and the gap is hidden,
+- known uncertainty is not named,
+- unrelated changes were made without owner approval,
+- the owner has not explicitly accepted the result. Requested changes or
+  deferred decisions mean the slice is not done.
+
 ## What Mini SDAD Creates
 
 Mini SDAD creates one instruction file for the AI tool.
@@ -79,6 +103,9 @@ After saving it, ask me for:
 - what is out of scope,
 - what evidence proves done,
 - whether any risk requires Standard or Full SDAD.
+
+For each slice, do not call it done until changed files, check evidence,
+limitations or unverified behavior, and owner acceptance are shown.
 ```
 
 ## Escalation Rule

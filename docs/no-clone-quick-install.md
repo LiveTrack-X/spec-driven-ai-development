@@ -52,10 +52,17 @@ At the end of every Standard or Full SDAD loop, check and update:
 - `SPEC/SPEC-COMPLETE.md`,
 - `docs/TODO-Open-Items.md`,
 - `review-findings.md`,
-- operating rules or ADRs when decisions or repeated pain changed.
+- operating rules or ADRs when decisions or repeated pain changed,
+- `save-state.md` when a session pauses or ends, handoff is expected, owner
+  direction changes, blocked/partial/unverified state remains, or context would
+  be expensive to reconstruct.
 
 If no file needs a content change, state which files were checked and why no
 update was needed.
+
+Mini SDAD still has a completion gate: changed files, check evidence,
+limitations or unverified behavior, and owner acceptance must be shown before a
+slice is called done.
 
 If this cost is too high, choose One-shot Prompt or Mini SDAD instead.
 
@@ -185,6 +192,13 @@ Completion requires evidence, not AI confidence.
 At the end of every loop, check whether SPEC-COMPLETE, TODO, review-findings,
 rules, or ADRs must be updated. If nothing changes, say which files were checked
 and why no update was needed.
+
+Update save-state.md when a session pauses or ends, handoff is expected, owner
+direction changes, blocked/partial/unverified state remains, or context would be
+expensive to reconstruct.
+
+For Mini SDAD, do not call a slice done until changed files, check evidence,
+limitations or unverified behavior, and owner acceptance are shown.
 ```
 
 ## Option 2: One-Paste PowerShell Installer

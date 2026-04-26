@@ -31,8 +31,11 @@ context loss, risk, or multiple sessions appear.
 
 Maintenance cost matters: choose Standard or Full SDAD only when you can keep
 `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md`, and
-rules/ADRs current at the end of each loop. If that cost is too high, use
-[Mini SDAD](mini-sdad.md) or a one-shot prompt.
+rules/ADRs current at the end of each loop. If the project uses `save-state.md`,
+it must also be updated when sessions pause, handoff is expected, direction
+changes, blocked/partial/unverified state remains, or context would be expensive
+to reconstruct. If that cost is too high, use [Mini SDAD](mini-sdad.md) or a
+one-shot prompt.
 
 ## Questions
 

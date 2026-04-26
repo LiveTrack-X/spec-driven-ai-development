@@ -87,6 +87,9 @@ Do not infer adapter paths. Use the exact raw adapter URL for this tool.
 Show the source URL and first 10 lines of the fetched adapter before saving.
 If fetching fails, stop and report the failure instead of inventing an adapter.
 Bootstrap the first active SPEC slice and project control files.
+At loop end, update save-state.md when work pauses, handoff is expected,
+direction changes, blocked/partial/unverified state remains, or context would be
+expensive to reconstruct.
 Do not overwrite existing files without showing proposed changes.
 ```
 
@@ -168,6 +171,37 @@ no update was needed. Do not claim completion while control files are stale.
 
 If the user cannot afford this maintenance cost, choose Mini SDAD or a one-shot
 prompt instead.
+
+## Save-State Update Triggers
+
+`save-state.md` is optional. If the project uses it, update it when:
+
+- a session is ending or pausing before work is fully accepted,
+- an active slice completes and the next slice is not obvious from TODO/SPEC,
+- the owner changes direction, priority, acceptance criteria, or risk tolerance,
+- work is blocked, skipped, partial, degraded, or unverified,
+- another AI tool, model, session, or person is expected to continue the work,
+- current context would be expensive to reconstruct from code and docs alone.
+
+If none of these triggers apply, say so. If `save-state.md` exists but is stale,
+update it, mark it stale, or archive it before handoff.
+
+## Mini Slice Completion
+
+For Mini SDAD, do not call a slice done until:
+
+- the active task is restated,
+- changed files are listed,
+- tests, commands, or manual checks are shown, or the reason they could not run
+  is stated,
+- user-visible behavior or output is described,
+- limitations and unverified behavior are named,
+- unrelated scope was not added,
+- the owner explicitly accepts the result.
+
+Not done when the AI only says it is done, checks are hidden, uncertainty is
+hidden, unrelated changes were made without owner approval, or the owner
+requests changes or defers the decision.
 
 ## First Conversation
 
