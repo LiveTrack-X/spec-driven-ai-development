@@ -89,7 +89,16 @@ def validate_templates() -> None:
     for path in REQUIRED_FILES:
         read(path)
     readme = read("README.md")
-    for phrase in ["README.ko.md", "README.zh.md", "README.ja.md", "canonical documentation language"]:
+    for phrase in [
+        "README.ko.md",
+        "README.zh.md",
+        "README.ja.md",
+        "canonical documentation language",
+        "A control layer for AI coding",
+        "The Problem",
+        "Why This Is Different",
+        "What This Is Not",
+    ]:
         if phrase not in readme:
             fail(f"README missing language guidance: {phrase}")
     localized = {

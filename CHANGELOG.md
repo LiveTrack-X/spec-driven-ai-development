@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 - 2026-04-26
+
+- Repositioned the canonical README around the "control layer for AI coding"
+  framing.
+- Reworked README flow around problem, positioning, core idea, loop,
+  differentiation, usage, audience, and non-goals.
+- Added validation checks for the README positioning sections.
+
 ## 0.4.0 - 2026-04-26
 
 - Added Korean, Chinese, and Japanese guide READMEs linked from the canonical
