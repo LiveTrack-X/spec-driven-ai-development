@@ -3,7 +3,43 @@
 Use this when you want to apply SPEC-Driven AI Development without cloning this
 repository first.
 
-Run commands from the root of the project you want to control.
+The easiest option is Option 1. It does not require terminal commands, Git,
+Python, or Codex.
+
+## Before You Start
+
+Pick the path that matches your comfort level:
+
+| Path | Best for | Requires |
+|---|---|---|
+| Give this to your AI agent | Complete beginners | An AI coding tool that can edit files |
+| One-paste PowerShell installer | Windows users comfortable with terminal | PowerShell and internet access |
+| One-paste Bash installer | macOS/Linux/WSL users comfortable with terminal | Bash, curl, and internet access |
+| Clone this repository | Developers who want the full package locally | Git |
+| Codex skill | Codex users only | Codex installed and configured |
+
+Run terminal commands from the root of the project you want to control.
+
+## What Is A Codex Skill?
+
+A Codex skill is an optional local instruction package for OpenAI Codex. It tells
+Codex how to behave when starting or managing a SPEC-driven project.
+
+You do not need the Codex skill if you use Claude Code, Cursor, GitHub Copilot,
+another AI coding agent, or Option 1 below.
+
+## How To Know It Worked
+
+After setup, your project should have one of these instruction files:
+
+- `AGENTS.md` for Codex,
+- `CLAUDE.md` for Claude Code,
+- `.cursor/rules/spec-driven-ai-development.mdc` for Cursor,
+- `.github/copilot-instructions.md` for GitHub Copilot,
+- `AI-SESSION-INSTRUCTIONS.md` for a generic AI tool.
+
+After bootstrap, your project should also have control files such as
+`SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, and `review-findings.md`.
 
 ## Option 1: Give This To Your AI Agent
 

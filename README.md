@@ -9,9 +9,17 @@ development loop.
   </a>
 </p>
 
-## Use In 60 Seconds (No Clone)
+## For Beginners: Use In 60 Seconds
 
-From your project, paste this into your AI coding agent:
+No terminal. No Git. No Python. No Codex skill required.
+
+1. Open your project in an AI coding tool such as Codex, Claude Code, Cursor, or
+   Copilot Chat.
+2. Paste the text below.
+3. Let the AI create the first SPEC and project control files.
+
+If you do not know what a "Codex skill" is, ignore it for now. It is only an
+optional convenience for Codex users.
 
 ```text
 Use SPEC-Driven AI Development as the project control method.
@@ -29,8 +37,8 @@ Do not overwrite existing files without showing me the proposed changes.
 Completion requires evidence, not AI confidence.
 ```
 
-Prefer terminal setup? Use the one-paste PowerShell/Bash installers in
-[docs/no-clone-quick-install.md](docs/no-clone-quick-install.md).
+Developers and terminal users can use the one-paste PowerShell/Bash installers
+in [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md).
 
 ## Languages
 

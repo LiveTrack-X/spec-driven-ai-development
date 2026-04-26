@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.3 - 2026-04-26
+
+- Promoted beginner onboarding in the README: no terminal, Git, Python, or Codex
+  skill required for the first path.
+- Expanded no-clone and getting-started docs with beginner prerequisites,
+  Codex skill explanation, and success checks.
+- Updated the Codex skill to prefer the no-clone AI-agent prompt for new users
+  before suggesting terminal commands or script installation.
+- Expanded validation to preserve beginner-friendly onboarding sections.
+
 ## 0.5.2 - 2026-04-26
 
 - Added `docs/no-clone-quick-install.md` with an AI-agent handoff prompt and

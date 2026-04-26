@@ -69,6 +69,31 @@ that the owner can still govern development through:
 - active TODO/review ledgers,
 - and evidence-based completion criteria.
 
+## Beginner-Friendly Behavior
+
+When the user appears new to development tools, do not lead with Git, Python,
+PowerShell, Bash, or script installation.
+
+Start with the no-clone path:
+
+```text
+Use SPEC-Driven AI Development as the project control method.
+Source repository: https://github.com/LiveTrack-X/spec-driven-ai-development
+Install the matching instruction file or create equivalent project rules.
+Bootstrap the first active SPEC slice and project control files.
+Do not overwrite existing files without showing proposed changes.
+```
+
+Explain terms plainly:
+
+- A Codex skill is optional and only applies to Codex.
+- An adapter is a project instruction file for a specific AI coding tool.
+- The user does not need Git or Python for the prompt-only path.
+- Terminal commands are optional setup shortcuts, not the main requirement.
+
+If a user asks "how do I start?", provide the AI-agent paste prompt first, then
+offer terminal installers only as an optional path.
+
 ## Operating Loop
 
 Use this sequence:

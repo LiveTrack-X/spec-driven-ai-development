@@ -76,6 +76,7 @@ def validate_skill() -> None:
     body = content[match.end() :]
     for phrase in [
         "Owner-supervised",
+        "Beginner-Friendly Behavior",
         "Source Of Truth",
         "Pain-To-Rule",
         "Evidence Rules",
@@ -97,7 +98,8 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Use In 60 Seconds",
+        "For Beginners: Use In 60 Seconds",
+        "No terminal. No Git. No Python. No Codex skill required.",
         "docs/getting-started.md",
         "docs/no-clone-quick-install.md",
         "The Problem",
@@ -176,6 +178,7 @@ def validate_templates() -> None:
     for phrase in [
         "Get This Repository",
         "No-Clone Quick Install",
+        "Complete Beginner Path",
         "Choose A Setup Path",
         "Prompt-Only Start",
         "Install A Tool Adapter",
@@ -186,6 +189,9 @@ def validate_templates() -> None:
             fail(f"Getting started doc missing: {phrase}")
     no_clone = read("docs/no-clone-quick-install.md")
     for phrase in [
+        "Before You Start",
+        "What Is A Codex Skill?",
+        "How To Know It Worked",
         "Give This To Your AI Agent",
         "One-Paste PowerShell Installer",
         "One-Paste Bash Installer",

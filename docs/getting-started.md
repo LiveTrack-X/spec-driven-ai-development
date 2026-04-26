@@ -10,6 +10,18 @@ Install one instruction file, start with one SPEC slice, then require evidence
 before accepting completion.
 ```
 
+## Complete Beginner Path
+
+If you are not comfortable with terminals, Git, Python, or shell scripts, use
+the no-clone path first:
+
+- Open your project in an AI coding tool.
+- Copy the prompt from [no-clone quick install](no-clone-quick-install.md).
+- Paste it into the AI agent.
+- Let the AI create the instruction file and first project control files.
+
+Codex is optional. A Codex skill is only for Codex users.
+
 ## Who Does What
 
 - The owner decides product direction, risk tolerance, priorities, and final
