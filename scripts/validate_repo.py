@@ -146,6 +146,18 @@ def validate_templates() -> None:
     readme_positions = [readme.find(phrase) for phrase in readme_order]
     if any(position < 0 for position in readme_positions) or readme_positions != sorted(readme_positions):
         fail("README onboarding order must be: beginners, languages, scale, maintenance")
+    for phrase in [
+        "The first instruction file is tool-specific",
+        "Do not create all of them",
+        "AI instruction file, choose one",
+        "AGENTS.md",
+        "CLAUDE.md",
+        ".cursor/rules/spec-driven-ai-development.mdc",
+        ".github/copilot-instructions.md",
+        "AI-SESSION-INSTRUCTIONS.md",
+    ]:
+        if phrase not in readme:
+            fail(f"README project structure missing tool-specific adapter guidance: {phrase}")
     localized = {
         "README.ko.md": [
             "한국어",

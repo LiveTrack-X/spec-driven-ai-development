@@ -302,15 +302,24 @@ For a fuller kickoff prompt, use [prompts/kickoff-prompt.md](prompts/kickoff-pro
 
 ## Project Structure
 
+The first instruction file is tool-specific. Do not create all of them; install
+the one that matches your AI coding tool.
+
 ```text
-AGENTS.md                         # how AI agents behave
-docs/INDEX.md                     # documentation navigation
-docs/Repository-Operating-Rules.md # durable operating rules
-SPEC/SPEC-COMPLETE.md             # current product and implementation truth
-SPEC/adr/                         # durable decision records
-docs/TODO-Open-Items.md           # active implementation work
-review-findings.md                # active bugs and review findings
-save-state.md                     # optional session recovery handoff
+AI instruction file, choose one:
+  AGENTS.md                                      # Codex
+  CLAUDE.md                                      # Claude Code
+  .cursor/rules/spec-driven-ai-development.mdc   # Cursor
+  .github/copilot-instructions.md                # GitHub Copilot
+  AI-SESSION-INSTRUCTIONS.md                     # generic AI agent
+
+docs/INDEX.md                                    # documentation navigation
+docs/Repository-Operating-Rules.md               # durable operating rules
+SPEC/SPEC-COMPLETE.md                            # current product and implementation truth
+SPEC/adr/                                        # durable decision records
+docs/TODO-Open-Items.md                          # active implementation work
+review-findings.md                               # active bugs and review findings
+save-state.md                                    # optional session recovery handoff
 ```
 
 Templates live in [templates/project-control-files](templates/project-control-files).
