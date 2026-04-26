@@ -15,6 +15,7 @@ REQUIRED_FILES = [
     "LICENSE",
     "docs/pattern-catalog.md",
     "docs/getting-started.md",
+    "docs/no-clone-quick-install.md",
     "docs/anti-patterns.md",
     "docs/fit-assessment.md",
     "docs/diagrams.md",
@@ -96,7 +97,9 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
+        "Use In 60 Seconds",
         "docs/getting-started.md",
+        "docs/no-clone-quick-install.md",
         "The Problem",
         "Why This Is Different",
         "What This Is Not",
@@ -104,9 +107,27 @@ def validate_templates() -> None:
         if phrase not in readme:
             fail(f"README missing language guidance: {phrase}")
     localized = {
-        "README.ko.md": ["한국어", "영어", "docs/getting-started.md", "docs/fit-assessment.md"],
-        "README.zh.md": ["中文", "英文", "docs/getting-started.md", "docs/fit-assessment.md"],
-        "README.ja.md": ["日本語", "英語", "docs/getting-started.md", "docs/fit-assessment.md"],
+        "README.ko.md": [
+            "한국어",
+            "영어",
+            "docs/getting-started.md",
+            "docs/no-clone-quick-install.md",
+            "docs/fit-assessment.md",
+        ],
+        "README.zh.md": [
+            "中文",
+            "英文",
+            "docs/getting-started.md",
+            "docs/no-clone-quick-install.md",
+            "docs/fit-assessment.md",
+        ],
+        "README.ja.md": [
+            "日本語",
+            "英語",
+            "docs/getting-started.md",
+            "docs/no-clone-quick-install.md",
+            "docs/fit-assessment.md",
+        ],
     }
     for path, phrases in localized.items():
         content = read(path)
@@ -154,6 +175,7 @@ def validate_templates() -> None:
     getting_started = read("docs/getting-started.md")
     for phrase in [
         "Get This Repository",
+        "No-Clone Quick Install",
         "Choose A Setup Path",
         "Prompt-Only Start",
         "Install A Tool Adapter",
@@ -162,6 +184,16 @@ def validate_templates() -> None:
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
+    no_clone = read("docs/no-clone-quick-install.md")
+    for phrase in [
+        "Give This To Your AI Agent",
+        "One-Paste PowerShell Installer",
+        "One-Paste Bash Installer",
+        "raw.githubusercontent.com",
+        "Do not overwrite existing project files",
+    ]:
+        if phrase not in no_clone:
+            fail(f"No-clone quick install doc missing: {phrase}")
     anti_patterns = read("docs/anti-patterns.md")
     for phrase in ["AI Confidence As Completion", "Historical SPEC Override", "Owner Rubber Stamp"]:
         if phrase not in anti_patterns:

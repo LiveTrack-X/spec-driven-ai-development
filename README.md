@@ -9,6 +9,29 @@ development loop.
   </a>
 </p>
 
+## Use In 60 Seconds (No Clone)
+
+From your project, paste this into your AI coding agent:
+
+```text
+Use SPEC-Driven AI Development as the project control method.
+
+Source:
+https://github.com/LiveTrack-X/spec-driven-ai-development
+
+No clone required. Install the matching adapter into this project, then
+bootstrap the first active SPEC slice and project control files.
+
+Ask me for product pain, smallest useful version, non-goals, risks,
+owner-controlled decisions, and evidence required for completion.
+
+Do not overwrite existing files without showing me the proposed changes.
+Completion requires evidence, not AI confidence.
+```
+
+Prefer terminal setup? Use the one-paste PowerShell/Bash installers in
+[docs/no-clone-quick-install.md](docs/no-clone-quick-install.md).
+
 ## Languages
 
 English is the canonical documentation language for this repository.
@@ -26,8 +49,9 @@ files.
 
 New to the workflow? Start with [docs/getting-started.md](docs/getting-started.md).
 
-It shows three practical paths:
+It shows practical paths:
 
+- no-clone quick install,
 - prompt-only start,
 - install a tool adapter into an existing project,
 - install the Codex skill.
@@ -153,6 +177,7 @@ Pain -> SPEC -> Build -> Review -> Evidence -> Owner decision -> Rule
 ```
 
 For step-by-step setup, use [docs/getting-started.md](docs/getting-started.md).
+For no-clone setup, use [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md).
 For a fuller kickoff prompt, use [prompts/kickoff-prompt.md](prompts/kickoff-prompt.md).
 
 ## Project Structure
@@ -250,6 +275,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 
 - [docs/pattern-catalog.md](docs/pattern-catalog.md): full method and pattern matrix
 - [docs/getting-started.md](docs/getting-started.md): first-use setup guide
+- [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md): copy-paste setup without cloning
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid
 - [docs/fit-assessment.md](docs/fit-assessment.md): project fit checklist
 - [docs/diagrams.md](docs/diagrams.md): workflow diagrams

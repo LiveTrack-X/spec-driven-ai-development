@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.2 - 2026-04-26
+
+- Added `docs/no-clone-quick-install.md` with an AI-agent handoff prompt and
+  one-paste PowerShell/Bash adapter installers.
+- Promoted no-clone setup into the first visible README section so new users can
+  start without cloning the repository.
+- Updated getting-started paths for no-clone and cloned-repository setup.
+- Expanded validation to require the no-clone quick install guide.
+
 ## 0.5.1 - 2026-04-26
 
 - Added `docs/getting-started.md` as a first-use guide for new adopters.

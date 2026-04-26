@@ -22,11 +22,22 @@ before accepting completion.
 You do not need to write code yourself to use this workflow. You do need to make
 clear decisions and reject vague completion claims.
 
+## No-Clone Quick Install
+
+You do not need to clone this repository to start.
+
+If you want the easiest path, use [no-clone quick install](no-clone-quick-install.md).
+It includes:
+
+- a prompt you can give directly to an AI agent,
+- one-paste PowerShell installer,
+- one-paste Bash installer.
+
 ## Get This Repository
 
 For prompt-only use, you can just link to this repository.
 
-For adapters, templates, scripts, or the Codex skill, clone or download it first:
+Clone or download the repository only when you want the full package locally:
 
 ```bash
 git clone https://github.com/LiveTrack-X/spec-driven-ai-development.git
@@ -73,7 +84,14 @@ to Path 2 or Path 3 when the project becomes serious.
 Use this when you already have a project folder and want the workflow to persist
 inside that project.
 
-From this repository, install the adapter for your AI coding tool.
+Use the no-clone installer, or clone this repository and install the adapter for
+your AI coding tool.
+
+No-clone path:
+
+- [docs/no-clone-quick-install.md](no-clone-quick-install.md)
+
+Cloned repository path:
 
 PowerShell:
 
