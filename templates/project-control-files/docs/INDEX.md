@@ -25,6 +25,7 @@ Scope: Central documentation navigation and maintenance control
 3. Completed plans move to archive.
 4. Product notes do not become implementation requirements until promoted.
 5. When docs conflict, prefer code, tests, active docs, canonical SPEC, active SPECs, then archive/history.
+6. When a SPEC spans past-to-present history, current active sections override older sections.
 
 ## Minimum Documentation Update Sets
 

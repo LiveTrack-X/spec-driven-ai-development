@@ -60,6 +60,7 @@ def validate_skill() -> None:
         "Pain-To-Rule",
         "Evidence Rules",
         "Field-Proven Baselines",
+        "Current-over-historical",
     ]:
         if phrase not in body:
             fail(f"Skill body missing expected phrase: {phrase}")
@@ -69,7 +70,7 @@ def validate_templates() -> None:
     for path in REQUIRED_FILES:
         read(path)
     agents = read("templates/project-control-files/AGENTS.md")
-    for phrase in ["Mandatory First Read", "Source Of Truth", "Handoff Rule"]:
+    for phrase in ["Mandatory First Read", "Source Of Truth", "Handoff Rule", "past-to-present"]:
         if phrase not in agents:
             fail(f"AGENTS template missing: {phrase}")
     index = read("templates/project-control-files/docs/INDEX.md")
@@ -81,7 +82,7 @@ def validate_templates() -> None:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
     catalog = read("docs/pattern-catalog.md")
-    for phrase in ["CMP", "DirectPipe", "Owner Progress View"]:
+    for phrase in ["CMP", "DirectPipe", "Owner Progress View", "current-over-historical"]:
         if phrase not in catalog:
             fail(f"Pattern catalog missing: {phrase}")
 

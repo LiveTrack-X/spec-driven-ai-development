@@ -16,6 +16,9 @@ Read:
 6. `review-findings.md`
 7. The changed files and relevant tests
 
+If the SPEC spans past-to-present history, identify the current active section
+before judging whether implementation matches the SPEC.
+
 ## Source Of Truth
 
 Prefer:
@@ -28,6 +31,8 @@ Prefer:
 6. product notes,
 7. archive/history,
 8. AI confidence.
+
+Current active SPEC sections override older historical SPEC sections.
 
 ## Output Format
 

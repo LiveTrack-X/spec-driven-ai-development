@@ -18,3 +18,4 @@ Scope: Mandatory rules for code, documentation, review, verification, and handof
 - Keep active work, review findings, future ideas, and archives separate.
 - Update docs when behavior or implementation status changes.
 - State tests, docs checked, remaining risks, and owner decisions in handoff.
+- If a SPEC spans past-to-present history, current active sections override older sections.

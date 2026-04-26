@@ -22,6 +22,7 @@ Describe which decisions remain human-owned.
 - Active SPECs drive implementation.
 - Tests, docs, and reproducible commands prove behavior.
 - Future ideas stay out of active work until promoted.
+- Current active SPEC sections override older historical sections.
 
 ## Current Architecture
 

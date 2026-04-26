@@ -6,6 +6,10 @@ Status: Canonical integrated SPEC
 
 This is a placeholder project showing the minimum control files.
 
+## Temporal SPEC Precedence
+
+Current active sections override older historical sections.
+
 ## Active Scope
 
 Define the first small implementation slice.

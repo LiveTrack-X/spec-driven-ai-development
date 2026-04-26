@@ -14,6 +14,7 @@ Use an owner-supervised, SPEC-driven, multi-agent, evidence-based development wo
 6. What evidence proves the first slice is complete?
 7. Does this project need CMP-style controls for docs/SPEC/backlog governance?
 8. Does this project need DirectPipe-style controls for version lanes, migration, release gates, or high-risk runtime rules?
+9. If the SPEC contains past-to-present history, which sections are current active instructions and which are historical rationale?
 
 If enough context is already available, proceed with reasonable assumptions and mark them clearly.
 
@@ -32,6 +33,7 @@ Create or update:
 ## Operating Rules
 
 - Do not start from archived docs, old plans, or product notes.
+- Do not implement from older SPEC history when newer active SPEC sections, current code, or current tests supersede it.
 - Do not let future ideas become active implementation unless promoted into SPEC.
 - Do not treat AI confidence as completion.
 - Completion requires code, tests, docs, and reproducible evidence.

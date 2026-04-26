@@ -36,6 +36,10 @@ When sources conflict, prefer:
 7. historical or archived records,
 8. chat memory or AI confidence.
 
+If a SPEC spans past-to-present history, current active sections override older
+sections. Older SPEC material explains rationale; it does not define current
+implementation unless reaffirmed in the active path.
+
 ## Code Consistency Rules
 
 - Keep changes scoped to the active SPEC slice.

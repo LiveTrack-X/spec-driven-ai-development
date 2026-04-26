@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2 - 2026-04-26
+
+- Added current-over-historical SPEC precedence rules so newer active SPEC
+  sections override older timeline/history sections.
+- Updated prompts, templates, field patterns, and validation checks to require
+  agents to identify the current active SPEC path before implementation/review.
+
 ## 0.1.1 - 2026-04-26
 
 - Added CMP and DirectPipe field notes.

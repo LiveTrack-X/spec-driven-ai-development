@@ -124,6 +124,11 @@ When sources disagree, prefer:
 7. archived or historical docs,
 8. chat memory or AI confidence.
 
+Current-over-historical rule: if a SPEC includes a timeline from past to
+present, prefer the newest active/current section over older sections. Treat
+older SPEC material as rationale or history unless it is explicitly reaffirmed
+in the current active SPEC path.
+
 ## AI Role Split
 
 Use role separation to reduce single-model blind spots:
@@ -149,6 +154,8 @@ Keep three layers distinct:
 
 Do not let research notes become active work just because they are exciting.
 Do not let a SPEC claim implementation status without code/test evidence.
+Do not implement from an older SPEC section when a newer active SPEC, current
+code, or current test evidence supersedes it.
 
 ## Version And Risk Rules
 

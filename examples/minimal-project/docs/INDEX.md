@@ -9,6 +9,8 @@ Status: Active
 - `docs/TODO-Open-Items.md`
 - `review-findings.md`
 
+Current active SPEC sections override older historical sections.
+
 ## Minimum Documentation Update Sets
 
 Use this table before handoff.

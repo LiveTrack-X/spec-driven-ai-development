@@ -74,6 +74,10 @@ When sources conflict, prefer:
 7. Historical or archived records
 8. Chat memory or AI confidence
 
+If a SPEC spans past-to-present history, current active sections override older
+sections. Older SPEC material is rationale unless reaffirmed in the current
+active path.
+
 ## AI Development Rules
 
 - Do not treat AI confidence as completion.

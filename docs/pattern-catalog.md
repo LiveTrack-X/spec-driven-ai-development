@@ -66,6 +66,11 @@ Use this default order:
 7. historical or archived records,
 8. chat memory or AI confidence.
 
+Apply current-over-historical precedence inside SPECs: when a SPEC contains a
+timeline from past to present, the newest active/current section wins over older
+sections. Older SPEC material explains why the project changed; it does not
+automatically define what agents should implement now.
+
 ### 5. Split Work Ledgers
 
 Keep separate ledgers for separate meanings:

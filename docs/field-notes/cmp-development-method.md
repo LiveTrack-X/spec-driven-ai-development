@@ -53,6 +53,10 @@ CMP explicitly ranks evidence:
 Reusable rule: SPECs can define intent, but implementation status must come from
 code, tests, migrations, and repeatable commands.
 
+If a SPEC spans past-to-present history, current active sections override older
+sections. Older sections remain useful rationale but should not drive new
+implementation unless reaffirmed in the active route.
+
 ### 4. Split Current Work From Review Findings
 
 CMP uses different files for different kinds of unfinished work:
