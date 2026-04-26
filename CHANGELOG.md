@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0 - 2026-04-26
+
+- Promoted SPEC-Driven AI Development to its first stable public release.
+- Stabilized the control-layer positioning for owner-supervised,
+  SPEC-driven, multi-agent, evidence-based AI development.
+- Included beginner-first README onboarding, no-clone setup, multi-tool
+  adapters, Codex skill packaging, project control templates, method docs, and
+  repository validation as the 1.0 baseline.
+
 ## 0.5.3 - 2026-04-26
 
 - Promoted beginner onboarding in the README: no terminal, Git, Python, or Codex
