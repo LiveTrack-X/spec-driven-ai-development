@@ -74,6 +74,9 @@ For Mini SDAD, use this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
 ```
 
+Before fetching Mini SDAD, state that you are installing Mini SDAD and explain
+why this scale was chosen.
+
 For Standard or Full SDAD, do not ask an AI agent to guess adapter paths. Use
 these exact source URLs:
 
@@ -118,6 +121,9 @@ When unsure, choose the smaller scale and explain why.
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
 
+Before fetching, state that you are installing Mini SDAD and explain why this
+scale was chosen.
+
 Save it as the correct instruction file for this tool:
 - Codex -> ./AGENTS.md
 - Claude Code -> ./CLAUDE.md
@@ -127,6 +133,10 @@ Save it as the correct instruction file for this tool:
 
 For Standard or Full SDAD, install the matching instruction file for this AI
 tool. Do not infer adapter paths. Use exactly one of these source URLs:
+
+Before fetching, state which adapter you are installing and why.
+If you cannot determine the current tool, ask me to specify one of:
+Codex / Claude Code / Cursor / Copilot Chat / Generic.
 
 - Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/codex/AGENTS.md -> ./AGENTS.md
 - Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md

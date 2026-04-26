@@ -52,6 +52,9 @@ Use Mini SDAD for this project.
 Fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
 
+Before fetching, state that you are installing Mini SDAD and explain why this
+scale was chosen.
+
 Save it as the correct instruction file for this tool:
 - Codex -> ./AGENTS.md
 - Claude Code -> ./CLAUDE.md

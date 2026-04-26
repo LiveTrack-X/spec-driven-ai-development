@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.4 - 2026-04-27
+
+- Added adapter/tool confirmation to no-clone onboarding: agents must state
+  which adapter or Mini SDAD template they are installing and why before
+  fetching.
+- Added fallback behavior when the current tool cannot be determined: ask the
+  owner to choose Codex, Claude Code, Cursor, Copilot Chat, or Generic.
+- Removed beginner-facing Codex skill wording from localized READMEs so the
+  first path stays tool-neutral.
+- Expanded validation and the Codex skill to preserve the adapter confirmation
+  rule.
+
 ## 1.0.3 - 2026-04-27
 
 - Added scale selection so agents choose One-shot Prompt, Mini SDAD, Standard

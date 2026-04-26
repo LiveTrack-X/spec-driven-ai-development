@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.3` stable public release.
+Status: `1.0.4` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -75,6 +75,9 @@ When unsure, choose the smaller scale and explain why.
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
 
+Before fetching, state that you are installing Mini SDAD and explain why this
+scale was chosen.
+
 Save it as the correct instruction file for this tool:
 - Codex -> ./AGENTS.md
 - Claude Code -> ./CLAUDE.md
@@ -84,6 +87,10 @@ Save it as the correct instruction file for this tool:
 
 For Standard or Full SDAD, install the adapter for this project, then bootstrap
 the first active SPEC slice and project control files.
+
+Before fetching, state which adapter you are installing and why.
+If you cannot determine the current tool, ask me to specify one of:
+Codex / Claude Code / Cursor / Copilot Chat / Generic.
 
 Do not infer adapter paths. Use exactly one of these source URLs:
 

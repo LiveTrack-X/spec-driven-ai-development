@@ -79,6 +79,10 @@ Start with the no-clone path:
 ```text
 Use SPEC-Driven AI Development as the project control method.
 Source repository: https://github.com/LiveTrack-X/spec-driven-ai-development
+Before fetching, state which adapter or Mini SDAD template you are installing
+and why.
+If you cannot determine the current tool, ask the user to specify one of:
+Codex / Claude Code / Cursor / Copilot Chat / Generic.
 Do not infer adapter paths. Use the exact raw adapter URL for this tool.
 Show the source URL and first 10 lines of the fetched adapter before saving.
 If fetching fails, stop and report the failure instead of inventing an adapter.
@@ -94,6 +98,9 @@ Explain terms plainly:
 - Terminal commands are optional setup shortcuts, not the main requirement.
 - Adapter installation is deterministic. Prefer exact raw URLs, target paths,
   and fetch evidence over model guesses.
+- Before fetching, name the adapter/template and explain why. If the current
+  tool is unclear, ask the user to choose Codex, Claude Code, Cursor, Copilot
+  Chat, or Generic.
 
 If a user asks "how do I start?", provide the AI-agent paste prompt first, then
 offer terminal installers only as an optional path.
