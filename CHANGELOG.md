@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.2 - 2026-04-27
+
+- Replaced generic no-clone adapter wording with exact raw adapter URLs and
+  target paths for Codex, Claude Code, Cursor, Copilot Chat, and generic AI
+  agents.
+- Added fetch-evidence requirements so AI agents must show the source URL and
+  first 10 fetched lines before saving an adapter.
+- Added fail-closed guidance: if an agent cannot fetch the real adapter, it must
+  stop instead of inventing adapter content.
+- Updated validation and the Codex skill to preserve deterministic adapter
+  installation rules.
+
 ## 1.0.1 - 2026-04-26
 
 - Added the README infographic asset for the SPEC-driven AI development loop.

@@ -79,7 +79,9 @@ Start with the no-clone path:
 ```text
 Use SPEC-Driven AI Development as the project control method.
 Source repository: https://github.com/LiveTrack-X/spec-driven-ai-development
-Install the matching instruction file or create equivalent project rules.
+Do not infer adapter paths. Use the exact raw adapter URL for this tool.
+Show the source URL and first 10 lines of the fetched adapter before saving.
+If fetching fails, stop and report the failure instead of inventing an adapter.
 Bootstrap the first active SPEC slice and project control files.
 Do not overwrite existing files without showing proposed changes.
 ```
@@ -90,6 +92,8 @@ Explain terms plainly:
 - An adapter is a project instruction file for a specific AI coding tool.
 - The user does not need Git or Python for the prompt-only path.
 - Terminal commands are optional setup shortcuts, not the main requirement.
+- Adapter installation is deterministic. Prefer exact raw URLs, target paths,
+  and fetch evidence over model guesses.
 
 If a user asks "how do I start?", provide the AI-agent paste prompt first, then
 offer terminal installers only as an optional path.

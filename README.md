@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.1` stable public release.
+Status: `1.0.2` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -34,8 +34,20 @@ Use SPEC-Driven AI Development as the project control method.
 Source:
 https://github.com/LiveTrack-X/spec-driven-ai-development
 
-No clone required. Install the matching adapter into this project, then
-bootstrap the first active SPEC slice and project control files.
+No clone required. Install the adapter for this project, then bootstrap the
+first active SPEC slice and project control files.
+
+Do not infer adapter paths. Use exactly one of these source URLs:
+
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/codex/AGENTS.md -> ./AGENTS.md
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md
+
+Show me the source URL and first 10 lines of the fetched file before saving it.
+If you cannot fetch the file, stop and say so. Do not create a fake adapter from
+memory.
 
 Ask me for product pain, smallest useful version, non-goals, risks,
 owner-controlled decisions, and evidence required for completion.

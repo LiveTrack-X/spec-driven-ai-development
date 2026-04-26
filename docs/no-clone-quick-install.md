@@ -41,6 +41,18 @@ After setup, your project should have one of these instruction files:
 After bootstrap, your project should also have control files such as
 `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, and `review-findings.md`.
 
+## Exact Adapter Sources
+
+Do not ask an AI agent to guess adapter paths. Use these exact source URLs:
+
+| Tool | Source URL | Save as |
+|---|---|---|
+| Codex | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/codex/AGENTS.md` | `AGENTS.md` |
+| Claude Code | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/claude-code/CLAUDE.md` | `CLAUDE.md` |
+| Cursor | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc` | `.cursor/rules/spec-driven-ai-development.mdc` |
+| GitHub Copilot | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/github-copilot/.github/copilot-instructions.md` | `.github/copilot-instructions.md` |
+| Generic AI tool | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/generic/AI-SESSION-INSTRUCTIONS.md` | `AI-SESSION-INSTRUCTIONS.md` |
+
 ## Option 1: Give This To Your AI Agent
 
 Paste this into Codex, Claude Code, Cursor, Copilot Chat, or another AI coding
@@ -54,14 +66,22 @@ https://github.com/LiveTrack-X/spec-driven-ai-development
 
 Do not require me to clone the repository unless absolutely necessary.
 
-Install the matching instruction file for this AI tool by using the source repo
-or the raw adapter files:
+Install the matching instruction file for this AI tool. Do not infer adapter
+paths. Use exactly one of these source URLs:
 
-- Codex: adapters/codex/AGENTS.md -> AGENTS.md
-- Claude Code: adapters/claude-code/CLAUDE.md -> CLAUDE.md
-- Cursor: adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> .cursor/rules/spec-driven-ai-development.mdc
-- GitHub Copilot: adapters/github-copilot/.github/copilot-instructions.md -> .github/copilot-instructions.md
-- Generic AI tool: adapters/generic/AI-SESSION-INSTRUCTIONS.md -> AI-SESSION-INSTRUCTIONS.md
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/codex/AGENTS.md -> ./AGENTS.md
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md
+
+Before saving the adapter:
+1. show me the source URL,
+2. show me the first 10 lines of the fetched file,
+3. confirm the target path.
+
+If you cannot fetch the file, stop and say so. Do not create a fake adapter from
+memory.
 
 After installing the instruction file, bootstrap this project:
 
