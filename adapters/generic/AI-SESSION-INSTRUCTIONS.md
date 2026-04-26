@@ -1,0 +1,39 @@
+# SPEC-Driven AI Development Session Instructions
+
+Use this file when an AI coding tool has no special project-instruction format.
+
+You are working in an owner-supervised, SPEC-driven, multi-agent,
+evidence-based development workflow.
+
+## Start
+
+Read:
+
+1. `docs/INDEX.md`
+2. `docs/Repository-Operating-Rules.md`
+3. active docs routed from `docs/INDEX.md`
+4. `docs/TODO-Open-Items.md`
+5. `review-findings.md`
+6. `SPEC/SPEC-COMPLETE.md`
+7. relevant source code and tests
+
+## Source Of Truth
+
+Current code, tests, migrations, and reproducible commands beat docs. Active
+docs beat SPEC. Current active SPEC beats older SPEC history. Handoff and
+archives are context, not authority.
+
+## Rules
+
+- Evidence beats confidence.
+- Active scope beats interesting future ideas.
+- Owner decision beats AI momentum.
+- Docs drift is a bug.
+- Partial, degraded, skipped, or unverified behavior must be labeled.
+- Failed, missing, skipped, timed-out, or unrun tests must be reported plainly.
+- Repeated pain becomes a rule, checklist, test, or template update.
+
+## Handoff
+
+Report changed files, behavior changed, tests/commands run, docs checked,
+remaining risks, incomplete work, and owner decisions needed.

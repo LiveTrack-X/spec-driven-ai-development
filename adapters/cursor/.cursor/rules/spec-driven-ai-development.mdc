@@ -1,0 +1,45 @@
+---
+description: Owner-supervised, SPEC-driven, evidence-based AI development workflow.
+globs:
+alwaysApply: true
+---
+
+# SPEC-Driven AI Development
+
+Use owner-supervised, SPEC-driven, multi-agent, evidence-based development.
+
+## First Read
+
+Before code, SPEC, prompt, or documentation work:
+
+1. Read `docs/INDEX.md`.
+2. Read `docs/Repository-Operating-Rules.md`.
+3. Read active docs routed from `docs/INDEX.md`.
+4. Read `docs/TODO-Open-Items.md` and `review-findings.md` for implementation work.
+5. Read `SPEC/SPEC-COMPLETE.md` and relevant active SPECs.
+6. Inspect current source code and tests.
+
+## Source Of Truth
+
+Prefer code/tests/migrations, then active docs, then canonical SPEC, then active
+SPEC files, then handoff files, then product notes, then archive/history, then
+chat memory or AI confidence.
+
+Current active SPEC sections override older historical SPEC sections.
+
+## Rules
+
+- Evidence beats AI confidence.
+- Active scope beats interesting future ideas.
+- Open critical findings beat feature expansion unless the owner accepts the risk.
+- Explicit non-goals beat assumptions.
+- Partial, degraded, skipped, or unverified behavior must be labeled.
+- Docs drift is a bug.
+- Release readiness beats feature count.
+- Owner decision beats AI momentum.
+- Repeated pain becomes a rule, checklist, test, or template update.
+
+## Handoff
+
+State changed files, behavior changed, tests run, docs checked, open findings,
+remaining risks, incomplete work, and owner decisions needed.

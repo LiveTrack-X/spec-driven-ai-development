@@ -62,7 +62,14 @@ prompts/
   handoff-prompt.md
 docs/
   pattern-catalog.md
+  tool-adapters.md
   field-notes/
+adapters/
+  codex/
+  claude-code/
+  cursor/
+  github-copilot/
+  generic/
 skills/
   ai-spec-project-start/
 templates/
@@ -70,6 +77,8 @@ templates/
 examples/
   minimal-project/
 scripts/
+  install-agent-adapter.ps1
+  install-agent-adapter.sh
   install-codex-skill.ps1
   install-codex-skill.sh
   validate_repo.py
@@ -115,6 +124,36 @@ If your session does not auto-discover newly installed skills yet, reference the
 ```text
 Use the skill at ~/.codex/skills/ai-spec-project-start to bootstrap this project.
 ```
+
+## Install Tool Adapters
+
+Use adapters when you want the same SDAD rules in tools other than Codex.
+
+PowerShell:
+
+```powershell
+.\scripts\install-agent-adapter.ps1 -Adapter claude-code -TargetPath C:\path\to\project
+.\scripts\install-agent-adapter.ps1 -Adapter cursor -TargetPath C:\path\to\project
+.\scripts\install-agent-adapter.ps1 -Adapter github-copilot -TargetPath C:\path\to\project
+```
+
+macOS/Linux:
+
+```bash
+./scripts/install-agent-adapter.sh claude-code /path/to/project
+./scripts/install-agent-adapter.sh cursor /path/to/project
+./scripts/install-agent-adapter.sh github-copilot /path/to/project
+```
+
+Available adapters:
+
+- Codex: `AGENTS.md`
+- Claude Code: `CLAUDE.md`
+- Cursor: `.cursor/rules/spec-driven-ai-development.mdc`
+- GitHub Copilot: `.github/copilot-instructions.md`
+- Generic: `AI-SESSION-INSTRUCTIONS.md`
+
+See [docs/tool-adapters.md](docs/tool-adapters.md).
 
 ## Use The Project Templates
 

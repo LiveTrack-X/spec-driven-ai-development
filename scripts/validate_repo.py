@@ -12,8 +12,15 @@ REQUIRED_FILES = [
     "LICENSE",
     "docs/pattern-catalog.md",
     "docs/implicit-rules.md",
+    "docs/tool-adapters.md",
     "docs/field-notes/documentation-governance-method.md",
     "docs/field-notes/release-governance-method.md",
+    "adapters/README.md",
+    "adapters/codex/AGENTS.md",
+    "adapters/claude-code/CLAUDE.md",
+    "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
+    "adapters/github-copilot/.github/copilot-instructions.md",
+    "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
     "prompts/kickoff-prompt.md",
     "prompts/review-prompt.md",
     "prompts/handoff-prompt.md",
@@ -22,6 +29,8 @@ REQUIRED_FILES = [
     "skills/ai-spec-project-start/references/field-patterns.md",
     "skills/ai-spec-project-start/references/implicit-rules.md",
     "skills/ai-spec-project-start/references/starter-templates.md",
+    "scripts/install-agent-adapter.ps1",
+    "scripts/install-agent-adapter.sh",
     "templates/project-control-files/AGENTS.md",
     "templates/project-control-files/docs/INDEX.md",
     "templates/project-control-files/docs/Repository-Operating-Rules.md",
@@ -108,6 +117,21 @@ def validate_templates() -> None:
     ]:
         if phrase not in implicit:
             fail(f"Implicit rules doc missing: {phrase}")
+    adapters = read("docs/tool-adapters.md")
+    for phrase in ["Claude Code", "Cursor", "GitHub Copilot", "Generic AI coding tool"]:
+        if phrase not in adapters:
+            fail(f"Tool adapters doc missing: {phrase}")
+    claude = read("adapters/claude-code/CLAUDE.md")
+    cursor = read("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc")
+    copilot = read("adapters/github-copilot/.github/copilot-instructions.md")
+    for path, content in [
+        ("Claude adapter", claude),
+        ("Cursor adapter", cursor),
+        ("Copilot adapter", copilot),
+    ]:
+        for phrase in ["Source Of Truth", "Evidence beats", "owner"]:
+            if phrase not in content:
+                fail(f"{path} missing expected phrase: {phrase}")
 
 
 def main() -> None:

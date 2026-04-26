@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 - 2026-04-26
+
+- Added multi-tool adapters for Codex, Claude Code, Cursor, GitHub Copilot, and
+  generic AI coding tools.
+- Added `docs/tool-adapters.md` with adapter paths and usage guidance.
+- Added PowerShell and Bash adapter installer scripts.
+- Expanded validation to cover adapter files.
+
 ## 0.1.4 - 2026-04-26
 
 - Removed specific source project names from public docs, prompts, templates,
