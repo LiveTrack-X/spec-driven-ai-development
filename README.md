@@ -5,6 +5,9 @@ development loop.
 
 Status: `1.0.0` stable public release.
 
+Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
+agents.
+
 <p>
   <a href="https://buymeacoffee.com/livetrack">
     <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee">
