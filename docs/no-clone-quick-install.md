@@ -43,6 +43,22 @@ Ask:
 When unsure, choose the smaller scale. Escalate later only when repeated pain,
 context loss, risk, or multiple sessions appear.
 
+## Maintenance Cost
+
+Do not create Standard or Full SDAD files unless you will keep them current.
+
+At the end of every Standard or Full SDAD loop, check and update:
+
+- `SPEC/SPEC-COMPLETE.md`,
+- `docs/TODO-Open-Items.md`,
+- `review-findings.md`,
+- operating rules or ADRs when decisions or repeated pain changed.
+
+If no file needs a content change, state which files were checked and why no
+update was needed.
+
+If this cost is too high, choose One-shot Prompt or Mini SDAD instead.
+
 ## What Is A Codex Skill?
 
 A Codex skill is an optional local instruction package for OpenAI Codex. It tells
@@ -165,6 +181,10 @@ project:
 
 Do not overwrite existing project files without showing me what will change.
 Completion requires evidence, not AI confidence.
+
+At the end of every loop, check whether SPEC-COMPLETE, TODO, review-findings,
+rules, or ADRs must be updated. If nothing changes, say which files were checked
+and why no update was needed.
 ```
 
 ## Option 2: One-Paste PowerShell Installer

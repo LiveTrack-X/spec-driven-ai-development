@@ -16,6 +16,7 @@ REQUIRED_FILES = [
     "docs/pattern-catalog.md",
     "docs/getting-started.md",
     "docs/mini-sdad.md",
+    "docs/maintenance-cost.md",
     "docs/no-clone-quick-install.md",
     "docs/anti-patterns.md",
     "docs/fit-assessment.md",
@@ -115,12 +116,15 @@ def validate_templates() -> None:
         "assets/spec-driven-ai-development-infographic.png",
         "Choose Scale First",
         "Mini SDAD",
+        "Maintenance Cost",
+        "Do not claim completion while control files are stale",
         "Do not infer adapter paths",
         "Before fetching, state which adapter you are installing and why",
         "If you cannot determine the current tool",
         "first 10 lines",
         "No terminal. No Git. No Python required.",
         "docs/getting-started.md",
+        "docs/maintenance-cost.md",
         "docs/no-clone-quick-install.md",
         "The Problem",
         "Why This Is Different",
@@ -134,6 +138,7 @@ def validate_templates() -> None:
             "영어",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
+            "docs/maintenance-cost.md",
             "docs/no-clone-quick-install.md",
             "docs/fit-assessment.md",
         ],
@@ -142,6 +147,7 @@ def validate_templates() -> None:
             "英文",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
+            "docs/maintenance-cost.md",
             "docs/no-clone-quick-install.md",
             "docs/fit-assessment.md",
         ],
@@ -150,6 +156,7 @@ def validate_templates() -> None:
             "英語",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
+            "docs/maintenance-cost.md",
             "docs/no-clone-quick-install.md",
             "docs/fit-assessment.md",
         ],
@@ -164,6 +171,7 @@ def validate_templates() -> None:
         "Mandatory First Read",
         "Source Of Truth",
         "Handoff Rule",
+        "End-Of-Loop Maintenance Rule",
         "past-to-present",
         "Implicit Rules Made Explicit",
     ]:
@@ -174,7 +182,13 @@ def validate_templates() -> None:
         if phrase not in index:
             fail(f"docs/INDEX template missing: {phrase}")
     rules = read("templates/project-control-files/docs/Repository-Operating-Rules.md")
-    for phrase in ["Mandatory Start Loop", "Version Lane Rules", "Review And Verification Rules"]:
+    for phrase in [
+        "Mandatory Start Loop",
+        "Version Lane Rules",
+        "Review And Verification Rules",
+        "End-Of-Loop Maintenance Rule",
+        "Control files have maintenance cost",
+    ]:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
     catalog = read("docs/pattern-catalog.md")
@@ -208,12 +222,14 @@ def validate_templates() -> None:
         "Install A Tool Adapter",
         "Install The Codex Skill",
         "Owner Acceptance Checklist",
+        "Maintenance Cost",
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
     no_clone = read("docs/no-clone-quick-install.md")
     for phrase in [
         "Step 0: Choose Scale",
+        "Maintenance Cost",
         "Before You Start",
         "What Is A Codex Skill?",
         "How To Know It Worked",
@@ -241,6 +257,16 @@ def validate_templates() -> None:
     ]:
         if phrase not in mini:
             fail(f"Mini SDAD doc missing: {phrase}")
+    maintenance = read("docs/maintenance-cost.md")
+    for phrase in [
+        "Maintenance Cost",
+        "End-Of-Loop Rule",
+        "Do not claim completion while control files are stale",
+        "Scale Implication",
+        "Stale File Warning",
+    ]:
+        if phrase not in maintenance:
+            fail(f"Maintenance cost doc missing: {phrase}")
     mini_template = read("templates/mini-sdad/MINI-SDAD.md")
     for phrase in [
         "This project uses Mini SDAD",
@@ -256,7 +282,7 @@ def validate_templates() -> None:
         if phrase not in anti_patterns:
             fail(f"Anti-patterns doc missing: {phrase}")
     fit = read("docs/fit-assessment.md")
-    for phrase in ["Score", "Very high", "Output Template"]:
+    for phrase in ["Score", "Very high", "Output Template", "Maintenance cost matters"]:
         if phrase not in fit:
             fail(f"Fit assessment doc missing: {phrase}")
     diagrams = read("docs/diagrams.md")

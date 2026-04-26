@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.5 - 2026-04-27
+
+- Added explicit maintenance-cost guidance for Standard and Full SDAD control
+  files.
+- Added `docs/maintenance-cost.md` with the end-of-loop update rule for
+  `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md`,
+  operating rules, and ADRs.
+- Updated README, getting-started, no-clone setup, fit assessment, templates,
+  and the Codex skill to require loop-end control-file checks.
+- Clarified that stale control files are a project bug and that projects unable
+  to pay the maintenance cost should choose Mini SDAD or one-shot prompts.
+
 ## 1.0.4 - 2026-04-27
 
 - Added adapter/tool confirmation to no-clone onboarding: agents must state

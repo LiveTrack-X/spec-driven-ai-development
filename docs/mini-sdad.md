@@ -22,6 +22,10 @@ not need future context.
 Use Standard or Full SDAD when multiple AI tools, durable review findings,
 release gates, migrations, user data, auth, money, or production risk appears.
 
+Mini SDAD exists because full control files have a maintenance cost. If you do
+not want to update SPEC, TODO, and review ledgers at the end of every loop, stay
+Mini.
+
 ## What Mini SDAD Creates
 
 Mini SDAD creates one instruction file for the AI tool.

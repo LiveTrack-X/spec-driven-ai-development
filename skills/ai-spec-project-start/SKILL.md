@@ -147,6 +147,28 @@ Use this sequence:
 Never collapse steps 4-7 into "AI said it is done." Completion is a decision
 based on evidence.
 
+## Control File Maintenance Cost
+
+Standard and Full SDAD control files are not write-once setup files. They must
+be checked and updated at the end of every loop.
+
+At loop end:
+
+- update `SPEC/SPEC-COMPLETE.md` when behavior, implementation status, scope,
+  constraints, or acceptance criteria changed,
+- update `docs/TODO-Open-Items.md` when work was completed, added, deferred, or
+  split,
+- update `review-findings.md` when bugs, risks, review findings, or blocked
+  issues were found, fixed, deferred, or accepted,
+- update operating rules or ADRs when repeated pain, decisions, boundaries, or
+  tradeoffs changed.
+
+If no control file needs a content change, state which files were checked and why
+no update was needed. Do not claim completion while control files are stale.
+
+If the user cannot afford this maintenance cost, choose Mini SDAD or a one-shot
+prompt instead.
+
 ## First Conversation
 
 Before writing code, extract the owner's control model:

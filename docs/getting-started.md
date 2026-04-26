@@ -31,6 +31,19 @@ Ask five questions:
 
 When unsure, choose the smaller scale and escalate later.
 
+## Maintenance Cost
+
+Standard and Full SDAD create control files that must stay current. At the end
+of every loop, check and update `SPEC/SPEC-COMPLETE.md`,
+`docs/TODO-Open-Items.md`, `review-findings.md`, and any rules or ADRs affected
+by the work.
+
+If no file needs a content change, say which files were checked and why no
+update was needed.
+
+If you do not want that maintenance cost, choose One-shot Prompt or
+[Mini SDAD](mini-sdad.md). See [maintenance-cost.md](maintenance-cost.md).
+
 ## Complete Beginner Path
 
 If you are not comfortable with terminals, Git, Python, or shell scripts, use
@@ -238,6 +251,7 @@ Return findings with file paths, severity, and reproduction steps when possible.
 Update the project control files after this work.
 Record completed work, open TODOs, review findings, verification evidence,
 partial or unverified behavior, and any repeated pain that should become a rule.
+If no control file needs a content change, state which files were checked and why.
 ```
 
 ## Owner Acceptance Checklist

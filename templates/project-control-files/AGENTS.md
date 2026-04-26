@@ -69,3 +69,23 @@ Before handoff, state:
 - remaining risks,
 - what is not complete,
 - owner decision needed, if any.
+
+## End-Of-Loop Maintenance Rule
+
+Every loop must end by checking and updating current control files.
+
+Update `SPEC/SPEC-COMPLETE.md` when product behavior, implementation status,
+scope, constraints, or acceptance criteria changed.
+
+Update `docs/TODO-Open-Items.md` when work was completed, added, deferred, or
+split.
+
+Update `review-findings.md` when bugs, risks, review findings, or blocked issues
+were found, fixed, deferred, or accepted.
+
+Update operating rules or ADRs when repeated pain, architecture decisions, policy
+decisions, release decisions, security boundaries, data-boundary decisions, or
+owner-approved tradeoffs changed.
+
+If no control file needs a content change, state which files were checked and why
+no update was needed. Do not claim completion while control files are stale.

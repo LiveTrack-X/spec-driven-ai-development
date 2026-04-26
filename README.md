@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.4` stable public release.
+Status: `1.0.5` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -39,6 +39,24 @@ When unsure, choose the smaller scale. Escalate only when repeated pain,
 context loss, risk, or multiple sessions appear.
 
 Small project? Start with [Mini SDAD](docs/mini-sdad.md), not the full workflow.
+
+## Maintenance Cost
+
+SDAD files are not write-once setup files.
+
+If you choose Standard or Full SDAD, every loop must end by checking and updating
+the control files:
+
+- `SPEC/SPEC-COMPLETE.md`,
+- `docs/TODO-Open-Items.md`,
+- `review-findings.md`,
+- operating rules or ADRs when decisions or repeated pain changed.
+
+If no file needs a content change, the handoff must say which files were checked
+and why no update was needed. Do not claim completion while control files are stale.
+
+If that cost is too high, choose One-shot Prompt or [Mini SDAD](docs/mini-sdad.md).
+See [docs/maintenance-cost.md](docs/maintenance-cost.md).
 
 ## For Beginners: Use In 60 Seconds
 
@@ -107,6 +125,10 @@ memory.
 Ask me for product pain, smallest useful version, non-goals, risks,
 owner-controlled decisions, and evidence required for completion.
 
+At the end of every loop, check whether SPEC-COMPLETE, TODO, review-findings,
+rules, or ADRs must be updated. If nothing changes, say which files were checked
+and why no update was needed.
+
 Do not overwrite existing files without showing me the proposed changes.
 Completion requires evidence, not AI confidence.
 ```
@@ -136,6 +158,7 @@ It shows practical paths:
 - scale selection,
 - no-clone quick install,
 - Mini SDAD for small projects,
+- maintenance cost and loop-end updates,
 - prompt-only start,
 - install a tool adapter into an existing project,
 - install the Codex skill.
@@ -362,6 +385,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md): copy-paste setup without cloning
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid
 - [docs/fit-assessment.md](docs/fit-assessment.md): project fit checklist
+- [docs/maintenance-cost.md](docs/maintenance-cost.md): loop-end control file update cost
 - [docs/diagrams.md](docs/diagrams.md): workflow diagrams
 - [docs/tool-adapters.md](docs/tool-adapters.md): tool-specific instruction files
 - [docs/field-notes/documentation-governance-method.md](docs/field-notes/documentation-governance-method.md): documentation-governance field pattern

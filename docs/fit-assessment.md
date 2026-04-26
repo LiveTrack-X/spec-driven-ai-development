@@ -29,6 +29,11 @@ Use this quick gate before the full assessment:
 When unsure, choose the smaller scale. Escalate only when repeated pain,
 context loss, risk, or multiple sessions appear.
 
+Maintenance cost matters: choose Standard or Full SDAD only when you can keep
+`SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md`, and
+rules/ADRs current at the end of each loop. If that cost is too high, use
+[Mini SDAD](mini-sdad.md) or a one-shot prompt.
+
 ## Questions
 
 1. Will more than one AI session, model, or tool work on the project?
