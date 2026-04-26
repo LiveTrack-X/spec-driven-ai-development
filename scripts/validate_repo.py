@@ -10,14 +10,19 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = [
     "README.md",
     "LICENSE",
+    "docs/pattern-catalog.md",
+    "docs/field-notes/cmp-development-method.md",
+    "docs/field-notes/directpipe-development-method.md",
     "prompts/kickoff-prompt.md",
     "prompts/review-prompt.md",
     "prompts/handoff-prompt.md",
     "skills/ai-spec-project-start/SKILL.md",
     "skills/ai-spec-project-start/agents/openai.yaml",
+    "skills/ai-spec-project-start/references/field-patterns.md",
     "skills/ai-spec-project-start/references/starter-templates.md",
     "templates/project-control-files/AGENTS.md",
     "templates/project-control-files/docs/INDEX.md",
+    "templates/project-control-files/docs/Repository-Operating-Rules.md",
     "templates/project-control-files/docs/TODO-Open-Items.md",
     "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
     "templates/project-control-files/review-findings.md",
@@ -54,6 +59,7 @@ def validate_skill() -> None:
         "Source Of Truth",
         "Pain-To-Rule",
         "Evidence Rules",
+        "Field-Proven Baselines",
     ]:
         if phrase not in body:
             fail(f"Skill body missing expected phrase: {phrase}")
@@ -66,6 +72,18 @@ def validate_templates() -> None:
     for phrase in ["Mandatory First Read", "Source Of Truth", "Handoff Rule"]:
         if phrase not in agents:
             fail(f"AGENTS template missing: {phrase}")
+    index = read("templates/project-control-files/docs/INDEX.md")
+    for phrase in ["Repository-Operating-Rules", "Minimum Documentation Update Sets"]:
+        if phrase not in index:
+            fail(f"docs/INDEX template missing: {phrase}")
+    rules = read("templates/project-control-files/docs/Repository-Operating-Rules.md")
+    for phrase in ["Mandatory Start Loop", "Version Lane Rules", "Review And Verification Rules"]:
+        if phrase not in rules:
+            fail(f"Repository operating rules template missing: {phrase}")
+    catalog = read("docs/pattern-catalog.md")
+    for phrase in ["CMP", "DirectPipe", "Owner Progress View"]:
+        if phrase not in catalog:
+            fail(f"Pattern catalog missing: {phrase}")
 
 
 def main() -> None:

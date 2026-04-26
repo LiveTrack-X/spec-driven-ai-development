@@ -36,6 +36,13 @@ This is not just AI writing code from a spec.
 It is a project-control loop where a human owner sets direction, AI agents draft specs and implementations, other models review the work, and completion is judged by evidence: code, tests, docs, and reproducible results.
 ```
 
+Field-derived controls:
+
+```text
+CMP-style controls keep context, docs, SPECs, TODOs, review findings, and production-readiness status coherent across AI sessions.
+DirectPipe-style controls keep version lanes, migrations, releases, risk domains, and pre-release review honest.
+```
+
 ## AGENTS.md Template
 
 ```markdown
@@ -49,9 +56,10 @@ Scope: Required starting point for AI agents and maintainers
 Before code, SPEC, prompt, or documentation work, read:
 
 1. `docs/INDEX.md`
-2. The active docs routed from `docs/INDEX.md`
-3. `docs/TODO-Open-Items.md` and `review-findings.md` for implementation, hardening, or bugfix work
-4. The relevant active SPEC before architecture, policy, or behavior changes
+2. `docs/Repository-Operating-Rules.md`
+3. The active docs routed from `docs/INDEX.md`
+4. `docs/TODO-Open-Items.md` and `review-findings.md` for implementation, hardening, or bugfix work
+5. The relevant active SPEC before architecture, policy, or behavior changes
 
 ## Source Of Truth
 
@@ -74,6 +82,8 @@ When sources conflict, prefer:
 - Record open implementation work in `docs/TODO-Open-Items.md`.
 - Update docs when behavior changes.
 - Do not implement from archived docs or product notes unless promoted into active SPEC.
+- If the project has stable/next versions, define version lanes and bugfix sync rules.
+- If the project has high-risk domains, define domain-specific review checks.
 
 ## Handoff Rule
 

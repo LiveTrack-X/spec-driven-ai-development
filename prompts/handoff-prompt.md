@@ -14,6 +14,8 @@ The handoff must let another AI session continue without guessing.
 - docs checked or updated,
 - open findings,
 - remaining risks,
+- version-lane or migration sync status, if applicable,
+- release or production-readiness gate status, if applicable,
 - next recommended slice,
 - what is not complete,
 - owner decisions needed.
@@ -23,4 +25,5 @@ The handoff must let another AI session continue without guessing.
 - Do not claim production readiness without deployment, migration, auth/security, backup/restore, monitoring, and rollback evidence as applicable.
 - Do not bury blockers in prose. Put active defects in `review-findings.md`.
 - Do not leave future ideas mixed into active implementation work.
+- Do not claim release readiness while Critical findings remain open.
 - If work stopped mid-stream, update `save-state.md` and `next-task.md` if the project uses them.

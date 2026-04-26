@@ -8,9 +8,10 @@ Scope: Required starting point for AI agents and maintainers
 Before code, SPEC, prompt, or documentation work, read:
 
 1. `docs/INDEX.md`
-2. The active docs routed from `docs/INDEX.md`
-3. `docs/TODO-Open-Items.md` and `review-findings.md` for implementation, hardening, or bugfix work
-4. The relevant active SPEC before architecture, policy, or behavior changes
+2. `docs/Repository-Operating-Rules.md`
+3. The active docs routed from `docs/INDEX.md`
+4. `docs/TODO-Open-Items.md` and `review-findings.md` for implementation, hardening, or bugfix work
+5. The relevant active SPEC before architecture, policy, or behavior changes
 
 Do not start from archived docs, historical plans, product notes, or old handoff files without checking `docs/INDEX.md` first.
 
@@ -35,6 +36,8 @@ When sources conflict, prefer:
 - Record open implementation work in `docs/TODO-Open-Items.md`.
 - Update docs when behavior changes.
 - Do not implement from archived docs or product notes unless promoted into active SPEC.
+- If the project has stable/next versions, define version lanes and bugfix sync rules.
+- If the project has high-risk domains, define domain-specific review checks.
 
 ## Handoff Rule
 

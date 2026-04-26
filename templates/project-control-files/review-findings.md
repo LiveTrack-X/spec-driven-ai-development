@@ -7,6 +7,12 @@ Scope: Active bugs and review findings only
 
 None currently tracked.
 
+## Severity Gate
+
+- Critical findings block release or production readiness.
+- High-risk domain findings block the affected slice until reviewed and tested.
+- Release candidates should reach Critical 0 before owner acceptance.
+
 ## Recently Closed
 
 - Record fixed blockers with evidence.

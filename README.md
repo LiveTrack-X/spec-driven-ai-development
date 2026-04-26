@@ -4,6 +4,11 @@ Owner-supervised, multi-agent, evidence-based software development with AI agent
 
 This repository packages a reusable workflow for people who use AI agents to plan, specify, implement, review, and maintain software while keeping a human owner in control of direction, risk, and completion decisions.
 
+The workflow is field-derived from two project styles:
+
+- CMP-style project control: documentation routing, source-of-truth order, active TODO/review ledgers, and production-readiness hardening.
+- DirectPipe-style release control: version lanes, migration maps, risk-domain rules, release gates, and cross-AI pre-release review.
+
 ## Korean Summary
 
 이 저장소는 AI 에이전트를 단순 코딩 도구가 아니라 기획자, SPEC 작성자, 구현자, 리뷰어, QA 파트너로 나누어 쓰기 위한 프로젝트 운영 템플릿입니다.
@@ -55,6 +60,9 @@ prompts/
   kickoff-prompt.md
   review-prompt.md
   handoff-prompt.md
+docs/
+  pattern-catalog.md
+  field-notes/
 skills/
   ai-spec-project-start/
 templates/
@@ -77,6 +85,8 @@ Start by clarifying the product pain, owner control model, active SPEC, non-goal
 ```
 
 Or open [prompts/kickoff-prompt.md](prompts/kickoff-prompt.md) and paste it into your AI session.
+
+For the full method, read [docs/pattern-catalog.md](docs/pattern-catalog.md). For the field notes behind the method, read [docs/field-notes/cmp-development-method.md](docs/field-notes/cmp-development-method.md) and [docs/field-notes/directpipe-development-method.md](docs/field-notes/directpipe-development-method.md).
 
 ## Install The Codex Skill
 
@@ -110,10 +120,19 @@ Copy the files under [templates/project-control-files](templates/project-control
 
 - `AGENTS.md`: mandatory AI agent start rules.
 - `docs/INDEX.md`: single documentation routing table.
+- `docs/Repository-Operating-Rules.md`: durable rulebook for repeated agent rules.
 - `SPEC/SPEC-COMPLETE.md`: canonical current product and implementation baseline.
 - `docs/TODO-Open-Items.md`: current open implementation work.
 - `review-findings.md`: active bugs and review findings.
 - `README.md`: human-facing project summary.
+
+## Field-Proven Controls
+
+Use CMP-style controls when the problem is context drift, scattered docs, unclear completion status, or production-readiness uncertainty.
+
+Use DirectPipe-style controls when the problem is stable-vs-next version management, migration risk, release packaging, platform differences, or fragile runtime behavior.
+
+Most serious AI-assisted projects need both: CMP keeps the project intelligible across sessions, while DirectPipe-style gates keep risky releases and refactors honest.
 
 ## Source Of Truth
 

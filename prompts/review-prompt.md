@@ -9,11 +9,12 @@ Take a code-review stance. Prioritize bugs, security risks, missing tests, docs 
 Read:
 
 1. `docs/INDEX.md`
-2. `AGENTS.md`
-3. `SPEC/SPEC-COMPLETE.md`
-4. `docs/TODO-Open-Items.md`
-5. `review-findings.md`
-6. The changed files and relevant tests
+2. `docs/Repository-Operating-Rules.md`
+3. `AGENTS.md`
+4. `SPEC/SPEC-COMPLETE.md`
+5. `docs/TODO-Open-Items.md`
+6. `review-findings.md`
+7. The changed files and relevant tests
 
 ## Source Of Truth
 
@@ -42,7 +43,11 @@ Then include:
 
 - missing tests,
 - docs drift,
+- version-lane or migration sync risk, if applicable,
+- high-risk domain checklist gaps, if applicable,
+- release or production-readiness blockers, if applicable,
 - assumptions,
 - whether the change is safe to accept.
 
 Do not rewrite the implementation unless asked. Do not accept "AI said complete" as evidence.
+For release candidates, call out whether Critical 0 has been met.

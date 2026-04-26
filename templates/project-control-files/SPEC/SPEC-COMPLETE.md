@@ -27,6 +27,18 @@ Describe which decisions remain human-owned.
 
 Describe main components and data flow.
 
+## Version Lanes
+
+If the project has stable, beta, rewrite, platform, or migration lanes, describe
+allowed changes, sync rules, and release-channel rules. If not applicable, state
+that the project currently has one active lane.
+
+## Risk Domains
+
+List any areas that need special review rules, such as auth, tenant isolation,
+database migrations, backup/restore, real-time callbacks, locks, platform
+boundaries, release packaging, prompt contracts, or model/tool permissions.
+
 ## Active Scope
 
 Describe what is being implemented now.
@@ -46,3 +58,9 @@ List priority order for implementation.
 ## Completion Criteria
 
 Define tests, docs, reproducible evidence, and owner approval required for completion.
+
+## Release / Production Readiness Gate
+
+Define the additional evidence required before stable release or production use:
+deployment, migration, security, backup/restore, observability, rollback,
+manual checks, and cross-AI review as applicable.

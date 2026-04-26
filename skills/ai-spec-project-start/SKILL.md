@@ -32,6 +32,20 @@ human owner keeps direction, priority, risk judgment, and final acceptance while
 AI sessions take roles such as planner, spec writer, builder, reviewer, QA, and
 documentation maintainer.
 
+## Field-Proven Baselines
+
+This workflow should preserve two concrete families of practice:
+
+- CMP-style controls for documentation routing, source-of-truth order, active
+  TODO/review ledgers, and production-readiness hardening.
+- DirectPipe-style controls for version lanes, migration maps, release gates,
+  risk-domain rules, and cross-AI pre-release review.
+
+When the user asks whether their development flow is reasonable, references a
+previous project, asks to encode lessons into a reusable pattern, or is starting
+a project with releases/migrations/high-risk behavior, load
+`references/field-patterns.md`.
+
 ## Core Assumption
 
 The owner may understand logic, architecture, product intent, risks, and user
@@ -84,6 +98,7 @@ Create or update these early:
 
 - `AGENTS.md`: mandatory rules for every AI agent/session.
 - `docs/INDEX.md`: the single routing table for active docs.
+- `docs/Repository-Operating-Rules.md`: durable rulebook for repeated rules.
 - `SPEC/SPEC-COMPLETE.md`: current integrated product and implementation baseline.
 - `docs/TODO-Open-Items.md`: current open work only.
 - `review-findings.md`: active bug/review findings only.
@@ -135,6 +150,22 @@ Keep three layers distinct:
 Do not let research notes become active work just because they are exciting.
 Do not let a SPEC claim implementation status without code/test evidence.
 
+## Version And Risk Rules
+
+If the project has stable/beta/rewrite/migration lines, define version lanes:
+
+- allowed changes per lane,
+- where agents should work,
+- how critical fixes sync across lanes,
+- what must not sync,
+- release-channel and rollback rules.
+
+If the project has high-risk domains, name them explicitly. Examples include
+auth/tenant isolation, database migrations, backup/restore, real-time callbacks,
+thread/lock ownership, platform boundaries, release assets, prompt contracts, or
+model/tool permissions. Each risk domain needs review checks, docs, tests, and
+handoff evidence.
+
 ## Evidence Rules
 
 Every implementation handoff must include:
@@ -179,6 +210,8 @@ For a new project, produce a compact bootstrap rather than a huge master plan:
 8. review loop.
 
 Use `references/starter-templates.md` for copyable prompts and file templates.
+Use `references/field-patterns.md` when translating previous-project lessons
+into operating rules.
 
 ## Guardrails
 
