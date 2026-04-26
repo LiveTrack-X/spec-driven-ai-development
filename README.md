@@ -2,24 +2,25 @@
 
 Owner-supervised, multi-agent, evidence-based software development with AI agents and living SPECs.
 
+## Languages
+
+English is the canonical documentation language for this repository.
+
+- [English](README.md)
+- [한국어](README.ko.md)
+- [中文](README.zh.md)
+- [日本語](README.ja.md)
+
+Localized READMEs are orientation guides. If a localized guide conflicts with
+the English docs, templates, or validation scripts, prefer the English canonical
+files.
+
 This repository packages a reusable workflow for people who use AI agents to plan, specify, implement, review, and maintain software while keeping a human owner in control of direction, risk, and completion decisions.
 
 The workflow is field-derived from two anonymized project styles:
 
 - Documentation-governance project control: documentation routing, source-of-truth order, active TODO/review ledgers, and production-readiness hardening.
 - Release-governance project control: version lanes, migration maps, risk-domain rules, release gates, and cross-AI pre-release review.
-
-## Korean Summary
-
-이 저장소는 AI 에이전트를 단순 코딩 도구가 아니라 기획자, SPEC 작성자, 구현자, 리뷰어, QA 파트너로 나누어 쓰기 위한 프로젝트 운영 템플릿입니다.
-
-핵심은 다음입니다.
-
-- 인간 오너가 방향과 완료 판단을 가진다.
-- AI는 기획, SPEC, 구현, 리뷰, 검증을 돕는다.
-- SPEC은 작업 기준이지만, 완료 증거는 코드, 테스트, 문서, 재현 가능한 결과다.
-- 다른 AI, 모델, 세션으로 교차 검토한다.
-- 이전 프로젝트의 불편함은 다음 프로젝트의 운영 규칙으로 바꾼다.
 
 ## What This Is
 
@@ -56,6 +57,9 @@ This workflow turns those problems into a project control system.
 ## What's Included
 
 ```text
+README.ko.md
+README.zh.md
+README.ja.md
 prompts/
   kickoff-prompt.md
   review-prompt.md

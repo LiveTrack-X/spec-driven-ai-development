@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 - 2026-04-26
+
+- Added Korean, Chinese, and Japanese guide READMEs linked from the canonical
+  English README.
+- Added language policy guidance: English docs remain canonical, localized
+  READMEs are orientation guides.
+- Expanded validation to check localized README presence and language links.
+
 ## 0.3.0 - 2026-04-26
 
 - Added anti-patterns, fit assessment, diagrams, and ADR template docs.

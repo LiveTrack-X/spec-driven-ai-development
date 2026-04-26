@@ -9,6 +9,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = [
     "README.md",
+    "README.ko.md",
+    "README.zh.md",
+    "README.ja.md",
     "LICENSE",
     "docs/pattern-catalog.md",
     "docs/anti-patterns.md",
@@ -85,6 +88,20 @@ def validate_skill() -> None:
 def validate_templates() -> None:
     for path in REQUIRED_FILES:
         read(path)
+    readme = read("README.md")
+    for phrase in ["README.ko.md", "README.zh.md", "README.ja.md", "canonical documentation language"]:
+        if phrase not in readme:
+            fail(f"README missing language guidance: {phrase}")
+    localized = {
+        "README.ko.md": ["한국어", "영어", "docs/fit-assessment.md"],
+        "README.zh.md": ["中文", "英文", "docs/fit-assessment.md"],
+        "README.ja.md": ["日本語", "英語", "docs/fit-assessment.md"],
+    }
+    for path, phrases in localized.items():
+        content = read(path)
+        for phrase in phrases:
+            if phrase not in content:
+                fail(f"{path} missing localized guidance: {phrase}")
     agents = read("templates/project-control-files/AGENTS.md")
     for phrase in [
         "Mandatory First Read",
