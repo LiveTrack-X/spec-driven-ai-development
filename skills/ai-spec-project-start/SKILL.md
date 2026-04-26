@@ -46,6 +46,10 @@ previous project, asks to encode lessons into a reusable pattern, or is starting
 a project with releases/migrations/high-risk behavior, load
 `references/field-patterns.md`.
 
+When the user asks to capture "obvious" rules, reduce repeated confusion, harden
+agent behavior, or prevent stale SPEC/history mistakes, load
+`references/implicit-rules.md`.
+
 ## Core Assumption
 
 The owner may understand logic, architecture, product intent, risks, and user
@@ -226,6 +230,7 @@ into operating rules.
 - Keep AI output auditable.
 - Keep active docs smaller and clearer than archives.
 - Keep future ideas out of the active implementation path.
+- Make obvious but consequential rules explicit.
 - Prefer a boring verified slice over an impressive unverified expansion.
 - Use Korean for owner-facing explanation when helpful; keep filenames and
   machine-facing identifiers stable and ASCII.

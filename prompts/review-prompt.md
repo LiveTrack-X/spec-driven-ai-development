@@ -33,6 +33,8 @@ Prefer:
 8. AI confidence.
 
 Current active SPEC sections override older historical SPEC sections.
+Obvious-but-unwritten assumptions should not be treated as accepted project
+rules unless they are present in active docs, SPEC, or owner decisions.
 
 ## Output Format
 
@@ -48,6 +50,8 @@ Then include:
 
 - missing tests,
 - docs drift,
+- hidden assumptions that should become explicit rules,
+- partial, degraded, skipped, or unverified behavior that was not labeled,
 - version-lane or migration sync risk, if applicable,
 - high-risk domain checklist gaps, if applicable,
 - release or production-readiness blockers, if applicable,

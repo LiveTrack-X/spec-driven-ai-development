@@ -88,6 +88,8 @@ Or open [prompts/kickoff-prompt.md](prompts/kickoff-prompt.md) and paste it into
 
 For the full method, read [docs/pattern-catalog.md](docs/pattern-catalog.md). For the field notes behind the method, read [docs/field-notes/cmp-development-method.md](docs/field-notes/cmp-development-method.md) and [docs/field-notes/directpipe-development-method.md](docs/field-notes/directpipe-development-method.md).
 
+For the obvious-but-easy-to-miss rules, read [docs/implicit-rules.md](docs/implicit-rules.md).
+
 ## Install The Codex Skill
 
 Windows PowerShell:
@@ -133,6 +135,18 @@ Use CMP-style controls when the problem is context drift, scattered docs, unclea
 Use DirectPipe-style controls when the problem is stable-vs-next version management, migration risk, release packaging, platform differences, or fragile runtime behavior.
 
 Most serious AI-assisted projects need both: CMP keeps the project intelligible across sessions, while DirectPipe-style gates keep risky releases and refactors honest.
+
+## Implicit Rules
+
+This workflow makes implicit rules explicit. Examples:
+
+- Current active state beats historical SPEC material.
+- Evidence beats AI confidence.
+- Active scope beats interesting future ideas.
+- Release readiness beats feature count.
+- Owner decision beats AI momentum.
+- Docs drift is a bug.
+- Unverified, partial, degraded, skipped, or environment-limited behavior must be labeled.
 
 ## Source Of Truth
 

@@ -11,6 +11,7 @@ REQUIRED_FILES = [
     "README.md",
     "LICENSE",
     "docs/pattern-catalog.md",
+    "docs/implicit-rules.md",
     "docs/field-notes/cmp-development-method.md",
     "docs/field-notes/directpipe-development-method.md",
     "prompts/kickoff-prompt.md",
@@ -19,6 +20,7 @@ REQUIRED_FILES = [
     "skills/ai-spec-project-start/SKILL.md",
     "skills/ai-spec-project-start/agents/openai.yaml",
     "skills/ai-spec-project-start/references/field-patterns.md",
+    "skills/ai-spec-project-start/references/implicit-rules.md",
     "skills/ai-spec-project-start/references/starter-templates.md",
     "templates/project-control-files/AGENTS.md",
     "templates/project-control-files/docs/INDEX.md",
@@ -61,6 +63,7 @@ def validate_skill() -> None:
         "Evidence Rules",
         "Field-Proven Baselines",
         "Current-over-historical",
+        "implicit-rules",
     ]:
         if phrase not in body:
             fail(f"Skill body missing expected phrase: {phrase}")
@@ -70,7 +73,13 @@ def validate_templates() -> None:
     for path in REQUIRED_FILES:
         read(path)
     agents = read("templates/project-control-files/AGENTS.md")
-    for phrase in ["Mandatory First Read", "Source Of Truth", "Handoff Rule", "past-to-present"]:
+    for phrase in [
+        "Mandatory First Read",
+        "Source Of Truth",
+        "Handoff Rule",
+        "past-to-present",
+        "Implicit Rules Made Explicit",
+    ]:
         if phrase not in agents:
             fail(f"AGENTS template missing: {phrase}")
     index = read("templates/project-control-files/docs/INDEX.md")
@@ -85,6 +94,15 @@ def validate_templates() -> None:
     for phrase in ["CMP", "DirectPipe", "Owner Progress View", "current-over-historical"]:
         if phrase not in catalog:
             fail(f"Pattern catalog missing: {phrase}")
+    implicit = read("docs/implicit-rules.md")
+    for phrase in [
+        "Current Beats Historical",
+        "Evidence Beats Confidence",
+        "Owner Decision Beats AI Momentum",
+        "Repeated Pain Becomes A Rule",
+    ]:
+        if phrase not in implicit:
+            fail(f"Implicit rules doc missing: {phrase}")
 
 
 def main() -> None:

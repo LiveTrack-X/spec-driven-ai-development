@@ -49,6 +49,7 @@ For a new project, ask:
 6. What risk domains need special review checklists?
 7. What evidence proves the first slice?
 8. What evidence is required before release or production use?
+9. Which obvious-but-unwritten rules should become explicit project rules?
 
 Do not create a giant plan first. Create the control files, then implement the
 smallest useful verified slice.

@@ -45,9 +45,30 @@ implementation unless reaffirmed in the active path.
 - Keep changes scoped to the active SPEC slice.
 - Prefer additive changes unless a migration plan allows breaking changes.
 - Label scaffolds, placeholders, and dummy adapters in active docs and TODO.
+- Label skipped, degraded, partial, environment-limited, or unverified behavior.
 - Avoid broad rewrites while blocking review findings remain open.
 - If the project has risk domains, follow the domain-specific checklist before
   handoff.
+
+## Implicit Rules Made Explicit
+
+- Current beats historical: current code, tests, active docs, and active SPEC
+  sections beat older SPEC history, archives, handoffs, and chat memory.
+- Evidence beats confidence: no completion claim without reproducible evidence.
+- Active beats interesting: future ideas and product notes are not active scope.
+- Small verified slices beat large unverified progress.
+- Open critical findings beat feature expansion unless the owner accepts the risk.
+- Explicit non-goals beat assumptions.
+- Stated uncertainty beats silent guessing.
+- Docs drift is a bug.
+- Handoff is context, not authority.
+- Archive preserves memory, not active execution.
+- Release readiness beats feature count.
+- Environment limits beat overclaiming.
+- Cross-review beats single-agent finality.
+- Owner decision beats AI momentum.
+- Scope-specific percent beats vague global percent.
+- Repeated pain becomes a rule, checklist, test, or template update.
 
 ## Documentation Consistency Rules
 
@@ -62,6 +83,7 @@ implementation unless reaffirmed in the active path.
 ## Review And Verification Rules
 
 - Do not accept AI confidence as evidence.
+- Report failed, skipped, timed-out, missing, or unrun tests plainly.
 - Important changes should receive a separate review pass by another AI, model,
   session, or human reviewer.
 - Review should prioritize bugs, security, data loss, docs drift, missing tests,

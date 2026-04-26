@@ -19,3 +19,6 @@ Scope: Mandatory rules for code, documentation, review, verification, and handof
 - Update docs when behavior or implementation status changes.
 - State tests, docs checked, remaining risks, and owner decisions in handoff.
 - If a SPEC spans past-to-present history, current active sections override older sections.
+- Do not rely on obvious-but-unwritten assumptions.
+- Label partial, skipped, degraded, or unverified behavior.
+- Owner decision beats AI momentum.

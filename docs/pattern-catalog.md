@@ -13,6 +13,9 @@ SPEC-driven AI development.
 
 No source code is copied here. The goal is to preserve the working method.
 
+For the explicit list of obvious-but-easy-to-miss rules, see
+[`docs/implicit-rules.md`](implicit-rules.md).
+
 ## Combined Pattern
 
 ### 1. Start From Pain
@@ -152,6 +155,22 @@ When a project hurts, do not only fix the bug. Ask:
 - Should it become a "do not implement from archive" boundary?
 
 This is the core loop: friction becomes reusable structure.
+
+### 11. Make Implicit Rules Explicit
+
+Do not rely on "the next AI will understand the obvious." Write the obvious
+rules down when they affect execution:
+
+- current beats historical,
+- evidence beats confidence,
+- active beats interesting,
+- release readiness beats feature count,
+- owner decision beats AI momentum,
+- docs drift is a bug,
+- partial or unverified behavior must be labeled.
+
+These rules are not bureaucracy. They protect the owner from silent scope drift,
+false completion claims, stale SPEC execution, and unclear progress reporting.
 
 ## Pattern Matrix
 

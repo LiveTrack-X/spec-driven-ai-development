@@ -10,6 +10,11 @@ This is a placeholder project showing the minimum control files.
 
 Current active sections override older historical sections.
 
+## Implicit Rules
+
+Current beats historical. Evidence beats confidence. Active beats interesting.
+Partial, skipped, degraded, or unverified behavior must be labeled.
+
 ## Active Scope
 
 Define the first small implementation slice.

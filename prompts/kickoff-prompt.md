@@ -15,6 +15,7 @@ Use an owner-supervised, SPEC-driven, multi-agent, evidence-based development wo
 7. Does this project need CMP-style controls for docs/SPEC/backlog governance?
 8. Does this project need DirectPipe-style controls for version lanes, migration, release gates, or high-risk runtime rules?
 9. If the SPEC contains past-to-present history, which sections are current active instructions and which are historical rationale?
+10. Which obvious-but-unwritten rules should become explicit project rules?
 
 If enough context is already available, proceed with reasonable assumptions and mark them clearly.
 
@@ -34,9 +35,11 @@ Create or update:
 
 - Do not start from archived docs, old plans, or product notes.
 - Do not implement from older SPEC history when newer active SPEC sections, current code, or current tests supersede it.
+- Do not rely on obvious-but-unwritten assumptions.
 - Do not let future ideas become active implementation unless promoted into SPEC.
 - Do not treat AI confidence as completion.
 - Completion requires code, tests, docs, and reproducible evidence.
+- Label partial, degraded, skipped, or unverified behavior.
 - Important changes should receive separate review by another AI, model, or session.
 - Stable/next versions need explicit version lanes and bugfix sync rules.
 - High-risk domains need named review checks, tests, docs, and handoff evidence.
@@ -52,6 +55,7 @@ Produce:
 5. risks,
 6. version lanes if applicable,
 7. risk domains and release gates,
-8. first implementation slice,
-9. test and evidence plan,
-10. required control files.
+8. implicit rules that must be explicit,
+9. first implementation slice,
+10. test and evidence plan,
+11. required control files.

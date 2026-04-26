@@ -43,6 +43,14 @@ CMP-style controls keep context, docs, SPECs, TODOs, review findings, and produc
 DirectPipe-style controls keep version lanes, migrations, releases, risk domains, and pre-release review honest.
 ```
 
+Implicit rules to include:
+
+```text
+Current beats historical. Evidence beats confidence. Active beats interesting.
+Release readiness beats feature count. Owner decision beats AI momentum.
+Docs drift is a bug. Partial or unverified behavior must be labeled.
+```
+
 ## AGENTS.md Template
 
 ```markdown
@@ -81,11 +89,13 @@ active path.
 ## AI Development Rules
 
 - Do not treat AI confidence as completion.
+- Do not rely on obvious-but-unwritten assumptions.
 - Keep active implementation separate from future ideas.
 - Record blockers in `review-findings.md`.
 - Record open implementation work in `docs/TODO-Open-Items.md`.
 - Update docs when behavior changes.
 - Do not implement from archived docs or product notes unless promoted into active SPEC.
+- Label partial, degraded, scaffolded, skipped, or unverified behavior.
 - If the project has stable/next versions, define version lanes and bugfix sync rules.
 - If the project has high-risk domains, define domain-specific review checks.
 

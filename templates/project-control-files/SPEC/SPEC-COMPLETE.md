@@ -23,6 +23,8 @@ Describe which decisions remain human-owned.
 - Tests, docs, and reproducible commands prove behavior.
 - Future ideas stay out of active work until promoted.
 - Current active SPEC sections override older historical sections.
+- Obvious but consequential rules must be written down.
+- Partial, degraded, skipped, or unverified behavior must be labeled.
 
 ## Current Architecture
 

@@ -17,6 +17,8 @@ Scope: Central documentation navigation and maintenance control
 - Active or planned SPECs live under `SPEC/`
 - Historical docs live under `docs/archive/`
 - Product notes live under `docs/product-notes/` and are references until promoted into active SPEC
+- Implicit operating rules should be promoted into `docs/Repository-Operating-Rules.md`
+  instead of left only in chat.
 
 ## Maintenance Rules
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.3 - 2026-04-26
+
+- Added `docs/implicit-rules.md` to make obvious-but-easy-to-miss project rules
+  explicit.
+- Added skill reference `implicit-rules.md` for Codex project bootstrap and
+  review workflows.
+- Updated prompts and templates to require explicit handling of hidden
+  assumptions, partial/degraded states, unverified behavior, and owner decisions.
+- Expanded validation to check the implicit-rules package.
+
 ## 0.1.2 - 2026-04-26
 
 - Added current-over-historical SPEC precedence rules so newer active SPEC
