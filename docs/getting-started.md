@@ -22,14 +22,19 @@ Ask five questions:
 4. Will multiple AI tools or reviewers be involved?
 5. Is there release, migration, user data, auth, money, or production risk?
 
-| Yes answers | Use |
-|---|---|
-| 0 | One-shot prompt |
-| 1-2 | [Mini SDAD](mini-sdad.md) |
-| 3 | Standard SDAD |
-| 4-5 | Full SDAD |
+Override rules beat raw yes-counts.
 
-When unsure, choose the smaller scale and escalate later.
+| Trigger | Use |
+|---|---|
+| 0 yes | One-shot prompt |
+| 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | [Mini SDAD](mini-sdad.md) |
+| Q4=yes or 3 yes total | Standard SDAD |
+| Q5=yes | Standard SDAD minimum |
+| Q5=yes with production-facing, destructive, migration, real user data, auth, money, release, or rollback risk | Full SDAD |
+| 4-5 yes | Full SDAD |
+
+When unsure, choose the smaller scale only if no Q5 risk exists, and escalate
+later when evidence shows the project needs it.
 
 ## Maintenance Cost
 
@@ -53,12 +58,16 @@ If you do not want that maintenance cost, choose One-shot Prompt or
 If you are not comfortable with terminals, Git, Python, or shell scripts, use
 the no-clone path first:
 
-- Open your project in an AI coding tool.
+- Open your project in an AI coding tool that can edit files.
 - Copy the prompt from [no-clone quick install](no-clone-quick-install.md).
 - Paste it into the AI agent.
 - Let the AI choose the scale before it creates any files.
 
 Codex is optional. A Codex skill is only for Codex users.
+
+Chat-only tools such as Claude.ai, ChatGPT web, or browser chat can help plan,
+but they cannot install adapters unless they have project filesystem access.
+Claude Code means the local/CLI coding tool, not Claude.ai chat.
 
 ## Who Does What
 

@@ -79,6 +79,12 @@ Start with the no-clone path:
 ```text
 Use SPEC-Driven AI Development as the project control method.
 Source repository: https://github.com/LiveTrack-X/spec-driven-ai-development
+First determine whether you can edit files in this project. If this is a
+chat-only environment such as Claude.ai, ChatGPT web, or another browser chat
+with no project filesystem, do not install adapters or claim files were saved.
+Use the repository for planning only, then tell the user to open the project in
+Codex, Claude Code, Cursor, Copilot Chat, or another file-editing AI coding
+tool.
 Before fetching, state which adapter or Mini SDAD template you are installing
 and why.
 If you cannot determine the current tool, ask the user to specify one of:
@@ -86,6 +92,9 @@ Codex / Claude Code / Cursor / Copilot Chat / Generic.
 Do not infer adapter paths. Use the exact raw adapter URL for this tool.
 Show the source URL and first 10 lines of the fetched adapter before saving.
 If fetching fails, stop and report the failure instead of inventing an adapter.
+Offer deterministic fallback options: retry with network access, ask the user
+to paste the raw file content from the source URL, use the terminal installer,
+or clone/download the repository manually.
 Bootstrap the first active SPEC slice and project control files.
 At loop end, update save-state.md when work pauses, handoff is expected,
 direction changes, blocked/partial/unverified state remains, or context would be
@@ -104,6 +113,10 @@ Explain terms plainly:
 - Before fetching, name the adapter/template and explain why. If the current
   tool is unclear, ask the user to choose Codex, Claude Code, Cursor, Copilot
   Chat, or Generic.
+- Claude Code means the local/CLI coding tool with project filesystem access,
+  not Claude.ai chat.
+- Chat-only browser tools can plan and explain, but must not claim adapter
+  installation unless they can edit files in the target project.
 
 If a user asks "how do I start?", provide the AI-agent paste prompt first, then
 offer terminal installers only as an optional path.
@@ -124,13 +137,17 @@ Ask:
 Choose:
 
 - `0 yes`: One-shot Prompt. Do not create SDAD files.
-- `1-2 yes`: Mini SDAD. Create one instruction file from
-  `templates/mini-sdad/MINI-SDAD.md`.
-- `3 yes`: Standard SDAD. Create core control files.
+- `1-2 yes from questions 1-3 only, with Q4=no and Q5=no`: Mini SDAD. Create
+  one instruction file from `templates/mini-sdad/MINI-SDAD.md`.
+- `Q4=yes or 3 yes total`: Standard SDAD. Create core control files.
+- `Q5=yes`: Standard SDAD minimum, even if it is the only yes.
+- `Q5=yes with production-facing, destructive, migration, real user data, auth,
+  money, release, or rollback risk`: Full SDAD.
 - `4-5 yes`: Full SDAD. Use full workflow, review, ADRs, and risk gates.
 
-When unsure, choose the smaller scale. Escalate only when repeated pain, context
-loss, risk, or multiple sessions appear.
+Override rules beat raw yes-counts. When unsure, choose the smaller scale only
+if no Q5 risk exists. Escalate when repeated pain, context loss, risk, or
+multiple sessions appear.
 
 ## Operating Loop
 
@@ -171,6 +188,11 @@ no update was needed. Do not claim completion while control files are stale.
 
 If the user cannot afford this maintenance cost, choose Mini SDAD or a one-shot
 prompt instead.
+
+Mini SDAD loop-end behavior is smaller: do not check `SPEC/SPEC-COMPLETE.md`,
+`docs/TODO-Open-Items.md`, `review-findings.md`, or ADRs unless the project has
+escalated. For Mini, report the active task, changed files, check evidence,
+limitations or unverified behavior, owner acceptance, and whether to escalate.
 
 ## Save-State Update Triggers
 

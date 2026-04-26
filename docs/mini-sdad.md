@@ -8,7 +8,8 @@ or context loss.
 
 ## When To Use Mini SDAD
 
-Use Mini SDAD when one or two of these are true:
+Use Mini SDAD when one or two of these are true, and there is no Q4/Q5
+multi-tool or high-risk override:
 
 - the work may take more than one AI session,
 - you may return to the project later,
@@ -21,6 +22,9 @@ not need future context.
 
 Use Standard or Full SDAD when multiple AI tools, durable review findings,
 release gates, migrations, user data, auth, money, or production risk appears.
+Q5-style risk beats the raw yes-count: one production, migration, user data,
+auth, money, destructive, release, or rollback risk is enough to use Standard at
+minimum, and often Full.
 
 Mini SDAD exists because full control files have a maintenance cost. If you do
 not want to update SPEC, TODO, and review ledgers at the end of every loop, stay
@@ -96,7 +100,9 @@ Before saving:
 3. confirm the target path.
 
 If you cannot fetch the template, stop and say so. Do not invent the template
-from memory.
+from memory. Offer deterministic fallback options: retry with network access,
+ask me to paste the raw template content from the source URL, use the terminal
+installer, or clone/download the repository manually.
 
 After saving it, ask me for:
 - the active task,

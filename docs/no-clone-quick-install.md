@@ -20,6 +20,10 @@ Pick the path that matches your comfort level:
 
 Run terminal commands from the root of the project you want to control.
 
+Chat-only tools such as Claude.ai, ChatGPT web, or browser chat can discuss the
+workflow, but they cannot install adapters unless they have project filesystem
+access. Claude Code means the local/CLI coding tool, not Claude.ai chat.
+
 ## Step 0: Choose Scale
 
 Before installing an adapter or creating project files, choose the smallest
@@ -33,15 +37,19 @@ Ask:
 4. Will multiple AI tools or reviewers be involved?
 5. Is there release, migration, user data, auth, money, or production risk?
 
-| Yes answers | Scale | What to create |
-|---|---|---|
-| 0 | One-shot prompt | No project files |
-| 1-2 | Mini SDAD | One instruction file from `templates/mini-sdad/MINI-SDAD.md` |
-| 3 | Standard SDAD | Adapter plus core control files |
-| 4-5 | Full SDAD | Adapter, core files, review, ADRs, risk gates |
+Override rules beat raw yes-counts:
 
-When unsure, choose the smaller scale. Escalate later only when repeated pain,
-context loss, risk, or multiple sessions appear.
+| Trigger | Scale | What to create |
+|---|---|---|
+| 0 yes | One-shot prompt | No project files |
+| 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | Mini SDAD | One instruction file from `templates/mini-sdad/MINI-SDAD.md` |
+| Q4=yes or 3 yes total | Standard SDAD | Adapter plus core control files |
+| Q5=yes | Standard SDAD minimum | Adapter, core control files, and explicit risk tracking |
+| Q5=yes with production-facing, destructive, migration, real user data, auth, money, release, or rollback risk | Full SDAD | Adapter, core files, review, ADRs, risk gates |
+| 4-5 yes | Full SDAD | Adapter, core files, review, ADRs, risk gates |
+
+When unsure, choose the smaller scale only if no Q5 risk exists. Escalate later
+when repeated pain, context loss, risk, or multiple sessions appear.
 
 ## Maintenance Cost
 
@@ -124,6 +132,13 @@ https://github.com/LiveTrack-X/spec-driven-ai-development
 
 Do not require me to clone the repository unless absolutely necessary.
 
+First determine whether you can edit files in this project.
+If this is a chat-only environment such as Claude.ai, ChatGPT web, or another
+browser chat with no project filesystem, do not install adapters or claim files
+were saved. Use this repository for planning only, then tell me to open the
+project in Codex, Claude Code, Cursor, Copilot Chat, or another file-editing AI
+coding tool.
+
 Step 0 - Choose scale before creating files.
 
 Ask me these five questions:
@@ -135,11 +150,16 @@ Ask me these five questions:
 
 Choose:
 - 0 yes -> One-shot prompt. Do not create project files.
-- 1-2 yes -> Mini SDAD. Create only one instruction file.
-- 3 yes -> Standard SDAD. Create core control files.
+- 1-2 yes from questions 1-3 only, with Q4=no and Q5=no -> Mini SDAD.
+  Create only one instruction file.
+- Q4=yes or 3 yes total -> Standard SDAD. Create core control files.
+- Q5=yes -> Standard SDAD minimum, even if it is the only yes.
+- Q5=yes with production-facing, destructive, migration, real user data, auth,
+  money, release, or rollback risk -> Full SDAD.
 - 4-5 yes -> Full SDAD. Use full workflow, review, ADRs, and gates.
 
-When unsure, choose the smaller scale and explain why.
+Override rules beat raw yes-counts. When unsure, choose the smaller scale only
+if no Q5 risk exists, and explain why.
 
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
@@ -160,6 +180,8 @@ tool. Do not infer adapter paths. Use exactly one of these source URLs:
 Before fetching, state which adapter you are installing and why.
 If you cannot determine the current tool, ask me to specify one of:
 Codex / Claude Code / Cursor / Copilot Chat / Generic.
+Claude Code means the local/CLI coding tool with project filesystem access. It
+does not mean Claude.ai chat.
 
 - Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/codex/AGENTS.md -> ./AGENTS.md
 - Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md
@@ -173,7 +195,9 @@ Before saving the adapter:
 3. confirm the target path.
 
 If you cannot fetch the file, stop and say so. Do not create a fake adapter from
-memory.
+memory. Offer deterministic fallback options: retry with network access, ask me
+to paste the raw file content from the source URL, use the terminal installer, or
+clone/download the repository manually.
 
 For Standard or Full SDAD, after installing the instruction file, bootstrap this
 project:
@@ -189,9 +213,14 @@ project:
 Do not overwrite existing project files without showing me what will change.
 Completion requires evidence, not AI confidence.
 
-At the end of every loop, check whether SPEC-COMPLETE, TODO, review-findings,
-rules, or ADRs must be updated. If nothing changes, say which files were checked
-and why no update was needed.
+For Mini SDAD at loop end, do not check SPEC-COMPLETE, TODO, review-findings, or
+ADRs unless the project has escalated. Report the active task, changed files,
+check evidence, limitations or unverified behavior, owner acceptance, and whether
+to escalate.
+
+For Standard or Full SDAD at loop end, check whether SPEC-COMPLETE, TODO,
+review-findings, rules, or ADRs must be updated. If nothing changes, say which
+files were checked and why no update was needed.
 
 Update save-state.md when a session pauses or ends, handoff is expected, owner
 direction changes, blocked/partial/unverified state remains, or context would be

@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.6` stable public release.
+Status: `1.0.7` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -20,8 +20,8 @@ agents.
 
 No terminal. No Git. No Python required.
 
-1. Open your project in an AI coding tool such as Codex, Claude Code, Cursor, or
-   Copilot Chat.
+1. Open your project in an AI coding tool that can edit files, such as Codex,
+   Claude Code, Cursor, or Copilot Chat.
 2. Paste the text below.
 3. Let the AI choose the scale and create only the files that scale needs.
 
@@ -30,6 +30,13 @@ Use SPEC-Driven AI Development as the project control method.
 
 Source:
 https://github.com/LiveTrack-X/spec-driven-ai-development
+
+First determine whether you can edit files in this project.
+If this is a chat-only environment such as Claude.ai, ChatGPT web, or another
+browser chat with no project filesystem, do not install adapters or claim files
+were saved. Use this repository for planning only, then tell me to open the
+project in Codex, Claude Code, Cursor, Copilot Chat, or another file-editing AI
+coding tool.
 
 Step 0 - Choose scale before creating files.
 
@@ -42,11 +49,16 @@ Ask me these five questions:
 
 Choose:
 - 0 yes -> One-shot prompt. Do not create project files.
-- 1-2 yes -> Mini SDAD. Create only one instruction file.
-- 3 yes -> Standard SDAD. Create core control files.
+- 1-2 yes from questions 1-3 only, with Q4=no and Q5=no -> Mini SDAD.
+  Create only one instruction file.
+- Q4=yes or 3 yes total -> Standard SDAD. Create core control files.
+- Q5=yes -> Standard SDAD minimum, even if it is the only yes.
+- Q5=yes with production-facing, destructive, migration, real user data, auth,
+  money, release, or rollback risk -> Full SDAD.
 - 4-5 yes -> Full SDAD. Use full workflow, review, ADRs, and gates.
 
-When unsure, choose the smaller scale and explain why.
+Override rules beat raw yes-counts. When unsure, choose the smaller scale only
+if no Q5 risk exists, and explain why.
 
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
@@ -67,6 +79,8 @@ the first active SPEC slice and project control files.
 Before fetching, state which adapter you are installing and why.
 If you cannot determine the current tool, ask me to specify one of:
 Codex / Claude Code / Cursor / Copilot Chat / Generic.
+Claude Code means the local/CLI coding tool with project filesystem access. It
+does not mean Claude.ai chat.
 
 Do not infer adapter paths. Use exactly one of these source URLs:
 
@@ -78,14 +92,21 @@ Do not infer adapter paths. Use exactly one of these source URLs:
 
 Show me the source URL and first 10 lines of the fetched file before saving it.
 If you cannot fetch the file, stop and say so. Do not create a fake adapter from
-memory.
+memory. Offer deterministic fallback options: retry with network access, ask me
+to paste the raw file content from the source URL, use the terminal installer, or
+clone/download the repository manually.
 
 Ask me for product pain, smallest useful version, non-goals, risks,
 owner-controlled decisions, and evidence required for completion.
 
-At the end of every loop, check whether SPEC-COMPLETE, TODO, review-findings,
-rules, or ADRs must be updated. If nothing changes, say which files were checked
-and why no update was needed.
+For Mini SDAD at loop end, do not check SPEC-COMPLETE, TODO, review-findings, or
+ADRs unless the project has escalated. Report the active task, changed files,
+check evidence, limitations or unverified behavior, owner acceptance, and whether
+to escalate.
+
+For Standard or Full SDAD at loop end, check whether SPEC-COMPLETE, TODO,
+review-findings, rules, or ADRs must be updated. If nothing changes, say which
+files were checked and why no update was needed.
 
 Update save-state.md when a session pauses or ends, handoff is expected, owner
 direction changes, blocked/partial/unverified state remains, or context would be
@@ -126,15 +147,19 @@ Before installing anything, answer these:
 
 Choose the smallest scale that fits:
 
-| Yes answers | Use | Creates |
-|---|---|---|
-| 0 | One-shot prompt | No project files |
-| 1-2 | Mini SDAD | One instruction file |
-| 3 | Standard SDAD | Core control files |
-| 4-5 | Full SDAD | Full workflow, review, ADRs, gates |
+Override rules beat raw yes-counts:
 
-When unsure, choose the smaller scale. Escalate only when repeated pain,
-context loss, risk, or multiple sessions appear.
+| Trigger | Use | Creates |
+|---|---|---|
+| 0 yes | One-shot prompt | No project files |
+| 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | Mini SDAD | One instruction file |
+| Q4=yes or 3 yes total | Standard SDAD | Core control files |
+| Q5=yes | Standard SDAD minimum | Core control files and explicit risk tracking |
+| Q5=yes with production-facing, destructive, migration, real user data, auth, money, release, or rollback risk | Full SDAD | Full workflow, review, ADRs, gates |
+| 4-5 yes | Full SDAD | Full workflow, review, ADRs, gates |
+
+When unsure, choose the smaller scale only if no Q5 risk exists. Escalate when
+repeated pain, context loss, risk, or multiple sessions appear.
 
 Small project? Start with [Mini SDAD](docs/mini-sdad.md), not the full workflow.
 

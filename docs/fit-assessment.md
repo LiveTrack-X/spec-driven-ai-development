@@ -19,15 +19,19 @@ Use this quick gate before the full assessment:
 4. Will multiple AI tools or reviewers be involved?
 5. Is there release, migration, user data, auth, money, or production risk?
 
-| Yes answers | Recommendation |
-|---|---|
-| 0 | Use a one-shot prompt. Do not install SDAD files. |
-| 1-2 | Use [Mini SDAD](mini-sdad.md). |
-| 3 | Use Standard SDAD with core control files. |
-| 4-5 | Use Full SDAD with review, ADRs, and risk gates. |
+Override rules beat raw yes-counts:
 
-When unsure, choose the smaller scale. Escalate only when repeated pain,
-context loss, risk, or multiple sessions appear.
+| Trigger | Recommendation |
+|---|---|
+| 0 yes | Use a one-shot prompt. Do not install SDAD files. |
+| 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | Use [Mini SDAD](mini-sdad.md). |
+| Q4=yes or 3 yes total | Use Standard SDAD with core control files. |
+| Q5=yes | Use Standard SDAD minimum, even if it is the only yes. |
+| Q5=yes with production-facing, destructive, migration, real user data, auth, money, release, or rollback risk | Use Full SDAD with review, ADRs, and risk gates. |
+| 4-5 yes | Use Full SDAD with review, ADRs, and risk gates. |
+
+When unsure, choose the smaller scale only if no Q5 risk exists. Escalate when
+repeated pain, context loss, risk, or multiple sessions appear.
 
 Maintenance cost matters: choose Standard or Full SDAD only when you can keep
 `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md`, and

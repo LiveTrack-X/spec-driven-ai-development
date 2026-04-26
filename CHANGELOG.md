@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.7 - 2026-04-27
+
+- Added risk override rules to the scale gate so Q5 production/data/auth/money/
+  migration/release/rollback risk forces Standard or Full SDAD even when the raw
+  yes-count is low.
+- Split Mini SDAD loop-end behavior from Standard/Full control-file maintenance
+  so Mini users are not asked to update files that Mini does not create.
+- Added deterministic fallback guidance for failed raw-file fetches.
+- Clarified that Claude Code means the local/CLI coding tool with project
+  filesystem access, not Claude.ai chat, and that chat-only tools must not claim
+  adapter installation.
+- Updated localized READMEs and validation checks for the new onboarding rules.
+
 ## 1.0.6 - 2026-04-27
 
 - Added explicit `save-state.md` update triggers for session pause/end, handoff,
