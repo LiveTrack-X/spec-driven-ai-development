@@ -98,6 +98,30 @@ Explain terms plainly:
 If a user asks "how do I start?", provide the AI-agent paste prompt first, then
 offer terminal installers only as an optional path.
 
+## Scale Selection Rule
+
+Before installing adapters or bootstrapping control files, choose the smallest
+workflow scale that fits.
+
+Ask:
+
+1. Will this take more than one AI session?
+2. Will the owner come back to this project later?
+3. Does "done" need evidence beyond "AI said so"?
+4. Will multiple AI tools or reviewers be involved?
+5. Is there release, migration, user data, auth, money, or production risk?
+
+Choose:
+
+- `0 yes`: One-shot Prompt. Do not create SDAD files.
+- `1-2 yes`: Mini SDAD. Create one instruction file from
+  `templates/mini-sdad/MINI-SDAD.md`.
+- `3 yes`: Standard SDAD. Create core control files.
+- `4-5 yes`: Full SDAD. Use full workflow, review, ADRs, and risk gates.
+
+When unsure, choose the smaller scale. Escalate only when repeated pain, context
+loss, risk, or multiple sessions appear.
+
 ## Operating Loop
 
 Use this sequence:

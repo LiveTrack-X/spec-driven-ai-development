@@ -9,6 +9,26 @@ Use this assessment before bootstrapping a new project. Score each question:
 - `1`: somewhat / likely soon
 - `2`: yes / already happening
 
+## 30-Second Scale Gate
+
+Use this quick gate before the full assessment:
+
+1. Will this take more than one AI session?
+2. Will you come back to this project later?
+3. Does "done" need evidence beyond "AI said so"?
+4. Will multiple AI tools or reviewers be involved?
+5. Is there release, migration, user data, auth, money, or production risk?
+
+| Yes answers | Recommendation |
+|---|---|
+| 0 | Use a one-shot prompt. Do not install SDAD files. |
+| 1-2 | Use [Mini SDAD](mini-sdad.md). |
+| 3 | Use Standard SDAD with core control files. |
+| 4-5 | Use Full SDAD with review, ADRs, and risk gates. |
+
+When unsure, choose the smaller scale. Escalate only when repeated pain,
+context loss, risk, or multiple sessions appear.
+
 ## Questions
 
 1. Will more than one AI session, model, or tool work on the project?
@@ -31,7 +51,7 @@ Use this assessment before bootstrapping a new project. Score each question:
 
 | Score | Fit | Recommendation |
 | --- | --- | --- |
-| 0-8 | Low | Use a lightweight prompt and a simple README/TODO. |
+| 0-8 | Low | Use a one-shot prompt or [Mini SDAD](mini-sdad.md). Do not install the full workflow unless the project grows. |
 | 9-17 | Medium | Use core control files: `AGENTS.md`, `docs/INDEX.md`, SPEC, TODO, and review findings. |
 | 18-24 | High | Use the full SDAD workflow with cross-review, source-of-truth rules, and documentation consistency checks. |
 | 25-30 | Very high | Use full SDAD plus ADRs, release gates, anti-pattern review, fit reassessment, and tool adapters. |

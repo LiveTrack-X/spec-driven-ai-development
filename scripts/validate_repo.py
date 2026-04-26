@@ -15,6 +15,7 @@ REQUIRED_FILES = [
     "LICENSE",
     "docs/pattern-catalog.md",
     "docs/getting-started.md",
+    "docs/mini-sdad.md",
     "docs/no-clone-quick-install.md",
     "docs/anti-patterns.md",
     "docs/fit-assessment.md",
@@ -46,6 +47,7 @@ REQUIRED_FILES = [
     "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
     "templates/project-control-files/SPEC/adr/ADR-0001-template.md",
     "templates/project-control-files/review-findings.md",
+    "templates/mini-sdad/MINI-SDAD.md",
 ]
 
 REQUIRED_ASSETS = [
@@ -82,6 +84,7 @@ def validate_skill() -> None:
         "Owner-supervised",
         "Beginner-Friendly Behavior",
         "Do not infer adapter paths",
+        "Scale Selection Rule",
         "Source Of Truth",
         "Pain-To-Rule",
         "Evidence Rules",
@@ -108,6 +111,8 @@ def validate_templates() -> None:
         "A control layer for AI coding",
         "For Beginners: Use In 60 Seconds",
         "assets/spec-driven-ai-development-infographic.png",
+        "Choose Scale First",
+        "Mini SDAD",
         "Do not infer adapter paths",
         "first 10 lines",
         "No terminal. No Git. No Python. No Codex skill required.",
@@ -124,6 +129,7 @@ def validate_templates() -> None:
             "한국어",
             "영어",
             "docs/getting-started.md",
+            "docs/mini-sdad.md",
             "docs/no-clone-quick-install.md",
             "docs/fit-assessment.md",
         ],
@@ -131,6 +137,7 @@ def validate_templates() -> None:
             "中文",
             "英文",
             "docs/getting-started.md",
+            "docs/mini-sdad.md",
             "docs/no-clone-quick-install.md",
             "docs/fit-assessment.md",
         ],
@@ -138,6 +145,7 @@ def validate_templates() -> None:
             "日本語",
             "英語",
             "docs/getting-started.md",
+            "docs/mini-sdad.md",
             "docs/no-clone-quick-install.md",
             "docs/fit-assessment.md",
         ],
@@ -188,6 +196,7 @@ def validate_templates() -> None:
     getting_started = read("docs/getting-started.md")
     for phrase in [
         "Get This Repository",
+        "Choose Scale First",
         "No-Clone Quick Install",
         "Complete Beginner Path",
         "Choose A Setup Path",
@@ -200,6 +209,7 @@ def validate_templates() -> None:
             fail(f"Getting started doc missing: {phrase}")
     no_clone = read("docs/no-clone-quick-install.md")
     for phrase in [
+        "Step 0: Choose Scale",
         "Before You Start",
         "What Is A Codex Skill?",
         "How To Know It Worked",
@@ -214,6 +224,26 @@ def validate_templates() -> None:
     ]:
         if phrase not in no_clone:
             fail(f"No-clone quick install doc missing: {phrase}")
+    mini = read("docs/mini-sdad.md")
+    for phrase in [
+        "Mini SDAD",
+        "When To Use Mini SDAD",
+        "What Mini SDAD Creates",
+        "Mini SDAD Prompt",
+        "Escalation Rule",
+    ]:
+        if phrase not in mini:
+            fail(f"Mini SDAD doc missing: {phrase}")
+    mini_template = read("templates/mini-sdad/MINI-SDAD.md")
+    for phrase in [
+        "This project uses Mini SDAD",
+        "Active Scope",
+        "Done Means",
+        "Do Not",
+        "Handoff",
+    ]:
+        if phrase not in mini_template:
+            fail(f"Mini SDAD template missing: {phrase}")
     anti_patterns = read("docs/anti-patterns.md")
     for phrase in ["AI Confidence As Completion", "Historical SPEC Override", "Owner Rubber Stamp"]:
         if phrase not in anti_patterns:

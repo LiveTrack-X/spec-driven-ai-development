@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.2` stable public release.
+Status: `1.0.3` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -16,6 +16,30 @@ agents.
 
 ![SPEC-Driven AI Development infographic](assets/spec-driven-ai-development-infographic.png)
 
+## Choose Scale First
+
+Before installing anything, answer these:
+
+1. Will this take more than one AI session?
+2. Will you come back to this project later?
+3. Does "done" need evidence beyond "AI said so"?
+4. Will multiple AI tools or reviewers be involved?
+5. Is there release, migration, user data, auth, money, or production risk?
+
+Choose the smallest scale that fits:
+
+| Yes answers | Use | Creates |
+|---|---|---|
+| 0 | One-shot prompt | No project files |
+| 1-2 | Mini SDAD | One instruction file |
+| 3 | Standard SDAD | Core control files |
+| 4-5 | Full SDAD | Full workflow, review, ADRs, gates |
+
+When unsure, choose the smaller scale. Escalate only when repeated pain,
+context loss, risk, or multiple sessions appear.
+
+Small project? Start with [Mini SDAD](docs/mini-sdad.md), not the full workflow.
+
 ## For Beginners: Use In 60 Seconds
 
 No terminal. No Git. No Python. No Codex skill required.
@@ -23,7 +47,7 @@ No terminal. No Git. No Python. No Codex skill required.
 1. Open your project in an AI coding tool such as Codex, Claude Code, Cursor, or
    Copilot Chat.
 2. Paste the text below.
-3. Let the AI create the first SPEC and project control files.
+3. Let the AI choose the scale and create only the files that scale needs.
 
 If you do not know what a "Codex skill" is, ignore it for now. It is only an
 optional convenience for Codex users.
@@ -34,8 +58,35 @@ Use SPEC-Driven AI Development as the project control method.
 Source:
 https://github.com/LiveTrack-X/spec-driven-ai-development
 
-No clone required. Install the adapter for this project, then bootstrap the
-first active SPEC slice and project control files.
+Step 0 - Choose scale before creating files.
+
+Ask me these five questions:
+1. Will this take more than one AI session?
+2. Will I come back to this project later?
+3. Does "done" need evidence beyond "AI said so"?
+4. Will multiple AI tools or reviewers be involved?
+5. Is there release, migration, user data, auth, money, or production risk?
+
+Choose:
+- 0 yes -> One-shot prompt. Do not create project files.
+- 1-2 yes -> Mini SDAD. Create only one instruction file.
+- 3 yes -> Standard SDAD. Create core control files.
+- 4-5 yes -> Full SDAD. Use full workflow, review, ADRs, and gates.
+
+When unsure, choose the smaller scale and explain why.
+
+For Mini SDAD, fetch this exact template:
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
+
+Save it as the correct instruction file for this tool:
+- Codex -> ./AGENTS.md
+- Claude Code -> ./CLAUDE.md
+- Cursor -> ./.cursor/rules/mini-sdad.mdc
+- Copilot Chat -> ./.github/copilot-instructions.md
+- Generic AI agent -> ./AI-SESSION-INSTRUCTIONS.md
+
+For Standard or Full SDAD, install the adapter for this project, then bootstrap
+the first active SPEC slice and project control files.
 
 Do not infer adapter paths. Use exactly one of these source URLs:
 
@@ -78,13 +129,15 @@ New to the workflow? Start with [docs/getting-started.md](docs/getting-started.m
 
 It shows practical paths:
 
+- scale selection,
 - no-clone quick install,
+- Mini SDAD for small projects,
 - prompt-only start,
 - install a tool adapter into an existing project,
 - install the Codex skill.
 
-The goal is to get a first active SPEC slice, project control files, and a clear
-evidence checklist in the first session.
+The goal is to choose the right scale first, then create only the control files
+that scale needs.
 
 ## The Problem
 

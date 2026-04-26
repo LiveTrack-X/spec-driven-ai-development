@@ -20,6 +20,29 @@ Pick the path that matches your comfort level:
 
 Run terminal commands from the root of the project you want to control.
 
+## Step 0: Choose Scale
+
+Before installing an adapter or creating project files, choose the smallest
+workflow scale that fits.
+
+Ask:
+
+1. Will this take more than one AI session?
+2. Will you come back to this project later?
+3. Does "done" need evidence beyond "AI said so"?
+4. Will multiple AI tools or reviewers be involved?
+5. Is there release, migration, user data, auth, money, or production risk?
+
+| Yes answers | Scale | What to create |
+|---|---|---|
+| 0 | One-shot prompt | No project files |
+| 1-2 | Mini SDAD | One instruction file from `templates/mini-sdad/MINI-SDAD.md` |
+| 3 | Standard SDAD | Adapter plus core control files |
+| 4-5 | Full SDAD | Adapter, core files, review, ADRs, risk gates |
+
+When unsure, choose the smaller scale. Escalate later only when repeated pain,
+context loss, risk, or multiple sessions appear.
+
 ## What Is A Codex Skill?
 
 A Codex skill is an optional local instruction package for OpenAI Codex. It tells
@@ -30,7 +53,8 @@ another AI coding agent, or Option 1 below.
 
 ## How To Know It Worked
 
-After setup, your project should have one of these instruction files:
+After Mini, Standard, or Full setup, your project should have one of these
+instruction files:
 
 - `AGENTS.md` for Codex,
 - `CLAUDE.md` for Claude Code,
@@ -38,12 +62,20 @@ After setup, your project should have one of these instruction files:
 - `.github/copilot-instructions.md` for GitHub Copilot,
 - `AI-SESSION-INSTRUCTIONS.md` for a generic AI tool.
 
-After bootstrap, your project should also have control files such as
-`SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, and `review-findings.md`.
+After Standard or Full bootstrap, your project should also have control files
+such as `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, and
+`review-findings.md`.
 
 ## Exact Adapter Sources
 
-Do not ask an AI agent to guess adapter paths. Use these exact source URLs:
+For Mini SDAD, use this exact template:
+
+```text
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
+```
+
+For Standard or Full SDAD, do not ask an AI agent to guess adapter paths. Use
+these exact source URLs:
 
 | Tool | Source URL | Save as |
 |---|---|---|
@@ -66,8 +98,35 @@ https://github.com/LiveTrack-X/spec-driven-ai-development
 
 Do not require me to clone the repository unless absolutely necessary.
 
-Install the matching instruction file for this AI tool. Do not infer adapter
-paths. Use exactly one of these source URLs:
+Step 0 - Choose scale before creating files.
+
+Ask me these five questions:
+1. Will this take more than one AI session?
+2. Will I come back to this project later?
+3. Does "done" need evidence beyond "AI said so"?
+4. Will multiple AI tools or reviewers be involved?
+5. Is there release, migration, user data, auth, money, or production risk?
+
+Choose:
+- 0 yes -> One-shot prompt. Do not create project files.
+- 1-2 yes -> Mini SDAD. Create only one instruction file.
+- 3 yes -> Standard SDAD. Create core control files.
+- 4-5 yes -> Full SDAD. Use full workflow, review, ADRs, and gates.
+
+When unsure, choose the smaller scale and explain why.
+
+For Mini SDAD, fetch this exact template:
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
+
+Save it as the correct instruction file for this tool:
+- Codex -> ./AGENTS.md
+- Claude Code -> ./CLAUDE.md
+- Cursor -> ./.cursor/rules/mini-sdad.mdc
+- Copilot Chat -> ./.github/copilot-instructions.md
+- Generic AI agent -> ./AI-SESSION-INSTRUCTIONS.md
+
+For Standard or Full SDAD, install the matching instruction file for this AI
+tool. Do not infer adapter paths. Use exactly one of these source URLs:
 
 - Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/codex/AGENTS.md -> ./AGENTS.md
 - Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md
@@ -83,7 +142,8 @@ Before saving the adapter:
 If you cannot fetch the file, stop and say so. Do not create a fake adapter from
 memory.
 
-After installing the instruction file, bootstrap this project:
+For Standard or Full SDAD, after installing the instruction file, bootstrap this
+project:
 
 1. create or update docs/INDEX.md,
 2. create or update docs/Repository-Operating-Rules.md,

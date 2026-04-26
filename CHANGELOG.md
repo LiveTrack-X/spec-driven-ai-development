@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.3 - 2026-04-27
+
+- Added scale selection so agents choose One-shot Prompt, Mini SDAD, Standard
+  SDAD, or Full SDAD before creating files.
+- Added `docs/mini-sdad.md` and `templates/mini-sdad/MINI-SDAD.md` for small
+  projects that need one instruction file without the full workflow.
+- Updated README, getting-started, no-clone, fit assessment, localized READMEs,
+  and the Codex skill with scale-first guidance.
+- Expanded validation to preserve the Scale Gate and Mini SDAD baseline.
+
 ## 1.0.2 - 2026-04-27
 
 - Replaced generic no-clone adapter wording with exact raw adapter URLs and

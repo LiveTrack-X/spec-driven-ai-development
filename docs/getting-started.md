@@ -10,6 +10,27 @@ Install one instruction file, start with one SPEC slice, then require evidence
 before accepting completion.
 ```
 
+## Choose Scale First
+
+Do not start with full SDAD automatically.
+
+Ask five questions:
+
+1. Will this take more than one AI session?
+2. Will you come back to this project later?
+3. Does "done" need evidence beyond "AI said so"?
+4. Will multiple AI tools or reviewers be involved?
+5. Is there release, migration, user data, auth, money, or production risk?
+
+| Yes answers | Use |
+|---|---|
+| 0 | One-shot prompt |
+| 1-2 | [Mini SDAD](mini-sdad.md) |
+| 3 | Standard SDAD |
+| 4-5 | Full SDAD |
+
+When unsure, choose the smaller scale and escalate later.
+
 ## Complete Beginner Path
 
 If you are not comfortable with terminals, Git, Python, or shell scripts, use
@@ -18,7 +39,7 @@ the no-clone path first:
 - Open your project in an AI coding tool.
 - Copy the prompt from [no-clone quick install](no-clone-quick-install.md).
 - Paste it into the AI agent.
-- Let the AI create the instruction file and first project control files.
+- Let the AI choose the scale before it creates any files.
 
 Codex is optional. A Codex skill is only for Codex users.
 
@@ -41,6 +62,7 @@ You do not need to clone this repository to start.
 If you want the easiest path, use [no-clone quick install](no-clone-quick-install.md).
 It includes:
 
+- scale selection,
 - a prompt you can give directly to an AI agent,
 - one-paste PowerShell installer,
 - one-paste Bash installer.
@@ -95,6 +117,9 @@ to Path 2 or Path 3 when the project becomes serious.
 
 Use this when you already have a project folder and want the workflow to persist
 inside that project.
+
+For small projects, use [Mini SDAD](mini-sdad.md) first. It creates only one
+instruction file and avoids the full docs/SPEC structure.
 
 Use the no-clone installer, or clone this repository and install the adapter for
 your AI coding tool.
