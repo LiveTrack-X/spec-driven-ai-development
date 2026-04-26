@@ -14,6 +14,7 @@ REQUIRED_FILES = [
     "README.ja.md",
     "LICENSE",
     "docs/pattern-catalog.md",
+    "docs/getting-started.md",
     "docs/anti-patterns.md",
     "docs/fit-assessment.md",
     "docs/diagrams.md",
@@ -95,6 +96,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
+        "docs/getting-started.md",
         "The Problem",
         "Why This Is Different",
         "What This Is Not",
@@ -102,9 +104,9 @@ def validate_templates() -> None:
         if phrase not in readme:
             fail(f"README missing language guidance: {phrase}")
     localized = {
-        "README.ko.md": ["한국어", "영어", "docs/fit-assessment.md"],
-        "README.zh.md": ["中文", "英文", "docs/fit-assessment.md"],
-        "README.ja.md": ["日本語", "英語", "docs/fit-assessment.md"],
+        "README.ko.md": ["한국어", "영어", "docs/getting-started.md", "docs/fit-assessment.md"],
+        "README.zh.md": ["中文", "英文", "docs/getting-started.md", "docs/fit-assessment.md"],
+        "README.ja.md": ["日本語", "英語", "docs/getting-started.md", "docs/fit-assessment.md"],
     }
     for path, phrases in localized.items():
         content = read(path)
@@ -149,6 +151,17 @@ def validate_templates() -> None:
     ]:
         if phrase not in implicit:
             fail(f"Implicit rules doc missing: {phrase}")
+    getting_started = read("docs/getting-started.md")
+    for phrase in [
+        "Get This Repository",
+        "Choose A Setup Path",
+        "Prompt-Only Start",
+        "Install A Tool Adapter",
+        "Install The Codex Skill",
+        "Owner Acceptance Checklist",
+    ]:
+        if phrase not in getting_started:
+            fail(f"Getting started doc missing: {phrase}")
     anti_patterns = read("docs/anti-patterns.md")
     for phrase in ["AI Confidence As Completion", "Historical SPEC Override", "Owner Rubber Stamp"]:
         if phrase not in anti_patterns:

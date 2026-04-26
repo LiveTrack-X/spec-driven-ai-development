@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.1 - 2026-04-26
+
+- Added `docs/getting-started.md` as a first-use guide for new adopters.
+- Linked the getting-started guide from the canonical README.
+- Expanded validation to require the getting-started guide and its setup paths.
+
 ## 0.5.0 - 2026-04-26
 
 - Repositioned the canonical README around the "control layer for AI coding"

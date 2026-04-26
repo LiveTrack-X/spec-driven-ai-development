@@ -22,6 +22,19 @@ Localized READMEs are orientation guides. If a localized guide conflicts with
 the English docs, templates, or validation scripts, prefer the English canonical
 files.
 
+## Start Here
+
+New to the workflow? Start with [docs/getting-started.md](docs/getting-started.md).
+
+It shows three practical paths:
+
+- prompt-only start,
+- install a tool adapter into an existing project,
+- install the Codex skill.
+
+The goal is to get a first active SPEC slice, project control files, and a clear
+evidence checklist in the first session.
+
 ## The Problem
 
 AI coding feels solved.
@@ -126,7 +139,7 @@ This workflow turns problems into rules.
 
 ## Quick Usage
 
-Start any capable AI coding tool with:
+Fastest possible start:
 
 ```text
 Use the SPEC-driven AI development workflow from this repository.
@@ -139,6 +152,7 @@ Then follow the loop:
 Pain -> SPEC -> Build -> Review -> Evidence -> Owner decision -> Rule
 ```
 
+For step-by-step setup, use [docs/getting-started.md](docs/getting-started.md).
 For a fuller kickoff prompt, use [prompts/kickoff-prompt.md](prompts/kickoff-prompt.md).
 
 ## Project Structure
@@ -235,6 +249,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 ## Key Docs
 
 - [docs/pattern-catalog.md](docs/pattern-catalog.md): full method and pattern matrix
+- [docs/getting-started.md](docs/getting-started.md): first-use setup guide
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid
 - [docs/fit-assessment.md](docs/fit-assessment.md): project fit checklist
 - [docs/diagrams.md](docs/diagrams.md): workflow diagrams

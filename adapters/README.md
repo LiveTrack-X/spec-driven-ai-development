@@ -10,13 +10,13 @@ Use one or more:
 - `github-copilot/.github/copilot-instructions.md`
 - `generic/AI-SESSION-INSTRUCTIONS.md`
 
-Install with:
+Before installing, you can verify this repository with:
 
 ```bash
 python scripts/validate_repo.py
 ```
 
-Then copy the adapter manually or use:
+Then copy an adapter manually or use an installer.
 
 ```powershell
 .\scripts\install-agent-adapter.ps1 -Adapter claude-code -TargetPath C:\path\to\project
