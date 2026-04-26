@@ -39,8 +39,8 @@ It is a project-control loop where a human owner sets direction, AI agents draft
 Field-derived controls:
 
 ```text
-CMP-style controls keep context, docs, SPECs, TODOs, review findings, and production-readiness status coherent across AI sessions.
-DirectPipe-style controls keep version lanes, migrations, releases, risk domains, and pre-release review honest.
+Documentation-governance controls keep context, docs, SPECs, TODOs, review findings, and production-readiness status coherent across AI sessions.
+Release-governance controls keep version lanes, migrations, releases, risk domains, and pre-release review honest.
 ```
 
 Implicit rules to include:

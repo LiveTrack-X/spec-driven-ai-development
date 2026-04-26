@@ -4,10 +4,10 @@ Owner-supervised, multi-agent, evidence-based software development with AI agent
 
 This repository packages a reusable workflow for people who use AI agents to plan, specify, implement, review, and maintain software while keeping a human owner in control of direction, risk, and completion decisions.
 
-The workflow is field-derived from two project styles:
+The workflow is field-derived from two anonymized project styles:
 
-- CMP-style project control: documentation routing, source-of-truth order, active TODO/review ledgers, and production-readiness hardening.
-- DirectPipe-style release control: version lanes, migration maps, risk-domain rules, release gates, and cross-AI pre-release review.
+- Documentation-governance project control: documentation routing, source-of-truth order, active TODO/review ledgers, and production-readiness hardening.
+- Release-governance project control: version lanes, migration maps, risk-domain rules, release gates, and cross-AI pre-release review.
 
 ## Korean Summary
 
@@ -86,7 +86,7 @@ Start by clarifying the product pain, owner control model, active SPEC, non-goal
 
 Or open [prompts/kickoff-prompt.md](prompts/kickoff-prompt.md) and paste it into your AI session.
 
-For the full method, read [docs/pattern-catalog.md](docs/pattern-catalog.md). For the field notes behind the method, read [docs/field-notes/cmp-development-method.md](docs/field-notes/cmp-development-method.md) and [docs/field-notes/directpipe-development-method.md](docs/field-notes/directpipe-development-method.md).
+For the full method, read [docs/pattern-catalog.md](docs/pattern-catalog.md). For the field notes behind the method, read [docs/field-notes/documentation-governance-method.md](docs/field-notes/documentation-governance-method.md) and [docs/field-notes/release-governance-method.md](docs/field-notes/release-governance-method.md).
 
 For the obvious-but-easy-to-miss rules, read [docs/implicit-rules.md](docs/implicit-rules.md).
 
@@ -130,11 +130,11 @@ Copy the files under [templates/project-control-files](templates/project-control
 
 ## Field-Proven Controls
 
-Use CMP-style controls when the problem is context drift, scattered docs, unclear completion status, or production-readiness uncertainty.
+Use documentation-governance controls when the problem is context drift, scattered docs, unclear completion status, or production-readiness uncertainty.
 
-Use DirectPipe-style controls when the problem is stable-vs-next version management, migration risk, release packaging, platform differences, or fragile runtime behavior.
+Use release-governance controls when the problem is stable-vs-next version management, migration risk, release packaging, platform differences, or fragile runtime behavior.
 
-Most serious AI-assisted projects need both: CMP keeps the project intelligible across sessions, while DirectPipe-style gates keep risky releases and refactors honest.
+Most serious AI-assisted projects need both: documentation-governance controls keep the project intelligible across sessions, while release-governance gates keep risky releases and refactors honest.
 
 ## Implicit Rules
 

@@ -12,8 +12,8 @@ REQUIRED_FILES = [
     "LICENSE",
     "docs/pattern-catalog.md",
     "docs/implicit-rules.md",
-    "docs/field-notes/cmp-development-method.md",
-    "docs/field-notes/directpipe-development-method.md",
+    "docs/field-notes/documentation-governance-method.md",
+    "docs/field-notes/release-governance-method.md",
     "prompts/kickoff-prompt.md",
     "prompts/review-prompt.md",
     "prompts/handoff-prompt.md",
@@ -91,7 +91,12 @@ def validate_templates() -> None:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
     catalog = read("docs/pattern-catalog.md")
-    for phrase in ["CMP", "DirectPipe", "Owner Progress View", "current-over-historical"]:
+    for phrase in [
+        "Documentation-governance",
+        "Release-governance",
+        "Owner Progress View",
+        "current-over-historical",
+    ]:
         if phrase not in catalog:
             fail(f"Pattern catalog missing: {phrase}")
     implicit = read("docs/implicit-rules.md")

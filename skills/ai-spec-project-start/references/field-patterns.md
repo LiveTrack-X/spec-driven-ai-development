@@ -5,7 +5,7 @@ workflow is reasonable, wants to reuse lessons from a previous project, or needs
 rules for a complex project with many AI sessions, releases, migrations, or
 high-risk runtime behavior.
 
-## CMP-Derived Rules
+## Documentation-Governance-Derived Rules
 
 Use these when the project has many docs, SPEC revisions, or AI sessions:
 
@@ -21,7 +21,7 @@ Use these when the project has many docs, SPEC revisions, or AI sessions:
   deliberately promoted.
 - Treat production readiness as a named hardening gate.
 
-## DirectPipe-Derived Rules
+## Release-Governance-Derived Rules
 
 Use these when the project has releases, migrations, stable/next versions,
 platform work, or fragile runtime constraints:

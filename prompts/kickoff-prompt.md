@@ -12,8 +12,8 @@ Use an owner-supervised, SPEC-driven, multi-agent, evidence-based development wo
 4. What must not happen?
 5. Which decisions must remain owner-controlled?
 6. What evidence proves the first slice is complete?
-7. Does this project need CMP-style controls for docs/SPEC/backlog governance?
-8. Does this project need DirectPipe-style controls for version lanes, migration, release gates, or high-risk runtime rules?
+7. Does this project need documentation-governance controls for docs/SPEC/backlog governance?
+8. Does this project need release-governance controls for version lanes, migration, release gates, or high-risk runtime rules?
 9. If the SPEC contains past-to-present history, which sections are current active instructions and which are historical rationale?
 10. Which obvious-but-unwritten rules should become explicit project rules?
 

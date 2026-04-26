@@ -1,15 +1,17 @@
 # Pattern Catalog
 
 Status: Active reference
-Scope: Combined workflow patterns distilled from CMP and DirectPipe
+Scope: Combined workflow patterns distilled from anonymized field projects
 
 This catalog turns two real project styles into a reusable operating system for
 SPEC-driven AI development.
 
-- CMP contributes documentation routing, source-of-truth discipline, backlog
-  separation, and production-readiness hardening.
-- DirectPipe contributes version lanes, migration/release gates, architecture
-  mapping, and explicit high-risk runtime rules.
+- Documentation-governance field practice contributes documentation routing,
+  source-of-truth discipline, backlog separation, and production-readiness
+  hardening.
+- Release-governance field practice contributes version lanes,
+  migration/release gates, architecture mapping, and explicit high-risk runtime
+  rules.
 
 No source code is copied here. The goal is to preserve the working method.
 
@@ -174,7 +176,7 @@ false completion claims, stale SPEC execution, and unclear progress reporting.
 
 ## Pattern Matrix
 
-| Situation | CMP-style control | DirectPipe-style control |
+| Situation | Documentation-governance control | Release-governance control |
 | --- | --- | --- |
 | Fresh AI session starts in wrong context | Mandatory docs router and first-read loop | Version-specific rule file and workspace lane |
 | Docs conflict with implementation | Source-of-truth order | Architecture responsibility map |

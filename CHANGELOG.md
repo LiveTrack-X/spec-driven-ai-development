@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4 - 2026-04-26
+
+- Removed specific source project names from public docs, prompts, templates,
+  skill references, and validation checks.
+- Renamed field notes to generic documentation-governance and
+  release-governance method notes.
+
 ## 0.1.3 - 2026-04-26
 
 - Added `docs/implicit-rules.md` to make obvious-but-easy-to-miss project rules
@@ -19,7 +26,7 @@
 
 ## 0.1.1 - 2026-04-26
 
-- Added CMP and DirectPipe field notes.
+- Added anonymized field notes.
 - Added a combined pattern catalog for field-proven controls.
 - Added `docs/Repository-Operating-Rules.md` templates.
 - Updated prompts, templates, and the Codex skill with version-lane, risk-domain, release-gate, and documentation-consistency rules.

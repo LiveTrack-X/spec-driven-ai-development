@@ -1,20 +1,20 @@
-# CMP Development Method Field Note
+# Documentation Governance Method Field Note
 
 Status: Active reference
-Scope: Reusable operating patterns extracted from the Connect Memory Project
+Scope: Reusable operating patterns extracted from a documentation-heavy AI project
 
-This note extracts the development method, not product internals. CMP is useful
-as a field example because it shows how a large AI-assisted project can keep
-many SPEC revisions, active docs, reviews, hardening tracks, and owner decisions
-from collapsing into chat memory.
+This note extracts the development method, not product internals. This field
+pattern is useful because it shows how a large AI-assisted project can keep many
+SPEC revisions, active docs, reviews, hardening tracks, and owner decisions from
+collapsing into chat memory.
 
-## What CMP Teaches
+## What This Pattern Teaches
 
 ### 1. Start From A Documentation Router
 
-CMP requires every agent to start from `docs/INDEX.md` before touching code,
-SPECs, prompts, or documentation. The index is not a passive table of contents.
-It is the repository router:
+This pattern requires every agent to start from `docs/INDEX.md` before touching
+code, SPECs, prompts, or documentation. The index is not a passive table of
+contents. It is the repository router:
 
 - which docs are active,
 - which docs are historical,
@@ -27,7 +27,7 @@ document that answers "what should this agent read now?"
 
 ### 2. Keep A Mandatory Start Loop
 
-CMP's agent entry sequence is:
+The recommended agent entry sequence is:
 
 1. read the documentation index,
 2. read repository operating rules,
@@ -40,7 +40,7 @@ plan, or impressive SPEC without first checking the current route.
 
 ### 3. Define Source Of Truth Order
 
-CMP explicitly ranks evidence:
+This pattern explicitly ranks evidence:
 
 1. source code, migrations, and tests,
 2. active runtime docs,
@@ -59,7 +59,7 @@ implementation unless reaffirmed in the active route.
 
 ### 4. Split Current Work From Review Findings
 
-CMP uses different files for different kinds of unfinished work:
+This pattern uses different files for different kinds of unfinished work:
 
 - `docs/TODO-Open-Items.md` tracks open implementation work.
 - `review-findings.md` tracks active defects, hardening findings, and review
@@ -71,42 +71,42 @@ review ledger and implementation gaps a durable TODO ledger.
 
 ### 5. Require Documentation Consistency Checks
 
-CMP uses minimum documentation update sets. A code change that touches security,
+Use minimum documentation update sets. A code change that touches security,
 configuration, retrieval, worker lifecycle, prompts, roadmap status, or open gap
-status implies a specific set of docs to check or update before handoff.
+status should imply a specific set of docs to check or update before handoff.
 
 Reusable rule: every implementation handoff must say either which docs changed
 or which docs were checked and why no content change was needed.
 
 ### 6. Separate Core Completion From Production Readiness
 
-CMP distinguishes "feature-rich v1 candidate" from "production-ready." Production
-readiness is its own hardening track covering security, migration proof, backup
-safety, observability, scale evidence, runtime settings policy, and rollback
-posture.
+This pattern distinguishes "feature-rich v1 candidate" from "production-ready."
+Production readiness is its own hardening track covering security, migration
+proof, backup safety, observability, scale evidence, runtime settings policy,
+and rollback posture.
 
 Reusable rule: completion percentages must name the scope. A project can be
 mostly implemented for local/core use while still not production-ready.
 
 ### 7. Promote External Ideas Deliberately
 
-CMP keeps external references and adoption notes under product-note routes until
-they are promoted into active SPECs. This prevents interesting research from
-silently becoming required work.
+Keep external references and adoption notes under product-note routes until they
+are promoted into active SPECs. This prevents interesting research from silently
+becoming required work.
 
 Reusable rule: future ideas need a promotion step before builders treat them as
 implementation requirements.
 
 ### 8. Use Evidence-Based Status, Not AI Confidence
 
-CMP status is strongest when tied to focused test commands, migration checks,
-audit commands, docs checked, and known remaining gaps. AI confidence is not a
-valid completion artifact by itself.
+Status is strongest when tied to focused test commands, migration checks, audit
+commands, docs checked, and known remaining gaps. AI confidence is not a valid
+completion artifact by itself.
 
 Reusable rule: ask every builder and reviewer to include commands run, results,
 files changed, docs checked, and remaining risks.
 
-## Reusable CMP Rule Pack
+## Reusable Documentation Governance Rule Pack
 
 Add these rules to projects with heavy docs, many SPEC revisions, or multiple AI
 sessions:
@@ -123,7 +123,7 @@ sessions:
 
 ## When To Use This Pattern
 
-Use the CMP-style controls when:
+Use documentation-governance controls when:
 
 - the project has long-lived SPECs,
 - multiple AI sessions or models will contribute,

@@ -36,9 +36,9 @@ documentation maintainer.
 
 This workflow should preserve two concrete families of practice:
 
-- CMP-style controls for documentation routing, source-of-truth order, active
-  TODO/review ledgers, and production-readiness hardening.
-- DirectPipe-style controls for version lanes, migration maps, release gates,
+- Documentation-governance controls for documentation routing, source-of-truth
+  order, active TODO/review ledgers, and production-readiness hardening.
+- Release-governance controls for version lanes, migration maps, release gates,
   risk-domain rules, and cross-AI pre-release review.
 
 When the user asks whether their development flow is reasonable, references a
