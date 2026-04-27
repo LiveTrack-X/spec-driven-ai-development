@@ -47,9 +47,10 @@ For a new project, ask:
 4. Which SPEC sections are current, and which are historical rationale?
 5. Are there stable/next version lanes?
 6. What risk domains need special review checklists?
-7. What evidence proves the first slice?
-8. What evidence is required before release or production use?
-9. Which obvious-but-unwritten rules should become explicit project rules?
+7. What is the first review-worthy development unit?
+8. What evidence proves the first unit?
+9. What evidence is required before release or production use?
+10. Which obvious-but-unwritten rules should become explicit project rules?
 
 Do not create a giant plan first. Create the control files, then implement the
-smallest useful verified slice.
+smallest useful review-worthy unit.

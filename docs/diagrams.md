@@ -9,12 +9,13 @@ Scope: Visual overview of SPEC-driven AI development
 flowchart TD
     A["Prior pain or product need"] --> B["Owner + AI planning"]
     B --> C["Active SPEC with scope, non-goals, risks"]
-    C --> D["Bounded implementation slice"]
-    D --> E["Cross-model or separate-session review"]
-    E --> F["Tests, docs, and reproducible evidence"]
-    F --> G["Owner decision: accept, revise, defer, reject"]
-    G --> H["Operating rule, TODO, finding, ADR, or archive update"]
-    H --> C
+    C --> D["Review-worthy development unit"]
+    D --> E["Bounded implementation"]
+    E --> F["Cross-model or separate-session review"]
+    F --> G["Tests, docs, and reproducible evidence"]
+    G --> H["Owner decision: accept, revise, defer, reject"]
+    H --> I["Operating rule, TODO, finding, ADR, or archive update"]
+    I --> C
 ```
 
 ## Source Of Truth Order
@@ -39,7 +40,8 @@ Inside SPECs, current active sections override older historical sections.
 flowchart LR
     O["Owner\nDirection, risk, acceptance"] --> P["Planning AI\nScope and non-goals"]
     P --> S["SPEC AI\nAcceptance criteria"]
-    S --> B["Builder AI\nBounded slice"]
+    S --> U["Review-worthy unit\nBatch related small tasks"]
+    U --> B["Builder AI\nBounded implementation"]
     B --> R["Reviewer AI\nBugs, drift, risks"]
     R --> Q["QA AI\nReproduction and evidence"]
     Q --> M["Maintainer AI\nDocs, TODO, findings, handoff"]

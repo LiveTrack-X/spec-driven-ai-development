@@ -30,9 +30,26 @@ Mini SDAD exists because full control files have a maintenance cost. If you do
 not want to update SPEC, TODO, and review ledgers at the end of every loop, stay
 Mini.
 
-## Mini Slice Completion Criteria
+## Mini Review-Worthy Unit
 
-A Mini SDAD slice is done only when:
+Mini SDAD should not stop after every micro-task. Define one small
+review-worthy unit, then let the AI continue inside that boundary until it can
+show evidence.
+
+A Mini review-worthy unit may include:
+
+- one small UI/workflow change,
+- one bugfix plus its check,
+- one connected docs or prompt update,
+- one short cleanup needed for the requested task.
+
+Stop and ask the owner only when scope expands, Q5-style risk appears, a
+destructive or irreversible action is needed, an owner-controlled decision is
+required, verification is blocked, or evidence conflicts with the plan.
+
+## Mini Unit Completion Criteria
+
+A Mini SDAD unit is done only when:
 
 - the active task is restated,
 - changed files are listed,
@@ -52,7 +69,7 @@ Not done when:
 - known uncertainty is not named,
 - unrelated changes were made without owner approval,
 - the owner has not explicitly accepted the result. Requested changes or
-  deferred decisions mean the slice is not done.
+  deferred decisions mean the unit is not done.
 
 ## What Mini SDAD Creates
 
@@ -110,7 +127,7 @@ After saving it, ask me for:
 - what evidence proves done,
 - whether any risk requires Standard or Full SDAD.
 
-For each slice, do not call it done until changed files, check evidence,
+For each unit, do not call it done until changed files, check evidence,
 limitations or unverified behavior, and owner acceptance are shown.
 ```
 

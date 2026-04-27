@@ -63,7 +63,7 @@ that the owner can still govern development through:
 
 - clear SPECs,
 - explicit non-goals,
-- small implementation slices,
+- review-worthy development units,
 - cross-model review,
 - reproducible tests,
 - active TODO/review ledgers,
@@ -96,6 +96,13 @@ Offer deterministic fallback options: retry with network access, ask the user
 to paste the raw file content from the source URL, use the terminal installer,
 or clone/download the repository manually.
 Bootstrap the first active SPEC slice and project control files.
+Ask for the first review-worthy development unit. It may contain multiple
+related small tasks and should be large enough that review has meaning, but
+small enough to verify in one handoff.
+Proceed autonomously inside the approved unit until evidence is ready. Stop for
+owner input only when scope expands, Q5 risk changes, destructive or irreversible
+action is needed, an owner-controlled decision is required, verification is
+blocked, or evidence conflicts with the plan.
 At loop end, update save-state.md when work pauses, handoff is expected,
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
@@ -120,6 +127,31 @@ Explain terms plainly:
 
 If a user asks "how do I start?", provide the AI-agent paste prompt first, then
 offer terminal installers only as an optional path.
+
+## Review-Worthy Development Units
+
+Do not stop development after every micro-task.
+
+Before implementation, define a review-worthy development unit:
+
+- one user-visible workflow,
+- one bugfix with its regression check,
+- one connected docs/template/prompt update,
+- one risk-domain hardening pass,
+- or one small feature path from behavior to evidence.
+
+The unit may include multiple related TODOs. Continue inside the approved
+boundary until the unit can be reviewed with changed files, checks, known limits,
+and evidence.
+
+Ask the owner only when:
+
+- scope would expand beyond the approved unit,
+- Q5 risk, release posture, data, auth, money, migration, or destructive action
+  changes,
+- a tradeoff belongs to the owner,
+- verification is blocked or impossible,
+- current evidence conflicts with the requested plan.
 
 ## Scale Selection Rule
 
@@ -157,11 +189,12 @@ Use this sequence:
 1. Prior project pain or product need
 2. Owner + AI planning conversation
 3. SPEC draft with scope, non-goals, risks, acceptance criteria
-4. Builder AI implements a small slice
-5. Separate AI/model/session reviews the result
-6. Tests, docs, and reproducible commands verify evidence
-7. Owner accepts, revises, defers, or rejects
-8. Lessons become operating rules, TODOs, or archived notes
+4. Define a review-worthy development unit
+5. Builder AI implements the unit, including related small tasks inside scope
+6. Separate AI/model/session reviews the result
+7. Tests, docs, and reproducible commands verify evidence
+8. Owner accepts, revises, defers, or rejects
+9. Lessons become operating rules, TODOs, or archived notes
 ```
 
 Never collapse steps 4-7 into "AI said it is done." Completion is a decision
@@ -208,11 +241,11 @@ limitations or unverified behavior, owner acceptance, and whether to escalate.
 If none of these triggers apply, say so. If `save-state.md` exists but is stale,
 update it, mark it stale, or archive it before handoff.
 
-## Mini Slice Completion
+## Mini Unit Completion
 
-For Mini SDAD, do not call a slice done until:
+For Mini SDAD, do not call a unit done until:
 
-- the active task is restated,
+- the active review-worthy unit is restated,
 - changed files are listed,
 - tests, commands, or manual checks are shown, or the reason they could not run
   is stated,
@@ -234,8 +267,10 @@ Before writing code, extract the owner's control model:
 - What must the next AI session know before touching code?
 - Which decisions must remain owner-controlled?
 - What is the smallest useful result?
+- What is the first review-worthy development unit?
+- Which related small tasks should be batched into that unit?
 - What is explicitly not active work yet?
-- What evidence proves a slice is complete?
+- What evidence proves the unit is complete?
 
 If the owner has already given enough context, proceed and mark assumptions.
 
@@ -283,7 +318,7 @@ Use role separation to reduce single-model blind spots:
 
 - Planning AI: turns owner pain into product scope and non-goals.
 - SPEC AI: writes implementation-ready SPEC with acceptance criteria.
-- Builder AI: implements a bounded slice.
+- Builder AI: implements a bounded review-worthy unit.
 - Reviewer AI: finds bugs, security risks, missing tests, docs drift, and overreach.
 - QA AI: tries to reproduce behavior and verify commands.
 - Maintainer AI: updates docs, TODO, findings, and handoff.
@@ -346,7 +381,7 @@ Examples:
 - "Docs were scattered" -> require document classes and archive rules.
 - "AI said complete but bugs remained" -> require review findings and tests.
 - "Old plans misled new sessions" -> define source-of-truth order.
-- "Large refactors became hard to verify" -> require small slices and cross-review.
+- "Large refactors became hard to verify" -> require review-worthy units and cross-review.
 
 This is the heart of the workflow: past friction becomes future operating
 structure.
@@ -360,7 +395,7 @@ For a new project, produce a compact bootstrap rather than a huge master plan:
 3. non-goals,
 4. risk list,
 5. required control files,
-6. first active SPEC slice,
+6. first active SPEC slice and review-worthy development unit,
 7. validation commands,
 8. review loop.
 
@@ -376,6 +411,7 @@ Use `references/implicit-rules.md` for Core 5 and Extended 15 rule checks.
 - Keep active docs smaller and clearer than archives.
 - Keep future ideas out of the active implementation path.
 - Make obvious but consequential rules explicit.
-- Prefer a boring verified slice over an impressive unverified expansion.
+- Prefer a boring verified review-worthy unit over an impressive unverified
+  expansion.
 - Use Korean for owner-facing explanation when helpful; keep filenames and
   machine-facing identifiers stable and ASCII.

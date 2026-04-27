@@ -33,11 +33,17 @@ Owner decisions control scope, risk tolerance, and acceptance.
 - Partial, degraded, skipped, or unverified behavior must be labeled.
 - Failed, missing, skipped, timed-out, or unrun tests must be reported plainly.
 - Repeated pain becomes a rule, checklist, test, or template update.
+- Work in review-worthy development units, not micro-approval steps.
+- Continue autonomously inside the approved unit until evidence is ready.
+- Stop for owner input only when scope expands, Q5 risk changes, destructive or
+  irreversible action is needed, an owner-controlled decision is required,
+  verification is blocked, or evidence conflicts with the plan.
 
 ## Handoff
 
 Report changed files, behavior changed, tests/commands run, docs checked,
-remaining risks, incomplete work, and owner decisions needed.
+remaining risks, incomplete work, owner decisions needed, and the review-worthy
+unit completed.
 
 ## Save-State Update Triggers
 

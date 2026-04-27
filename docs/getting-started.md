@@ -6,8 +6,8 @@ project for the first time.
 The short version:
 
 ```text
-Install one instruction file, start with one SPEC slice, then require evidence
-before accepting completion.
+Install one instruction file, define one review-worthy development unit, then
+require evidence before accepting completion.
 ```
 
 ## Choose Scale First
@@ -73,13 +73,17 @@ Claude Code means the local/CLI coding tool, not Claude.ai chat.
 
 - The owner decides product direction, risk tolerance, priorities, and final
   acceptance.
-- The AI tool helps create SPECs, implement bounded slices, review work, update
+- The AI tool helps create SPECs, implement review-worthy units, review work, update
   docs, and produce evidence.
 - Completion is accepted only when the evidence is clear enough for the owner to
   trust the result.
 
 You do not need to write code yourself to use this workflow. You do need to make
 clear decisions and reject vague completion claims.
+
+The owner should not need to approve every micro-task. Once a review-worthy
+development unit is approved, the AI should continue inside that boundary until
+it can hand off changed files, checks, known limits, and evidence.
 
 ## No-Clone Quick Install
 
@@ -117,7 +121,8 @@ Paste this into your AI tool:
 Use the SPEC-driven AI development workflow from
 https://github.com/LiveTrack-X/spec-driven-ai-development.
 
-I am the owner. Help me create the first active SPEC slice.
+I am the owner. Help me create the first active SPEC slice and the first
+review-worthy development unit.
 
 Start by asking for:
 1. the product pain or goal,
@@ -125,7 +130,8 @@ Start by asking for:
 3. non-goals,
 4. risks,
 5. owner-controlled decisions,
-6. evidence required before I accept completion.
+6. the first review-worthy development unit,
+7. evidence required before I accept completion.
 
 Then create the first project control files:
 - AGENTS.md or equivalent AI instruction file,
@@ -182,6 +188,7 @@ Then start your AI tool inside the target project and say:
 Read the installed SPEC-Driven AI Development instructions.
 Bootstrap this project into an owner-supervised, SPEC-driven workflow.
 Create the first active SPEC slice and the required control files.
+Define the first review-worthy development unit.
 ```
 
 ### Path 3: Install The Codex Skill
@@ -209,14 +216,17 @@ $ai-spec-project-start use this workflow to bootstrap my project.
 
 ## First 10 Minutes
 
-After setup, ask the AI for a small first slice, not the whole project.
+After setup, ask the AI for the first review-worthy development unit, not the
+whole project and not a tiny micro-task.
 
 Good first request:
 
 ```text
-Create the first active SPEC slice for the smallest useful version.
+Create the first review-worthy development unit for the smallest useful version.
 Keep future ideas in backlog or non-goals.
-Define the evidence required before I can accept this slice as complete.
+Batch related small tasks until the unit is meaningful to review, but keep it
+small enough to verify in one handoff.
+Define the evidence required before I can accept this unit as complete.
 ```
 
 The first useful output should include:
@@ -228,6 +238,7 @@ The first useful output should include:
 - known risks,
 - owner-controlled decisions,
 - active SPEC slice,
+- first review-worthy development unit,
 - TODO list,
 - review and verification plan,
 - docs that must be created or updated.
@@ -240,13 +251,21 @@ Use the same loop every session:
 Pain -> SPEC -> Build -> Review -> Evidence -> Owner decision -> Rule
 ```
 
+In practice, the build/review boundary should be a review-worthy development
+unit. Do not stop after every micro-task inside the approved unit.
+
 ### Build Prompt
 
 ```text
 Read the active docs and current SPEC.
-Implement only the next active TODO slice.
-Before handoff, show changed files, verification commands, docs checked, and
-remaining risks.
+Implement the next review-worthy development unit. You may complete multiple
+related TODOs inside that approved unit.
+Do not stop for owner approval after every micro-task. Stop only if scope would
+expand, Q5 risk changes, destructive or irreversible action is needed, an
+owner-controlled decision is required, verification is blocked, or current
+evidence conflicts with the plan.
+Before handoff, show changed files, verification commands, docs checked,
+remaining risks, and what is not complete.
 ```
 
 ### Review Prompt
@@ -269,9 +288,10 @@ If no control file needs a content change, state which files were checked and wh
 
 ## Owner Acceptance Checklist
 
-Before accepting "done", check:
+Before accepting a review-worthy development unit as "done", check:
 
 - Is the active SPEC slice clear?
+- Was the completed work a meaningful review unit, not just a micro-task?
 - Did the AI stay inside the active scope?
 - Are code changes listed?
 - Did tests, builds, lint, or manual checks run?
@@ -285,15 +305,16 @@ Before accepting "done", check:
 If any answer is unclear, do not accept completion yet. Ask for evidence or move
 the item into `docs/TODO-Open-Items.md` or `review-findings.md`.
 
-For Mini SDAD, a slice is not done until the active task, changed files, check
+For Mini SDAD, a unit is not done until the active task, changed files, check
 evidence, limitations or unverified behavior, and owner acceptance are shown.
 
 ## Common Mistakes
 
 - Starting from old notes instead of the current active SPEC.
 - Asking AI to build the whole project at once.
+- Stopping after every micro-task instead of a review-worthy development unit.
 - Treating confident AI language as completion.
-- Letting future ideas enter the active implementation slice.
+- Letting future ideas enter the active implementation unit.
 - Forgetting to update TODOs, review findings, or docs after work.
 - Not separating builder and reviewer roles.
 

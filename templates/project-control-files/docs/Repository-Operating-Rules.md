@@ -42,13 +42,32 @@ implementation unless reaffirmed in the active path.
 
 ## Code Consistency Rules
 
-- Keep changes scoped to the active SPEC slice.
+- Keep changes scoped to the active review-worthy development unit.
 - Prefer additive changes unless a migration plan allows breaking changes.
 - Label scaffolds, placeholders, and dummy adapters in active docs and TODO.
 - Label skipped, degraded, partial, environment-limited, or unverified behavior.
 - Avoid broad rewrites while blocking review findings remain open.
 - If the project has risk domains, follow the domain-specific checklist before
   handoff.
+
+## Review-Worthy Unit Rule
+
+Do not stop for owner approval after every micro-task.
+
+Before implementation, identify the current review-worthy development unit. It
+may contain multiple related TODOs or small edits, but it must stay inside one
+bounded objective that can be reviewed in one handoff.
+
+Proceed autonomously inside the approved unit until evidence is ready.
+
+Stop and ask the owner only when:
+
+- scope would expand beyond the approved unit,
+- risk posture, Q5 domains, release posture, data, auth, money, migration, or
+  destructive action changes,
+- an owner-controlled product or tradeoff decision is required,
+- verification is blocked or impossible,
+- current evidence conflicts with the requested plan.
 
 ## Implicit Rules Made Explicit
 
@@ -57,6 +76,7 @@ implementation unless reaffirmed in the active path.
 - Evidence beats confidence: no completion claim without reproducible evidence.
 - Active beats interesting: future ideas and product notes are not active scope.
 - Small verified slices beat large unverified progress.
+- Review-worthy units beat micro-approval.
 - Open critical findings beat feature expansion unless the owner accepts the risk.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
@@ -109,6 +129,7 @@ If the project has stable, beta, rewrite, migration, or platform lanes, document
 
 Every handoff must include:
 
+- review-worthy unit completed,
 - changed files,
 - behavior changed,
 - tests or commands run,

@@ -208,7 +208,18 @@ project:
 4. create or update docs/TODO-Open-Items.md,
 5. create or update review-findings.md,
 6. ask me for product pain, smallest useful version, non-goals, risks,
-   owner-controlled decisions, and evidence required for completion.
+   owner-controlled decisions, the first review-worthy development unit, and
+   evidence required for completion.
+
+A review-worthy development unit may contain multiple related small tasks. It
+should be large enough that review has meaning, but small enough to verify in one
+handoff. Do not stop for owner approval after every micro-task inside an
+approved unit.
+
+Proceed autonomously inside the approved unit until evidence is ready.
+Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
+or irreversible action is needed, an owner-controlled decision is required,
+verification is blocked, or the requested work conflicts with current evidence.
 
 Do not overwrite existing project files without showing me what will change.
 Completion requires evidence, not AI confidence.
@@ -226,7 +237,7 @@ Update save-state.md when a session pauses or ends, handoff is expected, owner
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
 
-For Mini SDAD, do not call a slice done until changed files, check evidence,
+For Mini SDAD, do not call a unit done until changed files, check evidence,
 limitations or unverified behavior, and owner acceptance are shown.
 ```
 
@@ -311,6 +322,7 @@ Open your AI coding tool in the target project and say:
 ```text
 Read the installed SPEC-Driven AI Development instruction file.
 Bootstrap this project with the first active SPEC slice.
+Define the first review-worthy development unit.
 Ask me for product pain, smallest useful version, non-goals, risks,
 owner-controlled decisions, and evidence required for completion.
 ```

@@ -8,7 +8,7 @@ creates stale authority, which is worse than having no workflow.
 ## The Cost
 
 Standard and Full SDAD require a small maintenance pass at the end of every
-iteration.
+review-worthy development unit, not after every micro-task.
 
 Before handoff or owner acceptance, update or explicitly check:
 
@@ -28,10 +28,10 @@ checked and why no update was needed.
 
 ## End-Of-Loop Rule
 
-Every SDAD loop ends with:
+Every SDAD loop ends at a review-worthy unit boundary:
 
 ```text
-Build -> Review -> Evidence -> Owner decision -> Update control files
+Review-worthy unit -> Build -> Review -> Evidence -> Owner decision -> Update control files
 ```
 
 Do not claim completion while control files are stale.

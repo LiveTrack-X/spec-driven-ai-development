@@ -78,7 +78,7 @@ Recommended control files:
 Required review roles:
 Risk gates needed:
 Owner decisions needed before implementation:
-Smallest verified first slice:
+Smallest review-worthy development unit:
 ```
 
 ## Reassessment

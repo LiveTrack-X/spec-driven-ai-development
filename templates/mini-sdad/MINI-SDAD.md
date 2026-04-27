@@ -21,14 +21,29 @@ Escalate to Standard or Full SDAD only when:
 
 ## Active Scope
 
-Implement only the requested task or the current small slice.
+Implement only the requested task or the current review-worthy unit.
+
+A review-worthy unit may contain multiple related small tasks. It should be large
+enough that review has meaning, but small enough to verify in one handoff.
 
 Do not expand into future ideas, rewrites, broad cleanup, or unrelated refactors
 unless the owner explicitly promotes them into active scope.
 
-## Mini Slice Completion
+Do not stop for owner approval after every micro-task inside the approved unit.
+Proceed until the unit has evidence, unless a stop condition appears.
 
-A Mini SDAD slice is done only when:
+Stop and ask the owner only when:
+
+- scope would expand beyond the approved unit,
+- Q5-style risk, release posture, data, auth, money, migration, or destructive
+  action changes,
+- an owner-controlled decision is required,
+- verification is blocked or impossible,
+- current evidence conflicts with the requested plan.
+
+## Mini Unit Completion
+
+A Mini SDAD unit is done only when:
 
 - the active task is restated,
 - changed files are listed,
@@ -48,7 +63,7 @@ Not done when:
 - known uncertainty is not named,
 - unrelated changes were made without owner approval,
 - the owner has not explicitly accepted the result. Requested changes or
-  deferred decisions mean the slice is not done.
+  deferred decisions mean the unit is not done.
 
 ## Do Not
 

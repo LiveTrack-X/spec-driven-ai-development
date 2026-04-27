@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.7` stable public release.
+Status: `1.0.8` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -97,7 +97,18 @@ to paste the raw file content from the source URL, use the terminal installer, o
 clone/download the repository manually.
 
 Ask me for product pain, smallest useful version, non-goals, risks,
-owner-controlled decisions, and evidence required for completion.
+owner-controlled decisions, the first review-worthy development unit, and
+evidence required for completion.
+
+A review-worthy development unit may contain multiple related small tasks. It
+should be large enough that review has meaning, but small enough to verify in one
+handoff. Do not stop for owner approval after every micro-task inside an
+approved unit.
+
+Proceed autonomously inside the approved unit until evidence is ready.
+Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
+or irreversible action is needed, an owner-controlled decision is required,
+verification is blocked, or the requested work conflicts with current evidence.
 
 For Mini SDAD at loop end, do not check SPEC-COMPLETE, TODO, review-findings, or
 ADRs unless the project has escalated. Report the active task, changed files,
@@ -112,7 +123,7 @@ Update save-state.md when a session pauses or ends, handoff is expected, owner
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
 
-For Mini SDAD, do not call a slice done until changed files, check evidence,
+For Mini SDAD, do not call a unit done until changed files, check evidence,
 limitations or unverified behavior, and owner acceptance are shown.
 
 Do not overwrite existing files without showing me the proposed changes.
@@ -187,6 +198,31 @@ limitations, and owner acceptance must be shown before a slice is called done.
 If that cost is too high, choose One-shot Prompt or [Mini SDAD](docs/mini-sdad.md).
 See [docs/maintenance-cost.md](docs/maintenance-cost.md).
 
+## Review-Worthy Development Units
+
+SDAD should not stop after every micro-task.
+
+Before implementation, define a review-worthy development unit:
+
+- one user-visible workflow,
+- one bugfix with its regression check,
+- one connected docs/template/prompt update,
+- one risk-domain hardening pass,
+- or one small feature path from behavior to evidence.
+
+The unit may include multiple related TODOs. The AI should continue inside that
+approved boundary and hand off when the unit has changed files, checks, known
+limits, and reviewable evidence.
+
+Ask the owner only when:
+
+- scope would expand beyond the approved unit,
+- Q5 risk, release posture, data, auth, money, migration, or destructive action
+  changes,
+- a tradeoff belongs to the owner,
+- verification is blocked or impossible,
+- current evidence conflicts with the requested plan.
+
 ## Start Here
 
 New to the workflow? Start with [docs/getting-started.md](docs/getting-started.md).
@@ -256,7 +292,7 @@ Completion is not decided by AI. Completion is decided by evidence:
 ## The Loop
 
 ```text
-Pain -> SPEC -> Build -> Review -> Evidence -> Owner decision -> Rule
+Pain -> SPEC -> Review-worthy unit -> Build -> Review -> Evidence -> Owner decision -> Rule
 ```
 
 This loop repeats every iteration. The goal is not only to fix problems, but to
@@ -265,12 +301,13 @@ turn repeated problems into durable rules, templates, tests, or review gates.
 ```mermaid
 flowchart TD
     A["Pain or product need"] --> B["Active SPEC"]
-    B --> C["Bounded build"]
-    C --> D["Review"]
-    D --> E["Evidence"]
-    E --> F["Owner decision"]
-    F --> G["Rule, TODO, finding, ADR, or archive update"]
-    G --> B
+    B --> C["Review-worthy development unit"]
+    C --> D["Bounded build"]
+    D --> E["Review"]
+    E --> F["Evidence"]
+    F --> G["Owner decision"]
+    G --> H["Rule, TODO, finding, ADR, or archive update"]
+    H --> B
 ```
 
 ## Why This Is Different
@@ -313,12 +350,13 @@ Fastest possible start:
 ```text
 Use the SPEC-driven AI development workflow from this repository.
 Extract my control model and create the first active SPEC slice.
+Then define the first review-worthy development unit.
 ```
 
 Then follow the loop:
 
 ```text
-Pain -> SPEC -> Build -> Review -> Evidence -> Owner decision -> Rule
+Pain -> SPEC -> Review-worthy unit -> Build -> Review -> Evidence -> Owner decision -> Rule
 ```
 
 For step-by-step setup, use [docs/getting-started.md](docs/getting-started.md).

@@ -56,6 +56,20 @@ Why it fails: one model/session repeats its own blind spots.
 Replace with: separate builder, reviewer, QA, and owner acceptance roles for
 risky work.
 
+## 5a. Micro-Approval Thrash
+
+Symptom: the AI stops after every tiny edit or TODO and waits for owner approval
+before continuing.
+
+Why it fails: owner supervision becomes a bottleneck, review has too little
+substance to be useful, and implementation flow collapses.
+
+Replace with: define a review-worthy development unit, let the AI proceed
+autonomously inside that boundary, and hand off when changed files, checks,
+limits, and evidence are ready. Stop early only for scope expansion, Q5 risk
+changes, destructive actions, owner-controlled decisions, blocked verification,
+or evidence conflicts.
+
 ## 6. Unscoped Percent Complete
 
 Symptom: progress is reported as "80% done" without saying what scope is being

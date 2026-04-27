@@ -30,11 +30,17 @@ authority.
 - Update docs or state which docs were checked and why no update was needed.
 - Treat critical review findings, failing tests, security regressions, and release blockers as higher priority than new features.
 - For release or production readiness, require migration, security, backup/restore, monitoring, rollback, and manual evidence as applicable.
+- Work in review-worthy development units, not micro-approval steps.
+- Continue autonomously inside the approved unit until evidence is ready.
+- Stop for owner input only when scope expands, Q5 risk changes, destructive or
+  irreversible action is needed, an owner-controlled decision is required,
+  verification is blocked, or evidence conflicts with the plan.
 
 ## Response Expectations
 
 When summarizing work, include changed files, tests run, docs checked, remaining
-risks, incomplete work, and owner decisions needed.
+risks, incomplete work, owner decisions needed, and the review-worthy unit
+completed.
 
 ## Save-State Update Triggers
 

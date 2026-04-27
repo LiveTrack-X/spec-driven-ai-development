@@ -45,12 +45,32 @@ active path.
 - If the project has stable/next versions, define version lanes and bugfix sync rules.
 - If the project has high-risk domains, define domain-specific review checks.
 
+## Review-Worthy Unit Rule
+
+Do not stop for owner approval after every micro-task.
+
+Before implementation, identify the current review-worthy development unit. It
+may contain multiple related TODOs or small edits, but it must stay inside one
+bounded objective that can be reviewed in one handoff.
+
+Proceed autonomously inside the approved unit until evidence is ready.
+
+Stop and ask the owner only when:
+
+- scope would expand beyond the approved unit,
+- risk posture, Q5 domains, release posture, data, auth, money, migration, or
+  destructive action changes,
+- an owner-controlled product or tradeoff decision is required,
+- verification is blocked or impossible,
+- current evidence conflicts with the requested plan.
+
 ## Implicit Rules Made Explicit
 
 - Current beats historical.
 - Evidence beats confidence.
 - Active beats interesting.
 - Small verified slices beat large unverified progress.
+- Review-worthy units beat micro-approval.
 - Open critical findings beat new feature work.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
@@ -63,6 +83,7 @@ active path.
 
 Before handoff, state:
 
+- review-worthy unit completed,
 - changed files,
 - tests or commands run,
 - docs checked or updated,

@@ -95,7 +95,8 @@ def validate_skill() -> None:
         "Claude Code means the local/CLI coding tool",
         "Offer deterministic fallback options",
         "Save-State Update Triggers",
-        "Mini Slice Completion",
+        "Review-Worthy Development Units",
+        "Mini Unit Completion",
         "Source Of Truth",
         "Pain-To-Rule",
         "Evidence Rules",
@@ -120,7 +121,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.0.7`",
+        "Status: `1.0.8`",
         "For Beginners: Use In 60 Seconds",
         "assets/spec-driven-ai-development-infographic.png",
         "Choose Scale First",
@@ -130,6 +131,9 @@ def validate_templates() -> None:
         "Claude Code means the local/CLI coding tool",
         "Offer deterministic fallback options",
         "For Mini SDAD at loop end",
+        "Review-Worthy Development Units",
+        "Do not stop for owner approval after every micro-task",
+        "Proceed autonomously inside the approved unit",
         "Mini SDAD",
         "Maintenance Cost",
         "Do not claim completion while control files are stale",
@@ -178,6 +182,7 @@ def validate_templates() -> None:
             "오너 수락",
             "Q5",
             "chat-only",
+            "리뷰 의미가 있는 개발 단위",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
@@ -191,6 +196,7 @@ def validate_templates() -> None:
             "Owner 验收",
             "Q5",
             "chat-only",
+            "有评审意义的开发单元",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
@@ -204,6 +210,7 @@ def validate_templates() -> None:
             "Owner の受け入れ",
             "Q5",
             "chat-only",
+            "レビューする意味のある",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
@@ -220,6 +227,8 @@ def validate_templates() -> None:
     for phrase in [
         "Mandatory First Read",
         "Source Of Truth",
+        "Review-Worthy Unit Rule",
+        "micro-task",
         "Handoff Rule",
         "End-Of-Loop Maintenance Rule",
         "Save-State Update Triggers",
@@ -237,6 +246,8 @@ def validate_templates() -> None:
         "Mandatory Start Loop",
         "Version Lane Rules",
         "Review And Verification Rules",
+        "Review-Worthy Unit Rule",
+        "Proceed autonomously inside the approved unit",
         "End-Of-Loop Maintenance Rule",
         "Control files have maintenance cost",
         "Save-State Update Triggers",
@@ -288,8 +299,10 @@ def validate_templates() -> None:
         "Install The Codex Skill",
         "Owner Acceptance Checklist",
         "Maintenance Cost",
+        "review-worthy development unit",
+        "micro-task",
         "save-state.md",
-        "Mini SDAD, a slice is not done",
+        "Mini SDAD, a unit is not done",
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
@@ -303,6 +316,8 @@ def validate_templates() -> None:
         "Claude Code means the local/CLI coding tool",
         "Offer deterministic fallback options",
         "For Mini SDAD at loop end",
+        "review-worthy development unit",
+        "Do not stop for owner approval after every micro-task",
         "save-state.md",
         "Mini SDAD still has a completion gate",
         "Before You Start",
@@ -327,7 +342,8 @@ def validate_templates() -> None:
         "When To Use Mini SDAD",
         "What Mini SDAD Creates",
         "Mini SDAD Prompt",
-        "Mini Slice Completion Criteria",
+        "Mini Review-Worthy Unit",
+        "Mini Unit Completion Criteria",
         "Q5-style risk beats the raw yes-count",
         "Offer deterministic fallback options",
         "Not done when",
@@ -340,6 +356,8 @@ def validate_templates() -> None:
     for phrase in [
         "Maintenance Cost",
         "End-Of-Loop Rule",
+        "review-worthy development unit",
+        "not after every micro-task",
         "Save-State Update Triggers",
         "session is ending or pausing",
         "owner changes direction",
@@ -354,7 +372,9 @@ def validate_templates() -> None:
     for phrase in [
         "This project uses Mini SDAD",
         "Active Scope",
-        "Mini Slice Completion",
+        "review-worthy unit",
+        "Do not stop for owner approval after every micro-task",
+        "Mini Unit Completion",
         "Not done when",
         "Do Not",
         "Handoff",
@@ -362,7 +382,12 @@ def validate_templates() -> None:
         if phrase not in mini_template:
             fail(f"Mini SDAD template missing: {phrase}")
     anti_patterns = read("docs/anti-patterns.md")
-    for phrase in ["AI Confidence As Completion", "Historical SPEC Override", "Owner Rubber Stamp"]:
+    for phrase in [
+        "AI Confidence As Completion",
+        "Historical SPEC Override",
+        "Micro-Approval Thrash",
+        "Owner Rubber Stamp",
+    ]:
         if phrase not in anti_patterns:
             fail(f"Anti-patterns doc missing: {phrase}")
     fit = read("docs/fit-assessment.md")
@@ -370,9 +395,31 @@ def validate_templates() -> None:
         if phrase not in fit:
             fail(f"Fit assessment doc missing: {phrase}")
     diagrams = read("docs/diagrams.md")
-    for phrase in ["Operating Loop", "Source Of Truth Order", "```mermaid"]:
+    for phrase in [
+        "Operating Loop",
+        "Source Of Truth Order",
+        "Review-worthy development unit",
+        "Batch related small tasks",
+        "```mermaid",
+    ]:
         if phrase not in diagrams:
             fail(f"Diagrams doc missing: {phrase}")
+    kickoff = read("prompts/kickoff-prompt.md")
+    for phrase in [
+        "review-worthy development unit",
+        "related small tasks",
+        "Continue autonomously inside the approved unit",
+        "micro-approval steps",
+    ]:
+        if phrase not in kickoff:
+            fail(f"Kickoff prompt missing review-worthy unit guidance: {phrase}")
+    handoff = read("prompts/handoff-prompt.md")
+    for phrase in [
+        "review-worthy development unit completed",
+        "Do not request owner approval after every micro-task",
+    ]:
+        if phrase not in handoff:
+            fail(f"Handoff prompt missing review-worthy unit guidance: {phrase}")
     adr = read("templates/project-control-files/SPEC/adr/ADR-0001-template.md")
     for phrase in ["Context", "Decision", "Consequences", "Current-Over-Historical Rule"]:
         if phrase not in adr:
@@ -393,7 +440,14 @@ def validate_templates() -> None:
         ("Copilot adapter", copilot),
         ("Generic adapter", generic),
     ]:
-        for phrase in ["Source Of Truth", "Evidence beats", "owner", "Save-State Update Triggers"]:
+        for phrase in [
+            "Source Of Truth",
+            "Evidence beats",
+            "owner",
+            "Save-State Update Triggers",
+            "review-worthy",
+            "Continue autonomously inside the approved unit",
+        ]:
             if phrase not in content:
                 fail(f"{path} missing expected phrase: {phrase}")
 

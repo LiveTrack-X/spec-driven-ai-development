@@ -51,7 +51,12 @@ historical sections.
 
 ## Work Style
 
-- Keep implementation slices small and reviewable.
+- Keep implementation units small enough to review and large enough to matter.
+- Work in review-worthy development units, not micro-approval steps.
+- Continue autonomously inside the approved unit until evidence is ready.
+- Stop for owner input only when scope expands, Q5 risk changes, destructive or
+  irreversible action is needed, an owner-controlled decision is required,
+  verification is blocked, or evidence conflicts with the plan.
 - Do not claim completion without commands, results, docs checked, and remaining risks.
 - Use separate review or QA passes for high-risk changes.
 - Do not silently promote product notes, external references, or future ideas into active work.
@@ -62,6 +67,7 @@ historical sections.
 Every handoff must include:
 
 - changed files,
+- review-worthy unit completed,
 - behavior changed,
 - tests or commands run,
 - docs checked or updated,

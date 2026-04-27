@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.8 - 2026-04-27
+
+- Added review-worthy development units so AI agents batch related small tasks
+  into a meaningful review boundary instead of stopping after every micro-task.
+- Added autonomy-within-approved-unit guidance: proceed until evidence is ready,
+  and stop only for scope expansion, Q5 risk changes, destructive actions,
+  owner-controlled decisions, blocked verification, or evidence conflicts.
+- Updated README, no-clone onboarding, getting-started, Mini SDAD, templates,
+  adapters, prompts, diagrams, implicit rules, localized READMEs, and the Codex
+  skill.
+- Shifted Standard/Full maintenance wording from every micro-task to every
+  review-worthy development unit boundary.
+
 ## 1.0.7 - 2026-04-27
 
 - Added risk override rules to the scale gate so Q5 production/data/auth/money/

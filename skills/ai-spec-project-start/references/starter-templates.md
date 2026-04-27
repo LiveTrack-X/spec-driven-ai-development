@@ -50,7 +50,8 @@ Core 5: Current beats historical. Evidence beats confidence. Active beats intere
 Owner decision beats AI momentum. Repeated pain becomes a rule.
 
 Extended rules cover docs drift, partial/degraded work, release readiness,
-environment limits, cross-review, risk gates, and scope-specific progress.
+environment limits, cross-review, risk gates, review-worthy units, and
+scope-specific progress.
 ```
 
 ## AGENTS.md Template
@@ -93,6 +94,8 @@ active path.
 - Do not treat AI confidence as completion.
 - Do not rely on obvious-but-unwritten assumptions.
 - Keep active implementation separate from future ideas.
+- Work in review-worthy development units, not micro-approval steps.
+- Continue autonomously inside the approved unit until evidence is ready.
 - Record blockers in `review-findings.md`.
 - Record open implementation work in `docs/TODO-Open-Items.md`.
 - Update docs when behavior changes.

@@ -7,6 +7,7 @@ The handoff must let another AI session continue without guessing.
 ## Include
 
 - current goal,
+- review-worthy development unit completed,
 - changed files,
 - behavior changed,
 - tests and commands run,
@@ -29,6 +30,8 @@ The handoff must let another AI session continue without guessing.
 - Do not claim production readiness without deployment, migration, auth/security, backup/restore, monitoring, and rollback evidence as applicable.
 - Do not let older SPEC history override newer active SPEC instructions.
 - Do not rely on obvious-but-unwritten assumptions.
+- Do not request owner approval after every micro-task when the work stayed
+  inside the approved review-worthy unit.
 - Do not bury blockers in prose. Put active defects in `review-findings.md`.
 - Do not leave future ideas mixed into active implementation work.
 - Do not claim release readiness while Critical findings remain open.

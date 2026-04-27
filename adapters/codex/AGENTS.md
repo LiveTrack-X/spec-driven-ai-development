@@ -22,6 +22,11 @@ Before code, SPEC, prompt, or documentation work, read:
 - Critical review findings beat feature expansion unless the owner accepts the risk.
 - Documentation consistency must be checked before handoff.
 - Owner direction, risk tolerance, and acceptance decisions are controlling.
+- Work in review-worthy development units, not micro-approval steps.
+- Continue autonomously inside the approved unit until evidence is ready.
+- Stop for owner input only when scope expands, Q5 risk changes, destructive or
+  irreversible action is needed, an owner-controlled decision is required,
+  verification is blocked, or evidence conflicts with the plan.
 
 ## Source Of Truth
 
@@ -32,7 +37,8 @@ history. Treat handoff and save-state files as context, not authority.
 ## Handoff
 
 State changed files, behavior changed, tests run, docs checked, open findings,
-remaining risks, incomplete work, and owner decisions needed.
+remaining risks, incomplete work, owner decisions needed, and the review-worthy
+unit completed.
 
 ## Save-State Update Triggers
 

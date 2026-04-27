@@ -11,12 +11,14 @@ Use an owner-supervised, SPEC-driven, multi-agent, evidence-based development wo
 3. What is the smallest useful version?
 4. What must not happen?
 5. Which decisions must remain owner-controlled?
-6. What evidence proves the first slice is complete?
-7. Does this project need documentation-governance controls for docs/SPEC/backlog governance?
-8. Does this project need release-governance controls for version lanes, migration, release gates, or high-risk runtime rules?
-9. If the SPEC contains past-to-present history, which sections are current active instructions and which are historical rationale?
-10. Which obvious-but-unwritten rules should become explicit project rules?
-11. Does this project need ADRs for architecture, policy, release, security, or owner tradeoff decisions?
+6. What is the first review-worthy development unit?
+7. Which related small tasks should be batched into that unit?
+8. What evidence proves the first unit is complete?
+9. Does this project need documentation-governance controls for docs/SPEC/backlog governance?
+10. Does this project need release-governance controls for version lanes, migration, release gates, or high-risk runtime rules?
+11. If the SPEC contains past-to-present history, which sections are current active instructions and which are historical rationale?
+12. Which obvious-but-unwritten rules should become explicit project rules?
+13. Does this project need ADRs for architecture, policy, release, security, or owner tradeoff decisions?
 
 If enough context is already available, proceed with reasonable assumptions and mark them clearly.
 
@@ -40,6 +42,11 @@ Create or update:
 - Do not let future ideas become active implementation unless promoted into SPEC.
 - Do not treat AI confidence as completion.
 - Completion requires code, tests, docs, and reproducible evidence.
+- Work in review-worthy development units, not micro-approval steps.
+- Continue autonomously inside the approved unit until evidence is ready.
+- Stop for owner input only when scope expands, Q5 risk changes, destructive or
+  irreversible action is needed, an owner-controlled decision is required,
+  verification is blocked, or evidence conflicts with the plan.
 - Label partial, degraded, skipped, or unverified behavior.
 - Important changes should receive separate review by another AI, model, or session.
 - Stable/next versions need explicit version lanes and bugfix sync rules.
@@ -58,6 +65,6 @@ Produce:
 6. version lanes if applicable,
 7. risk domains and release gates,
 8. implicit rules that must be explicit,
-9. first implementation slice,
+9. first review-worthy development unit,
 10. test and evidence plan,
 11. required control files.
