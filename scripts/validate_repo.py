@@ -21,6 +21,8 @@ REQUIRED_FILES = [
     "docs/anti-patterns.md",
     "docs/fit-assessment.md",
     "docs/diagrams.md",
+    "docs/autonomy-levels.md",
+    "docs/implementation-discipline.md",
     "docs/implicit-rules.md",
     "docs/tool-adapters.md",
     "docs/field-notes/documentation-governance-method.md",
@@ -95,7 +97,9 @@ def validate_skill() -> None:
         "Claude Code means the local/CLI coding tool",
         "Offer deterministic fallback options",
         "Save-State Update Triggers",
+        "Autonomy",
         "Review-Worthy Development Units",
+        "implementation discipline",
         "Mini Unit Completion",
         "Source Of Truth",
         "Pain-To-Rule",
@@ -121,7 +125,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.0.8`",
+        "Status: `1.0.9`",
         "For Beginners: Use In 60 Seconds",
         "assets/spec-driven-ai-development-infographic.png",
         "Choose Scale First",
@@ -131,9 +135,13 @@ def validate_templates() -> None:
         "Claude Code means the local/CLI coding tool",
         "Offer deterministic fallback options",
         "For Mini SDAD at loop end",
-        "Review-Worthy Development Units",
+        "Work Packets And Autonomy Levels",
+        "Level 2 Work Packet Autonomy",
+        "AI-complete / evidence-ready",
+        "docs/autonomy-levels.md",
+        "docs/implementation-discipline.md",
         "Do not stop for owner approval after every micro-task",
-        "Proceed autonomously inside the approved unit",
+        "Proceed autonomously inside the approved work packet",
         "Mini SDAD",
         "Maintenance Cost",
         "Do not claim completion while control files are stale",
@@ -229,6 +237,7 @@ def validate_templates() -> None:
         "Source Of Truth",
         "Review-Worthy Unit Rule",
         "micro-task",
+        "Implementation discipline makes autonomy safe",
         "Handoff Rule",
         "End-Of-Loop Maintenance Rule",
         "Save-State Update Triggers",
@@ -247,7 +256,8 @@ def validate_templates() -> None:
         "Version Lane Rules",
         "Review And Verification Rules",
         "Review-Worthy Unit Rule",
-        "Proceed autonomously inside the approved unit",
+        "Proceed autonomously inside the approved unit or work packet",
+        "Implementation discipline makes autonomy safe",
         "End-Of-Loop Maintenance Rule",
         "Control files have maintenance cost",
         "Save-State Update Triggers",
@@ -297,12 +307,14 @@ def validate_templates() -> None:
         "Prompt-Only Start",
         "Install A Tool Adapter",
         "Install The Codex Skill",
-        "Owner Acceptance Checklist",
+        "Owner Checkpoint Checklist",
         "Maintenance Cost",
         "review-worthy development unit",
+        "work packet",
+        "autonomy-levels.md",
         "micro-task",
         "save-state.md",
-        "Mini SDAD, a unit is not done",
+        "Mini SDAD, a unit may be called evidence-ready",
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
@@ -311,6 +323,8 @@ def validate_templates() -> None:
         "Step 0: Choose Scale",
         "Maintenance Cost",
         "Override rules beat raw yes-counts",
+        "Step 0.5 - Choose autonomy",
+        "Level 2 Work Packet Autonomy",
         "Q5=yes",
         "chat-only environment such as Claude.ai",
         "Claude Code means the local/CLI coding tool",
@@ -318,6 +332,7 @@ def validate_templates() -> None:
         "For Mini SDAD at loop end",
         "review-worthy development unit",
         "Do not stop for owner approval after every micro-task",
+        "evidence-ready",
         "save-state.md",
         "Mini SDAD still has a completion gate",
         "Before You Start",
@@ -346,7 +361,8 @@ def validate_templates() -> None:
         "Mini Unit Completion Criteria",
         "Q5-style risk beats the raw yes-count",
         "Offer deterministic fallback options",
-        "Not done when",
+        "Not evidence-ready",
+        "Level 1 Unit Autonomy",
         "Before fetching",
         "Escalation Rule",
     ]:
@@ -355,7 +371,7 @@ def validate_templates() -> None:
     maintenance = read("docs/maintenance-cost.md")
     for phrase in [
         "Maintenance Cost",
-        "End-Of-Loop Rule",
+        "End-Of-Packet Rule",
         "review-worthy development unit",
         "not after every micro-task",
         "Save-State Update Triggers",
@@ -375,7 +391,7 @@ def validate_templates() -> None:
         "review-worthy unit",
         "Do not stop for owner approval after every micro-task",
         "Mini Unit Completion",
-        "Not done when",
+        "Not evidence-ready",
         "Do Not",
         "Handoff",
     ]:
@@ -387,6 +403,8 @@ def validate_templates() -> None:
         "Historical SPEC Override",
         "Micro-Approval Thrash",
         "Owner Rubber Stamp",
+        "Speculative Complexity",
+        "Drive-By Refactor",
     ]:
         if phrase not in anti_patterns:
             fail(f"Anti-patterns doc missing: {phrase}")
@@ -399,23 +417,48 @@ def validate_templates() -> None:
         "Operating Loop",
         "Source Of Truth Order",
         "Review-worthy development unit",
+        "Work packet",
+        "Autonomy Boundary",
         "Batch related small tasks",
         "```mermaid",
     ]:
         if phrase not in diagrams:
             fail(f"Diagrams doc missing: {phrase}")
+    autonomy = read("docs/autonomy-levels.md")
+    for phrase in [
+        "Autonomy Levels",
+        "Evidence-Ready Is Not Owner-Accepted",
+        "Work Packet",
+        "Level 2",
+        "Stop Conditions",
+        "Checkpoint Summary",
+    ]:
+        if phrase not in autonomy:
+            fail(f"Autonomy levels doc missing: {phrase}")
+    implementation = read("docs/implementation-discipline.md")
+    for phrase in [
+        "Implementation Discipline",
+        "Surface Assumptions",
+        "Prefer The Smallest Working Design",
+        "Make Surgical Changes",
+        "Make Goals Verifiable",
+        "forrestchang/andrej-karpathy-skills",
+    ]:
+        if phrase not in implementation:
+            fail(f"Implementation discipline doc missing: {phrase}")
     kickoff = read("prompts/kickoff-prompt.md")
     for phrase in [
         "review-worthy development unit",
         "related small tasks",
-        "Continue autonomously inside the approved unit",
+        "Continue autonomously inside the approved work packet",
+        "simplest working design",
         "micro-approval steps",
     ]:
         if phrase not in kickoff:
             fail(f"Kickoff prompt missing review-worthy unit guidance: {phrase}")
     handoff = read("prompts/handoff-prompt.md")
     for phrase in [
-        "review-worthy development unit completed",
+        "evidence-ready units",
         "Do not request owner approval after every micro-task",
     ]:
         if phrase not in handoff:
@@ -446,7 +489,8 @@ def validate_templates() -> None:
             "owner",
             "Save-State Update Triggers",
             "review-worthy",
-            "Continue autonomously inside the approved unit",
+            "Continue autonomously inside the approved unit or work packet",
+            "Implementation discipline guards autonomy",
         ]:
             if phrase not in content:
                 fail(f"{path} missing expected phrase: {phrase}")

@@ -36,6 +36,11 @@ Mini SDAD should not stop after every micro-task. Define one small
 review-worthy unit, then let the AI continue inside that boundary until it can
 show evidence.
 
+Default autonomy is Level 1 Unit Autonomy: the AI completes the approved unit,
+reports evidence-ready status, and asks only at the checkpoint or when a stop
+condition appears. Use Level 2 Work Packet Autonomy only when the owner names a
+packet with multiple related units.
+
 A Mini review-worthy unit may include:
 
 - one small UI/workflow change,
@@ -49,7 +54,7 @@ required, verification is blocked, or evidence conflicts with the plan.
 
 ## Mini Unit Completion Criteria
 
-A Mini SDAD unit is done only when:
+A Mini SDAD unit is evidence-ready only when:
 
 - the active task is restated,
 - changed files are listed,
@@ -58,18 +63,20 @@ A Mini SDAD unit is done only when:
 - user-visible behavior or output is described,
 - limitations and unverified behavior are named,
 - unrelated scope was not added,
-- the owner accepts the result.
+- owner decisions or acceptance needed are named.
 
 AI confidence is not completion.
 
-Not done when:
+Not evidence-ready when:
 
 - the AI only says it is done,
 - checks were not run and the gap is hidden,
 - known uncertainty is not named,
-- unrelated changes were made without owner approval,
-- the owner has not explicitly accepted the result. Requested changes or
-  deferred decisions mean the unit is not done.
+- unrelated changes were made without owner approval.
+
+Final done still requires owner acceptance unless the owner has explicitly
+delegated the acceptance policy. Requested changes or deferred decisions mean
+the unit is not done.
 
 ## What Mini SDAD Creates
 
@@ -124,11 +131,13 @@ installer, or clone/download the repository manually.
 After saving it, ask me for:
 - the active task,
 - what is out of scope,
-- what evidence proves done,
+- what evidence proves evidence-ready,
 - whether any risk requires Standard or Full SDAD.
 
-For each unit, do not call it done until changed files, check evidence,
-limitations or unverified behavior, and owner acceptance are shown.
+For each unit, do not call it evidence-ready until changed files, check evidence,
+and limitations or unverified behavior are shown. Do not call final completion
+done until owner acceptance is shown or the owner has explicitly delegated the
+acceptance policy.
 ```
 
 ## Escalation Rule

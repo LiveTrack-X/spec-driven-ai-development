@@ -18,7 +18,10 @@ files.
 
 ## Extended 15
 
-- Review-worthy units beat micro-approval and large unverified progress.
+- Work packets and review-worthy units beat micro-approval and large unverified
+  progress.
+- Implementation discipline makes autonomy safe: surface assumptions, prefer
+  simple designs, make surgical changes, and verify goals.
 - Open critical findings beat new feature work unless the owner accepts the risk.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
@@ -41,8 +44,8 @@ When starting or reviewing a project, add these checks:
 1. Which source is current?
 2. Which SPEC sections are historical?
 3. Which work is active, future, or archived?
-4. What review-worthy development unit is active?
-5. What evidence proves this unit?
+4. What work packet and review-worthy development units are active?
+5. What evidence makes this packet evidence-ready?
 6. What tests were not run?
 7. What is partial or degraded?
 8. What owner decision is needed?

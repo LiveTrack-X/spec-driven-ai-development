@@ -30,17 +30,22 @@ authority.
 - Update docs or state which docs were checked and why no update was needed.
 - Treat critical review findings, failing tests, security regressions, and release blockers as higher priority than new features.
 - For release or production readiness, require migration, security, backup/restore, monitoring, rollback, and manual evidence as applicable.
+- Default to Level 2 Work Packet Autonomy for normal Standard SDAD work.
 - Work in review-worthy development units, not micro-approval steps.
-- Continue autonomously inside the approved unit until evidence is ready.
+- Continue autonomously inside the approved unit or work packet until evidence
+  is ready.
 - Stop for owner input only when scope expands, Q5 risk changes, destructive or
   irreversible action is needed, an owner-controlled decision is required,
   verification is blocked, or evidence conflicts with the plan.
+- Implementation discipline guards autonomy: surface assumptions, prefer the
+  simplest working design, make surgical changes, and tie every step to
+  verification.
 
 ## Response Expectations
 
-When summarizing work, include changed files, tests run, docs checked, remaining
-risks, incomplete work, owner decisions needed, and the review-worthy unit
-completed.
+When summarizing work, include autonomy level used, work packet completed,
+evidence-ready units, changed files, tests run, docs checked, remaining risks,
+incomplete work, owner decisions needed, and owner acceptance status.
 
 ## Save-State Update Triggers
 

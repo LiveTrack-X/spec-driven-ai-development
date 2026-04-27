@@ -8,9 +8,14 @@ creates stale authority, which is worse than having no workflow.
 ## The Cost
 
 Standard and Full SDAD require a small maintenance pass at the end of every
-review-worthy development unit, not after every micro-task.
+work packet or handoff, not after every micro-task. If a packet contains
+multiple review-worthy units, one consolidated maintenance pass is usually
+enough.
 
-Before handoff or owner acceptance, update or explicitly check:
+A review-worthy development unit can be evidence-ready inside the packet before
+the whole packet reaches owner acceptance.
+
+Before handoff, owner checkpoint, or session end, update or explicitly check:
 
 - `SPEC/SPEC-COMPLETE.md` when product behavior, implementation status, scope,
   constraints, or acceptance criteria changed,
@@ -26,22 +31,26 @@ Before handoff or owner acceptance, update or explicitly check:
 If no file needs a content change, the handoff must say which control files were
 checked and why no update was needed.
 
-## End-Of-Loop Rule
+## End-Of-Packet Rule
 
-Every SDAD loop ends at a review-worthy unit boundary:
+Every SDAD loop should end at a work-packet or handoff boundary:
 
 ```text
-Review-worthy unit -> Build -> Review -> Evidence -> Owner decision -> Update control files
+Work packet -> Build unit(s) -> Review -> Evidence-ready -> Owner checkpoint -> Update control files
 ```
 
-Do not claim completion while control files are stale.
+Do not stop after every small task just to update documents. Also do not hand
+off while control files are stale. Do not claim completion while control files are stale.
 
-Completion requires:
+Use two states:
 
-- evidence,
-- owner acceptance or requested changes,
-- updated TODO/review/SPEC state,
-- known stale items explicitly named.
+- `AI-complete / evidence-ready`: evidence exists and stale files have been
+  updated or explicitly named.
+- `Owner-accepted`: the owner has accepted, rejected, revised, or deferred the
+  packet at a checkpoint.
+
+Final completion requires evidence, owner acceptance or requested changes,
+updated TODO/review/SPEC state, and known stale items explicitly named.
 
 ## Save-State Update Triggers
 
@@ -69,7 +78,7 @@ If this maintenance cost is too high, choose a smaller scale:
 
 - One-shot prompt: no persistent files.
 - Mini SDAD: one instruction file and a short handoff.
-- Standard SDAD: core control files kept current every loop.
+- Standard SDAD: core control files kept current at packet or handoff boundaries.
 - Full SDAD: core files plus review, ADRs, release/risk gates, and stronger
   documentation consistency.
 

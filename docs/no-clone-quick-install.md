@@ -55,7 +55,8 @@ when repeated pain, context loss, risk, or multiple sessions appear.
 
 Do not create Standard or Full SDAD files unless you will keep them current.
 
-At the end of every Standard or Full SDAD loop, check and update:
+At the end of every Standard or Full SDAD work packet, handoff, or session,
+check and update:
 
 - `SPEC/SPEC-COMPLETE.md`,
 - `docs/TODO-Open-Items.md`,
@@ -68,9 +69,10 @@ At the end of every Standard or Full SDAD loop, check and update:
 If no file needs a content change, state which files were checked and why no
 update was needed.
 
-Mini SDAD still has a completion gate: changed files, check evidence,
-limitations or unverified behavior, and owner acceptance must be shown before a
-slice is called done.
+Mini SDAD still has a completion gate: changed files, check evidence, and
+limitations or unverified behavior must be shown before a slice is called
+evidence-ready. Owner acceptance is still required before final done unless the
+owner delegates that acceptance policy.
 
 If this cost is too high, choose One-shot Prompt or Mini SDAD instead.
 
@@ -161,6 +163,21 @@ Choose:
 Override rules beat raw yes-counts. When unsure, choose the smaller scale only
 if no Q5 risk exists, and explain why.
 
+Step 0.5 - Choose autonomy before implementation.
+
+Use these defaults unless I say otherwise:
+- One-shot prompt -> no persistent autonomy contract.
+- Mini SDAD -> Level 1 Unit Autonomy.
+- Standard SDAD -> Level 2 Work Packet Autonomy.
+- Full SDAD or Q5 risk -> Level 2 for implementation, with Level 4 gates for
+  release, migration, destructive actions, data/auth/money/security decisions,
+  rollback, and production claims.
+
+A work packet may contain one or more review-worthy development units. Do not
+ask me to approve every micro-task or every evidence-ready unit inside an
+approved packet. Continue until the packet reaches a checkpoint or a stop
+condition appears.
+
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
 
@@ -208,15 +225,15 @@ project:
 4. create or update docs/TODO-Open-Items.md,
 5. create or update review-findings.md,
 6. ask me for product pain, smallest useful version, non-goals, risks,
-   owner-controlled decisions, the first review-worthy development unit, and
-   evidence required for completion.
+   owner-controlled decisions, the first work packet, the review-worthy units
+   inside it, and evidence required for completion.
 
 A review-worthy development unit may contain multiple related small tasks. It
 should be large enough that review has meaning, but small enough to verify in one
 handoff. Do not stop for owner approval after every micro-task inside an
-approved unit.
+approved unit or work packet.
 
-Proceed autonomously inside the approved unit until evidence is ready.
+Proceed autonomously inside the approved work packet until evidence is ready.
 Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
 or irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or the requested work conflicts with current evidence.
@@ -226,19 +243,22 @@ Completion requires evidence, not AI confidence.
 
 For Mini SDAD at loop end, do not check SPEC-COMPLETE, TODO, review-findings, or
 ADRs unless the project has escalated. Report the active task, changed files,
-check evidence, limitations or unverified behavior, owner acceptance, and whether
-to escalate.
+check evidence, limitations or unverified behavior, evidence-ready status, owner
+decisions or acceptance needed, and whether to escalate.
 
 For Standard or Full SDAD at loop end, check whether SPEC-COMPLETE, TODO,
-review-findings, rules, or ADRs must be updated. If nothing changes, say which
-files were checked and why no update was needed.
+review-findings, rules, or ADRs must be updated at the work-packet or handoff
+boundary. If nothing changes, say which files were checked and why no update was
+needed.
 
 Update save-state.md when a session pauses or ends, handoff is expected, owner
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
 
-For Mini SDAD, do not call a unit done until changed files, check evidence,
-limitations or unverified behavior, and owner acceptance are shown.
+For Mini SDAD, an AI may call a unit evidence-ready when changed files, check
+evidence, and limitations or unverified behavior are shown. Do not call final
+completion done until owner acceptance is shown or the owner has explicitly
+delegated the acceptance policy.
 ```
 
 ## Option 2: One-Paste PowerShell Installer
@@ -322,9 +342,9 @@ Open your AI coding tool in the target project and say:
 ```text
 Read the installed SPEC-Driven AI Development instruction file.
 Bootstrap this project with the first active SPEC slice.
-Define the first review-worthy development unit.
+Define the first low-intervention work packet and its review-worthy units.
 Ask me for product pain, smallest useful version, non-goals, risks,
-owner-controlled decisions, and evidence required for completion.
+owner-controlled decisions, autonomy level, and evidence required for completion.
 ```
 
 The first successful bootstrap should create or update:

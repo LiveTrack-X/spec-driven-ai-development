@@ -85,14 +85,27 @@ Why it matters: non-coding owners need clear supervision points. Large AI
 patches hide mistakes and make review expensive. But stopping after every
 micro-task creates too much owner intervention and prevents useful flow.
 
-Operational form: define the smallest useful review-worthy unit, acceptance
-evidence, and rollback or deferral path before implementation expands. The unit
-may batch multiple related small tasks when they belong to one reviewable
-objective.
+Operational form: define the smallest useful work packet, review-worthy units,
+acceptance evidence, and rollback or deferral path before implementation
+expands. The packet may batch multiple related units when they belong to one
+reviewable objective.
 
 Stop for the owner only when scope expands, risk posture changes, a destructive
 or irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or evidence conflicts with the plan.
+
+### 6a. Implementation Discipline Makes Autonomy Safe
+
+Rule: inside an approved work packet, the AI must surface assumptions, prefer
+simple designs, make surgical diffs, and tie each step to verification.
+
+Why it matters: low-intervention autonomy only works when the agent does not
+hide confusion, overbuild, touch unrelated code, or claim success without a
+goal-matched check.
+
+Operational form: local low-risk assumptions may be stated and verified without
+stopping. Product, risk, release, data, auth, money, destructive, or policy
+assumptions require owner input.
 
 ### 7. Open Findings Beat New Features
 

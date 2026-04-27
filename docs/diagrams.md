@@ -9,13 +9,14 @@ Scope: Visual overview of SPEC-driven AI development
 flowchart TD
     A["Prior pain or product need"] --> B["Owner + AI planning"]
     B --> C["Active SPEC with scope, non-goals, risks"]
-    C --> D["Review-worthy development unit"]
-    D --> E["Bounded implementation"]
-    E --> F["Cross-model or separate-session review"]
-    F --> G["Tests, docs, and reproducible evidence"]
-    G --> H["Owner decision: accept, revise, defer, reject"]
-    H --> I["Operating rule, TODO, finding, ADR, or archive update"]
-    I --> C
+    C --> D["Work packet"]
+    D --> E["Review-worthy development unit(s)"]
+    E --> F["Bounded implementation"]
+    F --> G["Cross-model or separate-session review"]
+    G --> H["Evidence-ready checkpoint"]
+    H --> I["Owner decision: accept, revise, defer, reject"]
+    I --> J["Operating rule, TODO, finding, ADR, or archive update"]
+    J --> C
 ```
 
 ## Source Of Truth Order
@@ -40,16 +41,31 @@ Inside SPECs, current active sections override older historical sections.
 flowchart LR
     O["Owner\nDirection, risk, acceptance"] --> P["Planning AI\nScope and non-goals"]
     P --> S["SPEC AI\nAcceptance criteria"]
-    S --> U["Review-worthy unit\nBatch related small tasks"]
-    U --> B["Builder AI\nBounded implementation"]
+    S --> W["Work packet\nAutonomy boundary"]
+    W --> U["Review-worthy unit\nBatch related small tasks"]
+    U --> B["Builder AI\nSimple surgical implementation"]
     B --> R["Reviewer AI\nBugs, drift, risks"]
     R --> Q["QA AI\nReproduction and evidence"]
-    Q --> M["Maintainer AI\nDocs, TODO, findings, handoff"]
+    Q --> M["Maintainer AI\nDocs, TODO, findings, checkpoint"]
     M --> O
 ```
 
 One AI session may perform more than one role, but risky work should receive an
 independent review or QA pass.
+
+## Autonomy Boundary
+
+```mermaid
+flowchart TD
+    O["Owner defines packet\nscope, risks, non-goals, evidence"] --> A["AI works autonomously"]
+    A --> B["Surface assumptions\nSimplify design\nMake surgical diffs\nVerify goals"]
+    B --> C{"Stop condition?"}
+    C -- "No" --> D["Continue inside packet"]
+    D --> B
+    C -- "Yes" --> E["Ask owner"]
+    B --> F["Evidence-ready checkpoint"]
+    F --> G["Owner accepts, revises, defers, or rejects"]
+```
 
 ## Control Files
 

@@ -52,11 +52,16 @@ historical sections.
 ## Work Style
 
 - Keep implementation units small enough to review and large enough to matter.
+- Default to Level 2 Work Packet Autonomy for normal Standard SDAD work.
 - Work in review-worthy development units, not micro-approval steps.
-- Continue autonomously inside the approved unit until evidence is ready.
+- Continue autonomously inside the approved unit or work packet until evidence
+  is ready.
 - Stop for owner input only when scope expands, Q5 risk changes, destructive or
   irreversible action is needed, an owner-controlled decision is required,
   verification is blocked, or evidence conflicts with the plan.
+- Implementation discipline guards autonomy: surface assumptions, prefer the
+  simplest working design, make surgical changes, and tie every step to
+  verification.
 - Do not claim completion without commands, results, docs checked, and remaining risks.
 - Use separate review or QA passes for high-risk changes.
 - Do not silently promote product notes, external references, or future ideas into active work.
@@ -67,7 +72,9 @@ historical sections.
 Every handoff must include:
 
 - changed files,
-- review-worthy unit completed,
+- autonomy level used,
+- work packet completed,
+- evidence-ready units,
 - behavior changed,
 - tests or commands run,
 - docs checked or updated,
@@ -75,7 +82,8 @@ Every handoff must include:
 - remaining risks,
 - partial/degraded/unverified behavior,
 - what is not complete,
-- owner decisions needed.
+- owner decisions needed,
+- owner acceptance status.
 
 ## Save-State Update Triggers
 

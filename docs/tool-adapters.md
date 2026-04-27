@@ -6,8 +6,8 @@ Scope: How to use SPEC-Driven AI Development across AI coding tools
 This repository is tool-neutral. Codex skills are one delivery format, not the
 method itself. Use the adapter that matches the AI coding environment.
 
-Each adapter carries the same source-of-truth, evidence, handoff, and
-`save-state.md` update trigger rules.
+Each adapter carries the same source-of-truth, evidence, work-packet autonomy,
+implementation discipline, handoff, and `save-state.md` update trigger rules.
 
 ## Supported Adapters
 
@@ -53,6 +53,9 @@ Each adapter keeps only the high-signal operating rules:
 - implicit rules made explicit,
 - TODO/review ledger separation,
 - documentation consistency checks,
+- work-packet autonomy instead of micro-approval,
+- implementation discipline for assumptions, simplicity, surgical diffs, and
+  verification,
 - release/risk gate reminders,
 - owner decision control.
 

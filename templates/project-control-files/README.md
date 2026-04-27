@@ -9,6 +9,8 @@ This project uses owner-supervised, SPEC-driven AI development.
 - The owner controls direction and final acceptance.
 - AI agents help plan, specify, implement, review, and verify.
 - Completion requires evidence: code, tests, docs, and reproducible commands.
+- Work happens in bounded work packets, not micro-approval steps.
+- AI-complete means evidence-ready; owner-accepted is a separate checkpoint.
 
 ## Start Here
 

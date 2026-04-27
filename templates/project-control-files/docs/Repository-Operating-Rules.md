@@ -54,11 +54,23 @@ implementation unless reaffirmed in the active path.
 
 Do not stop for owner approval after every micro-task.
 
+Default to Level 2 Work Packet Autonomy for normal Standard SDAD work: define a
+bounded work packet, complete the review-worthy units inside it, then hand off a
+checkpoint summary. Use Level 4 gates for release, migration, destructive
+actions, data/auth/money/security decisions, rollback, and production claims.
+
 Before implementation, identify the current review-worthy development unit. It
 may contain multiple related TODOs or small edits, but it must stay inside one
 bounded objective that can be reviewed in one handoff.
 
-Proceed autonomously inside the approved unit until evidence is ready.
+Proceed autonomously inside the approved unit or work packet until evidence is
+ready. Mark units as `AI-complete / evidence-ready`; do not call the packet
+`Owner-accepted` until the owner checkpoint happens or the owner has delegated
+that acceptance policy.
+
+Implementation discipline guards autonomy: surface assumptions, prefer the
+simplest working design, make surgical changes, and tie every step to
+verification.
 
 Stop and ask the owner only when:
 
@@ -77,6 +89,7 @@ Stop and ask the owner only when:
 - Active beats interesting: future ideas and product notes are not active scope.
 - Small verified slices beat large unverified progress.
 - Review-worthy units beat micro-approval.
+- Implementation discipline makes autonomy safe.
 - Open critical findings beat feature expansion unless the owner accepts the risk.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
@@ -129,6 +142,8 @@ If the project has stable, beta, rewrite, migration, or platform lanes, document
 
 Every handoff must include:
 
+- autonomy level used,
+- work packet completed,
 - review-worthy unit completed,
 - changed files,
 - behavior changed,
@@ -141,7 +156,9 @@ Every handoff must include:
 
 ## End-Of-Loop Maintenance Rule
 
-Every SDAD loop ends with a control-file update check.
+Every work packet, handoff, or session end ends with a control-file update
+check. Do not stop after every micro-task just to update documents, but do not
+hand off stale control files.
 
 Update `SPEC/SPEC-COMPLETE.md` when behavior, implementation status, scope,
 constraints, or acceptance criteria changed.

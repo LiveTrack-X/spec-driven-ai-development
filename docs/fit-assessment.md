@@ -78,7 +78,10 @@ Recommended control files:
 Required review roles:
 Risk gates needed:
 Owner decisions needed before implementation:
-Smallest review-worthy development unit:
+Recommended autonomy level:
+First work packet:
+Review-worthy units inside packet:
+Implementation discipline risks:
 ```
 
 ## Reassessment

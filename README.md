@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.8` stable public release.
+Status: `1.0.9` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -60,6 +60,21 @@ Choose:
 Override rules beat raw yes-counts. When unsure, choose the smaller scale only
 if no Q5 risk exists, and explain why.
 
+Step 0.5 - Choose autonomy before implementation.
+
+Use these defaults unless I say otherwise:
+- One-shot prompt -> no persistent autonomy contract.
+- Mini SDAD -> Level 1 Unit Autonomy.
+- Standard SDAD -> Level 2 Work Packet Autonomy.
+- Full SDAD or Q5 risk -> Level 2 for implementation, with Level 4 gates for
+  release, migration, destructive actions, data/auth/money/security decisions,
+  rollback, and production claims.
+
+A work packet may contain one or more review-worthy development units. Do not
+ask me to approve every micro-task or every evidence-ready unit inside an
+approved packet. Continue until the packet reaches a checkpoint or a stop
+condition appears.
+
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
 
@@ -97,34 +112,37 @@ to paste the raw file content from the source URL, use the terminal installer, o
 clone/download the repository manually.
 
 Ask me for product pain, smallest useful version, non-goals, risks,
-owner-controlled decisions, the first review-worthy development unit, and
-evidence required for completion.
+owner-controlled decisions, the first work packet, the review-worthy units
+inside it, and evidence required for completion.
 
 A review-worthy development unit may contain multiple related small tasks. It
 should be large enough that review has meaning, but small enough to verify in one
 handoff. Do not stop for owner approval after every micro-task inside an
-approved unit.
+approved unit or work packet.
 
-Proceed autonomously inside the approved unit until evidence is ready.
+Proceed autonomously inside the approved work packet until evidence is ready.
 Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
 or irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or the requested work conflicts with current evidence.
 
 For Mini SDAD at loop end, do not check SPEC-COMPLETE, TODO, review-findings, or
 ADRs unless the project has escalated. Report the active task, changed files,
-check evidence, limitations or unverified behavior, owner acceptance, and whether
-to escalate.
+check evidence, limitations or unverified behavior, evidence-ready status, owner
+decisions or acceptance needed, and whether to escalate.
 
 For Standard or Full SDAD at loop end, check whether SPEC-COMPLETE, TODO,
-review-findings, rules, or ADRs must be updated. If nothing changes, say which
-files were checked and why no update was needed.
+review-findings, rules, or ADRs must be updated at the work-packet or handoff
+boundary. If nothing changes, say which files were checked and why no update was
+needed.
 
 Update save-state.md when a session pauses or ends, handoff is expected, owner
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
 
-For Mini SDAD, do not call a unit done until changed files, check evidence,
-limitations or unverified behavior, and owner acceptance are shown.
+For Mini SDAD, an AI may call a unit evidence-ready when changed files, check
+evidence, and limitations or unverified behavior are shown. Do not call final
+completion done until owner acceptance is shown or the owner has explicitly
+delegated the acceptance policy.
 
 Do not overwrite existing files without showing me the proposed changes.
 Completion requires evidence, not AI confidence.
@@ -178,8 +196,8 @@ Small project? Start with [Mini SDAD](docs/mini-sdad.md), not the full workflow.
 
 SDAD files are not write-once setup files.
 
-If you choose Standard or Full SDAD, every loop must end by checking and updating
-the control files:
+If you choose Standard or Full SDAD, every work packet or handoff must end by
+checking and updating the control files:
 
 - `SPEC/SPEC-COMPLETE.md`,
 - `docs/TODO-Open-Items.md`,
@@ -192,15 +210,31 @@ the control files:
 If no file needs a content change, the handoff must say which files were checked
 and why no update was needed. Do not claim completion while control files are stale.
 
-Mini SDAD also has a completion gate: changed files, checks or manual proof,
-limitations, and owner acceptance must be shown before a slice is called done.
+Mini SDAD also has a completion gate: changed files, checks or manual proof, and
+limitations must be shown before a slice is called evidence-ready. Owner
+acceptance is still required before final done unless the owner delegates that
+acceptance policy.
 
 If that cost is too high, choose One-shot Prompt or [Mini SDAD](docs/mini-sdad.md).
 See [docs/maintenance-cost.md](docs/maintenance-cost.md).
 
-## Review-Worthy Development Units
+## Work Packets And Autonomy Levels
 
-SDAD should not stop after every micro-task.
+SDAD should not stop after every micro-task. Too many owner checkpoints create
+approval fatigue and make the workflow harder to use.
+
+Use [docs/autonomy-levels.md](docs/autonomy-levels.md) to choose how much the AI
+may do before asking again.
+
+Default:
+
+- Mini SDAD: Level 1 Unit Autonomy.
+- Standard SDAD: Level 2 Work Packet Autonomy.
+- Full SDAD or Q5 risk: Level 2 for implementation, with Level 4 release/risk
+  gates.
+
+A work packet is a bounded container for one or more review-worthy development
+units. The owner approves the packet boundary, not every small task inside it.
 
 Before implementation, define a review-worthy development unit:
 
@@ -210,9 +244,19 @@ Before implementation, define a review-worthy development unit:
 - one risk-domain hardening pass,
 - or one small feature path from behavior to evidence.
 
-The unit may include multiple related TODOs. The AI should continue inside that
-approved boundary and hand off when the unit has changed files, checks, known
-limits, and reviewable evidence.
+The unit may include multiple related TODOs. The AI should continue inside the
+approved work packet and hand off when the packet has changed files, checks,
+known limits, and reviewable evidence.
+
+Use two states:
+
+- `AI-complete / evidence-ready`: changed files, checks, docs checked, limits,
+  and risks are shown.
+- `Owner-accepted`: the owner accepts, rejects, revises, or defers at a
+  checkpoint.
+
+Evidence-ready units may continue inside the approved packet. Final completion
+requires owner acceptance or an explicitly delegated acceptance policy.
 
 Ask the owner only when:
 
@@ -289,10 +333,14 @@ Completion is not decided by AI. Completion is decided by evidence:
 - risks are named,
 - the owner accepts the result.
 
+Inside an approved work packet, AI autonomy is guarded by implementation
+discipline: surface assumptions, keep the design simple, make surgical changes,
+and tie every step to verification.
+
 ## The Loop
 
 ```text
-Pain -> SPEC -> Review-worthy unit -> Build -> Review -> Evidence -> Owner decision -> Rule
+Pain -> SPEC -> Work packet -> Review-worthy unit(s) -> Build -> Review -> Evidence-ready -> Owner checkpoint -> Rule
 ```
 
 This loop repeats every iteration. The goal is not only to fix problems, but to
@@ -301,13 +349,14 @@ turn repeated problems into durable rules, templates, tests, or review gates.
 ```mermaid
 flowchart TD
     A["Pain or product need"] --> B["Active SPEC"]
-    B --> C["Review-worthy development unit"]
-    C --> D["Bounded build"]
-    D --> E["Review"]
-    E --> F["Evidence"]
-    F --> G["Owner decision"]
-    G --> H["Rule, TODO, finding, ADR, or archive update"]
-    H --> B
+    B --> C["Work packet"]
+    C --> D["Review-worthy development unit(s)"]
+    D --> E["Bounded build"]
+    E --> F["Review"]
+    F --> G["Evidence-ready"]
+    G --> H["Owner checkpoint"]
+    H --> I["Rule, TODO, finding, ADR, or archive update"]
+    I --> B
 ```
 
 ## Why This Is Different
@@ -336,6 +385,7 @@ Most workflows:
 This workflow:
 
 ```text
+AI-complete = evidence-ready
 Done = verified + documented + accepted
 ```
 
@@ -350,13 +400,13 @@ Fastest possible start:
 ```text
 Use the SPEC-driven AI development workflow from this repository.
 Extract my control model and create the first active SPEC slice.
-Then define the first review-worthy development unit.
+Then define the first low-intervention work packet and its review-worthy units.
 ```
 
 Then follow the loop:
 
 ```text
-Pain -> SPEC -> Review-worthy unit -> Build -> Review -> Evidence -> Owner decision -> Rule
+Pain -> SPEC -> Work packet -> Review-worthy unit(s) -> Build -> Review -> Evidence-ready -> Owner checkpoint -> Rule
 ```
 
 For step-by-step setup, use [docs/getting-started.md](docs/getting-started.md).
@@ -447,6 +497,8 @@ workflow fits your project.
 - Not a replacement for tests or reviews.
 - Not a guarantee that AI output is correct.
 - Not a reason to skip owner decisions.
+- Not permission for speculative abstractions, drive-by refactors, or unrelated
+  cleanup.
 
 ## Core Rules
 
@@ -471,6 +523,8 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid
 - [docs/fit-assessment.md](docs/fit-assessment.md): project fit checklist
 - [docs/maintenance-cost.md](docs/maintenance-cost.md): loop-end control file update cost
+- [docs/autonomy-levels.md](docs/autonomy-levels.md): work packets and low-intervention autonomy
+- [docs/implementation-discipline.md](docs/implementation-discipline.md): assumptions, simplicity, surgical diffs, and verification
 - [docs/diagrams.md](docs/diagrams.md): workflow diagrams
 - [docs/tool-adapters.md](docs/tool-adapters.md): tool-specific instruction files
 - [docs/field-notes/documentation-governance-method.md](docs/field-notes/documentation-governance-method.md): documentation-governance field pattern

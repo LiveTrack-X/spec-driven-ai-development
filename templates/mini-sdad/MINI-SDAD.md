@@ -26,6 +26,11 @@ Implement only the requested task or the current review-worthy unit.
 A review-worthy unit may contain multiple related small tasks. It should be large
 enough that review has meaning, but small enough to verify in one handoff.
 
+Default autonomy is Level 1 Unit Autonomy: complete the approved unit, report
+evidence-ready status, and ask only at the checkpoint or when a stop condition
+appears. Use Level 2 Work Packet Autonomy only when the owner names a packet
+with multiple related units.
+
 Do not expand into future ideas, rewrites, broad cleanup, or unrelated refactors
 unless the owner explicitly promotes them into active scope.
 
@@ -43,7 +48,7 @@ Stop and ask the owner only when:
 
 ## Mini Unit Completion
 
-A Mini SDAD unit is done only when:
+A Mini SDAD unit is evidence-ready only when:
 
 - the active task is restated,
 - changed files are listed,
@@ -52,18 +57,20 @@ A Mini SDAD unit is done only when:
 - user-visible behavior or output is described,
 - limitations and unverified behavior are named,
 - unrelated scope was not added,
-- the owner accepts the result.
+- owner decisions or acceptance needed are named.
 
 AI confidence is not completion.
 
-Not done when:
+Not evidence-ready when:
 
 - the AI only says it is done,
 - checks were not run and the gap is hidden,
 - known uncertainty is not named,
-- unrelated changes were made without owner approval,
-- the owner has not explicitly accepted the result. Requested changes or
-  deferred decisions mean the unit is not done.
+- unrelated changes were made without owner approval.
+
+Final done still requires owner acceptance unless the owner has explicitly
+delegated the acceptance policy. Requested changes or deferred decisions mean
+the unit is not done.
 
 ## Do Not
 
@@ -80,6 +87,7 @@ At the end of work, report:
 - active task,
 - what changed,
 - how it was checked,
+- whether it is evidence-ready,
 - what remains uncertain,
 - owner decision needed,
 - whether the project should stay Mini SDAD or escalate.

@@ -73,17 +73,30 @@ Claude Code means the local/CLI coding tool, not Claude.ai chat.
 
 - The owner decides product direction, risk tolerance, priorities, and final
   acceptance.
-- The AI tool helps create SPECs, implement review-worthy units, review work, update
-  docs, and produce evidence.
+- The AI tool helps create SPECs, implement work packets and review-worthy
+  units, review work, update docs, and produce evidence.
 - Completion is accepted only when the evidence is clear enough for the owner to
   trust the result.
 
 You do not need to write code yourself to use this workflow. You do need to make
 clear decisions and reject vague completion claims.
 
-The owner should not need to approve every micro-task. Once a review-worthy
-development unit is approved, the AI should continue inside that boundary until
-it can hand off changed files, checks, known limits, and evidence.
+The owner should not need to approve every micro-task or every evidence-ready
+unit. Once a work packet is approved, the AI should continue inside that
+boundary until it can hand off changed files, checks, known limits, and
+evidence at a checkpoint.
+
+Use two states:
+
+- `AI-complete / evidence-ready`: the AI has changed files, run or explained
+  checks, updated or checked docs, and named limits.
+- `Owner-accepted`: the owner accepts, rejects, revises, or defers the work at a
+  checkpoint.
+
+For most Standard SDAD work, use Level 2 Work Packet Autonomy from
+[autonomy-levels.md](autonomy-levels.md): the owner approves the packet boundary,
+then the AI works through the included units without asking after each small
+task.
 
 ## No-Clone Quick Install
 
@@ -122,7 +135,7 @@ Use the SPEC-driven AI development workflow from
 https://github.com/LiveTrack-X/spec-driven-ai-development.
 
 I am the owner. Help me create the first active SPEC slice and the first
-review-worthy development unit.
+low-intervention work packet.
 
 Start by asking for:
 1. the product pain or goal,
@@ -130,8 +143,9 @@ Start by asking for:
 3. non-goals,
 4. risks,
 5. owner-controlled decisions,
-6. the first review-worthy development unit,
-7. evidence required before I accept completion.
+6. the first work packet,
+7. the review-worthy units inside that packet,
+8. evidence required before I accept completion.
 
 Then create the first project control files:
 - AGENTS.md or equivalent AI instruction file,
@@ -188,7 +202,7 @@ Then start your AI tool inside the target project and say:
 Read the installed SPEC-Driven AI Development instructions.
 Bootstrap this project into an owner-supervised, SPEC-driven workflow.
 Create the first active SPEC slice and the required control files.
-Define the first review-worthy development unit.
+Define the first work packet and the review-worthy development units inside it.
 ```
 
 ### Path 3: Install The Codex Skill
@@ -216,17 +230,18 @@ $ai-spec-project-start use this workflow to bootstrap my project.
 
 ## First 10 Minutes
 
-After setup, ask the AI for the first review-worthy development unit, not the
-whole project and not a tiny micro-task.
+After setup, ask the AI for the first work packet, not the whole project and not
+a tiny micro-task.
 
 Good first request:
 
 ```text
-Create the first review-worthy development unit for the smallest useful version.
+Create the first work packet for the smallest useful version.
 Keep future ideas in backlog or non-goals.
-Batch related small tasks until the unit is meaningful to review, but keep it
-small enough to verify in one handoff.
-Define the evidence required before I can accept this unit as complete.
+Batch related review-worthy units until the packet is meaningful to review, but
+keep it small enough to verify in one checkpoint.
+Use Level 2 Work Packet Autonomy unless a risk gate requires owner input.
+Define the evidence required before I can accept this packet as complete.
 ```
 
 The first useful output should include:
@@ -238,7 +253,7 @@ The first useful output should include:
 - known risks,
 - owner-controlled decisions,
 - active SPEC slice,
-- first review-worthy development unit,
+- first work packet and review-worthy units,
 - TODO list,
 - review and verification plan,
 - docs that must be created or updated.
@@ -248,24 +263,25 @@ The first useful output should include:
 Use the same loop every session:
 
 ```text
-Pain -> SPEC -> Build -> Review -> Evidence -> Owner decision -> Rule
+Pain -> SPEC -> Work packet -> Build -> Review -> Evidence-ready -> Owner checkpoint -> Rule
 ```
 
-In practice, the build/review boundary should be a review-worthy development
-unit. Do not stop after every micro-task inside the approved unit.
+In practice, the build/review boundary should be a work packet containing one or
+more review-worthy development units. Do not stop after every micro-task inside
+the approved packet.
 
 ### Build Prompt
 
 ```text
 Read the active docs and current SPEC.
-Implement the next review-worthy development unit. You may complete multiple
-related TODOs inside that approved unit.
-Do not stop for owner approval after every micro-task. Stop only if scope would
-expand, Q5 risk changes, destructive or irreversible action is needed, an
-owner-controlled decision is required, verification is blocked, or current
-evidence conflicts with the plan.
-Before handoff, show changed files, verification commands, docs checked,
-remaining risks, and what is not complete.
+Implement the next approved work packet. You may complete multiple related
+review-worthy units inside that packet.
+Do not stop for owner approval after every micro-task or every evidence-ready
+unit. Stop only if scope would expand, Q5 risk changes, destructive or
+irreversible action is needed, an owner-controlled decision is required,
+verification is blocked, or current evidence conflicts with the plan.
+Before checkpoint handoff, show changed files, verification commands, docs
+checked, evidence-ready units, remaining risks, and what is not complete.
 ```
 
 ### Review Prompt
@@ -286,12 +302,12 @@ partial or unverified behavior, and any repeated pain that should become a rule.
 If no control file needs a content change, state which files were checked and why.
 ```
 
-## Owner Acceptance Checklist
+## Owner Checkpoint Checklist
 
-Before accepting a review-worthy development unit as "done", check:
+Before accepting a work packet as "done", check:
 
 - Is the active SPEC slice clear?
-- Was the completed work a meaningful review unit, not just a micro-task?
+- Was the completed work a meaningful packet, not just a micro-task?
 - Did the AI stay inside the active scope?
 - Are code changes listed?
 - Did tests, builds, lint, or manual checks run?
@@ -305,14 +321,18 @@ Before accepting a review-worthy development unit as "done", check:
 If any answer is unclear, do not accept completion yet. Ask for evidence or move
 the item into `docs/TODO-Open-Items.md` or `review-findings.md`.
 
-For Mini SDAD, a unit is not done until the active task, changed files, check
-evidence, limitations or unverified behavior, and owner acceptance are shown.
+For Mini SDAD, a unit may be called evidence-ready when the active task, changed
+files, check evidence, and limitations or unverified behavior are shown. It is
+not finally done until owner acceptance is shown or the owner has explicitly
+delegated the acceptance policy.
 
 ## Common Mistakes
 
 - Starting from old notes instead of the current active SPEC.
 - Asking AI to build the whole project at once.
-- Stopping after every micro-task instead of a review-worthy development unit.
+- Stopping after every micro-task instead of a work packet or review-worthy
+  development unit.
+- Treating evidence-ready as owner-accepted.
 - Treating confident AI language as completion.
 - Letting future ideas enter the active implementation unit.
 - Forgetting to update TODOs, review findings, or docs after work.

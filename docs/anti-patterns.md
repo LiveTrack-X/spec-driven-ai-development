@@ -136,3 +136,27 @@ Why it fails: owner supervision becomes ceremonial.
 
 Replace with: mark owner decisions before scope expansion, release claims, risk
 acceptance, and major tradeoffs.
+
+## 13. Speculative Complexity
+
+Symptom: the AI adds abstractions, configuration, generalized APIs, or defensive
+paths that were not required by the active SPEC.
+
+Why it fails: the owner receives more surface area to review, bugs hide in code
+that does not yet need to exist, and simple work becomes expensive to verify.
+
+Replace with: the smallest working design that satisfies the active SPEC and
+evidence criteria. If a larger design is useful later, record it as backlog or
+an owner decision.
+
+## 14. Drive-By Refactor
+
+Symptom: the AI edits adjacent code, comments, formatting, or old cleanup items
+while doing an otherwise bounded task.
+
+Why it fails: unrelated diffs make review harder and can break code the agent
+did not understand deeply enough.
+
+Replace with: surgical changes. Every changed line should trace to the active
+work packet, active SPEC, review finding, or cleanup caused by the current edit.
+Mention unrelated cleanup opportunities instead of performing them.

@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.9 - 2026-04-27
+
+- Added low-intervention autonomy levels and work packets so owners approve a
+  meaningful boundary instead of every micro-task or evidence-ready unit.
+- Split `AI-complete / evidence-ready` from `Owner-accepted` across README,
+  onboarding prompts, Mini SDAD, maintenance rules, adapters, templates, and the
+  Codex skill.
+- Added `docs/autonomy-levels.md` with Level 0-4 autonomy, stop conditions, and
+  checkpoint summaries.
+- Added `docs/implementation-discipline.md`, adapting compatible lessons from
+  Karpathy-inspired coding guidelines: surface assumptions, prefer simple
+  designs, make surgical changes, and verify goals.
+- Added anti-patterns for speculative complexity and drive-by refactors.
+
 ## 1.0.8 - 2026-04-27
 
 - Added review-worthy development units so AI agents batch related small tasks

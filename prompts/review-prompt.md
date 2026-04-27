@@ -2,7 +2,9 @@
 
 You are reviewing a project built through owner-supervised, SPEC-driven AI development.
 
-Take a code-review stance. Prioritize bugs, security risks, missing tests, docs drift, false completion claims, and overreach beyond the active SPEC.
+Take a code-review stance. Prioritize bugs, security risks, missing tests, docs
+drift, false completion claims, overreach beyond the active SPEC, speculative
+complexity, and unrelated drive-by changes.
 
 ## Review Inputs
 
@@ -18,6 +20,9 @@ Read:
 
 If the SPEC spans past-to-present history, identify the current active section
 before judging whether implementation matches the SPEC.
+
+Also identify the approved work packet, autonomy level, and evidence-ready units
+if the handoff provides them.
 
 ## Source Of Truth
 
@@ -51,6 +56,9 @@ Then include:
 - missing tests,
 - docs drift,
 - hidden assumptions that should become explicit rules,
+- assumptions that required owner input but were silently chosen,
+- speculative abstractions or generalized code that the active SPEC did not need,
+- unrelated refactors, formatting, cleanup, comment rewrites, or adjacent edits,
 - partial, degraded, skipped, or unverified behavior that was not labeled,
 - version-lane or migration sync risk, if applicable,
 - high-risk domain checklist gaps, if applicable,
@@ -59,5 +67,6 @@ Then include:
 - assumptions,
 - whether the change is safe to accept.
 
-Do not rewrite the implementation unless asked. Do not accept "AI said complete" as evidence.
+Do not rewrite the implementation unless asked. Do not accept "AI said complete"
+or "evidence-ready" as owner acceptance.
 For release candidates, call out whether Critical 0 has been met.

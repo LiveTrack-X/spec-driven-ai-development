@@ -7,7 +7,9 @@ The handoff must let another AI session continue without guessing.
 ## Include
 
 - current goal,
-- review-worthy development unit completed,
+- autonomy level used,
+- work packet completed,
+- evidence-ready units,
 - changed files,
 - behavior changed,
 - tests and commands run,
@@ -23,6 +25,7 @@ The handoff must let another AI session continue without guessing.
 - release or production-readiness gate status, if applicable,
 - next recommended slice,
 - what is not complete,
+- owner acceptance status,
 - owner decisions needed.
 
 ## Rules
@@ -31,7 +34,11 @@ The handoff must let another AI session continue without guessing.
 - Do not let older SPEC history override newer active SPEC instructions.
 - Do not rely on obvious-but-unwritten assumptions.
 - Do not request owner approval after every micro-task when the work stayed
-  inside the approved review-worthy unit.
+  inside the approved work packet.
+- Do not treat evidence-ready as owner-accepted unless the owner delegated that
+  acceptance policy.
+- Do not include speculative abstractions, drive-by refactors, or unrelated
+  cleanup in the packet handoff as if they were requested work.
 - Do not bury blockers in prose. Put active defects in `review-findings.md`.
 - Do not leave future ideas mixed into active implementation work.
 - Do not claim release readiness while Critical findings remain open.

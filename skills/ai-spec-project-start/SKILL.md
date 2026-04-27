@@ -52,8 +52,9 @@ agent behavior, or prevent stale SPEC/history mistakes, load
 
 When the user asks whether SDAD fits a project, whether a project is ready for
 this workflow, or what to add before 1.0-style release, route to the public docs:
-`docs/fit-assessment.md`, `docs/anti-patterns.md`, `docs/diagrams.md`, and the
-ADR template under `templates/project-control-files/SPEC/adr/`.
+`docs/fit-assessment.md`, `docs/anti-patterns.md`, `docs/diagrams.md`,
+`docs/autonomy-levels.md`, `docs/implementation-discipline.md`, and the ADR
+template under `templates/project-control-files/SPEC/adr/`.
 
 ## Core Assumption
 
@@ -63,7 +64,9 @@ that the owner can still govern development through:
 
 - clear SPECs,
 - explicit non-goals,
+- work packets and autonomy levels,
 - review-worthy development units,
+- implementation discipline,
 - cross-model review,
 - reproducible tests,
 - active TODO/review ledgers,
@@ -96,13 +99,21 @@ Offer deterministic fallback options: retry with network access, ask the user
 to paste the raw file content from the source URL, use the terminal installer,
 or clone/download the repository manually.
 Bootstrap the first active SPEC slice and project control files.
-Ask for the first review-worthy development unit. It may contain multiple
-related small tasks and should be large enough that review has meaning, but
-small enough to verify in one handoff.
-Proceed autonomously inside the approved unit until evidence is ready. Stop for
-owner input only when scope expands, Q5 risk changes, destructive or irreversible
-action is needed, an owner-controlled decision is required, verification is
-blocked, or evidence conflicts with the plan.
+Ask for the first work packet and the review-worthy development units inside
+it. A unit may contain multiple related small tasks and should be large enough
+that review has meaning, but small enough to verify in one checkpoint.
+Choose autonomy before implementation. Default to Level 1 Unit Autonomy for
+Mini SDAD, Level 2 Work Packet Autonomy for Standard SDAD, and Level 4 gates for
+Full SDAD release, migration, destructive actions, data/auth/money/security
+decisions, rollback, and production claims.
+Proceed autonomously inside the approved unit or work packet until evidence is
+ready. Do not stop after every micro-task or every evidence-ready unit. Stop for
+owner input only when scope expands, Q5 risk changes, destructive or
+irreversible action is needed, an owner-controlled decision is required,
+verification is blocked, or evidence conflicts with the plan.
+Use implementation discipline inside the packet: surface assumptions, prefer the
+simplest working design, make surgical changes, and tie every step to
+verification.
 At loop end, update save-state.md when work pauses, handoff is expected,
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
@@ -132,6 +143,17 @@ offer terminal installers only as an optional path.
 
 Do not stop development after every micro-task.
 
+Prefer low-intervention owner control:
+
+- Mini SDAD: Level 1 Unit Autonomy.
+- Standard SDAD: Level 2 Work Packet Autonomy.
+- Full SDAD or Q5 risk: Level 2 for implementation, with Level 4 gates for
+  release, migration, destructive actions, data/auth/money/security decisions,
+  rollback, and production claims.
+
+A work packet is a bounded container for one or more review-worthy development
+units. The owner approves the packet boundary, not every small task inside it.
+
 Before implementation, define a review-worthy development unit:
 
 - one user-visible workflow,
@@ -140,9 +162,26 @@ Before implementation, define a review-worthy development unit:
 - one risk-domain hardening pass,
 - or one small feature path from behavior to evidence.
 
-The unit may include multiple related TODOs. Continue inside the approved
-boundary until the unit can be reviewed with changed files, checks, known limits,
-and evidence.
+The unit may include multiple related TODOs. Continue inside the approved work
+packet until the packet can be reviewed with changed files, checks, known
+limits, and evidence.
+
+Use two states:
+
+- `AI-complete / evidence-ready`: changed files, checks, docs checked, limits,
+  and risks are shown.
+- `Owner-accepted`: the owner accepts, rejects, revises, or defers at a
+  checkpoint.
+
+Evidence-ready units may continue inside the approved packet. Final completion
+requires owner acceptance or an explicitly delegated acceptance policy.
+
+Inside the packet, enforce implementation discipline:
+
+- surface assumptions without hiding confusion,
+- prefer the simplest working design,
+- make surgical changes only,
+- tie each step to verification.
 
 Ask the owner only when:
 
@@ -189,21 +228,22 @@ Use this sequence:
 1. Prior project pain or product need
 2. Owner + AI planning conversation
 3. SPEC draft with scope, non-goals, risks, acceptance criteria
-4. Define a review-worthy development unit
-5. Builder AI implements the unit, including related small tasks inside scope
+4. Define a work packet and review-worthy development units
+5. Builder AI implements the packet, including related small tasks inside scope
 6. Separate AI/model/session reviews the result
-7. Tests, docs, and reproducible commands verify evidence
-8. Owner accepts, revises, defers, or rejects
-9. Lessons become operating rules, TODOs, or archived notes
+7. Tests, docs, and reproducible commands make units evidence-ready
+8. Owner checkpoint accepts, revises, defers, or rejects
+9. Lessons become operating rules, TODOs, ADRs, or archived notes
 ```
 
-Never collapse steps 4-7 into "AI said it is done." Completion is a decision
-based on evidence.
+Never collapse steps 4-7 into "AI said it is done." AI-complete means
+evidence-ready. Final completion is a decision based on evidence and owner
+acceptance.
 
 ## Control File Maintenance Cost
 
 Standard and Full SDAD control files are not write-once setup files. They must
-be checked and updated at the end of every loop.
+be checked and updated at the end of every work packet, handoff, or session.
 
 At loop end:
 
@@ -225,7 +265,8 @@ prompt instead.
 Mini SDAD loop-end behavior is smaller: do not check `SPEC/SPEC-COMPLETE.md`,
 `docs/TODO-Open-Items.md`, `review-findings.md`, or ADRs unless the project has
 escalated. For Mini, report the active task, changed files, check evidence,
-limitations or unverified behavior, owner acceptance, and whether to escalate.
+limitations or unverified behavior, evidence-ready status, owner decisions or
+acceptance needed, and whether to escalate.
 
 ## Save-State Update Triggers
 
@@ -243,7 +284,7 @@ update it, mark it stale, or archive it before handoff.
 
 ## Mini Unit Completion
 
-For Mini SDAD, do not call a unit done until:
+For Mini SDAD, do not call a unit evidence-ready until:
 
 - the active review-worthy unit is restated,
 - changed files are listed,
@@ -252,11 +293,13 @@ For Mini SDAD, do not call a unit done until:
 - user-visible behavior or output is described,
 - limitations and unverified behavior are named,
 - unrelated scope was not added,
-- the owner explicitly accepts the result.
+- owner decisions or acceptance needed are named.
 
-Not done when the AI only says it is done, checks are hidden, uncertainty is
-hidden, unrelated changes were made without owner approval, or the owner
-requests changes or defers the decision.
+Not evidence-ready when the AI only says it is done, checks are hidden,
+uncertainty is hidden, or unrelated changes were made without owner approval.
+Final done still requires owner acceptance unless the owner has explicitly
+delegated the acceptance policy. Requested changes or deferred decisions mean
+the unit is not done.
 
 ## First Conversation
 
@@ -267,10 +310,11 @@ Before writing code, extract the owner's control model:
 - What must the next AI session know before touching code?
 - Which decisions must remain owner-controlled?
 - What is the smallest useful result?
-- What is the first review-worthy development unit?
-- Which related small tasks should be batched into that unit?
+- What is the first work packet?
+- Which review-worthy units or related small tasks should be batched into that
+  packet?
 - What is explicitly not active work yet?
-- What evidence proves the unit is complete?
+- What evidence proves the packet is evidence-ready?
 
 If the owner has already given enough context, proceed and mark assumptions.
 
@@ -395,7 +439,7 @@ For a new project, produce a compact bootstrap rather than a huge master plan:
 3. non-goals,
 4. risk list,
 5. required control files,
-6. first active SPEC slice and review-worthy development unit,
+6. first active SPEC slice, work packet, and review-worthy development units,
 7. validation commands,
 8. review loop.
 
