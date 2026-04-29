@@ -167,16 +167,17 @@ Step 0.5 - Choose autonomy before implementation.
 
 Use these defaults unless I say otherwise:
 - One-shot prompt -> no persistent autonomy contract.
-- Mini SDAD -> Level 1 Unit Autonomy.
+- Mini SDAD -> Level 1 Unit Autonomy, treated as one small approved packet.
 - Standard SDAD -> Level 2 Work Packet Autonomy.
 - Full SDAD or Q5 risk -> Level 2 for implementation, with Level 4 gates for
   release, migration, destructive actions, data/auth/money/security decisions,
   rollback, and production claims.
 
 A work packet may contain one or more review-worthy development units. Do not
-ask me to approve every micro-task or every evidence-ready unit inside an
-approved packet. Continue until the packet reaches a checkpoint or a stop
-condition appears.
+ask me to approve every micro-task, every small SPEC item, or every
+evidence-ready unit inside an approved packet. A unit is an internal review and
+evidence slice, not a separate owner-approval boundary unless I say so. Continue
+until the packet reaches a checkpoint or a stop condition appears.
 
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
@@ -230,8 +231,8 @@ project:
 
 A review-worthy development unit may contain multiple related small tasks. It
 should be large enough that review has meaning, but small enough to verify in one
-handoff. Do not stop for owner approval after every micro-task inside an
-approved unit or work packet.
+handoff. Do not stop for owner approval after every micro-task or small SPEC
+item inside an approved work packet.
 
 Proceed autonomously inside the approved work packet until evidence is ready.
 Stop and ask me only when scope would expand, a Q5 risk changes, a destructive

@@ -42,7 +42,8 @@ implementation unless reaffirmed in the active path.
 
 ## Code Consistency Rules
 
-- Keep changes scoped to the active review-worthy development unit.
+- Keep changes scoped to the approved work packet and active review-worthy
+  development units.
 - Prefer additive changes unless a migration plan allows breaking changes.
 - Label scaffolds, placeholders, and dummy adapters in active docs and TODO.
 - Label skipped, degraded, partial, environment-limited, or unverified behavior.
@@ -61,10 +62,12 @@ actions, data/auth/money/security decisions, rollback, and production claims.
 
 Before implementation, identify the current review-worthy development unit. It
 may contain multiple related TODOs or small edits, but it must stay inside one
-bounded objective that can be reviewed in one handoff.
+bounded objective that can be reviewed in one handoff. The unit organizes review
+and evidence; it is not a separate owner-approval boundary while it stays inside
+the approved packet.
 
-Proceed autonomously inside the approved unit or work packet until evidence is
-ready. Mark units as `AI-complete / evidence-ready`; do not call the packet
+Proceed autonomously inside the approved work packet until evidence is ready.
+Mark units as `AI-complete / evidence-ready`; do not call the packet
 `Owner-accepted` until the owner checkpoint happens or the owner has delegated
 that acceptance policy.
 
@@ -74,7 +77,7 @@ verification.
 
 Stop and ask the owner only when:
 
-- scope would expand beyond the approved unit,
+- scope would expand beyond the approved packet,
 - risk posture, Q5 domains, release posture, data, auth, money, migration, or
   destructive action changes,
 - an owner-controlled product or tradeoff decision is required,

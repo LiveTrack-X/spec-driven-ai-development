@@ -26,20 +26,22 @@ Implement only the requested task or the current review-worthy unit.
 A review-worthy unit may contain multiple related small tasks. It should be large
 enough that review has meaning, but small enough to verify in one handoff.
 
-Default autonomy is Level 1 Unit Autonomy: complete the approved unit, report
-evidence-ready status, and ask only at the checkpoint or when a stop condition
-appears. Use Level 2 Work Packet Autonomy only when the owner names a packet
-with multiple related units.
+Default autonomy is Level 1 Unit Autonomy, with the active unit treated as one
+small approved packet: complete that boundary, report evidence-ready status, and
+ask only at the checkpoint or when a stop condition appears. Do not turn each
+small SPEC item into a separate approval gate. Use Level 2 Work Packet Autonomy
+only when the owner names a packet with multiple related units.
 
 Do not expand into future ideas, rewrites, broad cleanup, or unrelated refactors
 unless the owner explicitly promotes them into active scope.
 
-Do not stop for owner approval after every micro-task inside the approved unit.
-Proceed until the unit has evidence, unless a stop condition appears.
+Do not stop for owner approval after every micro-task or small SPEC item inside
+the approved unit. Proceed until the unit has evidence, unless a stop condition
+appears.
 
 Stop and ask the owner only when:
 
-- scope would expand beyond the approved unit,
+- scope would expand beyond the active unit's approved boundary,
 - Q5-style risk, release posture, data, auth, money, migration, or destructive
   action changes,
 - an owner-controlled decision is required,

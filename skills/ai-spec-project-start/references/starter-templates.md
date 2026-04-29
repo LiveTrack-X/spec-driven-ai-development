@@ -94,10 +94,9 @@ active path.
 - Do not treat AI confidence as completion.
 - Do not rely on obvious-but-unwritten assumptions.
 - Keep active implementation separate from future ideas.
-- Work in bounded work packets and review-worthy development units, not
+- Work in review-worthy development units inside the approved packet, not
   micro-approval steps.
-- Continue autonomously inside the approved unit or work packet until evidence
-  is ready.
+- Continue autonomously inside the approved work packet until evidence is ready.
 - Surface assumptions, prefer simple designs, make surgical changes, and verify
   goals.
 - Record blockers in `review-findings.md`.

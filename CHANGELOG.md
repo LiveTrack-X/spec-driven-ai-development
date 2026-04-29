@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.10 - 2026-04-29
+
+- Clarified the default low-intervention autonomy posture: owners approve work
+  packet boundaries, while review-worthy units and small SPEC items remain
+  internal implementation/evidence slices unless the owner asks otherwise.
+
 ## 1.0.9 - 2026-04-27
 
 - Added low-intervention autonomy levels and work packets so owners approve a

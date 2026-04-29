@@ -125,7 +125,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.0.9`",
+        "Status: `1.0.10`",
         "For Beginners: Use In 60 Seconds",
         "assets/spec-driven-ai-development-infographic.png",
         "Choose Scale First",
@@ -256,7 +256,7 @@ def validate_templates() -> None:
         "Version Lane Rules",
         "Review And Verification Rules",
         "Review-Worthy Unit Rule",
-        "Proceed autonomously inside the approved unit or work packet",
+        "Proceed autonomously inside the approved work packet",
         "Implementation discipline makes autonomy safe",
         "End-Of-Loop Maintenance Rule",
         "Control files have maintenance cost",
@@ -489,7 +489,7 @@ def validate_templates() -> None:
             "owner",
             "Save-State Update Triggers",
             "review-worthy",
-            "Continue autonomously inside the approved unit or work packet",
+            "Continue autonomously inside the approved work packet",
             "Implementation discipline guards autonomy",
         ]:
             if phrase not in content:

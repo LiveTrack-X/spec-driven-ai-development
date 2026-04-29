@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.9` stable public release.
+Status: `1.0.10` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -64,16 +64,17 @@ Step 0.5 - Choose autonomy before implementation.
 
 Use these defaults unless I say otherwise:
 - One-shot prompt -> no persistent autonomy contract.
-- Mini SDAD -> Level 1 Unit Autonomy.
+- Mini SDAD -> Level 1 Unit Autonomy, treated as one small approved packet.
 - Standard SDAD -> Level 2 Work Packet Autonomy.
 - Full SDAD or Q5 risk -> Level 2 for implementation, with Level 4 gates for
   release, migration, destructive actions, data/auth/money/security decisions,
   rollback, and production claims.
 
 A work packet may contain one or more review-worthy development units. Do not
-ask me to approve every micro-task or every evidence-ready unit inside an
-approved packet. Continue until the packet reaches a checkpoint or a stop
-condition appears.
+ask me to approve every micro-task, every small SPEC item, or every
+evidence-ready unit inside an approved packet. A unit is an internal review and
+evidence slice, not a separate owner-approval boundary unless I say so. Continue
+until the packet reaches a checkpoint or a stop condition appears.
 
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
@@ -117,8 +118,8 @@ inside it, and evidence required for completion.
 
 A review-worthy development unit may contain multiple related small tasks. It
 should be large enough that review has meaning, but small enough to verify in one
-handoff. Do not stop for owner approval after every micro-task inside an
-approved unit or work packet.
+handoff. Do not stop for owner approval after every micro-task or small SPEC
+item inside an approved work packet.
 
 Proceed autonomously inside the approved work packet until evidence is ready.
 Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
@@ -228,13 +229,15 @@ may do before asking again.
 
 Default:
 
-- Mini SDAD: Level 1 Unit Autonomy.
+- Mini SDAD: Level 1 Unit Autonomy, treated as one small approved packet.
 - Standard SDAD: Level 2 Work Packet Autonomy.
 - Full SDAD or Q5 risk: Level 2 for implementation, with Level 4 release/risk
   gates.
 
 A work packet is a bounded container for one or more review-worthy development
 units. The owner approves the packet boundary, not every small task inside it.
+Do not use individual SPEC checklist items as owner-approval boundaries by
+default.
 
 Before implementation, define a review-worthy development unit:
 
@@ -244,9 +247,11 @@ Before implementation, define a review-worthy development unit:
 - one risk-domain hardening pass,
 - or one small feature path from behavior to evidence.
 
-The unit may include multiple related TODOs. The AI should continue inside the
-approved work packet and hand off when the packet has changed files, checks,
-known limits, and reviewable evidence.
+Each unit may include multiple related TODOs. Units help organize review and
+evidence; they do not require separate owner approval while they stay inside the
+approved packet. The AI should continue inside the approved work packet and hand
+off when the packet has changed files, checks, known limits, and reviewable
+evidence.
 
 Use two states:
 
@@ -260,7 +265,7 @@ requires owner acceptance or an explicitly delegated acceptance policy.
 
 Ask the owner only when:
 
-- scope would expand beyond the approved unit,
+- scope would expand beyond the approved packet,
 - Q5 risk, release posture, data, auth, money, migration, or destructive action
   changes,
 - a tradeoff belongs to the owner,

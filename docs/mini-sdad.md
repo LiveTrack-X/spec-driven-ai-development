@@ -36,10 +36,11 @@ Mini SDAD should not stop after every micro-task. Define one small
 review-worthy unit, then let the AI continue inside that boundary until it can
 show evidence.
 
-Default autonomy is Level 1 Unit Autonomy: the AI completes the approved unit,
-reports evidence-ready status, and asks only at the checkpoint or when a stop
-condition appears. Use Level 2 Work Packet Autonomy only when the owner names a
-packet with multiple related units.
+Default autonomy is Level 1 Unit Autonomy, with the active unit treated as one
+small approved packet. The AI completes that boundary, reports evidence-ready
+status, and asks only at the checkpoint or when a stop condition appears. Do not
+turn each small SPEC item into a separate approval gate. Use Level 2 Work Packet
+Autonomy only when the owner names a packet with multiple related units.
 
 A Mini review-worthy unit may include:
 

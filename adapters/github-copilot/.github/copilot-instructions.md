@@ -31,9 +31,9 @@ authority.
 - Treat critical review findings, failing tests, security regressions, and release blockers as higher priority than new features.
 - For release or production readiness, require migration, security, backup/restore, monitoring, rollback, and manual evidence as applicable.
 - Default to Level 2 Work Packet Autonomy for normal Standard SDAD work.
-- Work in review-worthy development units, not micro-approval steps.
-- Continue autonomously inside the approved unit or work packet until evidence
-  is ready.
+- Work in review-worthy development units inside the approved packet, not
+  micro-approval steps.
+- Continue autonomously inside the approved work packet until evidence is ready.
 - Stop for owner input only when scope expands, Q5 risk changes, destructive or
   irreversible action is needed, an owner-controlled decision is required,
   verification is blocked, or evidence conflicts with the plan.

@@ -6,7 +6,7 @@ project for the first time.
 The short version:
 
 ```text
-Install one instruction file, define one review-worthy development unit, then
+Install one instruction file, define one low-intervention work packet, then
 require evidence before accepting completion.
 ```
 
@@ -96,7 +96,7 @@ Use two states:
 For most Standard SDAD work, use Level 2 Work Packet Autonomy from
 [autonomy-levels.md](autonomy-levels.md): the owner approves the packet boundary,
 then the AI works through the included units without asking after each small
-task.
+task or small SPEC item.
 
 ## No-Clone Quick Install
 
@@ -332,6 +332,7 @@ delegated the acceptance policy.
 - Asking AI to build the whole project at once.
 - Stopping after every micro-task instead of a work packet or review-worthy
   development unit.
+- Treating each small SPEC item as a separate owner-approval gate.
 - Treating evidence-ready as owner-accepted.
 - Treating confident AI language as completion.
 - Letting future ideas enter the active implementation unit.

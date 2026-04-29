@@ -103,12 +103,13 @@ Ask for the first work packet and the review-worthy development units inside
 it. A unit may contain multiple related small tasks and should be large enough
 that review has meaning, but small enough to verify in one checkpoint.
 Choose autonomy before implementation. Default to Level 1 Unit Autonomy for
-Mini SDAD, Level 2 Work Packet Autonomy for Standard SDAD, and Level 4 gates for
-Full SDAD release, migration, destructive actions, data/auth/money/security
-decisions, rollback, and production claims.
-Proceed autonomously inside the approved unit or work packet until evidence is
-ready. Do not stop after every micro-task or every evidence-ready unit. Stop for
-owner input only when scope expands, Q5 risk changes, destructive or
+Mini SDAD, treating the active unit as one small approved packet; use Level 2
+Work Packet Autonomy for Standard SDAD, and Level 4 gates for Full SDAD release,
+migration, destructive actions, data/auth/money/security decisions, rollback,
+and production claims.
+Proceed autonomously inside the approved work packet until evidence is ready.
+Do not stop after every micro-task, small SPEC item, or evidence-ready unit.
+Stop for owner input only when scope expands, Q5 risk changes, destructive or
 irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or evidence conflicts with the plan.
 Use implementation discipline inside the packet: surface assumptions, prefer the
@@ -153,6 +154,8 @@ Prefer low-intervention owner control:
 
 A work packet is a bounded container for one or more review-worthy development
 units. The owner approves the packet boundary, not every small task inside it.
+Do not use every small SPEC item as a separate owner-approval boundary by
+default.
 
 Before implementation, define a review-worthy development unit:
 
@@ -162,9 +165,10 @@ Before implementation, define a review-worthy development unit:
 - one risk-domain hardening pass,
 - or one small feature path from behavior to evidence.
 
-The unit may include multiple related TODOs. Continue inside the approved work
-packet until the packet can be reviewed with changed files, checks, known
-limits, and evidence.
+Each unit may include multiple related TODOs. Units help organize review and
+evidence; they do not require separate owner approval while they stay inside the
+approved packet. Continue inside the approved work packet until the packet can
+be reviewed with changed files, checks, known limits, and evidence.
 
 Use two states:
 
@@ -185,7 +189,7 @@ Inside the packet, enforce implementation discipline:
 
 Ask the owner only when:
 
-- scope would expand beyond the approved unit,
+- scope would expand beyond the approved packet,
 - Q5 risk, release posture, data, auth, money, migration, or destructive action
   changes,
 - a tradeoff belongs to the owner,
