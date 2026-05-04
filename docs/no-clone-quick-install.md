@@ -256,6 +256,11 @@ Update save-state.md when a session pauses or ends, handoff is expected, owner
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
 
+Before closing, archiving, replacing, or restarting a long AI coding session,
+create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat
+the chat as an execution trace, not permanent memory; a fresh session must be
+able to continue from the handoff, active spec, and current repository state.
+
 For Mini SDAD, an AI may call a unit evidence-ready when changed files, check
 evidence, and limitations or unverified behavior are shown. Do not call final
 completion done until owner acceptance is shown or the owner has explicitly

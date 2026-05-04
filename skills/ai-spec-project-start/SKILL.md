@@ -118,6 +118,10 @@ verification.
 At loop end, update save-state.md when work pauses, handoff is expected,
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
+Before closing, archiving, replacing, or restarting a long AI coding session,
+create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat the
+chat as an execution trace, not permanent memory; a fresh session must continue
+from the handoff, active spec, and current repository state.
 Do not overwrite existing files without showing proposed changes.
 ```
 
@@ -282,6 +286,11 @@ acceptance needed, and whether to escalate.
 - work is blocked, skipped, partial, degraded, or unverified,
 - another AI tool, model, session, or person is expected to continue the work,
 - current context would be expensive to reconstruct from code and docs alone.
+
+For long AI sessions that will be closed, replaced, restarted, or resumed in a
+fresh session, create a session handoff under
+`docs/sdad/handoffs/YYYY-MM-DD-topic.md`. Chats are execution traces, specs are
+authority, and handoffs are continuity.
 
 If none of these triggers apply, say so. If `save-state.md` exists but is stale,
 update it, mark it stale, or archive it before handoff.

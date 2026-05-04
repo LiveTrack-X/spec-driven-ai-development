@@ -109,17 +109,31 @@ active path.
 
 ## Handoff Rule
 
+Long AI coding sessions are execution traces, not permanent memory. Specs are
+authority, handoffs are continuity, archives are history, and fresh sessions are
+for reliable execution.
+
+Before closing, archiving, replacing, or restarting a long AI session, create a
+session handoff under `docs/sdad/handoffs/YYYY-MM-DD-topic.md`.
+
 Before handoff, state:
 
+- project or repository name,
+- branch or working context,
+- current objective,
 - changed files,
 - autonomy level used,
 - work packet completed,
 - evidence-ready units,
+- decisions made and why,
 - tests or commands run,
 - docs checked or updated,
 - remaining risks,
+- constraints, owner preferences, and do-not-touch areas,
 - what is not complete,
-- owner decision needed, if any.
+- owner decision needed, if any,
+- next concrete steps,
+- reactivation prompt for a fresh AI session.
 
 Update `save-state.md` when work pauses, handoff to another AI/tool/person is
 expected, owner direction or acceptance criteria changed, blocked/partial or

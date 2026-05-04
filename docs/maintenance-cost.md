@@ -26,7 +26,9 @@ Before handoff, owner checkpoint, or session end, update or explicitly check:
 - ADRs when architecture, policy, release, security, data-boundary, or owner
   tradeoff decisions need durable rationale,
 - `save-state.md` when work is paused, handed off, direction changes, or the
-  next session would otherwise need to reconstruct context.
+  next session would otherwise need to reconstruct context,
+- `docs/sdad/handoffs/YYYY-MM-DD-topic.md` before closing, replacing,
+  restarting, or resuming a long AI coding session in a fresh session.
 
 If no file needs a content change, the handoff must say which control files were
 checked and why no update was needed.
@@ -71,6 +73,10 @@ If none of these triggers apply, no save-state update is required. If
 `save-state.md` exists but is stale, update it, mark it stale, or archive it
 before handoff. Stale save-state is context, not authority; current code, tests,
 active docs, and active SPEC still win.
+
+Use [session-handoff.md](session-handoff.md) when the next session should not
+depend on the old chat transcript. In SDAD, chats are execution traces, specs are
+authority, and handoffs are continuity.
 
 ## Scale Implication
 

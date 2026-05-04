@@ -23,6 +23,7 @@ REQUIRED_FILES = [
     "docs/diagrams.md",
     "docs/autonomy-levels.md",
     "docs/implementation-discipline.md",
+    "docs/session-handoff.md",
     "docs/implicit-rules.md",
     "docs/tool-adapters.md",
     "docs/field-notes/documentation-governance-method.md",
@@ -46,6 +47,7 @@ REQUIRED_FILES = [
     "templates/project-control-files/AGENTS.md",
     "templates/project-control-files/docs/INDEX.md",
     "templates/project-control-files/docs/Repository-Operating-Rules.md",
+    "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md",
     "templates/project-control-files/docs/TODO-Open-Items.md",
     "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
     "templates/project-control-files/SPEC/adr/ADR-0001-template.md",
@@ -97,6 +99,7 @@ def validate_skill() -> None:
         "Claude Code means the local/CLI coding tool",
         "Offer deterministic fallback options",
         "Save-State Update Triggers",
+        "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
         "Autonomy",
         "Review-Worthy Development Units",
         "implementation discipline",
@@ -140,6 +143,9 @@ def validate_templates() -> None:
         "AI-complete / evidence-ready",
         "docs/autonomy-levels.md",
         "docs/implementation-discipline.md",
+        "docs/session-handoff.md",
+        "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        "execution trace",
         "Do not stop for owner approval after every micro-task",
         "Proceed autonomously inside the approved work packet",
         "Mini SDAD",
@@ -247,7 +253,11 @@ def validate_templates() -> None:
         if phrase not in agents:
             fail(f"AGENTS template missing: {phrase}")
     index = read("templates/project-control-files/docs/INDEX.md")
-    for phrase in ["Repository-Operating-Rules", "Minimum Documentation Update Sets"]:
+    for phrase in [
+        "Repository-Operating-Rules",
+        "Minimum Documentation Update Sets",
+        "docs/sdad/handoffs",
+    ]:
         if phrase not in index:
             fail(f"docs/INDEX template missing: {phrase}")
     rules = read("templates/project-control-files/docs/Repository-Operating-Rules.md")
@@ -261,9 +271,22 @@ def validate_templates() -> None:
         "End-Of-Loop Maintenance Rule",
         "Control files have maintenance cost",
         "Save-State Update Triggers",
+        "Long AI coding sessions are execution traces",
+        "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        "reactivation prompt",
     ]:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
+    handoff_template = read("templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md")
+    for phrase in [
+        "SDAD Session Handoff",
+        "Session Identity",
+        "Commands / Tests Run",
+        "Reactivation Prompt",
+        "Do not assume the previous chat context is available",
+    ]:
+        if phrase not in handoff_template:
+            fail(f"Session handoff template missing: {phrase}")
     save_state = read("templates/project-control-files/save-state.md")
     for phrase in [
         "Update Triggers",
@@ -314,6 +337,7 @@ def validate_templates() -> None:
         "autonomy-levels.md",
         "micro-task",
         "save-state.md",
+        "session-handoff.md",
         "Mini SDAD, a unit may be called evidence-ready",
     ]:
         if phrase not in getting_started:
@@ -334,6 +358,7 @@ def validate_templates() -> None:
         "Do not stop for owner approval after every micro-task",
         "evidence-ready",
         "save-state.md",
+        "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
         "Mini SDAD still has a completion gate",
         "Before You Start",
         "What Is A Codex Skill?",
@@ -375,6 +400,7 @@ def validate_templates() -> None:
         "review-worthy development unit",
         "not after every micro-task",
         "Save-State Update Triggers",
+        "session-handoff.md",
         "session is ending or pausing",
         "owner changes direction",
         "context would be expensive to reconstruct",
@@ -446,6 +472,19 @@ def validate_templates() -> None:
     ]:
         if phrase not in implementation:
             fail(f"Implementation discipline doc missing: {phrase}")
+    session_handoff = read("docs/session-handoff.md")
+    for phrase in [
+        "Session Handoff & Context Continuity",
+        "Chats are execution traces",
+        "Specs are authority",
+        "Handoffs are continuity",
+        "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        "Standard Handoff Template",
+        "Reactivation Prompt",
+        "Do not assume the previous chat context is available",
+    ]:
+        if phrase not in session_handoff:
+            fail(f"Session handoff doc missing: {phrase}")
     kickoff = read("prompts/kickoff-prompt.md")
     for phrase in [
         "review-worthy development unit",
@@ -460,6 +499,8 @@ def validate_templates() -> None:
     for phrase in [
         "evidence-ready units",
         "Do not request owner approval after every micro-task",
+        "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        "reactivation prompt",
     ]:
         if phrase not in handoff:
             fail(f"Handoff prompt missing review-worthy unit guidance: {phrase}")
@@ -491,6 +532,7 @@ def validate_templates() -> None:
             "review-worthy",
             "Continue autonomously inside the approved work packet",
             "Implementation discipline guards autonomy",
+            "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
         ]:
             if phrase not in content:
                 fail(f"{path} missing expected phrase: {phrase}")

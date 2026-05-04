@@ -11,6 +11,7 @@ Scope: Central documentation navigation and maintenance control
 - `docs/TODO-Open-Items.md`: current open implementation work
 - `review-findings.md`: active bug and review backlog
 - `save-state.md`: optional current handoff when work pauses or changes hands
+- `docs/sdad/handoffs/`: session handoffs for fresh AI sessions
 
 ## Document Classes
 
@@ -46,7 +47,7 @@ Use this table before handoff.
 | Stable/next version lane, migration, release, or rollback | release docs if present, `docs/Repository-Operating-Rules.md`, relevant SPEC |
 | High-risk domain rule such as locks, real-time path, backup, or platform boundary | module docs if present, `docs/Repository-Operating-Rules.md`, relevant tests |
 | Durable architecture, policy, release, or owner tradeoff decision | `SPEC/adr/ADR-0001-template.md` copied to a numbered ADR, relevant SPEC/docs |
-| Session pause, handoff, owner direction change, or expensive context recovery | `save-state.md`, `docs/TODO-Open-Items.md`, `review-findings.md` if blocked or partial |
+| Session pause, handoff, owner direction change, restart, or expensive context recovery | `save-state.md`, `docs/sdad/handoffs/YYYY-MM-DD-topic.md` for long sessions, `docs/TODO-Open-Items.md`, `review-findings.md` if blocked or partial |
 
 If no document needs a content change, handoff must state which docs were
 checked and why no update was needed.

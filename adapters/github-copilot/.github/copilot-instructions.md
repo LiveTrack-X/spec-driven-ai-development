@@ -45,7 +45,13 @@ authority.
 
 When summarizing work, include autonomy level used, work packet completed,
 evidence-ready units, changed files, tests run, docs checked, remaining risks,
-incomplete work, owner decisions needed, and owner acceptance status.
+incomplete work, owner decisions needed, owner acceptance status, and next
+concrete steps.
+
+Long AI coding sessions are execution traces, not permanent memory. Before
+closing, archiving, replacing, or restarting a long session, create or update a
+session handoff under `docs/sdad/handoffs/YYYY-MM-DD-topic.md`. A fresh session
+must continue from the handoff, active SPEC, and current repository state.
 
 ## Save-State Update Triggers
 

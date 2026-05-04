@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added tool-agnostic session handoff and context continuity guidance: chats are
+  execution traces, specs are authority, and long sessions should hand off to
+  fresh sessions through `docs/sdad/handoffs/YYYY-MM-DD-topic.md`.
+
 ## 1.0.10 - 2026-04-29
 
 - Clarified the default low-intervention autonomy posture: owners approve work

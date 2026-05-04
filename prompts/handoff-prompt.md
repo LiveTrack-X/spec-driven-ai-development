@@ -2,7 +2,15 @@
 
 Prepare a handoff for an owner-supervised, SPEC-driven AI development project.
 
-The handoff must let another AI session continue without guessing.
+The handoff must let another AI session continue without guessing or relying on
+the previous chat context. Treat the chat as an execution trace, the active SPEC
+as authority, and the handoff as the continuity artifact.
+
+For Standard or Full SDAD, write session handoffs under:
+
+```text
+docs/sdad/handoffs/YYYY-MM-DD-topic.md
+```
 
 ## Include
 
@@ -26,7 +34,8 @@ The handoff must let another AI session continue without guessing.
 - next recommended slice,
 - what is not complete,
 - owner acceptance status,
-- owner decisions needed.
+- owner decisions needed,
+- reactivation prompt for a fresh AI session.
 
 ## Rules
 
@@ -37,6 +46,11 @@ The handoff must let another AI session continue without guessing.
   inside the approved work packet.
 - Do not treat evidence-ready as owner-accepted unless the owner delegated that
   acceptance policy.
+- Do not treat a long chat transcript as permanent memory.
+- When asked to restart, summarize, archive, or continue later, offer to create
+  or update a handoff first.
+- Fresh sessions must load the relevant spec, handoff, and current repository
+  state before continuing.
 - Do not include speculative abstractions, drive-by refactors, or unrelated
   cleanup in the packet handoff as if they were requested work.
 - Do not bury blockers in prose. Put active defects in `review-findings.md`.

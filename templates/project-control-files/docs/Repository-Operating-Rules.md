@@ -143,19 +143,41 @@ If the project has stable, beta, rewrite, migration, or platform lanes, document
 
 ## Handoff Rules
 
+Long AI coding sessions are execution traces, not permanent memory. Specs are
+authority, handoffs are continuity, archives are history, and fresh sessions are
+for reliable execution.
+
+Before closing, archiving, replacing, or restarting a long AI session, create a
+session handoff under:
+
+```text
+docs/sdad/handoffs/YYYY-MM-DD-topic.md
+```
+
 Every handoff must include:
 
+- project or repository name,
+- branch or working context,
+- current objective,
 - autonomy level used,
 - work packet completed,
 - review-worthy unit completed,
 - changed files,
+- decisions made and why,
 - behavior changed,
 - tests or commands run,
 - docs checked or updated,
 - open findings,
 - remaining risks,
+- constraints, owner preferences, and do-not-touch areas,
 - what is not complete,
-- owner decision needed, if any.
+- owner decision needed, if any,
+- next concrete steps,
+- reactivation prompt for a fresh AI session.
+
+When asked to restart, summarize, archive, or continue later, offer to create or
+update a handoff first. When resuming, load the relevant SPEC, handoff, and
+current repository state before continuing.
 
 ## End-Of-Loop Maintenance Rule
 

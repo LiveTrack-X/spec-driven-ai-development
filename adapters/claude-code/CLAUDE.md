@@ -83,7 +83,13 @@ Every handoff must include:
 - partial/degraded/unverified behavior,
 - what is not complete,
 - owner decisions needed,
-- owner acceptance status.
+- owner acceptance status,
+- next concrete steps.
+
+Long AI coding sessions are execution traces, not permanent memory. Before
+closing, archiving, replacing, or restarting a long session, create or update a
+session handoff under `docs/sdad/handoffs/YYYY-MM-DD-topic.md`. A fresh session
+must continue from the handoff, active SPEC, and current repository state.
 
 ## Save-State Update Triggers
 

@@ -140,6 +140,11 @@ Update save-state.md when a session pauses or ends, handoff is expected, owner
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
 
+Before closing, archiving, replacing, or restarting a long AI coding session,
+create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat
+the chat as an execution trace, not permanent memory; a fresh session must be
+able to continue from the handoff, active spec, and current repository state.
+
 For Mini SDAD, an AI may call a unit evidence-ready when changed files, check
 evidence, and limitations or unverified behavior are shown. Do not call final
 completion done until owner acceptance is shown or the owner has explicitly
@@ -438,6 +443,7 @@ SPEC/adr/                                        # durable decision records
 docs/TODO-Open-Items.md                          # active implementation work
 review-findings.md                               # active bugs and review findings
 save-state.md                                    # optional session recovery handoff
+docs/sdad/handoffs/                              # session handoffs for fresh starts
 ```
 
 Templates live in [templates/project-control-files](templates/project-control-files).
@@ -528,6 +534,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid
 - [docs/fit-assessment.md](docs/fit-assessment.md): project fit checklist
 - [docs/maintenance-cost.md](docs/maintenance-cost.md): loop-end control file update cost
+- [docs/session-handoff.md](docs/session-handoff.md): long-session handoff and context continuity
 - [docs/autonomy-levels.md](docs/autonomy-levels.md): work packets and low-intervention autonomy
 - [docs/implementation-discipline.md](docs/implementation-discipline.md): assumptions, simplicity, surgical diffs, and verification
 - [docs/diagrams.md](docs/diagrams.md): workflow diagrams

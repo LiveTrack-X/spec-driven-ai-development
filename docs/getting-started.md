@@ -47,6 +47,11 @@ Update `save-state.md` when a session pauses or ends, handoff is expected, owner
 direction or acceptance criteria changed, blocked/partial/unverified state
 remains, or context would be expensive to reconstruct.
 
+For long AI sessions that will be closed, replaced, restarted, or resumed in a
+fresh session, create a session handoff under
+`docs/sdad/handoffs/YYYY-MM-DD-topic.md`. See
+[session-handoff.md](session-handoff.md).
+
 If no file needs a content change, say which files were checked and why no
 update was needed.
 
