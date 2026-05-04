@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.10` stable public release.
+Status: `1.0.11` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.

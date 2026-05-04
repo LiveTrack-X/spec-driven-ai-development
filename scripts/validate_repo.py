@@ -128,7 +128,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.0.10`",
+        "Status: `1.0.11`",
         "For Beginners: Use In 60 Seconds",
         "assets/spec-driven-ai-development-infographic.png",
         "Choose Scale First",

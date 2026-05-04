@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.11 - 2026-05-04
 
 - Added tool-agnostic session handoff and context continuity guidance: chats are
   execution traces, specs are authority, and long sessions should hand off to
