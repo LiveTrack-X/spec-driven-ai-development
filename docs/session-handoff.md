@@ -51,6 +51,10 @@ A valid SDAD handoff must include:
 
 - project or repository name,
 - branch or working context,
+- SDAD scale and operating intensity used,
+- autonomy level used,
+- control-file budget used: Minimal, Normal, or Heavy,
+- compressed owner review summary,
 - current objective,
 - completed work,
 - decisions made and why,
@@ -58,6 +62,7 @@ A valid SDAD handoff must include:
 - commands or tests run and results,
 - known failures, warnings, or unverified assumptions,
 - open decisions,
+- owner acceptance status,
 - constraints, owner preferences, and do-not-touch areas,
 - next concrete steps,
 - a reactivation prompt for a fresh AI session.
@@ -90,48 +95,64 @@ enough to need Standard SDAD continuity.
 - Primary objective:
 - Non-goals:
 
-## 3. Completed Work
+## 3. Operating Mode
+- SDAD scale / intensity used:
+- Autonomy level used:
+- Control-file budget used: Minimal / Normal / Heavy
+- Baseline Freeze posture used: yes/no
+
+## 4. Owner Review Compression
+- One-line status:
+- Changed user-facing behavior:
+- Safety boundary touched: yes/no
+- Checks summary:
+- Owner decision needed: yes/no
+- Recommended next action:
+- Links or references to detailed evidence:
+
+## 5. Completed Work
 -
 -
 -
 
-## 4. Decisions Made
+## 6. Decisions Made
 | Decision | Reason | Alternatives Rejected |
 |---|---|---|
 | | | |
 
-## 5. Files Touched or Investigated
+## 7. Files Touched or Investigated
 | File/Path | Change Type | Reason | Risk/Notes |
 |---|---|---|---|
 | | | | |
 
-## 6. Commands / Tests Run
+## 8. Commands / Tests Run
 | Command | Result | Notes |
 |---|---|---|
 | | | |
 
-## 7. Current State
+## 9. Current State
 - Working:
 - Broken:
 - Unverified:
 - Unknown:
+- Owner acceptance status:
 
-## 8. Constraints and Do-Not-Touch Areas
--
--
--
-
-## 9. Open Decisions
+## 10. Constraints and Do-Not-Touch Areas
 -
 -
 -
 
-## 10. Next Concrete Steps
+## 11. Open Decisions
+-
+-
+-
+
+## 12. Next Concrete Steps
 1.
 2.
 3.
 
-## 11. Reactivation Prompt
+## 13. Reactivation Prompt
 
 Paste this into a fresh AI session:
 

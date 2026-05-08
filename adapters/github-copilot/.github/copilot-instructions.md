@@ -31,6 +31,9 @@ authority.
 - Treat critical review findings, failing tests, security regressions, and release blockers as higher priority than new features.
 - For release or production readiness, require migration, security, backup/restore, monitoring, rollback, and manual evidence as applicable.
 - Default to Level 2 Work Packet Autonomy for normal Standard SDAD work.
+- State SDAD scale and operating intensity.
+- Raise the current packet to `Full SDAD / High` only when it changes a Q5 gate.
+- Lower intensity when control surfaces reduce controllability.
 - Work in review-worthy development units inside the approved packet, not
   micro-approval steps.
 - Continue autonomously inside the approved work packet until evidence is ready.
@@ -43,10 +46,10 @@ authority.
 
 ## Response Expectations
 
-When summarizing work, include autonomy level used, work packet completed,
-evidence-ready units, changed files, tests run, docs checked, remaining risks,
-incomplete work, owner decisions needed, owner acceptance status, and next
-concrete steps.
+When summarizing work, include SDAD scale / intensity used, autonomy level used,
+work packet completed, evidence-ready units, changed files, tests run, docs
+checked, remaining risks, incomplete work, owner decisions needed, owner
+acceptance status, and next concrete steps.
 
 Long AI coding sessions are execution traces, not permanent memory. Before
 closing, archiving, replacing, or restarting a long session, create or update a

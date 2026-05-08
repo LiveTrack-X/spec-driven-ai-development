@@ -2,6 +2,8 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
+상태: `1.1.0` 안정 공개 릴리즈.
+
 이 문서는 한국어 안내용 README입니다. 이 저장소의 기준 문서는 영어
 [README.md](README.md)와 영어 기반 `docs/`, `templates/`, `scripts/`입니다.
 내용이 다르면 영어 기준 문서를 우선하세요.
@@ -49,6 +51,14 @@ user data, auth, money, release, rollback 위험이 하나라도 있으면 Stand
 고려하세요.
 Standard/Full SDAD를 선택하면 루프 끝마다 SPEC, TODO, review findings를 최신화해야 합니다.
 비용 설명은 [docs/maintenance-cost.md](docs/maintenance-cost.md)를 보세요.
+Standard/Full SDAD 안에서는 프로젝트 규모와 별도로 운영 강도를 고릅니다:
+`Standard SDAD / High`, `Standard SDAD / Medium`, `Standard SDAD / Low`,
+`Full SDAD / High`, `Full SDAD / Medium`, `Full SDAD / Low`.
+Q5 프로젝트라고 모든 packet이 High가 되는 것은 아닙니다. Q5 gate의 동작,
+정책, 경계, 증거 주장, 위험 수락을 바꾸는 packet만 `Full SDAD / High`로
+올립니다. baseline이 생긴 뒤에는 Medium 또는 Low로 낮추고 evidence와
+owner review를 압축하세요. 자세한 내용은
+[docs/operating-intensity.md](docs/operating-intensity.md)를 보세요.
 `save-state.md`를 사용하는 프로젝트라면 세션 종료/중단, handoff, 오너 방향 변경,
 부분/미검증 상태, 또는 다음 세션이 컨텍스트를 다시 구성하기 어려운 경우에도 최신화해야 합니다.
 Mini SDAD도 완료 기준이 있습니다. 변경 파일, 확인 증거, 한계/미검증 항목,
@@ -103,6 +113,9 @@ Core 5:
 - [docs/pattern-catalog.md](docs/pattern-catalog.md): 전체 패턴 카탈로그
 - [docs/anti-patterns.md](docs/anti-patterns.md): 피해야 할 실패 패턴
 - [docs/fit-assessment.md](docs/fit-assessment.md): 적용 적합도 자가진단
+- [docs/maintenance-cost.md](docs/maintenance-cost.md): 제어 파일 유지 비용
+- [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full 운영 강도
+- [docs/session-handoff.md](docs/session-handoff.md): 긴 세션 handoff와 컨텍스트 연속성
 - [docs/diagrams.md](docs/diagrams.md): Mermaid 다이어그램
 - [templates/project-control-files](templates/project-control-files): 프로젝트 제어 파일 템플릿
 

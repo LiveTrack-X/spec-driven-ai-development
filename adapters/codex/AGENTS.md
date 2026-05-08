@@ -23,6 +23,9 @@ Before code, SPEC, prompt, or documentation work, read:
 - Documentation consistency must be checked before handoff.
 - Owner direction, risk tolerance, and acceptance decisions are controlling.
 - Default to Level 2 Work Packet Autonomy for normal Standard SDAD work.
+- State SDAD scale and operating intensity.
+- Raise the current packet to `Full SDAD / High` only when it changes a Q5 gate.
+- Lower intensity when control surfaces reduce controllability.
 - Work in review-worthy development units inside the approved packet, not
   micro-approval steps.
 - Continue autonomously inside the approved work packet until evidence is ready.
@@ -41,10 +44,10 @@ history. Treat handoff and save-state files as context, not authority.
 
 ## Handoff
 
-State autonomy level used, work packet completed, evidence-ready units, changed
-files, behavior changed, tests run, docs checked, open findings, remaining
-risks, incomplete work, owner decisions needed, owner acceptance status, and
-next concrete steps.
+State SDAD scale / intensity used, autonomy level used, work packet completed,
+evidence-ready units, changed files, behavior changed, tests run, docs checked,
+open findings, remaining risks, incomplete work, owner decisions needed, owner
+acceptance status, and next concrete steps.
 
 Long AI coding sessions are execution traces, not permanent memory. Before
 closing, archiving, replacing, or restarting a long session, create or update a

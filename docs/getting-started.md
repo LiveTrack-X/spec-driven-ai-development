@@ -58,6 +58,12 @@ update was needed.
 If you do not want that maintenance cost, choose One-shot Prompt or
 [Mini SDAD](mini-sdad.md). See [maintenance-cost.md](maintenance-cost.md).
 
+After Standard or Full SDAD is installed, choose an operating intensity for each
+packet: `Standard SDAD / High`, `Standard SDAD / Medium`, `Standard SDAD / Low`,
+`Full SDAD / High`, `Full SDAD / Medium`, or `Full SDAD / Low`. Use
+[operating-intensity.md](operating-intensity.md) when a usable baseline exists
+and the project should freeze, compress evidence, or simplify owner review.
+
 ## Complete Beginner Path
 
 If you are not comfortable with terminals, Git, Python, or shell scripts, use

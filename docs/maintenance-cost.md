@@ -33,6 +33,26 @@ Before handoff, owner checkpoint, or session end, update or explicitly check:
 If no file needs a content change, the handoff must say which control files were
 checked and why no update was needed.
 
+## Control File Budget
+
+Choose a control-file budget for each work packet:
+
+- `Minimal`: update one changed active doc or one state file only.
+- `Normal`: update affected active docs plus TODO or review-findings.
+- `Heavy`: update SPEC/TODO/review-findings/save-state/ADR/rules as a bundle,
+  or update four or more control files in one packet.
+
+If `Heavy` maintenance appears in three consecutive packets, run an intensity
+reassessment:
+
+- can Standard or Full SDAD run at lower intensity,
+- is Baseline Freeze needed,
+- can evidence be compressed into an owner summary,
+- can docs, archive entries, or reports be consolidated.
+
+Record the control-file budget in the handoff summary so repeated `Heavy`
+packets are visible.
+
 ## End-Of-Packet Rule
 
 Every SDAD loop should end at a work-packet or handoff boundary:
@@ -90,6 +110,10 @@ If this maintenance cost is too high, choose a smaller scale:
 
 The right workflow is the largest one you can keep current, not the largest one
 you can generate once.
+
+For Standard and Full SDAD, also lower operating intensity when control surfaces
+reduce controllability. Use [operating-intensity.md](operating-intensity.md) to
+choose `High`, `Medium`, or `Low`.
 
 ## Stale File Warning
 

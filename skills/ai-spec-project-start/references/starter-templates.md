@@ -94,6 +94,9 @@ active path.
 - Do not treat AI confidence as completion.
 - Do not rely on obvious-but-unwritten assumptions.
 - Keep active implementation separate from future ideas.
+- State SDAD scale and operating intensity.
+- Raise the current packet to `Full SDAD / High` only when it changes a Q5 gate.
+- Lower intensity when control surfaces reduce controllability.
 - Work in review-worthy development units inside the approved packet, not
   micro-approval steps.
 - Continue autonomously inside the approved work packet until evidence is ready.
@@ -121,6 +124,7 @@ Before handoff, state:
 - project or repository name,
 - branch or working context,
 - current objective,
+- SDAD scale / intensity used,
 - changed files,
 - autonomy level used,
 - work packet completed,

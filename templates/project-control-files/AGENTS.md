@@ -37,6 +37,9 @@ active path.
 - Do not treat AI confidence as completion.
 - Do not rely on obvious-but-unwritten assumptions.
 - Keep active implementation separate from future ideas.
+- Before implementation, state current SDAD scale and operating intensity.
+- Raise the current packet to `Full SDAD / High` only when it changes a Q5 gate.
+- Lower intensity when control surfaces reduce controllability.
 - Record blockers in `review-findings.md`.
 - Record open implementation work in `docs/TODO-Open-Items.md`.
 - Update docs when behavior changes.
@@ -78,6 +81,42 @@ Stop and ask the owner only when:
 - verification is blocked or impossible,
 - current evidence conflicts with the requested plan.
 
+## Operating Intensity Rule
+
+`Mini / Standard / Full SDAD` are project scales. `High / Medium / Low` are
+operating intensities for Standard and Full SDAD:
+
+- `Standard SDAD / High`
+- `Standard SDAD / Medium`
+- `Standard SDAD / Low`
+- `Full SDAD / High`
+- `Full SDAD / Medium`
+- `Full SDAD / Low`
+
+Use `Standard SDAD / High` for non-Q5 packets with major product or architecture
+tradeoffs, hard-to-reverse implementation choices, or explicit owner
+checkpoints. Use `High` when the current packet changes behavior, policy,
+boundary, evidence claim, or risk acceptance for release, production,
+migration, destructive action, real user data handling, auth, data, money,
+security, rollback, accepted-memory boundaries, external deployment, or a major
+owner-controlled risk decision. A Q5 project does not make every packet High.
+Use `Medium` for normal implementation, validation, and docs sync inside an
+approved scope. Use `Low` for docs-only, typo, index, helper split, small
+test/check adjustment, or small template edits.
+
+Baseline Freeze is a posture, not a new scale or intensity value. Use labels
+such as `Full SDAD / Medium (Baseline Freeze)` or `Full SDAD / Low (Baseline
+Freeze)`; do not create a `Low-Medium` label. After a usable baseline exists,
+prefer `Medium` or `Low`, protect repeatability, compress evidence, simplify
+owner review, and avoid new evidence surfaces unless they reduce review time or
+protect a real boundary, support a release gate, or make the baseline
+repeatable.
+
+For `Medium` or `High` checkpoints, start with Owner Review Compression:
+one-line status, changed user-facing behavior, safety boundary touched yes/no,
+checks summary, owner decision needed yes/no, recommended next action, and links
+or references to detailed evidence.
+
 ## Implicit Rules Made Explicit
 
 - Current beats historical.
@@ -108,6 +147,7 @@ Before handoff, state:
 - project or repository name,
 - branch or working context,
 - current objective,
+- SDAD scale / intensity used,
 - autonomy level used,
 - work packet completed,
 - review-worthy unit completed,
@@ -152,6 +192,18 @@ expensive to reconstruct.
 
 If no control file needs a content change, state which files were checked and why
 no update was needed. Do not claim completion while control files are stale.
+
+Control File Budget for each work packet:
+
+- `Minimal`: changed active doc or state file only.
+- `Normal`: TODO/review-findings plus affected docs.
+- `Heavy`: SPEC/TODO/review-findings/save-state/ADR/rules bundle, or four or
+  more control files updated in one packet.
+
+If `Heavy` appears in three consecutive packets, reassess intensity and consider
+Baseline Freeze.
+
+Record the control-file budget in the handoff summary.
 
 ## Save-State Update Triggers
 

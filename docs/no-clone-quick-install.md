@@ -179,6 +179,31 @@ evidence-ready unit inside an approved packet. A unit is an internal review and
 evidence slice, not a separate owner-approval boundary unless I say so. Continue
 until the packet reaches a checkpoint or a stop condition appears.
 
+Step 0.6 - Choose operating intensity for Standard or Full SDAD.
+
+Use this notation:
+- Standard SDAD / High
+- Standard SDAD / Medium
+- Standard SDAD / Low
+- Full SDAD / High
+- Full SDAD / Medium
+- Full SDAD / Low
+
+High / Medium / Low are operating intensities, not new project scales or
+autonomy levels. Mini SDAD does not use operating intensity tiers.
+
+Use Standard SDAD / High for a non-Q5 packet with a major product or
+architecture tradeoff, a hard-to-reverse implementation choice, or an explicit
+owner checkpoint.
+
+Q5 projects do not make every packet High. Raise the current packet to
+Full SDAD / High only when it changes behavior, policy, boundary, evidence
+claim, or risk acceptance for a Q5 gate: release, production claim, migration,
+destructive action, real user data handling, auth, data, money, security,
+rollback, accepted-memory boundary, external deployment, or major
+owner-controlled risk decision. Lower intensity when control surfaces reduce
+controllability.
+
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
 

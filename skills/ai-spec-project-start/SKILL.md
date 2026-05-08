@@ -156,6 +156,16 @@ Prefer low-intervention owner control:
   release, migration, destructive actions, data/auth/money/security decisions,
   rollback, and production claims.
 
+For Standard and Full SDAD, also state SDAD scale and operating intensity:
+`Standard SDAD / High`, `Standard SDAD / Medium`, `Standard SDAD / Low`,
+`Full SDAD / High`, `Full SDAD / Medium`, or `Full SDAD / Low`. A Q5 project
+does not make every packet High. Raise the current packet to `Full SDAD / High`
+only when it changes a Q5 gate. Use `Standard SDAD / High` for non-Q5 packets
+with major product or architecture tradeoffs, hard-to-reverse implementation
+choices, or explicit owner checkpoints. Lower intensity when control surfaces
+reduce controllability.
+State SDAD scale and operating intensity before implementation.
+
 A work packet is a bounded container for one or more review-worthy development
 units. The owner approves the packet boundary, not every small task inside it.
 Do not use every small SPEC item as a separate owner-approval boundary by
@@ -269,6 +279,12 @@ no update was needed. Do not claim completion while control files are stale.
 
 If the user cannot afford this maintenance cost, choose Mini SDAD or a one-shot
 prompt instead.
+
+Use a control-file budget for each Standard or Full SDAD packet: `Minimal`,
+`Normal`, or `Heavy`. `Heavy` means SPEC/TODO/review-findings/save-state/ADR/
+rules as a bundle, or four or more control files in one packet. If `Heavy`
+appears in three consecutive packets, reassess operating intensity and consider
+Baseline Freeze. Record the control-file budget in the handoff summary.
 
 Mini SDAD loop-end behavior is smaller: do not check `SPEC/SPEC-COMPLETE.md`,
 `docs/TODO-Open-Items.md`, `review-findings.md`, or ADRs unless the project has

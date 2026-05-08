@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.0.11` stable public release.
+Status: `1.1.0` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -75,6 +75,31 @@ ask me to approve every micro-task, every small SPEC item, or every
 evidence-ready unit inside an approved packet. A unit is an internal review and
 evidence slice, not a separate owner-approval boundary unless I say so. Continue
 until the packet reaches a checkpoint or a stop condition appears.
+
+Step 0.6 - Choose operating intensity for Standard or Full SDAD.
+
+Use this notation:
+- Standard SDAD / High
+- Standard SDAD / Medium
+- Standard SDAD / Low
+- Full SDAD / High
+- Full SDAD / Medium
+- Full SDAD / Low
+
+High / Medium / Low are operating intensities, not new project scales or
+autonomy levels. Mini SDAD does not use operating intensity tiers.
+
+Use Standard SDAD / High for a non-Q5 packet with a major product or
+architecture tradeoff, a hard-to-reverse implementation choice, or an explicit
+owner checkpoint.
+
+Q5 projects do not make every packet High. Raise the current packet to
+Full SDAD / High only when it changes behavior, policy, boundary, evidence
+claim, or risk acceptance for a Q5 gate: release, production claim, migration,
+destructive action, real user data handling, auth, data, money, security,
+rollback, accepted-memory boundary, external deployment, or major
+owner-controlled risk decision. Lower intensity when control surfaces reduce
+controllability.
 
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
@@ -223,6 +248,35 @@ acceptance policy.
 
 If that cost is too high, choose One-shot Prompt or [Mini SDAD](docs/mini-sdad.md).
 See [docs/maintenance-cost.md](docs/maintenance-cost.md).
+
+## Operating Intensity
+
+Standard and Full SDAD can run at different operating intensities:
+
+```text
+Standard SDAD / High
+Standard SDAD / Medium
+Standard SDAD / Low
+Full SDAD / High
+Full SDAD / Medium
+Full SDAD / Low
+```
+
+`Mini / Standard / Full SDAD` are project scales. `High / Medium / Low` are
+operating intensities inside Standard and Full, not new scales or autonomy
+levels. Use `Standard SDAD / High` for a non-Q5 packet with a major product or
+architecture tradeoff, a hard-to-reverse implementation choice, or an explicit
+owner checkpoint. Q5 projects do not make every packet High. Use
+`Full SDAD / High` when the current packet changes behavior, policy, boundary,
+evidence claim, or risk acceptance for a Q5 gate: release, production,
+migration, auth, data, money, security, rollback, destructive action,
+accepted-memory boundary, external deployment, or major owner-controlled risk
+decision.
+
+The purpose of SDAD is not to create more control files. The purpose is to keep
+the project controllable. When control surfaces reduce controllability, lower
+intensity, freeze the baseline, compress evidence, and simplify owner review.
+See [docs/operating-intensity.md](docs/operating-intensity.md).
 
 ## Work Packets And Autonomy Levels
 
@@ -534,6 +588,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid
 - [docs/fit-assessment.md](docs/fit-assessment.md): project fit checklist
 - [docs/maintenance-cost.md](docs/maintenance-cost.md): loop-end control file update cost
+- [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full High, Medium, and Low operating intensity
 - [docs/session-handoff.md](docs/session-handoff.md): long-session handoff and context continuity
 - [docs/autonomy-levels.md](docs/autonomy-levels.md): work packets and low-intervention autonomy
 - [docs/implementation-discipline.md](docs/implementation-discipline.md): assumptions, simplicity, surgical diffs, and verification

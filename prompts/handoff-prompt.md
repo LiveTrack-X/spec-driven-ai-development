@@ -15,7 +15,17 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 ## Include
 
 - current goal,
+- SDAD scale / intensity used,
+- control-file budget used: Minimal, Normal, or Heavy,
 - autonomy level used,
+- compressed owner review summary:
+  - one-line status,
+  - changed user-facing behavior,
+  - safety boundary touched: yes/no,
+  - checks summary,
+  - owner decision needed: yes/no,
+  - recommended next action,
+  - links or references to detailed evidence,
 - work packet completed,
 - evidence-ready units,
 - changed files,
@@ -42,6 +52,9 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - Do not claim production readiness without deployment, migration, auth/security, backup/restore, monitoring, and rollback evidence as applicable.
 - Do not let older SPEC history override newer active SPEC instructions.
 - Do not rely on obvious-but-unwritten assumptions.
+- State SDAD scale and operating intensity.
+- Raise the current packet to `Full SDAD / High` only when it changes a Q5 gate.
+- Lower intensity when control surfaces reduce controllability.
 - Do not request owner approval after every micro-task when the work stayed
   inside the approved work packet.
 - Do not treat evidence-ready as owner-accepted unless the owner delegated that

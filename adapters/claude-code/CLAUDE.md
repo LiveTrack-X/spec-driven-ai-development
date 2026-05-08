@@ -53,6 +53,9 @@ historical sections.
 
 - Keep implementation units small enough to review and large enough to matter.
 - Default to Level 2 Work Packet Autonomy for normal Standard SDAD work.
+- State SDAD scale and operating intensity.
+- Raise the current packet to `Full SDAD / High` only when it changes a Q5 gate.
+- Lower intensity when control surfaces reduce controllability.
 - Work in review-worthy development units inside the approved packet, not
   micro-approval steps.
 - Continue autonomously inside the approved work packet until evidence is ready.
@@ -72,6 +75,7 @@ historical sections.
 Every handoff must include:
 
 - changed files,
+- SDAD scale / intensity used,
 - autonomy level used,
 - work packet completed,
 - evidence-ready units,

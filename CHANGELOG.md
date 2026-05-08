@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+## 1.1.0 - 2026-05-08
+
+- Added Standard/Full SDAD operating intensity guidance with High, Medium, and
+  Low modes, Baseline Freeze posture, Evidence Surface Creep, Control File
+  Budget, and Owner Review Compression.
+- Clarified that `Standard SDAD / High` is for major non-Q5 tradeoffs, while
+  `Full SDAD / High` is for packets that change Q5 gates.
+- Updated the standard handoff template to include SDAD scale/intensity,
+  autonomy level, control-file budget, and compressed owner review summary.
+- Updated localized README guides for the 1.1 operating-intensity posture.
+
 ## 1.0.11 - 2026-05-04
 
 - Added tool-agnostic session handoff and context continuity guidance: chats are

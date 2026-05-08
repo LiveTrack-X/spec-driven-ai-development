@@ -23,6 +23,7 @@ REQUIRED_FILES = [
     "docs/diagrams.md",
     "docs/autonomy-levels.md",
     "docs/implementation-discipline.md",
+    "docs/operating-intensity.md",
     "docs/session-handoff.md",
     "docs/implicit-rules.md",
     "docs/tool-adapters.md",
@@ -100,6 +101,7 @@ def validate_skill() -> None:
         "Offer deterministic fallback options",
         "Save-State Update Triggers",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        "State SDAD scale and operating intensity",
         "Autonomy",
         "Review-Worthy Development Units",
         "implementation discipline",
@@ -128,7 +130,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.0.11`",
+        "Status: `1.1.0`",
         "For Beginners: Use In 60 Seconds",
         "assets/spec-driven-ai-development-infographic.png",
         "Choose Scale First",
@@ -143,9 +145,12 @@ def validate_templates() -> None:
         "AI-complete / evidence-ready",
         "docs/autonomy-levels.md",
         "docs/implementation-discipline.md",
+        "docs/operating-intensity.md",
         "docs/session-handoff.md",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
         "execution trace",
+        "Full SDAD / High",
+        "control surfaces reduce controllability",
         "Do not stop for owner approval after every micro-task",
         "Proceed autonomously inside the approved work packet",
         "Mini SDAD",
@@ -192,42 +197,54 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
+            "1.1.0",
             "save-state.md",
             "오너 수락",
             "Q5",
+            "Full SDAD / High",
             "chat-only",
             "리뷰 의미가 있는 개발 단위",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
+            "docs/operating-intensity.md",
+            "docs/session-handoff.md",
             "docs/no-clone-quick-install.md",
             "docs/fit-assessment.md",
         ],
         "README.zh.md": [
             "中文",
             "英文",
+            "1.1.0",
             "save-state.md",
             "Owner 验收",
             "Q5",
+            "Full SDAD / High",
             "chat-only",
             "有评审意义的开发单元",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
+            "docs/operating-intensity.md",
+            "docs/session-handoff.md",
             "docs/no-clone-quick-install.md",
             "docs/fit-assessment.md",
         ],
         "README.ja.md": [
             "日本語",
             "英語",
+            "1.1.0",
             "save-state.md",
             "Owner の受け入れ",
             "Q5",
+            "Full SDAD / High",
             "chat-only",
             "レビューする意味のある",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
+            "docs/operating-intensity.md",
+            "docs/session-handoff.md",
             "docs/no-clone-quick-install.md",
             "docs/fit-assessment.md",
         ],
@@ -257,6 +274,8 @@ def validate_templates() -> None:
         "Repository-Operating-Rules",
         "Minimum Documentation Update Sets",
         "docs/sdad/handoffs",
+        "SDAD scale/intensity change",
+        "Heavy control-file budget",
     ]:
         if phrase not in index:
             fail(f"docs/INDEX template missing: {phrase}")
@@ -274,6 +293,10 @@ def validate_templates() -> None:
         "Long AI coding sessions are execution traces",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
         "reactivation prompt",
+        "Operating Intensity Rules",
+        "Evidence Surface Creep",
+        "Control File Budget",
+        "compressed owner review summary",
     ]:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
@@ -338,6 +361,7 @@ def validate_templates() -> None:
         "micro-task",
         "save-state.md",
         "session-handoff.md",
+        "operating-intensity.md",
         "Mini SDAD, a unit may be called evidence-ready",
     ]:
         if phrase not in getting_started:
@@ -348,6 +372,7 @@ def validate_templates() -> None:
         "Maintenance Cost",
         "Override rules beat raw yes-counts",
         "Step 0.5 - Choose autonomy",
+        "Step 0.6 - Choose operating intensity",
         "Level 2 Work Packet Autonomy",
         "Q5=yes",
         "chat-only environment such as Claude.ai",
@@ -401,6 +426,7 @@ def validate_templates() -> None:
         "not after every micro-task",
         "Save-State Update Triggers",
         "session-handoff.md",
+        "Control File Budget",
         "session is ending or pausing",
         "owner changes direction",
         "context would be expensive to reconstruct",
@@ -428,6 +454,7 @@ def validate_templates() -> None:
         "AI Confidence As Completion",
         "Historical SPEC Override",
         "Micro-Approval Thrash",
+        "Evidence Surface Creep",
         "Owner Rubber Stamp",
         "Speculative Complexity",
         "Drive-By Refactor",
@@ -458,6 +485,7 @@ def validate_templates() -> None:
         "Level 2",
         "Stop Conditions",
         "Checkpoint Summary",
+        "Owner Review Compression",
     ]:
         if phrase not in autonomy:
             fail(f"Autonomy levels doc missing: {phrase}")
@@ -472,6 +500,24 @@ def validate_templates() -> None:
     ]:
         if phrase not in implementation:
             fail(f"Implementation discipline doc missing: {phrase}")
+    operating_intensity = read("docs/operating-intensity.md")
+    for phrase in [
+        "Operating Intensity",
+        "Standard SDAD / High",
+        "Full SDAD / Low",
+        "## High",
+        "## Medium",
+        "## Low",
+        "## Baseline Freeze",
+        "Owner Review Compression",
+        "Evidence Surface Rule",
+        "changes behavior, policy, boundary",
+        "evidence claim, or risk acceptance",
+        "handoff format",
+        "control surfaces reduce controllability",
+    ]:
+        if phrase not in operating_intensity:
+            fail(f"Operating intensity doc missing: {phrase}")
     session_handoff = read("docs/session-handoff.md")
     for phrase in [
         "Session Handoff & Context Continuity",
@@ -480,6 +526,10 @@ def validate_templates() -> None:
         "Handoffs are continuity",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
         "Standard Handoff Template",
+        "SDAD scale / intensity used",
+        "Control-file budget used",
+        "Owner Review Compression",
+        "Owner acceptance status",
         "Reactivation Prompt",
         "Do not assume the previous chat context is available",
     ]:
@@ -501,6 +551,8 @@ def validate_templates() -> None:
         "Do not request owner approval after every micro-task",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
         "reactivation prompt",
+        "SDAD scale / intensity used",
+        "compressed owner review summary",
     ]:
         if phrase not in handoff:
             fail(f"Handoff prompt missing review-worthy unit guidance: {phrase}")
@@ -533,6 +585,8 @@ def validate_templates() -> None:
             "Continue autonomously inside the approved work packet",
             "Implementation discipline guards autonomy",
             "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            "Full SDAD / High",
+            "operating intensity",
         ]:
             if phrase not in content:
                 fail(f"{path} missing expected phrase: {phrase}")

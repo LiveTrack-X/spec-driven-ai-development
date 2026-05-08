@@ -87,7 +87,14 @@ for permission".
 
 At the end of a work packet or session, report:
 
+- SDAD scale / intensity used,
 - autonomy level used,
+- one-line status,
+- changed user-facing behavior,
+- safety boundary touched: yes/no,
+- checks summary,
+- owner decision needed: yes/no,
+- recommended next action,
 - work packet completed,
 - evidence-ready units,
 - changed files,
@@ -95,8 +102,12 @@ At the end of a work packet or session, report:
 - docs and control files checked or updated,
 - open findings and remaining risks,
 - partial, skipped, degraded, or unverified behavior,
-- owner decisions needed now,
+- owner decision details, when `owner decision needed` is yes,
 - next proposed work packet.
+
+For `Medium` and `High` operating intensity, show this Owner Review Compression
+summary before detailed evidence. Link or refer to detailed evidence instead of
+making the owner read every artifact first.
 
 For Standard and Full SDAD, update control files at the packet or handoff
 boundary. Do not stop after every micro-task just to update documents, but do not

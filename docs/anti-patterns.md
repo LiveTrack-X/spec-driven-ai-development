@@ -160,3 +160,16 @@ did not understand deeply enough.
 Replace with: surgical changes. Every changed line should trace to the active
 work packet, active SPEC, review finding, or cleanup caused by the current edit.
 Mention unrelated cleanup opportunities instead of performing them.
+
+## 15. Evidence Surface Creep
+
+Symptom: every feature creates a new verifier, digest, viewer, report, handoff
+format, handoff report, or parallel evidence artifact.
+
+Why it fails: evidence grows faster than user value, the owner cannot tell which
+evidence matters, and review surfaces gain more buttons without a clearer next
+action.
+
+Replace with: add a new evidence surface only when it reduces owner review time,
+protects a real safety boundary, supports a release or production gate, or makes
+a baseline repeatable.

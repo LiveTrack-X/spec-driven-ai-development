@@ -39,6 +39,9 @@ Current active SPEC sections override older historical SPEC sections.
 - Owner decision beats AI momentum.
 - Repeated pain becomes a rule, checklist, test, or template update.
 - Default to Level 2 Work Packet Autonomy for normal Standard SDAD work.
+- State SDAD scale and operating intensity.
+- Raise the current packet to `Full SDAD / High` only when it changes a Q5 gate.
+- Lower intensity when control surfaces reduce controllability.
 - Work in review-worthy development units inside the approved packet, not
   micro-approval steps.
 - Continue autonomously inside the approved work packet until evidence is ready.
@@ -51,10 +54,10 @@ Current active SPEC sections override older historical SPEC sections.
 
 ## Handoff
 
-State autonomy level used, work packet completed, evidence-ready units, changed
-files, behavior changed, tests run, docs checked, open findings, remaining
-risks, incomplete work, owner decisions needed, owner acceptance status, and
-next concrete steps.
+State SDAD scale / intensity used, autonomy level used, work packet completed,
+evidence-ready units, changed files, behavior changed, tests run, docs checked,
+open findings, remaining risks, incomplete work, owner decisions needed, owner
+acceptance status, and next concrete steps.
 
 Long AI coding sessions are execution traces, not permanent memory. Before
 closing, archiving, replacing, or restarting a long session, create or update a
