@@ -117,6 +117,13 @@ one-line status, changed user-facing behavior, safety boundary touched yes/no,
 checks summary, owner decision needed yes/no, recommended next action, and links
 or references to detailed evidence.
 
+Advanced extensions such as harness optimization, self-improving loops,
+retrieval/memory tuning, or repeated evaluation automation require an explicit
+fit gate: repeated task unit, measurable metric, fixed model/tool surface,
+allowed changes, search evidence, owner acceptance evidence, leakage risk,
+concrete budget, and owner adoption gate. Mark missing fields as `unknown` or
+`blocking`; do not hide them as assumptions.
+
 ## Implicit Rules Made Explicit
 
 - Current beats historical.

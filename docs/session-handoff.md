@@ -63,6 +63,10 @@ A valid SDAD handoff must include:
 - known failures, warnings, or unverified assumptions,
 - open decisions,
 - owner acceptance status,
+- advanced extension fit-gate status, if applicable,
+- search evidence versus owner acceptance evidence, if applicable,
+- evaluation leakage risk, if applicable,
+- concrete budget used for expensive or repeated eval loops, if applicable,
 - constraints, owner preferences, and do-not-touch areas,
 - next concrete steps,
 - a reactivation prompt for a fresh AI session.
@@ -110,49 +114,59 @@ enough to need Standard SDAD continuity.
 - Recommended next action:
 - Links or references to detailed evidence:
 
-## 5. Completed Work
+## 5. Advanced Extension Status
+- Advanced extension used: yes/no
+- Fit-gate status:
+- Search evidence:
+- Owner acceptance evidence:
+- Evaluation leakage risk:
+- Concrete budget used:
+- Unknown or blocking fit-gate fields:
+- Owner adoption gate:
+
+## 6. Completed Work
 -
 -
 -
 
-## 6. Decisions Made
+## 7. Decisions Made
 | Decision | Reason | Alternatives Rejected |
 |---|---|---|
 | | | |
 
-## 7. Files Touched or Investigated
+## 8. Files Touched or Investigated
 | File/Path | Change Type | Reason | Risk/Notes |
 |---|---|---|---|
 | | | | |
 
-## 8. Commands / Tests Run
+## 9. Commands / Tests Run
 | Command | Result | Notes |
 |---|---|---|
 | | | |
 
-## 9. Current State
+## 10. Current State
 - Working:
 - Broken:
 - Unverified:
 - Unknown:
 - Owner acceptance status:
 
-## 10. Constraints and Do-Not-Touch Areas
+## 11. Constraints and Do-Not-Touch Areas
 -
 -
 -
 
-## 11. Open Decisions
+## 12. Open Decisions
 -
 -
 -
 
-## 12. Next Concrete Steps
+## 13. Next Concrete Steps
 1.
 2.
 3.
 
-## 13. Reactivation Prompt
+## 14. Reactivation Prompt
 
 Paste this into a fresh AI session:
 

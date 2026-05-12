@@ -41,6 +41,10 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - partial, degraded, skipped, or unverified behavior,
 - version-lane or migration sync status, if applicable,
 - release or production-readiness gate status, if applicable,
+- advanced extension fit-gate status, if applicable,
+- search evidence versus owner acceptance evidence, if applicable,
+- evaluation leakage risk, if applicable,
+- concrete budget used for expensive or repeated eval loops, if applicable,
 - next recommended slice,
 - what is not complete,
 - owner acceptance status,
@@ -69,6 +73,10 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - Do not bury blockers in prose. Put active defects in `review-findings.md`.
 - Do not leave future ideas mixed into active implementation work.
 - Do not claim release readiness while Critical findings remain open.
+- Do not claim generalized improvement from eval-driven work if search evidence
+  and owner acceptance evidence are the same set.
+- If an advanced extension was used, record unknown or blocking fit-gate fields
+  instead of hiding them as assumptions.
 - Update `save-state.md` when work pauses or stops mid-stream, handoff to another
   AI/tool/person is expected, owner direction or acceptance criteria changed,
   blocked/partial/unverified state remains, or context would be expensive to

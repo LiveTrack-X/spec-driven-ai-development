@@ -166,6 +166,13 @@ choices, or explicit owner checkpoints. Lower intensity when control surfaces
 reduce controllability.
 State SDAD scale and operating intensity before implementation.
 
+Advanced extensions such as harness optimization, self-improving loops,
+retrieval/memory tuning, or repeated evaluation automation require an explicit
+fit gate before implementation: repeated task unit, measurable metric, fixed
+model/tool surface, allowed changes, search evidence, owner acceptance evidence,
+leakage risk, concrete budget, and owner adoption gate. Mark missing fields as
+`unknown` or `blocking`; do not hide them as assumptions.
+
 A work packet is a bounded container for one or more review-worthy development
 units. The owner approves the packet boundary, not every small task inside it.
 Do not use every small SPEC item as a separate owner-approval boundary by

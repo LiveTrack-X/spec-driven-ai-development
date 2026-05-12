@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.1.0` stable public release.
+Status: `1.1.1` stable public release.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
@@ -277,6 +277,22 @@ The purpose of SDAD is not to create more control files. The purpose is to keep
 the project controllable. When control surfaces reduce controllability, lower
 intensity, freeze the baseline, compress evidence, and simplify owner review.
 See [docs/operating-intensity.md](docs/operating-intensity.md).
+
+## Advanced Extension Fit
+
+Harness optimization, self-improving loops, retrieval or memory tuning, and
+repeated evaluation automation are optional extensions, not default SDAD loops.
+Use them only when the project has a repeated task unit, measurable success
+metric, fixed model/tool surface, bounded allowed changes, leakage-risk plan,
+concrete budget, and owner adoption gate.
+
+Each fit-gate field should be answered, marked `unknown`, or marked `blocking`.
+Do not treat a discovered prompt, rule, retrieval policy, memory policy, or
+harness as owner-accepted until the owner reviews the evaluation split, leakage
+risk, budget result, changed behavior, and adoption plan.
+
+See [docs/fit-assessment.md](docs/fit-assessment.md) and
+[docs/anti-patterns.md](docs/anti-patterns.md).
 
 ## Work Packets And Autonomy Levels
 

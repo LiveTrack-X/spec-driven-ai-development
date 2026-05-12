@@ -138,3 +138,29 @@ Add a new evidence surface only when it:
 
 If evidence grows faster than owner clarity, lower intensity and simplify the
 review path.
+
+## Evaluation-Driven Extensions
+
+Harness optimization, self-improving agent loops, retrieval/memory tuning, and
+repeated evaluation automation are advanced extensions, not default SDAD loops.
+
+Before running one, pass the Advanced Extension Fit Gate in
+[fit-assessment.md](fit-assessment.md). State:
+
+- what task unit repeats,
+- what metric decides improvement,
+- what model and tool surface stay fixed,
+- what changes are allowed,
+- what evidence is search evidence,
+- what evidence is reserved for owner acceptance,
+- what leakage risk exists,
+- what concrete budget applies.
+
+Use `Medium` only when the extension changes no Q5 boundary and the budget is
+bounded. Use `High` when it changes risk acceptance, production claims,
+release posture, security/data/auth/money boundaries, or owner adoption
+decisions.
+
+Discovered prompts, rules, retrieval policies, memory policies, or harnesses are
+evidence-ready candidates. They are not owner-accepted until the owner reviews
+the split, leakage risk, budget result, changed behavior, and adoption plan.

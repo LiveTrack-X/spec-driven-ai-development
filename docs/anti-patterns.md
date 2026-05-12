@@ -173,3 +173,28 @@ action.
 Replace with: add a new evidence surface only when it reduces owner review time,
 protects a real safety boundary, supports a release or production gate, or makes
 a baseline repeatable.
+
+## 16. Evaluation Leakage
+
+Symptom: prompts, harnesses, retrieval rules, review rules, or specs are tuned
+against the same examples later used to claim final acceptance.
+
+Why it fails: evidence can look stronger while the project is only overfitting
+to the examples, traces, or owner review set already used during search.
+
+Replace with: separate search evidence from owner acceptance evidence when
+possible. If no held-out acceptance set exists, mark that absence as a risk and
+do not claim generalized improvement.
+
+## 17. Budget Fog
+
+Symptom: an eval-driven loop is approved because it sounds useful, but no one
+states how many candidates, runs, tokens, dollars, minutes, or owner-review
+cycles it may consume.
+
+Why it fails: "just one more iteration" turns a controlled work packet into an
+open-ended optimization project.
+
+Replace with: state a concrete budget before running expensive or repeated
+evaluation loops, and stop when that budget is reached unless the owner approves
+a new packet.

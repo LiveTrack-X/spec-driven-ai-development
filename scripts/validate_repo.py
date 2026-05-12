@@ -130,7 +130,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.1.0`",
+        "Status: `1.1.1`",
         "For Beginners: Use In 60 Seconds",
         "assets/spec-driven-ai-development-infographic.png",
         "Choose Scale First",
@@ -197,11 +197,12 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "1.1.0",
+            "1.1.1",
             "save-state.md",
             "오너 수락",
             "Q5",
             "Full SDAD / High",
+            "고급 확장",
             "chat-only",
             "리뷰 의미가 있는 개발 단위",
             "docs/getting-started.md",
@@ -215,11 +216,12 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "1.1.0",
+            "1.1.1",
             "save-state.md",
             "Owner 验收",
             "Q5",
             "Full SDAD / High",
+            "advanced extension",
             "chat-only",
             "有评审意义的开发单元",
             "docs/getting-started.md",
@@ -233,11 +235,12 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "1.1.0",
+            "1.1.1",
             "save-state.md",
             "Owner の受け入れ",
             "Q5",
             "Full SDAD / High",
+            "advanced extension",
             "chat-only",
             "レビューする意味のある",
             "docs/getting-started.md",
@@ -276,6 +279,7 @@ def validate_templates() -> None:
         "docs/sdad/handoffs",
         "SDAD scale/intensity change",
         "Heavy control-file budget",
+        "Advanced extension",
     ]:
         if phrase not in index:
             fail(f"docs/INDEX template missing: {phrase}")
@@ -296,6 +300,9 @@ def validate_templates() -> None:
         "Operating Intensity Rules",
         "Evidence Surface Creep",
         "Control File Budget",
+        "Advanced Extension Fit Gate",
+        "evaluation leakage risk",
+        "concrete budget",
         "compressed owner review summary",
     ]:
         if phrase not in rules:
@@ -304,6 +311,13 @@ def validate_templates() -> None:
     for phrase in [
         "SDAD Session Handoff",
         "Session Identity",
+        "Operating Mode",
+        "Owner Review Compression",
+        "Advanced Extension Status",
+        "Search evidence",
+        "Owner acceptance evidence",
+        "Evaluation leakage risk",
+        "Concrete budget used",
         "Commands / Tests Run",
         "Reactivation Prompt",
         "Do not assume the previous chat context is available",
@@ -455,6 +469,8 @@ def validate_templates() -> None:
         "Historical SPEC Override",
         "Micro-Approval Thrash",
         "Evidence Surface Creep",
+        "Evaluation Leakage",
+        "Budget Fog",
         "Owner Rubber Stamp",
         "Speculative Complexity",
         "Drive-By Refactor",
@@ -462,7 +478,19 @@ def validate_templates() -> None:
         if phrase not in anti_patterns:
             fail(f"Anti-patterns doc missing: {phrase}")
     fit = read("docs/fit-assessment.md")
-    for phrase in ["Score", "Very high", "Output Template", "Maintenance cost matters"]:
+    for phrase in [
+        "Score",
+        "Very high",
+        "Output Template",
+        "Maintenance cost matters",
+        "Advanced Extension Fit Gate",
+        "search evidence",
+        "owner acceptance evidence",
+        "evaluation leakage risk",
+        "concrete budget",
+        "unknown",
+        "blocking",
+    ]:
         if phrase not in fit:
             fail(f"Fit assessment doc missing: {phrase}")
     diagrams = read("docs/diagrams.md")
@@ -511,6 +539,11 @@ def validate_templates() -> None:
         "## Baseline Freeze",
         "Owner Review Compression",
         "Evidence Surface Rule",
+        "Evaluation-Driven Extensions",
+        "Advanced Extension Fit Gate",
+        "search evidence",
+        "owner acceptance",
+        "concrete budget",
         "changes behavior, policy, boundary",
         "evidence claim, or risk acceptance",
         "handoff format",
@@ -529,6 +562,11 @@ def validate_templates() -> None:
         "SDAD scale / intensity used",
         "Control-file budget used",
         "Owner Review Compression",
+        "Advanced Extension Status",
+        "Search evidence",
+        "Owner acceptance evidence",
+        "Evaluation leakage risk",
+        "Concrete budget used",
         "Owner acceptance status",
         "Reactivation Prompt",
         "Do not assume the previous chat context is available",
@@ -553,6 +591,10 @@ def validate_templates() -> None:
         "reactivation prompt",
         "SDAD scale / intensity used",
         "compressed owner review summary",
+        "advanced extension fit-gate status",
+        "search evidence versus owner acceptance evidence",
+        "evaluation leakage risk",
+        "concrete budget",
     ]:
         if phrase not in handoff:
             fail(f"Handoff prompt missing review-worthy unit guidance: {phrase}")

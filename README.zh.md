@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-状态：`1.1.0` 稳定公开版本。
+状态：`1.1.1` 稳定公开版本。
 
 本文是中文导览版 README。本仓库的规范文档以英文为准，包括
 [README.md](README.md)、`docs/`、`templates/` 和 `scripts/`。如果本导览与英文文档不一致，请以英文规范文档为准。
@@ -56,6 +56,10 @@ operating intensity：`Standard SDAD / High`, `Standard SDAD / Medium`,
 才提升为 `Full SDAD / High`。usable baseline 出现后，应降到 Medium 或 Low，
 压缩 evidence 和 owner review。详见
 [docs/operating-intensity.md](docs/operating-intensity.md)。
+Harness optimization、self-improving loop、retrieval/memory tuning 和重复评估
+自动化等 advanced extension 不是默认 SDAD loop。只有在存在重复 task unit、
+可测量 metric、固定 model/tool surface、leakage risk、具体 budget 和 owner
+adoption gate 时才使用。
 如果项目使用 `save-state.md`，当会话结束或暂停、需要 handoff、Owner 改变方向、
 存在部分或未验证状态，或者下一次会话很难重建上下文时，也必须更新它。
 Mini SDAD 也有完成门槛：必须列出变更文件、检查证据、限制或未验证内容，并获得 Owner 验收，才能称为 done。

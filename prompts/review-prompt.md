@@ -62,6 +62,11 @@ Then include:
 - partial, degraded, skipped, or unverified behavior that was not labeled,
 - version-lane or migration sync risk, if applicable,
 - high-risk domain checklist gaps, if applicable,
+- advanced extension fit-gate gaps, if applicable,
+- evaluation leakage risk, if prompts, harnesses, retrieval, memory, review
+  rules, or agent scaffolds were tuned,
+- whether search evidence is separated from owner acceptance evidence,
+- whether concrete budget was stated for expensive or repeated eval loops,
 - release or production-readiness blockers, if applicable,
 - missing ADRs for durable decisions, if applicable,
 - assumptions,

@@ -12,48 +12,74 @@
 - Primary objective:
 - Non-goals:
 
-## 3. Completed Work
+## 3. Operating Mode
+- SDAD scale / intensity used:
+- Autonomy level used:
+- Control-file budget used: Minimal / Normal / Heavy
+- Baseline Freeze posture used: yes/no
+
+## 4. Owner Review Compression
+- One-line status:
+- Changed user-facing behavior:
+- Safety boundary touched: yes/no
+- Checks summary:
+- Owner decision needed: yes/no
+- Recommended next action:
+- Links or references to detailed evidence:
+
+## 5. Advanced Extension Status
+- Advanced extension used: yes/no
+- Fit-gate status:
+- Search evidence:
+- Owner acceptance evidence:
+- Evaluation leakage risk:
+- Concrete budget used:
+- Unknown or blocking fit-gate fields:
+- Owner adoption gate:
+
+## 6. Completed Work
 -
 -
 -
 
-## 4. Decisions Made
+## 7. Decisions Made
 | Decision | Reason | Alternatives Rejected |
 |---|---|---|
 | | | |
 
-## 5. Files Touched or Investigated
+## 8. Files Touched or Investigated
 | File/Path | Change Type | Reason | Risk/Notes |
 |---|---|---|---|
 | | | | |
 
-## 6. Commands / Tests Run
+## 9. Commands / Tests Run
 | Command | Result | Notes |
 |---|---|---|
 | | | |
 
-## 7. Current State
+## 10. Current State
 - Working:
 - Broken:
 - Unverified:
 - Unknown:
+- Owner acceptance status:
 
-## 8. Constraints and Do-Not-Touch Areas
--
--
--
-
-## 9. Open Decisions
+## 11. Constraints and Do-Not-Touch Areas
 -
 -
 -
 
-## 10. Next Concrete Steps
+## 12. Open Decisions
+-
+-
+-
+
+## 13. Next Concrete Steps
 1.
 2.
 3.
 
-## 11. Reactivation Prompt
+## 14. Reactivation Prompt
 
 Paste this into a fresh AI session:
 

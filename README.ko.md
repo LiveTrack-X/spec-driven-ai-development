@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-상태: `1.1.0` 안정 공개 릴리즈.
+상태: `1.1.1` 안정 공개 릴리즈.
 
 이 문서는 한국어 안내용 README입니다. 이 저장소의 기준 문서는 영어
 [README.md](README.md)와 영어 기반 `docs/`, `templates/`, `scripts/`입니다.
@@ -59,6 +59,10 @@ Q5 프로젝트라고 모든 packet이 High가 되는 것은 아닙니다. Q5 ga
 올립니다. baseline이 생긴 뒤에는 Medium 또는 Low로 낮추고 evidence와
 owner review를 압축하세요. 자세한 내용은
 [docs/operating-intensity.md](docs/operating-intensity.md)를 보세요.
+Harness optimization, self-improving loop, retrieval/memory tuning, 반복 평가
+자동화 같은 고급 확장은 기본 루프가 아닙니다. 반복 task 단위, 측정 가능한
+metric, 고정된 model/tool surface, leakage 위험, 구체적 budget, owner adoption
+gate가 있을 때만 사용하세요.
 `save-state.md`를 사용하는 프로젝트라면 세션 종료/중단, handoff, 오너 방향 변경,
 부분/미검증 상태, 또는 다음 세션이 컨텍스트를 다시 구성하기 어려운 경우에도 최신화해야 합니다.
 Mini SDAD도 완료 기준이 있습니다. 변경 파일, 확인 증거, 한계/미검증 항목,

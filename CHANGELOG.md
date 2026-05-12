@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 1.1.1 - 2026-05-13
+
+- Added an Advanced Extension Fit Gate for eval-driven workflows such as harness
+  optimization, self-improving loops, retrieval/memory tuning, and repeated
+  evaluation automation.
+- Added Evaluation Leakage and Budget Fog anti-patterns to separate search
+  evidence from owner acceptance evidence and require concrete budgets.
+
 ## 1.1.0 - 2026-05-08
 
 - Added Standard/Full SDAD operating intensity guidance with High, Medium, and

@@ -123,6 +123,32 @@ viewer, report, handoff format, handoff report, or parallel evidence artifact
 unless it reduces owner review time, protects a real boundary, supports a
 release/production gate, or makes a baseline repeatable.
 
+## Advanced Extension Fit Gate
+
+Advanced extensions include harness optimization, self-improving agent loops,
+repeated evaluation automation, retrieval/memory tuning, and workflows that
+search over prompts, tools, context construction, review rules, or agent
+scaffolds.
+
+Before using one, state:
+
+- repeated task unit,
+- measurable success metric,
+- fixed model and tool surface,
+- allowed changes and out-of-scope changes,
+- search evidence,
+- owner acceptance evidence,
+- held-out acceptance set or risk if none exists,
+- evaluation leakage risk,
+- concrete budget in time, candidate count, evaluation runs, token/API cost, or
+  owner review time,
+- owner adoption gate.
+
+Each field must be answered, marked `unknown`, or marked `blocking`. A
+discovered prompt, rule, retrieval policy, memory policy, or harness is
+evidence-ready, not owner-accepted, until the owner reviews the split, leakage
+risk, budget result, changed behavior, and adoption plan.
+
 ## Implicit Rules Made Explicit
 
 - Current beats historical: current code, tests, active docs, and active SPEC

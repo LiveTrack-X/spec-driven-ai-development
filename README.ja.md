@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-ステータス: `1.1.0` 安定公開リリース。
+ステータス: `1.1.1` 安定公開リリース。
 
 この文書は日本語の案内用 README です。このリポジトリの正本は英語の
 [README.md](README.md)、`docs/`、`templates/`、`scripts/` です。内容が食い違う場合は英語の正本文書を優先してください。
@@ -56,6 +56,10 @@ Q5 gate の挙動、ポリシー、境界、証拠上の主張、リスク受け
 packet だけを `Full SDAD / High` に上げます。usable baseline ができた後は
 Medium または Low に下げ、evidence と owner review を圧縮します。詳しくは
 [docs/operating-intensity.md](docs/operating-intensity.md) を参照してください。
+Harness optimization、self-improving loop、retrieval/memory tuning、反復評価の
+自動化のような advanced extension は、標準ループではありません。反復する
+task unit、測定可能な metric、固定された model/tool surface、leakage risk、
+具体的な budget、owner adoption gate がある場合だけ使用してください。
 `save-state.md` を使うプロジェクトでは、セッション終了や中断、handoff、Owner の方向変更、
 部分的または未検証の状態、次のセッションで文脈の再構築が難しい場合にも更新してください。
 Mini SDAD にも完了ゲートがあります。変更ファイル、確認証拠、制限や未検証項目、

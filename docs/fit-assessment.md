@@ -41,6 +41,33 @@ changes, blocked/partial/unverified state remains, or context would be expensive
 to reconstruct. If that cost is too high, use [Mini SDAD](mini-sdad.md) or a
 one-shot prompt.
 
+## Advanced Extension Fit Gate
+
+Advanced SDAD extensions are optional. They include harness optimization,
+self-improving agent loops, repeated evaluation automation, retrieval/memory
+tuning, or any workflow that searches over prompts, tools, context construction,
+review rules, or agent scaffolds.
+
+Do not enable an advanced extension unless the fit gate is explicit:
+
+- repeated task unit exists,
+- measurable success metric exists,
+- fixed model and tool surface are named,
+- allowed changes and out-of-scope changes are bounded,
+- search evidence is separate from owner acceptance evidence when possible,
+- held-out acceptance set exists, or its absence is marked as a risk,
+- evaluation leakage risk is named,
+- concrete budget is stated in time, candidate count, evaluation runs,
+  token/API cost, or owner review time,
+- owner adoption gate exists before any discovered change becomes accepted.
+
+Each required field must be answered, marked `unknown`, or marked `blocking`.
+Do not silently turn an unknown into an implementation assumption.
+
+If this gate is not satisfied, keep the work inside normal SDAD planning,
+manual evaluation, or a smaller work packet. The extension may still be recorded
+as a future idea, but it should not become active implementation.
+
 ## Questions
 
 1. Will more than one AI session, model, or tool work on the project?
@@ -77,6 +104,8 @@ Fit:
 Recommended control files:
 Required review roles:
 Risk gates needed:
+Advanced extension fit gate needed:
+Advanced extension unknowns/blockers:
 Owner decisions needed before implementation:
 Recommended autonomy level:
 First work packet:
