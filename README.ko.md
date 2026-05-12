@@ -2,7 +2,9 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-상태: `1.1.1` 안정 공개 릴리즈.
+상태: `1.1.2` 안정 문서/패키지 릴리즈.
+
+효과는 프로젝트 적합도, 오너의 운영 규율, evidence 품질에 따라 달라집니다.
 
 이 문서는 한국어 안내용 README입니다. 이 저장소의 기준 문서는 영어
 [README.md](README.md)와 영어 기반 `docs/`, `templates/`, `scripts/`입니다.

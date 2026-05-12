@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -74,6 +75,41 @@ def read(path: str) -> str:
     return file_path.read_text(encoding="utf-8")
 
 
+def strip_fenced_code(text: str) -> str:
+    return re.sub(r"```.*?```", "", text, flags=re.S)
+
+
+def is_external_link(target: str) -> bool:
+    return target.lower().startswith(("http://", "https://", "mailto:", "tel:"))
+
+
+def validate_local_markdown_links() -> None:
+    link_pattern = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+    for md_path in sorted(ROOT.rglob("*.md")):
+        if ".git" in md_path.parts:
+            continue
+        content = strip_fenced_code(md_path.read_text(encoding="utf-8"))
+        for match in link_pattern.finditer(content):
+            raw_target = match.group(1).strip()
+            if not raw_target or raw_target.startswith("#") or is_external_link(raw_target):
+                continue
+            if raw_target.startswith("<") and raw_target.endswith(">"):
+                raw_target = raw_target[1:-1].strip()
+            target = raw_target.split("#", 1)[0].split("?", 1)[0]
+            if not target:
+                continue
+            target = unquote(target)
+            resolved = (md_path.parent / target).resolve()
+            try:
+                display_target = resolved.relative_to(ROOT)
+            except ValueError:
+                source = md_path.relative_to(ROOT)
+                fail(f"Markdown link escapes repository root: {source} -> {raw_target}")
+            if not resolved.exists():
+                source = md_path.relative_to(ROOT)
+                fail(f"Broken local Markdown link: {source} -> {raw_target} ({display_target})")
+
+
 def validate_skill() -> None:
     content = read("skills/ai-spec-project-start/SKILL.md")
     if not content.startswith("---\n"):
@@ -130,7 +166,9 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.1.1`",
+        "Status: `1.1.2`",
+        "stable documentation/package release",
+        "project fit, owner discipline, and evidence quality",
         "For Beginners: Use In 60 Seconds",
         "assets/spec-driven-ai-development-infographic.png",
         "Choose Scale First",
@@ -197,7 +235,8 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "1.1.1",
+            "1.1.2",
+            "프로젝트 적합도",
             "save-state.md",
             "오너 수락",
             "Q5",
@@ -216,7 +255,8 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "1.1.1",
+            "1.1.2",
+            "project fit",
             "save-state.md",
             "Owner 验收",
             "Q5",
@@ -235,7 +275,8 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "1.1.1",
+            "1.1.2",
+            "project fit",
             "save-state.md",
             "Owner の受け入れ",
             "Q5",
@@ -635,6 +676,7 @@ def validate_templates() -> None:
 
 
 def main() -> None:
+    validate_local_markdown_links()
     validate_templates()
     validate_skill()
     print("Repository validation passed.")

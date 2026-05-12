@@ -2,7 +2,9 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-状态：`1.1.1` 稳定公开版本。
+状态：`1.1.2` 稳定文档/包版本。
+
+实际效果取决于 project fit、Owner 执行纪律和 evidence quality。
 
 本文是中文导览版 README。本仓库的规范文档以英文为准，包括
 [README.md](README.md)、`docs/`、`templates/` 和 `scripts/`。如果本导览与英文文档不一致，请以英文规范文档为准。

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 1.1.2 - 2026-05-13
+
+- Clarified release status wording as a stable documentation/package release
+  and noted that effectiveness depends on project fit, owner discipline, and
+  evidence quality.
+- Added local Markdown link existence checks to repository validation without
+  adding external URL checks, installer dry-runs, template snapshots, or CLI
+  scaffolding.
+
 ## 1.1.1 - 2026-05-13
 
 - Added an Advanced Extension Fit Gate for eval-driven workflows such as harness

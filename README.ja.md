@@ -2,7 +2,9 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-ステータス: `1.1.1` 安定公開リリース。
+ステータス: `1.1.2` 安定ドキュメント/パッケージリリース。
+
+有効性は project fit、Owner の運用規律、evidence quality に依存します。
 
 この文書は日本語の案内用 README です。このリポジトリの正本は英語の
 [README.md](README.md)、`docs/`、`templates/`、`scripts/` です。内容が食い違う場合は英語の正本文書を優先してください。
