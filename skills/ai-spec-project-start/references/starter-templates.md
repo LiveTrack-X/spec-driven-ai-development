@@ -41,6 +41,7 @@ Field-derived controls:
 ```text
 Documentation-governance controls keep context, docs, SPECs, TODOs, review findings, and production-readiness status coherent across AI sessions.
 Release-governance controls keep version lanes, migrations, releases, risk domains, and pre-release review honest.
+Context-stability controls keep active state files short and prevent large logs, generated artifacts, old archives, or private data from flooding AI chat context.
 ```
 
 Implicit rules to include:
@@ -64,6 +65,9 @@ Scope: Required starting point for AI agents and maintainers
 
 ## Mandatory First Read
 
+Context Stability applies before every item in this start loop. Inspect file
+size first and use bounded reads for large routed files.
+
 Before code, SPEC, prompt, or documentation work, read:
 
 1. `docs/INDEX.md`
@@ -71,6 +75,21 @@ Before code, SPEC, prompt, or documentation work, read:
 3. The active docs routed from `docs/INDEX.md`
 4. `docs/TODO-Open-Items.md` and `review-findings.md` for implementation, hardening, or bugfix work
 5. The relevant active SPEC before architecture, policy, or behavior changes
+
+## Context Stability Rule
+
+Mandatory first reads are routing requirements, not permission to dump large
+files into chat context. Before opening large state files, archives, logs,
+generated artifacts, private data, or broad search results, check size and use
+bounded reads: headings, current sections, targeted matches, output limits, and
+explicit excludes.
+
+Keep active live-state files short. Move old history to archive/history files
+and link it instead of keeping long journals in the startup path.
+
+Default soft triggers: bounded reads above 50 KB or 500 lines; a
+context-stability check above 200 KB or 2,000 lines; no full startup read above
+1 MB unless the owner explicitly asks for historical reconstruction.
 
 ## Source Of Truth
 
@@ -142,6 +161,9 @@ Before handoff, state:
 Update `save-state.md` when work pauses, handoff to another AI/tool/person is
 expected, owner direction or acceptance criteria changed, blocked/partial or
 unverified state remains, or context would be expensive to reconstruct.
+
+Fresh sessions should use bounded reads for large archives, logs, generated
+artifacts, private data, and old handoffs instead of loading them in full.
 ```
 
 ## ADR Folder

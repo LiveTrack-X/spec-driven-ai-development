@@ -253,3 +253,17 @@ expensive damage.
 
 Operational form: document risk domains, required checks, reviewer focus, and
 release blockers.
+
+### 21. Context Budget Beats Full Transcript
+
+Rule: active control files should route fresh AI sessions, not replay the whole
+project journal.
+
+Why it matters: long state files, logs, generated artifacts, private corpora,
+and broad search output can make AI chat sessions unstable or unverifiable even
+when runtime code is not the problem.
+
+Operational form: check file size before reading large routed files, use
+headings and targeted sections, move old state into archives, and keep the
+startup path focused on current objective, open items, constraints, validation,
+and next steps.

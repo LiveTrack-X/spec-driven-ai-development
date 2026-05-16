@@ -8,6 +8,16 @@ complexity, and unrelated drive-by changes.
 
 ## Review Inputs
 
+Context Stability applies before review inputs. Review sessions often touch
+large SPECs, TODOs, findings, handoffs, archives, and generated reports, so do
+not load them in full by default.
+
+Use bounded reads for large files: inspect file size, read headings or matching
+sections, limit search output, and use explicit excludes. Default soft triggers:
+bounded reads above 50 KB or 500 lines, context-stability check above 200 KB or
+2,000 lines, and no full startup read above 1 MB unless the owner explicitly
+asks for historical reconstruction.
+
 Read:
 
 1. `docs/INDEX.md`

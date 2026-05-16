@@ -5,6 +5,9 @@ Scope: Required starting point for AI agents and maintainers
 
 ## Mandatory First Read
 
+Context Stability applies before every item in this start loop. Inspect file
+size first and use bounded reads for large routed files.
+
 Before code, SPEC, prompt, or documentation work, read:
 
 1. `docs/INDEX.md`
@@ -14,6 +17,29 @@ Before code, SPEC, prompt, or documentation work, read:
 5. The relevant active SPEC before architecture, policy, or behavior changes
 
 Do not start from archived docs, historical plans, product notes, or old handoff files without checking `docs/INDEX.md` first.
+
+## Context Stability Rule
+
+The mandatory first read is a routing requirement, not permission to dump large
+files into chat context.
+
+Before opening routed docs, archives, logs, generated artifacts, private data, or
+search results, check whether the input is large, stale, private, generated, or
+outside the active scope. Use bounded reads: file size checks, headings, current
+sections, targeted keyword matches, output limits, and explicit excludes.
+
+Keep active live-state files such as `save-state.md`, `docs/TODO-Open-Items.md`,
+and `review-findings.md` short enough to read as current operating state. Move
+old history to archive/history files and link it instead of keeping long
+narrative journals in the startup path.
+
+Default soft triggers: bounded reads above 50 KB or 500 lines; a
+context-stability check above 200 KB or 2,000 lines; no full startup read above
+1 MB unless the owner explicitly asks for historical reconstruction.
+
+If an AI chat becomes unstable, suspect context growth from large state files,
+broad searches, generated output, logs, private data, or old archives before
+changing runtime code.
 
 ## Source Of Truth
 

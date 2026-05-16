@@ -17,6 +17,8 @@ Scope: Current implementation backlog only
 ## Future / Deferred
 
 - Record ideas here only when they are not active implementation work yet.
+- If this file becomes a long journal, move old material to archive/history and
+  keep this file focused on current active work.
 
 ## Release / Production Readiness
 

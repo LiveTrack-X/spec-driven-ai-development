@@ -6,8 +6,9 @@ Scope: How to use SPEC-Driven AI Development across AI coding tools
 This repository is tool-neutral. Codex skills are one delivery format, not the
 method itself. Use the adapter that matches the AI coding environment.
 
-Each adapter carries the same source-of-truth, evidence, work-packet autonomy,
-implementation discipline, handoff, and `save-state.md` update trigger rules.
+Each adapter carries the same source-of-truth, evidence, context-stability,
+work-packet autonomy, implementation discipline, handoff, and `save-state.md`
+update trigger rules.
 
 ## Supported Adapters
 
@@ -47,6 +48,7 @@ is used.
 Each adapter keeps only the high-signal operating rules:
 
 - mandatory first-read route,
+- context-stability and bounded-read guard before first-read files,
 - source-of-truth order,
 - current-over-historical SPEC precedence,
 - evidence-based completion,

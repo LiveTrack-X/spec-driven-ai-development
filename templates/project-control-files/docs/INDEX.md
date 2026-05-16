@@ -31,6 +31,8 @@ Scope: Central documentation navigation and maintenance control
 4. Product notes do not become implementation requirements until promoted.
 5. When docs conflict, prefer code, tests, active docs, canonical SPEC, active SPECs, then archive/history.
 6. When a SPEC spans past-to-present history, current active sections override older sections.
+7. Active live-state files should stay short enough to read as current operating
+   state. Move old history to archive/history files and use bounded reads there.
 
 ## Minimum Documentation Update Sets
 
@@ -48,6 +50,7 @@ Use this table before handoff.
 | High-risk domain rule such as locks, real-time path, backup, or platform boundary | module docs if present, `docs/Repository-Operating-Rules.md`, relevant tests |
 | Durable architecture, policy, release, or owner tradeoff decision | `SPEC/adr/ADR-0001-template.md` copied to a numbered ADR, relevant SPEC/docs |
 | SDAD scale/intensity change, Baseline Freeze, Evidence Surface Creep, or Heavy control-file budget | `docs/Repository-Operating-Rules.md`, relevant SPEC/docs, `docs/TODO-Open-Items.md`, `review-findings.md` if risk remains |
+| Oversized live-state file, chat instability, large archive/log/generated output, or context-stability change | `docs/Repository-Operating-Rules.md`, `save-state.md`, affected active state files, archive/history location, this index |
 | Advanced extension, repeated eval loop, harness optimization, retrieval/memory tuning, or self-improving agent loop | `docs/Repository-Operating-Rules.md`, relevant SPEC/docs, `docs/TODO-Open-Items.md`, `review-findings.md` if leakage, budget, or adoption risk remains |
 | Session pause, handoff, owner direction change, restart, or expensive context recovery | `save-state.md`, `docs/sdad/handoffs/YYYY-MM-DD-topic.md` for long sessions, `docs/TODO-Open-Items.md`, `review-findings.md` if blocked or partial |
 

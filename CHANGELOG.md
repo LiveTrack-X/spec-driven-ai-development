@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 1.1.3 - 2026-05-16
+
+- Added context-stability and bounded-read guidance so large live-state files,
+  logs, generated artifacts, private data, and archives do not flood fresh AI
+  chat sessions.
+- Added live-state size-budget guidance for keeping active state files compact
+  while preserving old material in archive/history files.
+- Added soft size triggers and tool-input hygiene guidance so first-read loops
+  check context size before loading routed files.
+- Updated adapters, prompts, templates, and validation checks to preserve the
+  bounded-read rule without adding cleanup automation.
+
 ## 1.1.2 - 2026-05-13
 
 - Clarified release status wording as a stable documentation/package release

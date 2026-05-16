@@ -53,6 +53,45 @@ reassessment:
 Record the control-file budget in the handoff summary so repeated `Heavy`
 packets are visible.
 
+## Live-State Size Budget
+
+Active live-state files are routing summaries, not permanent session logs.
+
+Keep files such as `save-state.md`, `next-task.md`, `review-findings.md`, and
+`docs/TODO-Open-Items.md` short enough to inspect as current operating state. If
+one becomes long, repetitive, or difficult to audit, preserve the old material in
+an archive/history file and leave the active file focused on:
+
+- current objective,
+- current/open items,
+- constraints and do-not-touch areas,
+- validation state,
+- next one to three concrete steps,
+- links to archive/history material.
+
+Do not delete history just to reduce context. Move it out of the default startup
+path and update `docs/INDEX.md` or the project routing document.
+
+Default soft triggers:
+
+- `>50 KB` or `>500 lines`: bounded reads by default.
+- `>200 KB`, `>2,000 lines`, or hard to audit: run a context-stability check
+  before feature work continues.
+- `>1 MB`: do not read in full during startup unless the owner explicitly asks
+  for historical reconstruction.
+
+Use bounded reads for large archives, logs, generated artifacts, private data,
+local databases, dependency directories, and session transcripts: check file
+size, read headings or matching sections, limit search output, and use explicit
+excludes. If an AI chat becomes unstable, suspect context growth from large
+state files or broad searches before changing runtime code.
+
+If repository-packing, graphing, embedding, or indexing tools are used, keep
+their ignore files aligned with this rule so generated, private, log, cache,
+dependency, and local database surfaces do not enter AI context by default.
+
+See [context-stability.md](context-stability.md).
+
 ## End-Of-Packet Rule
 
 Every SDAD loop should end at a work-packet or handoff boundary:

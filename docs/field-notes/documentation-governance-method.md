@@ -38,6 +38,13 @@ The recommended agent entry sequence is:
 Reusable rule: never let a fresh AI session begin from an old handoff, archived
 plan, or impressive SPEC without first checking the current route.
 
+Reusable context-stability rule: the start loop is a routing requirement, not a
+full-read requirement. Before reading large state files, old handoffs, logs,
+generated artifacts, private data, or archives, check size and use bounded reads.
+Use local soft triggers such as 50 KB or 500 lines for bounded reads, 200 KB or
+2,000 lines for a context-stability check, and avoid full startup reads above
+1 MB unless the owner asks for historical reconstruction.
+
 ### 3. Define Source Of Truth Order
 
 This pattern explicitly ranks evidence:
@@ -115,6 +122,7 @@ sessions:
 - `docs/Repository-Operating-Rules.md` must collect repeated rules that would
   otherwise stay in chat.
 - `AGENTS.md` must require the first-read chain.
+- The first-read chain must apply context-stability before loading routed files.
 - `docs/TODO-Open-Items.md` and `review-findings.md` must stay active and
   separate.
 - Historical docs must be preserved but clearly excluded from the execution path.

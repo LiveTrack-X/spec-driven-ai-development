@@ -52,6 +52,14 @@ fresh session, create a session handoff under
 `docs/sdad/handoffs/YYYY-MM-DD-topic.md`. See
 [session-handoff.md](session-handoff.md).
 
+Keep active live-state files short. If state, TODO, review, or handoff files
+become long journals, move old history to archive/history files and use bounded
+reads for archives, logs, generated artifacts, private data, and broad search
+output. See [context-stability.md](context-stability.md).
+Default soft trigger: bounded reads above 50 KB or 500 lines; context-stability
+check above 200 KB or 2,000 lines; no full startup read above 1 MB unless the
+owner explicitly asks for historical reconstruction.
+
 If no file needs a content change, say which files were checked and why no
 update was needed.
 

@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.1.2` stable documentation/package release.
+Status: `1.1.3` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -172,6 +172,15 @@ create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat
 the chat as an execution trace, not permanent memory; a fresh session must be
 able to continue from the handoff, active spec, and current repository state.
 
+Before reading large state files, logs, generated artifacts, private data, or
+old archives, use bounded reads: check file size, read headings or matching
+sections, limit search output, and avoid dumping large files into the chat. If
+chat stability degrades, suspect context growth before changing runtime code.
+As a default soft trigger, use bounded reads for files over 50 KB or 500 lines,
+run a context-stability check for files over 200 KB or 2,000 lines, and do not
+read files over 1 MB in full during startup unless I explicitly ask for
+historical reconstruction.
+
 For Mini SDAD, an AI may call a unit evidence-ready when changed files, check
 evidence, and limitations or unverified behavior are shown. Do not call final
 completion done until owner acceptance is shown or the owner has explicitly
@@ -239,6 +248,17 @@ checking and updating the control files:
 - `save-state.md` when a session pauses or ends, handoff is expected, owner
   direction changes, blocked/partial/unverified state remains, or context would
   be expensive to reconstruct.
+
+Keep active live-state files short enough to read as current operating state.
+If `save-state.md`, `docs/TODO-Open-Items.md`, `review-findings.md`, or similar
+files become long journals, preserve the old material in archive/history files
+and keep the active file focused on current objective, open items, constraints,
+validation state, next one to three steps, and archive links. Use bounded reads
+for large archives, logs, generated artifacts, and private data. See
+[docs/context-stability.md](docs/context-stability.md).
+If graphing, repo-packing, embedding, indexing, or context-building tools are
+used, keep their ignore files aligned so generated, private, log, cache,
+dependency, and local database surfaces do not enter AI context by default.
 
 If no file needs a content change, the handoff must say which files were checked
 and why no update was needed. Do not claim completion while control files are stale.
@@ -516,6 +536,7 @@ docs/TODO-Open-Items.md                          # active implementation work
 review-findings.md                               # active bugs and review findings
 save-state.md                                    # optional session recovery handoff
 docs/sdad/handoffs/                              # session handoffs for fresh starts
+docs/archive/                                    # historical material outside startup path
 ```
 
 Templates live in [templates/project-control-files](templates/project-control-files).
@@ -606,6 +627,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid
 - [docs/fit-assessment.md](docs/fit-assessment.md): project fit checklist
 - [docs/maintenance-cost.md](docs/maintenance-cost.md): loop-end control file update cost
+- [docs/context-stability.md](docs/context-stability.md): bounded reads and live-state slimming
 - [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full High, Medium, and Low operating intensity
 - [docs/session-handoff.md](docs/session-handoff.md): long-session handoff and context continuity
 - [docs/autonomy-levels.md](docs/autonomy-levels.md): work packets and low-intervention autonomy

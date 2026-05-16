@@ -24,3 +24,7 @@ Read:
 
 Use `save-state.md` only when work pauses, changes hands, direction changes, or
 the next session would otherwise need to reconstruct context.
+
+Keep active state files short. Use bounded reads for large archives, logs,
+generated artifacts, private data, and old handoffs instead of loading them in
+full.

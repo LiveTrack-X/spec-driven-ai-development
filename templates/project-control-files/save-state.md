@@ -6,6 +6,21 @@ Last updated: YYYY-MM-DD
 Use this file only when current context would be expensive to reconstruct from
 code, active docs, SPEC, TODO, and review findings.
 
+## Context Stability Rule
+
+Keep this file as a compact current-state summary, not a permanent session log.
+
+If the file becomes long, repetitive, or hard to audit, move old material to an
+archive/history file, link it here, and keep this active file focused on current
+goal, current state, validation, open risks, owner decisions, and the next one to
+three steps.
+
+Fresh AI sessions should use bounded reads for archives, logs, generated
+artifacts, private data, and old handoffs instead of loading them in full.
+Default soft triggers: bounded reads above 50 KB or 500 lines; a
+context-stability check above 200 KB or 2,000 lines; no full startup read above
+1 MB unless the owner explicitly asks for historical reconstruction.
+
 ## Update Triggers
 
 Update this file when:

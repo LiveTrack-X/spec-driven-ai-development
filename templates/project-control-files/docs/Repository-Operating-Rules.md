@@ -10,6 +10,9 @@ handoff notes, or one AI session's memory.
 
 ## Mandatory Start Loop
 
+Context Stability applies before every item in this start loop. Inspect file
+size first and use bounded reads for large routed files.
+
 Before changing code, prompts, SPECs, docs, migrations, release assets, or
 automation:
 
@@ -22,6 +25,18 @@ automation:
 
 Do not begin from archived docs, old plans, product notes, or stale handoff
 files without checking `docs/INDEX.md`.
+
+The start loop must stay bounded. Before opening routed docs, archives, logs,
+generated artifacts, private data, or search results, check whether the input is
+large, stale, private, generated, or outside the active scope. Use file size
+checks, headings, current sections, targeted keyword matches, output limits, and
+explicit excludes. Do not dump full live-state files, generated output, logs,
+private data, broad recursive search output, or old archives into an AI chat
+context.
+
+Default soft triggers: bounded reads above 50 KB or 500 lines; a
+context-stability check above 200 KB or 2,000 lines; no full startup read above
+1 MB unless the owner explicitly asks for historical reconstruction.
 
 ## Source Of Truth
 
@@ -175,6 +190,9 @@ risk, budget result, changed behavior, and adoption plan.
 
 - Control files have maintenance cost. Do not create them unless they will be
   kept current.
+- Active live-state files should stay short enough to read as current operating
+  state; archive old history and link it instead of keeping long journals in the
+  startup path.
 - Use the minimum documentation update sets in `docs/INDEX.md` before handoff.
 - If behavior changed, update the relevant active docs in the same change.
 - If implementation status changed, update `SPEC/SPEC-COMPLETE.md` and
@@ -286,6 +304,14 @@ Baseline Freeze, compress evidence into an owner summary, and consolidate docs,
 archive entries, or reports when possible.
 
 Record the control-file budget in the handoff summary.
+
+If active state files become large or an AI chat becomes unstable, run a
+context-stability pass before feature work: split active/current summaries from
+archive/history, update `docs/INDEX.md` routing, preserve history without
+deleting it, and use bounded reads for large archives, logs, generated artifacts,
+private data, local databases, dependency directories, and session transcripts.
+If repo-packing, graphing, embedding, indexing, or context-building tools are
+used, align their ignore files with this rule.
 
 ## Save-State Update Triggers
 

@@ -122,6 +122,14 @@ Before closing, archiving, replacing, or restarting a long AI coding session,
 create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat the
 chat as an execution trace, not permanent memory; a fresh session must continue
 from the handoff, active spec, and current repository state.
+Before reading large state files, archives, logs, generated artifacts, private
+data, or broad search output, check size and use bounded reads: headings,
+current sections, targeted matches, output limits, and explicit excludes. If
+chat stability degrades, suspect context growth before changing runtime code.
+As a default soft trigger, use bounded reads above 50 KB or 500 lines, run a
+context-stability check above 200 KB or 2,000 lines, and do not read files above
+1 MB in full during startup unless the owner explicitly asks for historical
+reconstruction.
 Do not overwrite existing files without showing proposed changes.
 ```
 
@@ -293,6 +301,15 @@ rules as a bundle, or four or more control files in one packet. If `Heavy`
 appears in three consecutive packets, reassess operating intensity and consider
 Baseline Freeze. Record the control-file budget in the handoff summary.
 
+Keep active live-state files short. If `save-state.md`,
+`docs/TODO-Open-Items.md`, `review-findings.md`, or similar files become long
+journals, preserve old material in archive/history files, link it, and keep the
+active file focused on current objective, open items, constraints, validation,
+and next steps.
+Keep graphing, repo-packing, embedding, indexing, and context-building tool
+ignore files aligned with this rule so generated, private, log, cache,
+dependency, and local database surfaces do not enter AI context by default.
+
 Mini SDAD loop-end behavior is smaller: do not check `SPEC/SPEC-COMPLETE.md`,
 `docs/TODO-Open-Items.md`, `review-findings.md`, or ADRs unless the project has
 escalated. For Mini, report the active task, changed files, check evidence,
@@ -314,6 +331,10 @@ For long AI sessions that will be closed, replaced, restarted, or resumed in a
 fresh session, create a session handoff under
 `docs/sdad/handoffs/YYYY-MM-DD-topic.md`. Chats are execution traces, specs are
 authority, and handoffs are continuity.
+
+Fresh sessions should use bounded reads for large state files, archives, logs,
+generated artifacts, private data, and old handoffs instead of loading them in
+full.
 
 If none of these triggers apply, say so. If `save-state.md` exists but is stale,
 update it, mark it stale, or archive it before handoff.

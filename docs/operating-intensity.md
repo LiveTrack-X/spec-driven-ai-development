@@ -139,6 +139,17 @@ Add a new evidence surface only when it:
 If evidence grows faster than owner clarity, lower intensity and simplify the
 review path.
 
+## Context Stability Rule
+
+Large active state files are also control surfaces. If `save-state.md`, TODO,
+review findings, handoffs, logs, generated reports, or archives start making AI
+sessions hard to audit or unstable, lower intensity and run a context-stability
+pass before adding more feature work.
+
+The pass should keep active summaries compact, move old history to
+archive/history files, preserve links, and require bounded reads for large
+archives, logs, generated artifacts, private data, and broad search output.
+
 ## Evaluation-Driven Extensions
 
 Harness optimization, self-improving agent loops, retrieval/memory tuning, and

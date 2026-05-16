@@ -29,6 +29,22 @@ must create a session handoff document.
 The handoff must be written so that a fresh AI session can continue the work
 without depending on the previous chat context.
 
+## Bounded Resume Reads
+
+A fresh session should not resume by reading every old state file, archive,
+generated artifact, or log in full.
+
+Before reading large routed files, the AI should check file size and use bounded
+reads: headings, current sections, first/last sections, targeted keyword
+matches, output limits, and explicit excludes. The handoff should point to the
+active summaries needed for restart and name any archives or logs that should be
+read only through targeted queries.
+
+If chat stability degraded in the previous session, the handoff must say whether
+large live-state files, broad searches, generated output, logs, private data, or
+old archives contributed to context growth. See
+[context-stability.md](context-stability.md).
+
 ## When To Create A Handoff
 
 Create a handoff when any of the following is true:
@@ -68,6 +84,7 @@ A valid SDAD handoff must include:
 - evaluation leakage risk, if applicable,
 - concrete budget used for expensive or repeated eval loops, if applicable,
 - constraints, owner preferences, and do-not-touch areas,
+- context-stability notes and bounded-read instructions, if applicable,
 - next concrete steps,
 - a reactivation prompt for a fresh AI session.
 
@@ -104,6 +121,9 @@ enough to need Standard SDAD continuity.
 - Autonomy level used:
 - Control-file budget used: Minimal / Normal / Heavy
 - Baseline Freeze posture used: yes/no
+- Context-stability posture:
+- Large files or archives to avoid reading in full:
+- Bounded-read instructions:
 
 ## 4. Owner Review Compression
 - One-line status:
@@ -173,11 +193,12 @@ Paste this into a fresh AI session:
 ```text
 You are continuing an SDAD-guided project from a handoff document.
 
-First, read this handoff fully.
+First, read this current handoff fully.
 Then inspect the current repository state before making changes.
 Do not assume the previous chat context is available.
 Treat the project specification as the source of authority.
 Confirm the current objective, constraints, files touched, test status, and next steps.
+Use bounded reads for referenced archives, old handoffs, large state files, logs, generated artifacts, and private data.
 Before modifying files, produce a short implementation plan.
 ```
 ````

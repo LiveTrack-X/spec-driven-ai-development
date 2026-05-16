@@ -16,6 +16,7 @@ None currently tracked.
 ## Recently Closed
 
 - Record fixed blockers with evidence.
+- Move old closed history to archive when it stops affecting current decisions.
 
 ## Guardrails
 

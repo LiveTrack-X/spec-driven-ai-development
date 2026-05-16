@@ -36,6 +36,8 @@ files.
 - Scope-specific percent beats vague global percent.
 - Failed, missing, skipped, timed-out, or unrun tests beat narrative.
 - Risk gates beat convenience.
+- Context budget beats full transcript: large state files, archives, logs,
+  generated artifacts, and private data require bounded reads.
 
 ## How To Apply
 
@@ -50,3 +52,4 @@ When starting or reviewing a project, add these checks:
 7. What is partial or degraded?
 8. What owner decision is needed?
 9. Which repeated pain should become a durable rule?
+10. Which large files or archives should be read only with bounded queries?

@@ -66,6 +66,15 @@ check and update:
   direction changes, blocked/partial/unverified state remains, or context would
   be expensive to reconstruct.
 
+Keep active live-state files short enough to read as current operating state.
+If state, TODO, review, or handoff files become long journals, preserve old
+material in archive/history files and use bounded reads for archives, logs,
+generated artifacts, private data, and broad search output.
+As a default soft trigger, use bounded reads for files over 50 KB or 500 lines,
+run a context-stability check for files over 200 KB or 2,000 lines, and do not
+read files over 1 MB in full during startup unless the owner explicitly asks for
+historical reconstruction.
+
 If no file needs a content change, state which files were checked and why no
 update was needed.
 
@@ -285,6 +294,13 @@ Before closing, archiving, replacing, or restarting a long AI coding session,
 create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat
 the chat as an execution trace, not permanent memory; a fresh session must be
 able to continue from the handoff, active spec, and current repository state.
+
+Before reading large state files, archives, logs, generated artifacts, private
+data, or broad search output, check size and use bounded reads: headings,
+current sections, targeted matches, output limits, and explicit excludes. If
+chat stability degrades, suspect context growth before changing runtime code.
+Keep repo-packing, graphing, embedding, indexing, and context-building tool
+ignore files aligned with this rule.
 
 For Mini SDAD, an AI may call a unit evidence-ready when changed files, check
 evidence, and limitations or unverified behavior are shown. Do not call final

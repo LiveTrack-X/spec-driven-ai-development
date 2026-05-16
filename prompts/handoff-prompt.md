@@ -45,6 +45,11 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - search evidence versus owner acceptance evidence, if applicable,
 - evaluation leakage risk, if applicable,
 - concrete budget used for expensive or repeated eval loops, if applicable,
+- context-stability notes:
+  - large files or archives that should not be read in full,
+  - active summaries to read first,
+  - archive/history locations,
+  - bounded-read instructions,
 - next recommended slice,
 - what is not complete,
 - owner acceptance status,
@@ -64,6 +69,13 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - Do not treat evidence-ready as owner-accepted unless the owner delegated that
   acceptance policy.
 - Do not treat a long chat transcript as permanent memory.
+- Do not make a fresh session read large state files, archives, logs, generated
+  artifacts, private data, or old handoffs in full. Provide bounded-read
+  instructions instead.
+- Use the default soft triggers unless the project defines stricter limits:
+  bounded reads above 50 KB or 500 lines, context-stability check above 200 KB
+  or 2,000 lines, and no full startup read above 1 MB unless the owner asks for
+  historical reconstruction.
 - When asked to restart, summarize, archive, or continue later, offer to create
   or update a handoff first.
 - Fresh sessions must load the relevant spec, handoff, and current repository
@@ -82,3 +94,6 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
   blocked/partial/unverified state remains, or context would be expensive to
   reconstruct.
 - If the project uses `next-task.md`, update it when the next slice changed.
+- If active state files became long or chat stability degraded, preserve old
+  material in archive/history files, keep active summaries compact, and update
+  routing before resuming feature work.

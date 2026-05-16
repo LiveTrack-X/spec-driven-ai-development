@@ -19,6 +19,24 @@ flowchart TD
     J --> C
 ```
 
+## Fresh Session Start Guard
+
+```mermaid
+flowchart TD
+    A["Fresh AI session"] --> B["Read docs/INDEX.md route"]
+    B --> C["Check file size and scope"]
+    C --> D{"Large, stale, private, generated, or archived?"}
+    D -- "Yes" --> E["Bounded read\nheadings, current sections, targeted matches"]
+    D -- "No" --> F["Read active current file"]
+    E --> G["Active SPEC, work packet, evidence state"]
+    F --> G
+    G --> H["Plan before changes"]
+```
+
+Use this guard before mandatory first-read files. The start loop routes the
+session; it does not authorize full reads of large state files, old handoffs,
+logs, generated artifacts, private data, or archives.
+
 ## Source Of Truth Order
 
 ```mermaid

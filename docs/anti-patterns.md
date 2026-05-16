@@ -198,3 +198,17 @@ open-ended optimization project.
 Replace with: state a concrete budget before running expensive or repeated
 evaluation loops, and stop when that budget is reached unless the owner approves
 a new packet.
+
+## 18. Live-State Context Bloat
+
+Symptom: every fresh AI session starts by reading full state files, old handoffs,
+large TODO journals, review ledgers, logs, generated reports, private data, or
+tool output into chat context.
+
+Why it fails: the AI chat becomes harder to audit, more expensive to resume, and
+more likely to collapse under stale or irrelevant context. The project can look
+broken even when runtime code is not involved.
+
+Replace with: keep active live-state files as short routing summaries, move old
+history to archive/history files, and use bounded reads for archives, logs,
+generated artifacts, private data, and search output.

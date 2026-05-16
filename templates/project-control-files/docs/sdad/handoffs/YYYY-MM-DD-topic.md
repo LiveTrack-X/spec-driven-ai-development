@@ -17,6 +17,9 @@
 - Autonomy level used:
 - Control-file budget used: Minimal / Normal / Heavy
 - Baseline Freeze posture used: yes/no
+- Context-stability posture:
+- Large files or archives to avoid reading in full:
+- Bounded-read instructions:
 
 ## 4. Owner Review Compression
 - One-line status:
@@ -86,10 +89,11 @@ Paste this into a fresh AI session:
 ```text
 You are continuing an SDAD-guided project from a handoff document.
 
-First, read this handoff fully.
+First, read this current handoff fully.
 Then inspect the current repository state before making changes.
 Do not assume the previous chat context is available.
 Treat the project specification as the source of authority.
 Confirm the current objective, constraints, files touched, test status, and next steps.
+Use bounded reads for referenced archives, old handoffs, large state files, logs, generated artifacts, and private data.
 Before modifying files, produce a short implementation plan.
 ```

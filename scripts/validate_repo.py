@@ -18,6 +18,7 @@ REQUIRED_FILES = [
     "docs/getting-started.md",
     "docs/mini-sdad.md",
     "docs/maintenance-cost.md",
+    "docs/context-stability.md",
     "docs/no-clone-quick-install.md",
     "docs/anti-patterns.md",
     "docs/fit-assessment.md",
@@ -137,6 +138,8 @@ def validate_skill() -> None:
         "Offer deterministic fallback options",
         "Save-State Update Triggers",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        "bounded reads",
+        "50 KB",
         "State SDAD scale and operating intensity",
         "Autonomy",
         "Review-Worthy Development Units",
@@ -166,7 +169,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.1.2`",
+        "Status: `1.1.3`",
         "stable documentation/package release",
         "project fit, owner discipline, and evidence quality",
         "For Beginners: Use In 60 Seconds",
@@ -196,6 +199,8 @@ def validate_templates() -> None:
         "Do not claim completion while control files are stale",
         "Mini SDAD also has a completion gate",
         "Update save-state.md when a session pauses or ends",
+        "bounded reads",
+        "50 KB",
         "Do not infer adapter paths",
         "Before fetching, state which adapter you are installing and why",
         "If you cannot determine the current tool",
@@ -203,6 +208,7 @@ def validate_templates() -> None:
         "No terminal. No Git. No Python required.",
         "docs/getting-started.md",
         "docs/maintenance-cost.md",
+        "docs/context-stability.md",
         "docs/no-clone-quick-install.md",
         "The Problem",
         "Why This Is Different",
@@ -235,7 +241,7 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "1.1.2",
+            "1.1.3",
             "프로젝트 적합도",
             "save-state.md",
             "오너 수락",
@@ -255,7 +261,7 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "1.1.2",
+            "1.1.3",
             "project fit",
             "save-state.md",
             "Owner 验收",
@@ -275,7 +281,7 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "1.1.2",
+            "1.1.3",
             "project fit",
             "save-state.md",
             "Owner の受け入れ",
@@ -301,6 +307,10 @@ def validate_templates() -> None:
     agents = read("templates/project-control-files/AGENTS.md")
     for phrase in [
         "Mandatory First Read",
+        "Context Stability Rule",
+        "Context Stability applies before every item",
+        "bounded reads",
+        "50 KB",
         "Source Of Truth",
         "Review-Worthy Unit Rule",
         "micro-task",
@@ -320,6 +330,7 @@ def validate_templates() -> None:
         "docs/sdad/handoffs",
         "SDAD scale/intensity change",
         "Heavy control-file budget",
+        "context-stability change",
         "Advanced extension",
     ]:
         if phrase not in index:
@@ -327,6 +338,7 @@ def validate_templates() -> None:
     rules = read("templates/project-control-files/docs/Repository-Operating-Rules.md")
     for phrase in [
         "Mandatory Start Loop",
+        "Context Stability applies before every item",
         "Version Lane Rules",
         "Review And Verification Rules",
         "Review-Worthy Unit Rule",
@@ -341,6 +353,9 @@ def validate_templates() -> None:
         "Operating Intensity Rules",
         "Evidence Surface Creep",
         "Control File Budget",
+        "context-stability pass",
+        "bounded reads",
+        "50 KB",
         "Advanced Extension Fit Gate",
         "evaluation leakage risk",
         "concrete budget",
@@ -359,8 +374,11 @@ def validate_templates() -> None:
         "Owner acceptance evidence",
         "Evaluation leakage risk",
         "Concrete budget used",
+        "Bounded-read instructions",
+        "read this current handoff fully",
         "Commands / Tests Run",
         "Reactivation Prompt",
+        "read this current handoff fully",
         "Do not assume the previous chat context is available",
     ]:
         if phrase not in handoff_template:
@@ -368,6 +386,8 @@ def validate_templates() -> None:
     save_state = read("templates/project-control-files/save-state.md")
     for phrase in [
         "Update Triggers",
+        "Context Stability Rule",
+        "50 KB",
         "session is ending or pausing",
         "owner changes direction",
         "blocked, skipped, partial, degraded, or unverified",
@@ -392,6 +412,7 @@ def validate_templates() -> None:
         "Evidence Beats Confidence",
         "Owner Decision Beats AI Momentum",
         "Repeated Pain Becomes A Rule",
+        "Context Budget Beats Full Transcript",
     ]:
         if phrase not in implicit:
             fail(f"Implicit rules doc missing: {phrase}")
@@ -417,6 +438,7 @@ def validate_templates() -> None:
         "save-state.md",
         "session-handoff.md",
         "operating-intensity.md",
+        "context-stability.md",
         "Mini SDAD, a unit may be called evidence-ready",
     ]:
         if phrase not in getting_started:
@@ -453,6 +475,7 @@ def validate_templates() -> None:
         "One-Paste Bash Installer",
         "raw.githubusercontent.com",
         "Do not overwrite existing project files",
+        "bounded reads",
     ]:
         if phrase not in no_clone:
             fail(f"No-clone quick install doc missing: {phrase}")
@@ -480,6 +503,8 @@ def validate_templates() -> None:
         "review-worthy development unit",
         "not after every micro-task",
         "Save-State Update Triggers",
+        "Live-State Size Budget",
+        "context-stability.md",
         "session-handoff.md",
         "Control File Budget",
         "session is ending or pausing",
@@ -510,6 +535,7 @@ def validate_templates() -> None:
         "Historical SPEC Override",
         "Micro-Approval Thrash",
         "Evidence Surface Creep",
+        "Live-State Context Bloat",
         "Evaluation Leakage",
         "Budget Fog",
         "Owner Rubber Stamp",
@@ -537,6 +563,9 @@ def validate_templates() -> None:
     diagrams = read("docs/diagrams.md")
     for phrase in [
         "Operating Loop",
+        "Fresh Session Start Guard",
+        "Check file size and scope",
+        "Bounded read",
         "Source Of Truth Order",
         "Review-worthy development unit",
         "Work packet",
@@ -598,6 +627,8 @@ def validate_templates() -> None:
         "Chats are execution traces",
         "Specs are authority",
         "Handoffs are continuity",
+        "Bounded Resume Reads",
+        "bounded reads",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
         "Standard Handoff Template",
         "SDAD scale / intensity used",
@@ -614,6 +645,21 @@ def validate_templates() -> None:
     ]:
         if phrase not in session_handoff:
             fail(f"Session handoff doc missing: {phrase}")
+    context_stability = read("docs/context-stability.md")
+    for phrase in [
+        "Context Stability & Bounded Reads",
+        "Bounded Read Rule",
+        "Live-State Size Budget",
+        "Generated files, logs, local databases, private corpora",
+        "Soft Size Triggers",
+        "Tool Input Hygiene",
+        ">50 KB",
+        ">1 MB",
+        "Do not treat a mandatory start loop as permission",
+        "This rule does not add cleanup automation",
+    ]:
+        if phrase not in context_stability:
+            fail(f"Context stability doc missing: {phrase}")
     kickoff = read("prompts/kickoff-prompt.md")
     for phrase in [
         "review-worthy development unit",
@@ -624,6 +670,15 @@ def validate_templates() -> None:
     ]:
         if phrase not in kickoff:
             fail(f"Kickoff prompt missing review-worthy unit guidance: {phrase}")
+    review_prompt = read("prompts/review-prompt.md")
+    for phrase in [
+        "Context Stability applies before review inputs",
+        "bounded reads above 50 KB",
+        "context-stability check above 200 KB",
+        "no full startup read above 1 MB",
+    ]:
+        if phrase not in review_prompt:
+            fail(f"Review prompt missing context-stability guidance: {phrase}")
     handoff = read("prompts/handoff-prompt.md")
     for phrase in [
         "evidence-ready units",
@@ -636,6 +691,8 @@ def validate_templates() -> None:
         "search evidence versus owner acceptance evidence",
         "evaluation leakage risk",
         "concrete budget",
+        "bounded-read instructions",
+        "50 KB",
     ]:
         if phrase not in handoff:
             fail(f"Handoff prompt missing review-worthy unit guidance: {phrase}")
@@ -644,9 +701,25 @@ def validate_templates() -> None:
         if phrase not in adr:
             fail(f"ADR template missing: {phrase}")
     adapters = read("docs/tool-adapters.md")
-    for phrase in ["Claude Code", "Cursor", "GitHub Copilot", "Generic AI coding tool"]:
+    for phrase in [
+        "Claude Code",
+        "Cursor",
+        "GitHub Copilot",
+        "Generic AI coding tool",
+        "context-stability",
+        "bounded-read guard",
+    ]:
         if phrase not in adapters:
             fail(f"Tool adapters doc missing: {phrase}")
+    doc_governance = read("docs/field-notes/documentation-governance-method.md")
+    for phrase in [
+        "Reusable context-stability rule",
+        "start loop is a routing requirement",
+        "50 KB or 500 lines",
+        "The first-read chain must apply context-stability",
+    ]:
+        if phrase not in doc_governance:
+            fail(f"Documentation governance field note missing: {phrase}")
     codex = read("adapters/codex/AGENTS.md")
     claude = read("adapters/claude-code/CLAUDE.md")
     cursor = read("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc")
@@ -670,6 +743,9 @@ def validate_templates() -> None:
             "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
             "Full SDAD / High",
             "operating intensity",
+            "Context Stability applies before every item",
+            "bounded reads",
+            "50 KB",
         ]:
             if phrase not in content:
                 fail(f"{path} missing expected phrase: {phrase}")
