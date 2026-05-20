@@ -29,6 +29,20 @@ must create a session handoff document.
 The handoff must be written so that a fresh AI session can continue the work
 without depending on the previous chat context.
 
+## Reference, Do Not Duplicate
+
+A handoff should compress the current execution state, not copy every artifact
+into another long document.
+
+When a decision, evidence log, plan, ADR, TODO, review finding, or implementation
+note already exists in an active file, link or name that file and summarize only
+what a fresh session needs next. Do not paste long diffs, generated output, raw
+logs, private data, or complete prior documents into the handoff unless the owner
+explicitly asks for historical reconstruction.
+
+Use handoffs to point to durable sources of truth. Do not let the handoff become
+a second SPEC, a second TODO ledger, or a hidden implementation journal.
+
 ## Bounded Resume Reads
 
 A fresh session should not resume by reading every old state file, archive,

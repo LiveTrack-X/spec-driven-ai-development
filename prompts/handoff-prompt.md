@@ -28,6 +28,7 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
   - links or references to detailed evidence,
 - work packet completed,
 - evidence-ready units,
+- clarification checkpoints resolved or still blocking,
 - changed files,
 - behavior changed,
 - tests and commands run,
@@ -72,6 +73,9 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - Do not treat evidence-ready as owner-accepted unless the owner delegated that
   acceptance policy.
 - Do not treat a long chat transcript as permanent memory.
+- Do not duplicate long SPECs, ADRs, TODOs, review findings, implementation
+  notes, logs, diffs, or evidence files in the handoff. Link or name the
+  existing artifact and summarize only what a fresh session needs next.
 - Do not make a fresh session read large state files, archives, logs, generated
   artifacts, private data, or old handoffs in full. Provide bounded-read
   instructions instead.

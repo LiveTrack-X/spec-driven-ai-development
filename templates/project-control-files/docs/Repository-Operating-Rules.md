@@ -93,6 +93,12 @@ Implementation discipline guards autonomy: surface assumptions, prefer the
 simplest working design, make surgical changes, and tie every step to
 verification.
 
+When a plan is fuzzy, run a clarification checkpoint before coding. Inspect
+current code, tests, active docs, SPEC, TODOs, review findings, and ADRs first.
+Ask the owner only for unresolved blocking questions, one at a time. Include the
+AI's recommended answer, why the question matters, and what changes if the owner
+chooses differently. Do not use clarification checkpoints as micro-approval.
+
 Implementation notes preserve implementation memory. When implementation
 requires a judgment the active SPEC did not state, record the SPEC gap,
 decision, reason, rejected alternatives, verification impact, and follow-up in
@@ -183,6 +189,8 @@ risk, budget result, changed behavior, and adoption plan.
 - Open critical findings beat feature expansion unless the owner accepts the risk.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
+- Repository evidence beats unnecessary questions.
+- Stable terminology beats session vocabulary.
 - Docs drift is a bug.
 - Handoff is context, not authority.
 - Archive preserves memory, not active execution.
@@ -207,8 +215,12 @@ risk, budget result, changed behavior, and adoption plan.
 - If a review finding is closed, update `review-findings.md`.
 - If no doc content changed, state which docs were checked and why no update was
   needed.
+- If repeated ambiguity comes from overloaded domain terms, create or update a
+  small glossary routed from `docs/INDEX.md`; keep it glossary-only.
 - Use ADRs for durable architecture, policy, release, source-of-truth, security,
   data-boundary, or owner-approved tradeoff decisions.
+  A decision normally deserves an ADR only when it is hard to reverse, would
+  surprise a future maintainer without context, and represents a real tradeoff.
 
 ## Review And Verification Rules
 
@@ -268,6 +280,10 @@ Every handoff must include:
 - owner decision needed, if any,
 - next concrete steps,
 - reactivation prompt for a fresh AI session.
+
+Reference existing SPECs, ADRs, TODOs, review findings, implementation notes,
+logs, or evidence files by path or URL instead of duplicating long content in
+the handoff.
 
 When asked to restart, summarize, archive, or continue later, offer to create or
 update a handoff first. When resuming, load the relevant SPEC, handoff, and

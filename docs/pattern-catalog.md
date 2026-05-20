@@ -3,8 +3,8 @@
 Status: Active reference
 Scope: Combined workflow patterns distilled from anonymized field projects
 
-This catalog turns two real project styles into a reusable operating system for
-SPEC-driven AI development.
+This catalog turns field governance practice and compatible clarification
+patterns into a reusable operating system for SPEC-driven AI development.
 
 - Documentation-governance field practice contributes documentation routing,
   source-of-truth discipline, backlog separation, and production-readiness
@@ -12,6 +12,9 @@ SPEC-driven AI development.
 - Release-governance field practice contributes version lanes,
   migration/release gates, architecture mapping, and explicit high-risk runtime
   rules.
+- Clarification patterns adapted from
+  [mattpocock/skills](https://github.com/mattpocock/skills) contribute
+  plan-pressure checkpoints, glossary discipline, and sparse ADR criteria.
 
 No source code is copied here. The goal is to preserve the working method.
 
@@ -137,7 +140,42 @@ Completion requires evidence appropriate to the slice:
 For release or production claims, add deployment, migration, backup/restore,
 observability, security, and rollback evidence as applicable.
 
-### 9. Use Cross-AI Review Deliberately
+### 9. Pressure-Test Plans Before Building
+
+When a work packet is fuzzy, do a short clarification checkpoint before coding.
+
+The AI should first inspect the repository. If current code, tests, active docs,
+SPEC, ADRs, TODOs, or review findings answer the question, use that evidence
+instead of asking the owner.
+
+For unresolved ambiguity, ask only the next blocking question and include:
+
+- the AI's recommended answer,
+- why the question matters,
+- what would change if the owner chooses differently.
+
+Use this for scope ambiguity, overloaded terms, hard-to-reverse choices,
+unclear evidence, and owner tradeoffs. Do not use it to reintroduce
+micro-approval. Low-risk implementation assumptions may be stated and resolved
+inside the approved packet; owner-controlled product, release, risk, data,
+security, money, migration, or destructive decisions still require a checkpoint.
+
+### 10. Keep Domain Language Bounded
+
+When terminology starts drifting, stabilize the language instead of letting each
+AI session invent its own names.
+
+Define only terms that affect execution, review, tests, or owner decisions. Keep
+definitions short, name aliases to avoid, and show important relationships when
+they change implementation or verification.
+
+Do not turn glossary work into another journal. Use active docs or SPEC when a
+term belongs to the current feature. If a project repeatedly suffers from domain
+language confusion, create a small optional `docs/domain-language.md` routed from
+`docs/INDEX.md`; keep it glossary-only and separate from implementation notes,
+handoffs, ADRs, and TODOs.
+
+### 11. Use Cross-AI Review Deliberately
 
 Use different AI sessions, models, or reviewers for different roles:
 
@@ -151,7 +189,7 @@ Use different AI sessions, models, or reviewers for different roles:
 The goal is not more AI output. The goal is independent pressure on assumptions,
 bugs, missing tests, docs drift, and false completion claims.
 
-### 10. Convert Lessons Into Rules
+### 12. Convert Lessons Into Rules
 
 When a project hurts, do not only fix the bug. Ask:
 
@@ -166,7 +204,7 @@ When a project hurts, do not only fix the bug. Ask:
 
 This is the core loop: friction becomes reusable structure.
 
-### 11. Make Implicit Rules Explicit
+### 13. Make Implicit Rules Explicit
 
 Do not rely on "the next AI will understand the obvious." Write the obvious
 rules down when they affect execution:
@@ -183,7 +221,7 @@ rules down when they affect execution:
 These rules are not bureaucracy. They protect the owner from silent scope drift,
 false completion claims, stale SPEC execution, and unclear progress reporting.
 
-### 12. Preserve Decisions With ADRs
+### 14. Preserve Decisions With ADRs
 
 Use Architecture Decision Records for decisions that future agents must not
 re-litigate casually:
@@ -196,6 +234,9 @@ re-litigate casually:
 
 ADRs preserve why a decision happened, not only what was chosen.
 
+A decision normally deserves an ADR only when it is hard to reverse, would
+surprise a future maintainer without context, and represents a real tradeoff.
+
 Use implementation notes for smaller spec-unstated implementation choices that
 need to survive handoff but are not durable enough for an ADR.
 
@@ -207,6 +248,8 @@ need to survive handoff but are not durable enough for an ADR.
 | Docs conflict with implementation | Source-of-truth order | Architecture responsibility map |
 | AI says a feature is complete | Evidence handoff and TODO/review ledgers | Release gate and Critical 0 threshold |
 | Code contains unstated implementation choices | Implementation notes with verification impact | ADR or owner gate when the choice affects release/risk |
+| Plan is fuzzy before coding | Clarification checkpoint with recommended answer | Owner checkpoint when risk, release, data, security, or tradeoff changes |
+| Domain terms drift across sessions | Small glossary routed from `docs/INDEX.md` only when needed | ADR or SPEC update when terminology defines a durable boundary |
 | Old plans keep resurfacing | Archive/product-note boundaries | Stable vs next lane boundaries |
 | Refactor makes bugfixes hard to port | Canonical SPEC status | Old-to-new module mapping |
 | High-risk runtime behavior exists | Minimum docs update sets | Thread/lock/danger-zone rules |
@@ -222,9 +265,10 @@ A project using this pattern should be able to show the owner:
 4. open review findings,
 5. tests or commands that prove current state,
 6. docs checked or updated,
-7. implementation notes when the SPEC did not state a decision,
-8. next decision required from the owner,
-9. expected risk before release or production use.
+7. clarification assumptions or owner questions resolved,
+8. implementation notes when the SPEC did not state a decision,
+9. next decision required from the owner,
+10. expected risk before release or production use.
 
 ## Naming The Method
 

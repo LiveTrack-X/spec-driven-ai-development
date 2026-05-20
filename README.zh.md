@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-状态：`1.1.4` 稳定文档/包版本。
+状态：`1.1.5` 稳定文档/包版本。
 
 实际效果取决于 project fit、Owner 执行纪律和 evidence quality。
 
@@ -106,6 +106,8 @@ Core 5:
 - 活跃范围优先于有趣的未来想法。
 - Owner 决策优先于 AI 的推进惯性。
 - 重复出现的问题应变成规则、清单、测试或模板。
+- 计划含糊时，先检查仓库证据，只把剩余的 blocking 问题连同推荐答案
+  交给 Owner。
 
 完整规则见 [docs/implicit-rules.md](docs/implicit-rules.md)。
 

@@ -35,6 +35,9 @@ Also identify the approved work packet, autonomy level, and evidence-ready units
 if the handoff provides them.
 If the implementation made decisions the SPEC did not state, inspect
 `docs/implementation-notes.md` or the handoff's Implementation notes section.
+If the plan was ambiguous, check whether the AI used repository evidence before
+asking the owner and whether unresolved clarification questions were escalated
+instead of silently chosen.
 
 ## Source Of Truth
 
@@ -71,6 +74,8 @@ Then include:
   compromises, rejected alternatives, owner-relevant tradeoffs, follow-up, or
   verification impact,
 - hidden assumptions that should become explicit rules,
+- missing clarification checkpoint for fuzzy scope, overloaded terms,
+  hard-to-reverse choices, or owner tradeoffs,
 - assumptions that required owner input but were silently chosen,
 - speculative abstractions or generalized code that the active SPEC did not need,
 - unrelated refactors, formatting, cleanup, comment rewrites, or adjacent edits,

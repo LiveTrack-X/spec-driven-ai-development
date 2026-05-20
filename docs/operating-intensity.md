@@ -66,6 +66,8 @@ validation, and docs sync inside an approved scope.
 Medium intensity uses:
 
 - work packet autonomy,
+- clarification checkpoints for fuzzy scope, terminology, evidence, or
+  hard-to-reverse choices,
 - normal control-file maintenance,
 - Owner Review Compression before detailed evidence,
 - no new release, security, data, auth, money, rollback, or production decision.
@@ -117,6 +119,7 @@ Every `Medium` or `High` checkpoint should start with:
 - changed user-facing behavior,
 - safety boundary touched: yes/no,
 - checks summary,
+- clarification checkpoint needed/resolved: yes/no,
 - implementation notes needed: yes/no,
 - owner decision needed: yes/no,
 - recommended next action,

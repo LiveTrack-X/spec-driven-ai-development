@@ -82,10 +82,17 @@ historical sections.
 - Implementation discipline guards autonomy: surface assumptions, prefer the
   simplest working design, make surgical changes, and tie every step to
   verification.
+- When a plan is fuzzy, run a clarification checkpoint: inspect repository
+  evidence first, ask only the next blocking owner question, include the AI's
+  recommended answer, and route the resolved decision to SPEC, implementation
+  notes, ADR, TODO, review finding, or handoff as appropriate.
 - Implementation notes preserve implementation memory: record spec-unstated
   assumptions, changes, compromises, rejected alternatives, owner-relevant
   tradeoffs, follow-up, and verification impact in `docs/implementation-notes.md`.
   Do not record raw internal reasoning, mechanical edits, or large logs.
+- Use ADRs sparingly for decisions that are hard to reverse, surprising without
+  context, and real tradeoffs; smaller spec-unstated choices go to
+  implementation notes.
 - Do not claim completion without commands, results, docs checked, and remaining risks.
 - Use separate review or QA passes for high-risk changes.
 - Do not silently promote product notes, external references, or future ideas into active work.
@@ -116,6 +123,8 @@ Long AI coding sessions are execution traces, not permanent memory. Before
 closing, archiving, replacing, or restarting a long session, create or update a
 session handoff under `docs/sdad/handoffs/YYYY-MM-DD-topic.md`. A fresh session
 must continue from the handoff, active SPEC, and current repository state.
+Reference existing artifacts by path or URL instead of duplicating long content
+in the handoff.
 
 ## Save-State Update Triggers
 

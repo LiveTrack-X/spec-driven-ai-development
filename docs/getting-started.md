@@ -266,6 +266,8 @@ Batch related review-worthy units until the packet is meaningful to review, but
 keep it small enough to verify in one checkpoint.
 Use Level 2 Work Packet Autonomy unless a risk gate requires owner input.
 Define the evidence required before I can accept this packet as complete.
+If the plan is fuzzy, inspect repository evidence first, then ask only the next
+blocking clarification question with your recommended answer.
 ```
 
 The first useful output should include:
@@ -278,6 +280,7 @@ The first useful output should include:
 - owner-controlled decisions,
 - active SPEC slice,
 - first work packet and review-worthy units,
+- clarification questions resolved or still owner-blocking,
 - TODO list,
 - review and verification plan,
 - docs that must be created or updated.
@@ -304,6 +307,9 @@ Do not stop for owner approval after every micro-task or every evidence-ready
 unit. Stop only if scope would expand, Q5 risk changes, destructive or
 irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or current evidence conflicts with the plan.
+If the plan is fuzzy, inspect code, tests, active docs, SPEC, TODOs, review
+findings, and ADRs before asking me. Ask only the next blocking question and
+include your recommended answer.
 Before checkpoint handoff, show changed files, verification commands, docs
 checked, implementation notes when the SPEC did not cover a decision,
 evidence-ready units, remaining risks, and what is not complete.
@@ -334,6 +340,7 @@ Before accepting a work packet as "done", check:
 - Is the active SPEC slice clear?
 - Was the completed work a meaningful packet, not just a micro-task?
 - Did the AI stay inside the active scope?
+- Did the AI resolve fuzzy scope from repository evidence before asking you?
 - Are code changes listed?
 - Did tests, builds, lint, or manual checks run?
 - Were docs checked or updated?

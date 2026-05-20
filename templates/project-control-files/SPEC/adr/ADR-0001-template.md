@@ -5,6 +5,10 @@ Date: YYYY-MM-DD
 Owner: Name or role
 Scope: Project, subsystem, release, or SPEC slice
 
+Use an ADR when the decision is hard to reverse, would surprise a future
+maintainer without context, and represents a real tradeoff. Smaller
+spec-unstated implementation choices belong in `docs/implementation-notes.md`.
+
 ## Context
 
 Describe the problem, constraints, current active SPEC path, and why a durable

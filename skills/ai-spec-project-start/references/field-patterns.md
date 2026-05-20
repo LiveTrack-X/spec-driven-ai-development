@@ -17,6 +17,11 @@ Use these when the project has many docs, SPEC revisions, or AI sessions:
   a SPEC spans past to present.
 - Separate active implementation gaps from review findings.
 - Use minimum documentation update sets before handoff.
+- Use clarification checkpoints for fuzzy plans: inspect repository evidence
+  first, then ask only the next blocking owner question with a recommended
+  answer.
+- Keep domain language small and routed when terminology drift affects
+  implementation, review, tests, or owner decisions.
 - Keep product notes and archives out of the active implementation path until
   deliberately promoted.
 - Treat production readiness as a named hardening gate.
@@ -51,6 +56,8 @@ For a new project, ask:
 8. What evidence proves the first unit?
 9. What evidence is required before release or production use?
 10. Which obvious-but-unwritten rules should become explicit project rules?
+11. Which clarification questions are blocked after repository inspection?
+12. Which domain terms need a glossary route?
 
 Do not create a giant plan first. Create the control files, then implement the
 smallest useful review-worthy unit.

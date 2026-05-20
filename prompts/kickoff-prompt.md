@@ -20,8 +20,11 @@ Use an owner-supervised, SPEC-driven, multi-agent, evidence-based development wo
 12. If the SPEC contains past-to-present history, which sections are current active instructions and which are historical rationale?
 13. Which obvious-but-unwritten rules should become explicit project rules?
 14. Does this project need ADRs for architecture, policy, release, security, or owner tradeoff decisions?
+15. Are there overloaded domain terms that need a small glossary before implementation?
 
-If enough context is already available, proceed with reasonable assumptions and mark them clearly.
+If enough context is already available, proceed with reasonable assumptions and
+mark them clearly. If the repository can answer a clarification question, inspect
+the repository before asking me.
 
 ## Required Bootstrap
 
@@ -52,6 +55,9 @@ Create or update:
   verification is blocked, or evidence conflicts with the plan.
 - Surface assumptions, prefer the simplest working design, make surgical
   changes, and tie each step to verification.
+- When the plan is fuzzy, run a clarification checkpoint before coding: inspect
+  repository evidence first, ask only the next blocking question, include your
+  recommended answer, and explain what changes if I choose differently.
 - Record spec-unstated implementation assumptions, changes, compromises,
   rejected alternatives, owner-relevant tradeoffs, follow-up, and verification
   impact in implementation notes. Do not record raw internal reasoning or
@@ -60,7 +66,8 @@ Create or update:
 - Important changes should receive separate review by another AI, model, or session.
 - Stable/next versions need explicit version lanes and bugfix sync rules.
 - High-risk domains need named review checks, tests, docs, and handoff evidence.
-- Durable decisions should become ADRs, not only chat memory.
+- Durable decisions should become ADRs, not only chat memory. Use ADRs sparingly
+  for hard-to-reverse, surprising, real-tradeoff decisions.
 
 ## First Output
 
@@ -78,4 +85,5 @@ Produce:
 10. review-worthy units inside the packet,
 11. test and evidence plan,
 12. implementation-notes policy for decisions the SPEC does not state,
-13. required control files.
+13. clarification checkpoint status and domain-language needs,
+14. required control files.

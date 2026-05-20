@@ -24,6 +24,8 @@ Describe which decisions remain human-owned.
 - Future ideas stay out of active work until promoted.
 - Current active SPEC sections override older historical sections.
 - Obvious but consequential rules must be written down.
+- Fuzzy plans should be checked against repository evidence before owner
+  clarification.
 - Partial, degraded, skipped, or unverified behavior must be labeled.
 
 ## Current Architecture
@@ -63,6 +65,13 @@ List priority order for implementation.
 Record durable decisions under `SPEC/adr/`. Use ADRs when future agents need to
 know why a decision was made, what alternatives were rejected, and what older
 SPEC material was superseded.
+A decision normally deserves an ADR only when it is hard to reverse, would
+surprise a future maintainer without context, and represents a real tradeoff.
+
+## Domain Language
+
+If overloaded terms affect implementation, review, tests, or owner decisions,
+define the canonical terms here or route a small glossary from `docs/INDEX.md`.
 
 ## Completion Criteria
 

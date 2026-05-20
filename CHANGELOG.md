@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 1.1.5 - 2026-05-20
+
+- Added SDAD-native clarification checkpoints: inspect repository evidence
+  first, then ask only the next blocking owner question with a recommended
+  answer.
+- Added optional domain-language routing for projects where terminology drift
+  affects implementation, review, tests, or owner decisions.
+- Tightened ADR guidance so durable records are reserved for hard-to-reverse,
+  surprising, real-tradeoff decisions, while smaller spec-unstated choices stay
+  in implementation notes.
+- Strengthened handoff guidance to reference existing artifacts by path or URL
+  instead of duplicating long SPECs, ADRs, TODOs, logs, or evidence files.
+
 ## 1.1.4 - 2026-05-20
 
 - Added implementation-notes guidance so AI sessions record spec-unstated

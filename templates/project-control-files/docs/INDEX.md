@@ -13,6 +13,8 @@ Scope: Central documentation navigation and maintenance control
 - `docs/implementation-notes.md`: current spec-unstated implementation decisions
 - `save-state.md`: optional current handoff when work pauses or changes hands
 - `docs/sdad/handoffs/`: session handoffs for fresh AI sessions
+- `docs/domain-language.md`: optional glossary for projects where terminology
+  drift affects implementation, review, or tests
 
 ## Document Classes
 
@@ -46,6 +48,7 @@ Use this table before handoff.
 | Security, identity, permissions, data boundaries, or destructive action | security docs if present, relevant SPEC, `review-findings.md` if risk remains |
 | Background jobs, workers, lifecycle, retries, or maintenance | runtime docs, `docs/TODO-Open-Items.md` if gap status changes |
 | Prompt behavior or AI/tool contract | prompt docs, relevant SPEC, tests if present |
+| Fuzzy plan, unresolved scope question, overloaded term, or repeated domain-language confusion | current code/tests/docs/SPEC first, then owner clarification only for unresolved blocking questions; optional `docs/domain-language.md` if terminology drift repeats |
 | Spec-unstated implementation assumption, change, compromise, rejected alternative, owner tradeoff, follow-up, or verification impact | `docs/implementation-notes.md`, `docs/TODO-Open-Items.md` if future work remains, `review-findings.md` if risk remains, ADR if durable rationale is needed |
 | Roadmap, implementation status, placeholder, or gap closure | `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md` if review-related |
 | Stable/next version lane, migration, release, or rollback | release docs if present, `docs/Repository-Operating-Rules.md`, relevant SPEC |

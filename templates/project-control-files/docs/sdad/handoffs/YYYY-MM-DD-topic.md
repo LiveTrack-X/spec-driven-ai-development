@@ -30,6 +30,10 @@
 - Recommended next action:
 - Links or references to detailed evidence:
 
+Reference existing SPECs, ADRs, TODOs, review findings, implementation notes,
+logs, or evidence files by path or URL. Do not duplicate long artifacts here
+unless the owner explicitly asks for historical reconstruction.
+
 ## 5. Advanced Extension Status
 - Advanced extension used: yes/no
 - Fit-gate status:

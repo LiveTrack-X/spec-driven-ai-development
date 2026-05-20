@@ -28,4 +28,6 @@ log. Keep it short enough for a fresh AI session to read as current context.
 - If the note records a bug, risk, or blocked issue, update `review-findings.md`.
 - If the note is durable architecture, policy, release, security,
   data-boundary, or owner-approved tradeoff rationale, create or update an ADR.
+  A decision normally deserves an ADR only when it is hard to reverse, would
+  surprise a future maintainer without context, and represents a real tradeoff.
 - If this file becomes long, archive older entries and link the archive here.

@@ -98,6 +98,12 @@ Implementation discipline guards autonomy: surface assumptions, prefer the
 simplest working design, make surgical changes, and tie every step to
 verification.
 
+When a plan is fuzzy, run a clarification checkpoint before coding. Inspect
+current code, tests, active docs, SPEC, TODOs, review findings, and ADRs first.
+Ask the owner only for unresolved blocking questions, one at a time. Include the
+AI's recommended answer, why the question matters, and what changes if the owner
+chooses differently. Do not use clarification checkpoints as micro-approval.
+
 Implementation notes preserve implementation memory. When implementation
 requires a judgment the active SPEC did not state, record the SPEC gap,
 decision, reason, rejected alternatives, verification impact, and follow-up in
@@ -168,6 +174,8 @@ concrete budget, and owner adoption gate. Mark missing fields as `unknown` or
 - Open critical findings beat new feature work.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
+- Repository evidence beats unnecessary questions.
+- Stable terminology beats session vocabulary.
 - Handoff is context, not authority.
 - Release readiness beats feature count.
 - Owner decision beats AI momentum.
@@ -206,6 +214,9 @@ Before handoff, state:
 When asked to restart, summarize, archive, or continue later, offer to create or
 update a handoff first. When resuming, load the relevant SPEC, handoff, and
 current repository state before continuing.
+Reference existing SPECs, ADRs, TODOs, review findings, implementation notes,
+logs, or evidence files by path or URL instead of duplicating long content in
+the handoff.
 
 ## End-Of-Loop Maintenance Rule
 
@@ -229,6 +240,12 @@ owner-relevant tradeoff, follow-up, or verification-impact note.
 Update operating rules or ADRs when repeated pain, architecture decisions, policy
 decisions, release decisions, security boundaries, data-boundary decisions, or
 owner-approved tradeoffs changed.
+Use ADRs sparingly: a decision normally deserves an ADR only when it is hard to
+reverse, would surprise a future maintainer without context, and represents a
+real tradeoff. Smaller spec-unstated choices belong in implementation notes.
+
+If repeated ambiguity comes from overloaded domain terms, create or update a
+small glossary routed from `docs/INDEX.md`; keep it glossary-only.
 
 Update `save-state.md` when a session pauses or ends before acceptance, handoff
 to another AI/tool/person is expected, owner direction or acceptance criteria

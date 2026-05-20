@@ -43,6 +43,7 @@ Documentation-governance controls keep context, docs, SPECs, TODOs, review findi
 Release-governance controls keep version lanes, migrations, releases, risk domains, and pre-release review honest.
 Context-stability controls keep active state files short and prevent large logs, generated artifacts, old archives, or private data from flooding AI chat context.
 Implementation-notes controls keep spec-unstated implementation decisions visible without turning AI reasoning into a transcript.
+Clarification controls inspect repository evidence before asking the owner, then ask only the next blocking question with a recommended answer.
 ```
 
 Implicit rules to include:
@@ -51,9 +52,10 @@ Implicit rules to include:
 Core 5: Current beats historical. Evidence beats confidence. Active beats interesting.
 Owner decision beats AI momentum. Repeated pain becomes a rule.
 
-Extended rules cover docs drift, partial/degraded work, release readiness,
-environment limits, cross-review, risk gates, review-worthy units, and
-scope-specific progress.
+Extended rules cover repository-evidence-first clarification, stable domain
+language, docs drift, partial/degraded work, release readiness, environment
+limits, cross-review, risk gates, review-worthy units, and scope-specific
+progress.
 ```
 
 ## AGENTS.md Template
@@ -120,6 +122,8 @@ active path.
 - Work in review-worthy development units inside the approved packet, not
   micro-approval steps.
 - Continue autonomously inside the approved work packet until evidence is ready.
+- When the plan is fuzzy, inspect repository evidence first and ask only the
+  next blocking owner question with a recommended answer.
 - Surface assumptions, prefer simple designs, make surgical changes, and verify
   goals.
 - Record spec-unstated implementation decisions in `docs/implementation-notes.md`
@@ -178,4 +182,6 @@ SPEC/adr/
 ```
 
 Use ADRs for durable decisions that future AI sessions should not re-litigate
-without new evidence or owner approval.
+without new evidence or owner approval. A decision normally deserves an ADR only
+when it is hard to reverse, would surprise a future maintainer without context,
+and represents a real tradeoff.

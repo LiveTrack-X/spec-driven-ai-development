@@ -138,6 +138,35 @@ be wrong for product, security, cost, or release strategy.
 Operational form: use "Assumption", "Needs owner decision", or "Not verified"
 labels in handoff and review.
 
+### 9a. Repository Evidence Beats Unnecessary Questions
+
+Rule: before asking the owner a clarification question, inspect current code,
+tests, active docs, SPEC, TODOs, review findings, and ADRs when those sources
+can answer it.
+
+Why it matters: owner checkpoints are valuable, but unnecessary questions create
+approval fatigue and slow down work packets that are already bounded.
+
+Operational form: use a clarification checkpoint for fuzzy plans. Ask only the
+next blocking question, include the AI's recommended answer, and explain the
+impact of a different answer. If the answer is a low-risk implementation
+assumption, state it, proceed, verify, and record it when needed. If it changes
+scope, product behavior, release posture, risk, data, security, money,
+migration, destructive action, or an owner tradeoff, stop for the owner.
+
+### 9b. Stable Terms Beat Session Vocabulary
+
+Rule: when domain terms drift across sessions, define the execution-relevant
+terms in active docs instead of letting each AI invent names.
+
+Why it matters: unstable vocabulary creates duplicated concepts, mismatched
+tests, and SPEC/code disagreement.
+
+Operational form: define only terms that affect implementation, review, tests,
+or owner decisions. For repeated domain-language confusion, add a small
+`docs/domain-language.md` routed from `docs/INDEX.md`; keep it glossary-only,
+not a handoff, TODO list, ADR, or implementation journal.
+
 ### 10. Degraded Or Partial Means Label It
 
 Rule: scaffolds, placeholders, degraded behavior, dummy adapters, partial

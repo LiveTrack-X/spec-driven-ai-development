@@ -147,6 +147,7 @@ def validate_skill() -> None:
         "Review-Worthy Development Units",
         "implementation discipline",
         "implementation notes",
+        "clarification checkpoint",
         "docs/implementation-notes.md",
         "Mini Unit Completion",
         "Source Of Truth",
@@ -173,7 +174,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.1.4`",
+        "Status: `1.1.5`",
         "stable documentation/package release",
         "project fit, owner discipline, and evidence quality",
         "For Beginners: Use In 60 Seconds",
@@ -204,6 +205,8 @@ def validate_templates() -> None:
         "Do not claim completion while control files are stale",
         "Mini SDAD also has a completion gate",
         "spec-unstated implementation",
+        "clarification checkpoint",
+        "Use ADRs sparingly",
         "Update save-state.md when a session pauses or ends",
         "bounded reads",
         "50 KB",
@@ -216,6 +219,7 @@ def validate_templates() -> None:
         "docs/maintenance-cost.md",
         "docs/context-stability.md",
         "docs/implementation-notes.md",
+        "docs/domain-language.md",
         "docs/no-clone-quick-install.md",
         "The Problem",
         "Why This Is Different",
@@ -248,7 +252,7 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "1.1.4",
+            "1.1.5",
             "프로젝트 적합도",
             "save-state.md",
             "오너 수락",
@@ -256,6 +260,7 @@ def validate_templates() -> None:
             "Full SDAD / High",
             "고급 확장",
             "chat-only",
+            "blocking 질문",
             "리뷰 의미가 있는 개발 단위",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
@@ -269,7 +274,7 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "1.1.4",
+            "1.1.5",
             "project fit",
             "save-state.md",
             "Owner 验收",
@@ -277,6 +282,7 @@ def validate_templates() -> None:
             "Full SDAD / High",
             "advanced extension",
             "chat-only",
+            "blocking 问题",
             "有评审意义的开发单元",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
@@ -290,7 +296,7 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "1.1.4",
+            "1.1.5",
             "project fit",
             "save-state.md",
             "Owner の受け入れ",
@@ -298,6 +304,7 @@ def validate_templates() -> None:
             "Full SDAD / High",
             "advanced extension",
             "chat-only",
+            "blocking question",
             "レビューする意味のある",
             "docs/getting-started.md",
             "docs/mini-sdad.md",
@@ -326,6 +333,8 @@ def validate_templates() -> None:
         "micro-task",
         "Implementation discipline makes autonomy safe",
         "Implementation memory beats hidden rationale",
+        "clarification checkpoint",
+        "Use ADRs sparingly",
         "docs/implementation-notes.md",
         "Handoff Rule",
         "End-Of-Loop Maintenance Rule",
@@ -344,6 +353,7 @@ def validate_templates() -> None:
         "Heavy control-file budget",
         "context-stability change",
         "implementation-notes.md",
+        "domain-language.md",
         "Advanced extension",
     ]:
         if phrase not in index:
@@ -358,6 +368,8 @@ def validate_templates() -> None:
         "Proceed autonomously inside the approved work packet",
         "Implementation discipline makes autonomy safe",
         "Implementation memory beats hidden rationale",
+        "clarification checkpoint",
+        "hard to reverse",
         "implementation notes for spec-unstated decisions",
         "End-Of-Loop Maintenance Rule",
         "Control files have maintenance cost",
@@ -391,6 +403,7 @@ def validate_templates() -> None:
         "Concrete budget used",
         "Bounded-read instructions",
         "Implementation Notes",
+        "Reference existing SPECs",
         "read this current handoff fully",
         "Commands / Tests Run",
         "Reactivation Prompt",
@@ -421,6 +434,7 @@ def validate_templates() -> None:
         "docs/TODO-Open-Items.md",
         "review-findings.md",
         "ADR",
+        "hard to reverse",
     ]:
         if phrase not in implementation_notes_template:
             fail(f"Implementation-notes template missing: {phrase}")
@@ -431,6 +445,8 @@ def validate_templates() -> None:
         "Owner Progress View",
         "current-over-historical",
         "implementation notes",
+        "Pressure-Test Plans Before Building",
+        "Keep Domain Language Bounded",
     ]:
         if phrase not in catalog:
             fail(f"Pattern catalog missing: {phrase}")
@@ -444,6 +460,8 @@ def validate_templates() -> None:
         "Repeated Pain Becomes A Rule",
         "Context Budget Beats Full Transcript",
         "Implementation Memory Beats Hidden Rationale",
+        "Repository Evidence Beats Unnecessary Questions",
+        "Stable Terms Beat Session Vocabulary",
     ]:
         if phrase not in implicit:
             fail(f"Implicit rules doc missing: {phrase}")
@@ -464,6 +482,7 @@ def validate_templates() -> None:
         "Maintenance Cost",
         "review-worthy development unit",
         "work packet",
+        "clarification question",
         "autonomy-levels.md",
         "micro-task",
         "save-state.md",
@@ -490,6 +509,8 @@ def validate_templates() -> None:
         "For Mini SDAD at loop end",
         "review-worthy development unit",
         "Do not stop for owner approval after every micro-task",
+        "clarification checkpoint",
+        "Use ADRs sparingly",
         "evidence-ready",
         "save-state.md",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
@@ -524,6 +545,7 @@ def validate_templates() -> None:
         "Offer deterministic fallback options",
         "Not evidence-ready",
         "Level 1 Unit Autonomy",
+        "next blocking clarification question",
         "Before fetching",
         "Escalation Rule",
     ]:
@@ -539,6 +561,7 @@ def validate_templates() -> None:
         "Live-State Size Budget",
         "context-stability.md",
         "implementation-notes.md",
+        "hard to reverse",
         "session-handoff.md",
         "Control File Budget",
         "session is ending or pausing",
@@ -558,6 +581,7 @@ def validate_templates() -> None:
         "Do not stop for owner approval after every micro-task",
         "Mini Unit Completion",
         "Implementation notes",
+        "fuzzy scope was resolved",
         "Not evidence-ready",
         "Do Not",
         "Handoff",
@@ -574,6 +598,8 @@ def validate_templates() -> None:
         "Evaluation Leakage",
         "Budget Fog",
         "Hidden Implementation Memory",
+        "Question-First Without Repository Evidence",
+        "Glossary Sprawl",
         "Owner Rubber Stamp",
         "Speculative Complexity",
         "Drive-By Refactor",
@@ -620,6 +646,7 @@ def validate_templates() -> None:
         "Work Packet",
         "Level 2",
         "Stop Conditions",
+        "Clarification Checkpoints",
         "Checkpoint Summary",
         "Owner Review Compression",
     ]:
@@ -629,6 +656,7 @@ def validate_templates() -> None:
     for phrase in [
         "Implementation Discipline",
         "Surface Assumptions",
+        "Run A Clarification Checkpoint",
         "Prefer The Smallest Working Design",
         "Make Surgical Changes",
         "Make Goals Verifiable",
@@ -650,6 +678,8 @@ def validate_templates() -> None:
         "docs/implementation-notes.md",
         "For Mini SDAD",
         "Context Stability",
+        "Clarification checkpoint adoption",
+        "hard to reverse",
     ]:
         if phrase not in implementation_notes:
             fail(f"Implementation notes doc missing: {phrase}")
@@ -664,6 +694,7 @@ def validate_templates() -> None:
         "## Baseline Freeze",
         "Owner Review Compression",
         "implementation notes needed: yes/no",
+        "clarification checkpoint needed/resolved",
         "Evidence Surface Rule",
         "Evaluation-Driven Extensions",
         "Advanced Extension Fit Gate",
@@ -684,6 +715,7 @@ def validate_templates() -> None:
         "Chats are execution traces",
         "Specs are authority",
         "Handoffs are continuity",
+        "Reference, Do Not Duplicate",
         "Bounded Resume Reads",
         "bounded reads",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
@@ -726,6 +758,7 @@ def validate_templates() -> None:
         "related small tasks",
         "Continue autonomously inside the approved work packet",
         "simplest working design",
+        "clarification checkpoint",
         "implementation notes",
         "micro-approval steps",
     ]:
@@ -738,6 +771,7 @@ def validate_templates() -> None:
         "context-stability check above 200 KB",
         "no full startup read above 1 MB",
         "implementation-notes.md",
+        "clarification",
     ]:
         if phrase not in review_prompt:
             fail(f"Review prompt missing context-stability guidance: {phrase}")
@@ -750,6 +784,7 @@ def validate_templates() -> None:
         "SDAD scale / intensity used",
         "compressed owner review summary",
         "advanced extension fit-gate status",
+        "clarification checkpoints resolved",
         "implementation notes for spec-unstated",
         "search evidence versus owner acceptance evidence",
         "evaluation leakage risk",
@@ -761,7 +796,7 @@ def validate_templates() -> None:
         if phrase not in handoff:
             fail(f"Handoff prompt missing review-worthy unit guidance: {phrase}")
     adr = read("templates/project-control-files/SPEC/adr/ADR-0001-template.md")
-    for phrase in ["Context", "Decision", "Consequences", "Current-Over-Historical Rule"]:
+    for phrase in ["Context", "Decision", "Consequences", "Current-Over-Historical Rule", "hard to reverse"]:
         if phrase not in adr:
             fail(f"ADR template missing: {phrase}")
     adapters = read("docs/tool-adapters.md")
@@ -807,6 +842,8 @@ def validate_templates() -> None:
             "Continue autonomously inside the approved work packet",
             "Implementation discipline guards autonomy",
             "Implementation notes preserve implementation memory",
+            "clarification checkpoint",
+            "Use ADRs sparingly",
             "docs/implementation-notes.md",
             "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
             "Full SDAD / High",

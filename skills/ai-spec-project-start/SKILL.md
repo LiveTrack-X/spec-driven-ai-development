@@ -41,6 +41,11 @@ This workflow should preserve two concrete families of practice:
 - Release-governance controls for version lanes, migration maps, release gates,
   risk-domain rules, and cross-AI pre-release review.
 
+Compatible external clarification patterns should be adapted as SDAD-native
+clarification checkpoints, glossary routing, sparse ADR criteria, or handoff
+compression. Do not make external skill frameworks the source of authority for
+an SDAD project unless the owner explicitly asks for dependency adoption.
+
 When the user asks whether their development flow is reasonable, references a
 previous project, asks to encode lessons into a reusable pattern, or is starting
 a project with releases/migrations/high-risk behavior, load
@@ -116,6 +121,12 @@ verification is blocked, or evidence conflicts with the plan.
 Use implementation discipline inside the packet: surface assumptions, prefer the
 simplest working design, make surgical changes, and tie every step to
 verification.
+When a plan is fuzzy, run a clarification checkpoint before coding: inspect
+repository evidence first, ask only the next blocking owner question, include
+the AI's recommended answer, and route the resolved decision to SPEC,
+implementation notes, ADR, TODO, review finding, or handoff as appropriate.
+If repeated ambiguity comes from overloaded domain terms, create or update a
+small glossary routed from `docs/INDEX.md`; keep it glossary-only.
 When implementation requires a judgment the active SPEC did not explicitly
 cover, record the assumption, change, compromise, alternative rejected,
 owner-relevant tradeoff, follow-up, and verification impact in implementation
@@ -131,6 +142,8 @@ Before closing, archiving, replacing, or restarting a long AI coding session,
 create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat the
 chat as an execution trace, not permanent memory; a fresh session must continue
 from the handoff, active spec, and current repository state.
+Reference existing artifacts by path or URL instead of duplicating long content
+in the handoff.
 Before reading large state files, archives, logs, generated artifacts, private
 data, or broad search output, check size and use bounded reads: headings,
 current sections, targeted matches, output limits, and explicit excludes. If
@@ -221,6 +234,8 @@ requires owner acceptance or an explicitly delegated acceptance policy.
 Inside the packet, enforce implementation discipline:
 
 - surface assumptions without hiding confusion,
+- run a clarification checkpoint when the plan is fuzzy, inspecting repository
+  evidence before asking the owner,
 - prefer the simplest working design,
 - make surgical changes only,
 - tie each step to verification.
@@ -233,6 +248,10 @@ that implementation memory:
 - record alternatives rejected when the choice affects future work,
 - record verification impact and follow-up TODO/review/ADR needs,
 - avoid raw internal reasoning, mechanical edit logs, and large logs.
+
+Use ADRs sparingly for decisions that are hard to reverse, surprising without
+context, and real tradeoffs; smaller spec-unstated choices belong in
+implementation notes.
 
 Ask the owner only when:
 

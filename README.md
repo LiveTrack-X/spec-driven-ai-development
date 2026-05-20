@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.1.4` stable documentation/package release.
+Status: `1.1.5` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -153,6 +153,17 @@ Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
 or irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or the requested work conflicts with current evidence.
 
+When the plan is fuzzy, run a clarification checkpoint before coding. Inspect
+the current code, tests, active docs, SPEC, TODOs, review findings, and ADRs
+first. Ask me only for unresolved blocking questions, one at a time. Include
+your recommended answer, why the question matters, and what changes if I choose
+differently. Do not use clarification checkpoints as micro-approval.
+
+If repeated ambiguity comes from overloaded domain terms, propose one canonical
+term and one short definition. For Standard or Full SDAD, create or update a
+small glossary routed from docs/INDEX.md only when terminology drift affects
+implementation, review, tests, or owner decisions.
+
 Implement from the active SPEC. When implementation requires a judgment the
 SPEC does not explicitly cover, record the assumption, change, compromise,
 alternative rejected, owner-relevant tradeoff, follow-up, and verification
@@ -161,6 +172,11 @@ mechanical edits, or large logs. For Standard or Full SDAD, keep current notes
 in docs/implementation-notes.md; for Mini SDAD, include a short Implementation
 notes section in the evidence-ready summary only when a spec-unstated decision
 happened.
+
+Use ADRs sparingly. A decision normally deserves an ADR only when it is hard to
+reverse, would surprise a future maintainer without context, and represents a
+real tradeoff. Smaller spec-unstated implementation choices belong in
+implementation notes.
 
 For Mini SDAD at loop end, do not check SPEC-COMPLETE, TODO, review-findings, or
 ADRs unless the project has escalated. Report the active task, changed files,
@@ -180,6 +196,9 @@ Before closing, archiving, replacing, or restarting a long AI coding session,
 create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat
 the chat as an execution trace, not permanent memory; a fresh session must be
 able to continue from the handoff, active spec, and current repository state.
+Reference existing SPECs, ADRs, TODOs, review findings, implementation notes,
+logs, or evidence files by path or URL instead of duplicating long content in
+the handoff.
 
 Before reading large state files, logs, generated artifacts, private data, or
 old archives, use bounded reads: check file size, read headings or matching
@@ -450,6 +469,10 @@ Inside an approved work packet, AI autonomy is guarded by implementation
 discipline: surface assumptions, keep the design simple, make surgical changes,
 tie every step to verification, and record spec-unstated implementation
 decisions in implementation notes.
+When the plan is fuzzy, SDAD adds a clarification checkpoint: inspect repository
+evidence first, ask only the next blocking owner question, include the AI's
+recommended answer, and route the resolved decision to SPEC, implementation
+notes, ADR, TODO, review finding, or handoff.
 
 ## The Loop
 
@@ -546,6 +569,7 @@ AI instruction file, choose one:
 docs/INDEX.md                                    # documentation navigation
 docs/Repository-Operating-Rules.md               # durable operating rules
 docs/implementation-notes.md                     # spec-unstated implementation decisions
+docs/domain-language.md                          # optional glossary when terminology drift affects execution
 SPEC/SPEC-COMPLETE.md                            # current product and implementation truth
 SPEC/adr/                                        # durable decision records
 docs/TODO-Open-Items.md                          # active implementation work
@@ -630,9 +654,10 @@ The Core 5:
 - Owner decision beats AI momentum.
 - Repeated pain becomes a rule.
 
-The Extended Rules cover docs drift, partial or degraded work, version lanes,
-release readiness, environment limits, cross-review, risk gates, and
-implementation memory.
+The Extended Rules cover repository-evidence-first clarification, stable domain
+language, docs drift, partial or degraded work, version lanes, release
+readiness, environment limits, cross-review, risk gates, and implementation
+memory.
 
 See [docs/implicit-rules.md](docs/implicit-rules.md).
 

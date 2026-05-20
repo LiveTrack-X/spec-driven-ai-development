@@ -83,6 +83,20 @@ At any level above 0, stop and ask the owner only when:
 Everything else should be handled as "report later with evidence", not "ask now
 for permission".
 
+## Clarification Checkpoints
+
+Autonomy does not mean silent guessing. When scope, terminology, evidence, or a
+hard-to-reverse choice is fuzzy, run a clarification checkpoint before coding.
+
+First inspect repository evidence: current code, tests, active docs, SPEC, TODOs,
+review findings, and ADRs. If those answer the question, proceed with the answer
+and cite it later. If they do not, ask only the next blocking owner question and
+include the AI's recommended answer.
+
+Clarification checkpoints are not micro-approval. They exist to protect owner
+tradeoffs and prevent hidden assumptions while preserving flow inside the
+approved packet.
+
 ## Checkpoint Summary
 
 At the end of a work packet or session, report:
@@ -95,6 +109,7 @@ At the end of a work packet or session, report:
 - checks summary,
 - owner decision needed: yes/no,
 - recommended next action,
+- clarification checkpoints resolved or still blocking,
 - work packet completed,
 - evidence-ready units,
 - changed files,

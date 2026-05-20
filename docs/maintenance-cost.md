@@ -121,6 +121,11 @@ Implementation notes sit between code comments and ADRs: they preserve why a
 spec-unstated implementation choice was made, but they do not replace TODOs,
 review findings, handoffs, or durable ADRs.
 
+A decision normally deserves an ADR only when it is hard to reverse, would
+surprise a future maintainer without context, and represents a real tradeoff.
+This keeps ADRs durable instead of turning them into another implementation
+journal.
+
 ## Save-State Update Triggers
 
 `save-state.md` is optional. If the project uses it, it must stay current enough

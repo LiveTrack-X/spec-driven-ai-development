@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-ステータス: `1.1.4` 安定ドキュメント/パッケージリリース。
+ステータス: `1.1.5` 安定ドキュメント/パッケージリリース。
 
 有効性は project fit、Owner の運用規律、evidence quality に依存します。
 
@@ -108,6 +108,8 @@ Core 5:
 - アクティブな範囲は面白い将来アイデアより優先される。
 - Owner の判断は AI の勢いより優先される。
 - 繰り返される痛みはルール、チェックリスト、テスト、テンプレートになる。
+- 計画が曖昧な場合は、まずリポジトリ上の証拠を確認し、残った
+  blocking question だけを推奨回答つきで Owner に尋ねる。
 
 全体のルールは [docs/implicit-rules.md](docs/implicit-rules.md) を参照してください。
 

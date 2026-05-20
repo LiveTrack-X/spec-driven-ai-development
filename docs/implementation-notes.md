@@ -55,6 +55,12 @@ If a decision is durable architecture, policy, release, security, data-boundary,
 or owner-approved tradeoff rationale, create or update an ADR instead of keeping
 only a note.
 
+A decision normally deserves an ADR only when all three are true:
+
+- it is hard to reverse,
+- it would surprise a future maintainer without context,
+- it represents a real tradeoff, not just a routine implementation choice.
+
 If the note describes a bug, risk, or blocked issue, record it in
 `review-findings.md`.
 
@@ -86,3 +92,22 @@ the active file focused on current decisions, unresolved gaps, and links to
 history.
 
 Use bounded reads for archived implementation notes.
+
+## 2026-05-20 - Clarification checkpoint adoption
+
+- SPEC gap: SDAD did not yet define how to absorb external "grill the plan"
+  style prompting without creating micro-approval or another tool dependency.
+- Decision: adopt the useful behavior as SDAD-native clarification checkpoints,
+  optional domain-language routing, sparse ADR criteria, and reference-not-copy
+  handoff guidance. Do not import the external skill framework or require a
+  default `CONTEXT.md`.
+- Why: this preserves the practical value of pressure-testing plans while
+  keeping SDAD's existing control layer authoritative: active SPEC, work packet
+  autonomy, implementation notes, ADRs, TODOs, review findings, and handoffs.
+- Alternatives rejected: wholesale skill installation; mandatory glossary files
+  for every project; asking the owner a long interview before every packet;
+  using ADRs for routine implementation choices.
+- Verification impact: docs, prompts, adapters, templates, skill references, and
+  examples must validate together because the rule affects the public workflow
+  surface rather than runtime behavior.
+- Follow-up: none unless owner wants a release/tag for this documentation slice.

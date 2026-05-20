@@ -76,7 +76,10 @@ independent review or QA pass.
 ```mermaid
 flowchart TD
     O["Owner defines packet\nscope, risks, non-goals, evidence"] --> A["AI works autonomously"]
-    A --> B["Surface assumptions\nSimplify design\nMake surgical diffs\nVerify goals"]
+    A --> Q{"Plan fuzzy?"}
+    Q -- "Yes" --> P["Clarification checkpoint\ninspect repo first\nask next blocking question"]
+    Q -- "No" --> B["Surface assumptions\nSimplify design\nMake surgical diffs\nVerify goals"]
+    P --> B
     B --> N["Record spec-unstated decisions\nin implementation notes"]
     N --> C{"Stop condition?"}
     C -- "No" --> D["Continue inside packet"]

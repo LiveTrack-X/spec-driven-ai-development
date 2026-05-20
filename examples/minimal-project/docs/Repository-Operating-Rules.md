@@ -22,3 +22,4 @@ Scope: Mandatory rules for code, documentation, review, verification, and handof
 - Do not rely on obvious-but-unwritten assumptions.
 - Label partial, skipped, degraded, or unverified behavior.
 - Owner decision beats AI momentum.
+- If the plan is fuzzy, inspect repository evidence first, then ask only the next blocking owner question with a recommended answer.

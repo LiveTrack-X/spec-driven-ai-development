@@ -85,15 +85,17 @@ as a future idea, but it should not become active implementation.
 13. Does the owner want progress reported by scope rather than vague global percent?
 14. Would a future maintainer need to know why decisions were made?
 15. Has repeated project pain already happened and should become durable rules?
+16. Do fuzzy plans or overloaded domain terms repeatedly cause rework or owner
+    clarification?
 
 ## Score
 
 | Score | Fit | Recommendation |
 | --- | --- | --- |
 | 0-8 | Low | Use a one-shot prompt or [Mini SDAD](mini-sdad.md). Do not install the full workflow unless the project grows. |
-| 9-17 | Medium | Use core control files: `AGENTS.md`, `docs/INDEX.md`, SPEC, TODO, review findings, and implementation notes when SPEC gaps affect implementation. |
-| 18-24 | High | Use the full SDAD workflow with cross-review, source-of-truth rules, and documentation consistency checks. |
-| 25-30 | Very high | Use full SDAD plus ADRs, release gates, anti-pattern review, fit reassessment, and tool adapters. |
+| 9-18 | Medium | Use core control files: `AGENTS.md`, `docs/INDEX.md`, SPEC, TODO, review findings, and implementation notes when SPEC gaps affect implementation. |
+| 19-25 | High | Use the full SDAD workflow with cross-review, source-of-truth rules, and documentation consistency checks. |
+| 26-32 | Very high | Use full SDAD plus ADRs, release gates, anti-pattern review, fit reassessment, and tool adapters. |
 
 ## Output Template
 
@@ -102,6 +104,7 @@ Project:
 Score:
 Fit:
 Recommended control files:
+Required clarification checkpoints or glossary route:
 Required review roles:
 Risk gates needed:
 Advanced extension fit gate needed:

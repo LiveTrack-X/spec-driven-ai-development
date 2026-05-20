@@ -8,9 +8,11 @@ coding behavior that keeps AI autonomy from becoming messy.
 
 This page adapts compatible lessons from
 [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)
-and Andrej Karpathy's public observations about LLM coding pitfalls. Keep this
-as a guardrail inside SDAD, not as a replacement for SPEC, evidence, review, or
-owner checkpoints.
+and Andrej Karpathy's public observations about LLM coding pitfalls. It also
+adapts compatible clarification and documentation patterns from
+[mattpocock/skills](https://github.com/mattpocock/skills). Keep this as a
+guardrail inside SDAD, not as a replacement for SPEC, evidence, review, or owner
+checkpoints.
 
 ## 1. Surface Assumptions
 
@@ -27,7 +29,43 @@ Use the autonomy model:
 
 The goal is not to ask more often. The goal is to avoid silent guessing.
 
-## 2. Prefer The Smallest Working Design
+## 2. Run A Clarification Checkpoint When The Plan Is Fuzzy
+
+Use a clarification checkpoint when the work packet has ambiguous scope,
+overloaded terms, a hard-to-reverse choice, unclear evidence, or a likely owner
+tradeoff.
+
+Before asking the owner, inspect the current code, tests, active docs, SPEC, and
+review findings. If the repository already answers the question, use that answer
+and cite the evidence in the checkpoint.
+
+When a question remains:
+
+- ask only the next blocking question instead of dumping a long interview,
+- include the AI's recommended answer,
+- state why the question matters,
+- state what will change if the owner chooses a different answer.
+
+If the answer is a low-risk local implementation assumption inside the approved
+packet, state the assumption and proceed. If it changes product behavior, risk,
+scope, release posture, data/auth/money/security, or an owner-controlled
+tradeoff, stop for the owner.
+
+If the ambiguity is terminology, propose one canonical term and one short
+definition. Keep terminology in active docs or SPEC when it affects execution.
+For projects with repeated domain-language confusion, create a small optional
+`docs/domain-language.md` routed from `docs/INDEX.md`; keep it glossary-only, not
+an implementation log.
+
+Resolved checkpoint outcomes must be routed:
+
+- SPEC or active docs for behavior and source-of-truth changes,
+- `docs/implementation-notes.md` for spec-unstated implementation choices,
+- ADRs for durable hard-to-reverse decisions,
+- `docs/TODO-Open-Items.md` or `review-findings.md` for follow-up work or risk,
+- handoff notes when the session must restart later.
+
+## 3. Prefer The Smallest Working Design
 
 Implement the minimum code that satisfies the active SPEC and evidence criteria.
 
@@ -42,7 +80,7 @@ Avoid:
 If the solution became much larger than the problem, pause locally and simplify
 before handoff.
 
-## 3. Make Surgical Changes
+## 4. Make Surgical Changes
 
 Every changed line should trace to the work packet, the active SPEC, a review
 finding, or required cleanup caused by the current edit.
@@ -61,7 +99,7 @@ Do not:
 - delete pre-existing dead code unless asked,
 - rewrite comments or docs that you did not need to touch.
 
-## 4. Make Goals Verifiable
+## 5. Make Goals Verifiable
 
 Turn requested work into success criteria before implementation.
 
@@ -78,7 +116,7 @@ For multi-step packets, use a short plan where each step has a matching check.
 This lets the AI continue autonomously inside the packet without asking for
 permission after each small task.
 
-## 5. Preserve Implementation Memory
+## 6. Preserve Implementation Memory
 
 When the active SPEC does not decide a necessary implementation choice, record
 the decision in [implementation-notes.md](implementation-notes.md).
@@ -94,6 +132,8 @@ This discipline is working when:
 - diffs contain fewer unrelated changes,
 - simple tasks stay simple,
 - assumptions are visible before they become bugs,
+- plan ambiguity is resolved before coding or explicitly escalated,
+- project terminology stops shifting between sessions,
 - verification maps to the stated goal,
 - spec-unstated decisions are available to the next session,
 - owner checkpoints receive evidence instead of apology-driven rewrites.

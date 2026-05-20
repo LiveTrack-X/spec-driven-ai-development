@@ -227,3 +227,28 @@ Replace with: implementation notes for spec-unstated assumptions, changes,
 compromises, rejected alternatives, owner-relevant tradeoffs, follow-up, and
 verification impact. Keep the notes bounded; do not store raw internal reasoning
 or mechanical edit logs.
+
+## 20. Question-First Without Repository Evidence
+
+Symptom: the AI asks the owner broad clarification questions that current code,
+tests, active docs, SPEC, TODOs, review findings, or ADRs could answer.
+
+Why it fails: owner checkpoints become busywork, and the AI avoids doing the
+basic repository inspection that makes its recommendation useful.
+
+Replace with: inspect repository evidence first. If ambiguity remains, ask only
+the next blocking question and include the AI's recommended answer, why it
+matters, and what changes if the owner chooses differently.
+
+## 21. Glossary Sprawl
+
+Symptom: every session creates new terms, context files, or explanation pages
+for vocabulary that does not affect implementation, review, tests, or owner
+decisions.
+
+Why it fails: the project gains another journal instead of a clearer operating
+surface.
+
+Replace with: define only execution-relevant terms. Use active docs or SPEC for
+feature-local language, and create a small `docs/domain-language.md` routed from
+`docs/INDEX.md` only when terminology drift repeats.

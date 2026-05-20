@@ -25,6 +25,11 @@ files.
 - Open critical findings beat new feature work unless the owner accepts the risk.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
+- Repository evidence beats unnecessary questions: inspect current code, tests,
+  active docs, SPEC, TODOs, review findings, and ADRs before asking the owner.
+- Stable terms beat session vocabulary: define execution-relevant domain terms
+  when terminology drift affects implementation, review, tests, or owner
+  decisions.
 - Partial, scaffolded, degraded, skipped, or unverified behavior must be labeled.
 - Docs drift is a bug because future AI sessions read docs as operating input.
 - Handoff is context, not authority.
@@ -56,3 +61,5 @@ When starting or reviewing a project, add these checks:
 9. Which repeated pain should become a durable rule?
 10. Which large files or archives should be read only with bounded queries?
 11. Which spec-unstated implementation decisions need implementation notes?
+12. Which fuzzy plan questions can be answered from repository evidence?
+13. Which domain terms need a glossary route?

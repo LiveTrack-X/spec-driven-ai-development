@@ -10,6 +10,7 @@ This project uses owner-supervised, SPEC-driven AI development.
 - AI agents help plan, specify, implement, review, and verify.
 - Completion requires evidence: code, tests, docs, and reproducible commands.
 - Work happens in bounded work packets, not micro-approval steps.
+- Fuzzy plans are checked against repository evidence before asking the owner.
 - AI-complete means evidence-ready; owner-accepted is a separate checkpoint.
 - Spec-unstated implementation decisions go in `docs/implementation-notes.md`,
   not only in chat.

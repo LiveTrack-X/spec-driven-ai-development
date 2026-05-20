@@ -48,6 +48,10 @@ Stop and ask the owner only when:
 - verification is blocked or impossible,
 - current evidence conflicts with the requested plan.
 
+If the unit is fuzzy, inspect available repository evidence before asking the
+owner. Ask only the next blocking clarification question and include the AI's
+recommended answer.
+
 ## Mini Unit Completion
 
 A Mini SDAD unit is evidence-ready only when:
@@ -60,6 +64,7 @@ A Mini SDAD unit is evidence-ready only when:
   necessary decision,
 - user-visible behavior or output is described,
 - limitations and unverified behavior are named,
+- fuzzy scope was resolved from evidence or escalated to the owner,
 - unrelated scope was not added,
 - owner decisions or acceptance needed are named.
 

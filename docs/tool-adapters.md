@@ -7,8 +7,9 @@ This repository is tool-neutral. Codex skills are one delivery format, not the
 method itself. Use the adapter that matches the AI coding environment.
 
 Each adapter carries the same source-of-truth, evidence, context-stability,
-work-packet autonomy, implementation discipline, implementation-notes, handoff,
-and `save-state.md` update trigger rules.
+work-packet autonomy, clarification-checkpoint, implementation discipline,
+implementation-notes, sparse ADR, handoff, and `save-state.md` update trigger
+rules.
 
 ## Supported Adapters
 
@@ -56,6 +57,8 @@ Each adapter keeps only the high-signal operating rules:
 - TODO/review ledger separation,
 - documentation consistency checks,
 - work-packet autonomy instead of micro-approval,
+- clarification checkpoints for fuzzy plans after repository evidence is
+  checked,
 - implementation discipline for assumptions, simplicity, surgical diffs, and
   verification,
 - implementation notes for spec-unstated assumptions, changes, compromises,

@@ -277,6 +277,17 @@ Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
 or irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or the requested work conflicts with current evidence.
 
+When the plan is fuzzy, run a clarification checkpoint before coding. Inspect
+the current code, tests, active docs, SPEC, TODOs, review findings, and ADRs
+first. Ask me only for unresolved blocking questions, one at a time. Include
+your recommended answer, why the question matters, and what changes if I choose
+differently. Do not use clarification checkpoints as micro-approval.
+
+If repeated ambiguity comes from overloaded domain terms, propose one canonical
+term and one short definition. For Standard or Full SDAD, create or update a
+small glossary routed from docs/INDEX.md only when terminology drift affects
+implementation, review, tests, or owner decisions.
+
 Implement from the active SPEC. When implementation requires a judgment the
 SPEC does not explicitly cover, record the assumption, change, compromise,
 alternative rejected, owner-relevant tradeoff, follow-up, and verification
@@ -285,6 +296,11 @@ mechanical edits, or large logs. For Standard or Full SDAD, keep current notes
 in docs/implementation-notes.md; for Mini SDAD, include a short Implementation
 notes section in the evidence-ready summary only when a spec-unstated decision
 happened.
+
+Use ADRs sparingly. A decision normally deserves an ADR only when it is hard to
+reverse, would surprise a future maintainer without context, and represents a
+real tradeoff. Smaller spec-unstated implementation choices belong in
+implementation notes.
 
 Do not overwrite existing project files without showing me what will change.
 Completion requires evidence, not AI confidence.
@@ -307,6 +323,9 @@ Before closing, archiving, replacing, or restarting a long AI coding session,
 create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat
 the chat as an execution trace, not permanent memory; a fresh session must be
 able to continue from the handoff, active spec, and current repository state.
+Reference existing SPECs, ADRs, TODOs, review findings, implementation notes,
+logs, or evidence files by path or URL instead of duplicating long content in
+the handoff.
 
 Before reading large state files, archives, logs, generated artifacts, private
 data, or broad search output, check size and use bounded reads: headings,
@@ -405,6 +424,8 @@ Bootstrap this project with the first active SPEC slice.
 Define the first low-intervention work packet and its review-worthy units.
 Ask me for product pain, smallest useful version, non-goals, risks,
 owner-controlled decisions, autonomy level, and evidence required for completion.
+When the plan is fuzzy, inspect repository evidence first, then ask only the
+next blocking clarification question with your recommended answer.
 ```
 
 The first successful bootstrap should create or update:
