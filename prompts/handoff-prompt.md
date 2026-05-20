@@ -33,6 +33,9 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - tests and commands run,
 - test results,
 - docs checked or updated,
+- implementation notes for spec-unstated assumptions, changes, compromises,
+  rejected alternatives, owner-relevant tradeoffs, follow-up, and verification
+  impact,
 - open findings,
 - remaining risks,
 - current active SPEC section used, especially if older SPEC history exists,
@@ -82,6 +85,9 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
   state before continuing.
 - Do not include speculative abstractions, drive-by refactors, or unrelated
   cleanup in the packet handoff as if they were requested work.
+- Do not hide spec-unstated implementation decisions in chat memory. Record
+  them in `docs/implementation-notes.md` for Standard/Full SDAD, or in a short
+  Implementation notes section for Mini SDAD.
 - Do not bury blockers in prose. Put active defects in `review-findings.md`.
 - Do not leave future ideas mixed into active implementation work.
 - Do not claim release readiness while Critical findings remain open.

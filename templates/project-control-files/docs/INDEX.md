@@ -10,6 +10,7 @@ Scope: Central documentation navigation and maintenance control
 - `SPEC/SPEC-COMPLETE.md`: canonical product and implementation baseline
 - `docs/TODO-Open-Items.md`: current open implementation work
 - `review-findings.md`: active bug and review backlog
+- `docs/implementation-notes.md`: current spec-unstated implementation decisions
 - `save-state.md`: optional current handoff when work pauses or changes hands
 - `docs/sdad/handoffs/`: session handoffs for fresh AI sessions
 
@@ -45,6 +46,7 @@ Use this table before handoff.
 | Security, identity, permissions, data boundaries, or destructive action | security docs if present, relevant SPEC, `review-findings.md` if risk remains |
 | Background jobs, workers, lifecycle, retries, or maintenance | runtime docs, `docs/TODO-Open-Items.md` if gap status changes |
 | Prompt behavior or AI/tool contract | prompt docs, relevant SPEC, tests if present |
+| Spec-unstated implementation assumption, change, compromise, rejected alternative, owner tradeoff, follow-up, or verification impact | `docs/implementation-notes.md`, `docs/TODO-Open-Items.md` if future work remains, `review-findings.md` if risk remains, ADR if durable rationale is needed |
 | Roadmap, implementation status, placeholder, or gap closure | `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md` if review-related |
 | Stable/next version lane, migration, release, or rollback | release docs if present, `docs/Repository-Operating-Rules.md`, relevant SPEC |
 | High-risk domain rule such as locks, real-time path, backup, or platform boundary | module docs if present, `docs/Repository-Operating-Rules.md`, relevant tests |

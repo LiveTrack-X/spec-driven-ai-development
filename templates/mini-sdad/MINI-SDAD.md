@@ -56,6 +56,8 @@ A Mini SDAD unit is evidence-ready only when:
 - changed files are listed,
 - tests, commands, or manual checks are shown, or the reason they could not run
   is stated,
+- implementation notes are included when the request or SPEC did not state a
+  necessary decision,
 - user-visible behavior or output is described,
 - limitations and unverified behavior are named,
 - unrelated scope was not added,
@@ -74,6 +76,10 @@ Final done still requires owner acceptance unless the owner has explicitly
 delegated the acceptance policy. Requested changes or deferred decisions mean
 the unit is not done.
 
+Implementation notes: if the request or SPEC did not state a necessary
+decision, include the note in the evidence-ready summary. Do not create a
+persistent implementation-notes file unless the project escalates.
+
 ## Do Not
 
 - Do not overwrite existing files without showing proposed changes.
@@ -89,6 +95,7 @@ At the end of work, report:
 - active task,
 - what changed,
 - how it was checked,
+- implementation notes, if a spec-unstated decision was made,
 - whether it is evidence-ready,
 - what remains uncertain,
 - owner decision needed,

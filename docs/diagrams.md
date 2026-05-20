@@ -15,7 +15,7 @@ flowchart TD
     F --> G["Cross-model or separate-session review"]
     G --> H["Evidence-ready checkpoint"]
     H --> I["Owner decision: accept, revise, defer, reject"]
-    I --> J["Operating rule, TODO, finding, ADR, or archive update"]
+    I --> J["Operating rule, TODO, finding, implementation note, ADR, or archive update"]
     J --> C
 ```
 
@@ -77,7 +77,8 @@ independent review or QA pass.
 flowchart TD
     O["Owner defines packet\nscope, risks, non-goals, evidence"] --> A["AI works autonomously"]
     A --> B["Surface assumptions\nSimplify design\nMake surgical diffs\nVerify goals"]
-    B --> C{"Stop condition?"}
+    B --> N["Record spec-unstated decisions\nin implementation notes"]
+    N --> C{"Stop condition?"}
     C -- "No" --> D["Continue inside packet"]
     D --> B
     C -- "Yes" --> E["Ask owner"]
@@ -94,5 +95,6 @@ flowchart TD
     I --> S["SPEC/SPEC-COMPLETE.md\nCurrent baseline"]
     I --> T["docs/TODO-Open-Items.md\nOpen implementation work"]
     I --> F["review-findings.md\nActive defect/review backlog"]
+    I --> N["docs/implementation-notes.md\nSpec-unstated decisions"]
     S --> D["SPEC/adr/\nDecision records"]
 ```

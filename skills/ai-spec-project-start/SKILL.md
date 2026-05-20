@@ -67,6 +67,7 @@ that the owner can still govern development through:
 - work packets and autonomy levels,
 - review-worthy development units,
 - implementation discipline,
+- implementation notes,
 - cross-model review,
 - reproducible tests,
 - active TODO/review ledgers,
@@ -115,6 +116,14 @@ verification is blocked, or evidence conflicts with the plan.
 Use implementation discipline inside the packet: surface assumptions, prefer the
 simplest working design, make surgical changes, and tie every step to
 verification.
+When implementation requires a judgment the active SPEC did not explicitly
+cover, record the assumption, change, compromise, alternative rejected,
+owner-relevant tradeoff, follow-up, and verification impact in implementation
+notes. Do not record raw internal reasoning, mechanical edits, or large logs.
+For Standard or Full SDAD, keep current notes in
+`docs/implementation-notes.md`; for Mini SDAD, include a short Implementation
+notes section in the evidence-ready summary only when a spec-unstated decision
+happened.
 At loop end, update save-state.md when work pauses, handoff is expected,
 direction changes, blocked/partial/unverified state remains, or context would be
 expensive to reconstruct.
@@ -216,6 +225,15 @@ Inside the packet, enforce implementation discipline:
 - make surgical changes only,
 - tie each step to verification.
 
+If the active SPEC does not decide a necessary implementation choice, preserve
+that implementation memory:
+
+- record SPEC gaps and unstated assumptions,
+- record implementation changes, compromises, and owner-relevant tradeoffs,
+- record alternatives rejected when the choice affects future work,
+- record verification impact and follow-up TODO/review/ADR needs,
+- avoid raw internal reasoning, mechanical edit logs, and large logs.
+
 Ask the owner only when:
 
 - scope would expand beyond the approved packet,
@@ -286,6 +304,9 @@ At loop end:
   split,
 - update `review-findings.md` when bugs, risks, review findings, or blocked
   issues were found, fixed, deferred, or accepted,
+- update `docs/implementation-notes.md` when implementation required a
+  spec-unstated assumption, change, compromise, rejected alternative,
+  owner-relevant tradeoff, follow-up, or verification-impact note,
 - update operating rules or ADRs when repeated pain, decisions, boundaries, or
   tradeoffs changed.
 
@@ -347,6 +368,7 @@ For Mini SDAD, do not call a unit evidence-ready until:
 - changed files are listed,
 - tests, commands, or manual checks are shown, or the reason they could not run
   is stated,
+- implementation notes are included when a spec-unstated decision was made,
 - user-visible behavior or output is described,
 - limitations and unverified behavior are named,
 - unrelated scope was not added,
@@ -386,6 +408,7 @@ Create or update these early:
 - `SPEC/adr/`: decision records for durable rationale when needed.
 - `docs/TODO-Open-Items.md`: current open work only.
 - `review-findings.md`: active bug/review findings only.
+- `docs/implementation-notes.md`: current spec-unstated implementation decisions.
 - `README.md`: human-facing current project summary.
 
 Optional but useful:
@@ -465,6 +488,7 @@ Every implementation handoff must include:
 - behavior changed,
 - tests or commands run,
 - docs checked or updated,
+- implementation notes for spec-unstated decisions,
 - remaining risks,
 - what is not complete,
 - owner decision needed, if any.
@@ -503,7 +527,7 @@ For a new project, produce a compact bootstrap rather than a huge master plan:
 Use `references/starter-templates.md` for copyable prompts and file templates.
 Use `references/field-patterns.md` when translating previous-project lessons
 into operating rules.
-Use `references/implicit-rules.md` for Core 5 and Extended 15 rule checks.
+Use `references/implicit-rules.md` for Core 5 and Extended Rules checks.
 
 ## Guardrails
 

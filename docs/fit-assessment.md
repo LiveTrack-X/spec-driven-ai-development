@@ -91,7 +91,7 @@ as a future idea, but it should not become active implementation.
 | Score | Fit | Recommendation |
 | --- | --- | --- |
 | 0-8 | Low | Use a one-shot prompt or [Mini SDAD](mini-sdad.md). Do not install the full workflow unless the project grows. |
-| 9-17 | Medium | Use core control files: `AGENTS.md`, `docs/INDEX.md`, SPEC, TODO, and review findings. |
+| 9-17 | Medium | Use core control files: `AGENTS.md`, `docs/INDEX.md`, SPEC, TODO, review findings, and implementation notes when SPEC gaps affect implementation. |
 | 18-24 | High | Use the full SDAD workflow with cross-review, source-of-truth rules, and documentation consistency checks. |
 | 25-30 | Very high | Use full SDAD plus ADRs, release gates, anti-pattern review, fit reassessment, and tool adapters. |
 
@@ -111,6 +111,7 @@ Recommended autonomy level:
 First work packet:
 Review-worthy units inside packet:
 Implementation discipline risks:
+Implementation notes needed:
 ```
 
 ## Reassessment

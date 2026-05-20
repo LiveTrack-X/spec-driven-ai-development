@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 1.1.4 - 2026-05-20
+
+- Added implementation-notes guidance so AI sessions record spec-unstated
+  implementation judgments, changes, compromises, and verification impact
+  without turning private reasoning into a transcript.
+- Added `docs/implementation-notes.md` as the Standard/Full SDAD decision-log
+  surface and clarified that Mini SDAD should include short implementation
+  notes in evidence-ready summaries instead of creating another control file by
+  default.
+- Updated adapters, prompts, templates, and validation checks so
+  implementation notes stay connected to handoff, TODO, review findings, ADRs,
+  and context-stability rules.
+
 ## 1.1.3 - 2026-05-16
 
 - Added context-stability and bounded-read guidance so large live-state files,

@@ -98,6 +98,12 @@ Implementation discipline guards autonomy: surface assumptions, prefer the
 simplest working design, make surgical changes, and tie every step to
 verification.
 
+Implementation notes preserve implementation memory. When implementation
+requires a judgment the active SPEC did not state, record the SPEC gap,
+decision, reason, rejected alternatives, verification impact, and follow-up in
+`docs/implementation-notes.md`. Do not record raw internal reasoning,
+mechanical edits, or large logs.
+
 Stop and ask the owner only when:
 
 - scope would expand beyond the approved packet,
@@ -158,6 +164,7 @@ concrete budget, and owner adoption gate. Mark missing fields as `unknown` or
 - Small verified slices beat large unverified progress.
 - Review-worthy units beat micro-approval.
 - Implementation discipline makes autonomy safe.
+- Implementation memory beats hidden rationale.
 - Open critical findings beat new feature work.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
@@ -186,6 +193,7 @@ Before handoff, state:
 - review-worthy unit completed,
 - changed files,
 - decisions made and why,
+- implementation notes for spec-unstated decisions,
 - tests or commands run,
 - docs checked or updated,
 - remaining risks,
@@ -213,6 +221,10 @@ split.
 
 Update `review-findings.md` when bugs, risks, review findings, or blocked issues
 were found, fixed, deferred, or accepted.
+
+Update `docs/implementation-notes.md` when the implementation required a
+spec-unstated assumption, change, compromise, rejected alternative,
+owner-relevant tradeoff, follow-up, or verification-impact note.
 
 Update operating rules or ADRs when repeated pain, architecture decisions, policy
 decisions, release decisions, security boundaries, data-boundary decisions, or

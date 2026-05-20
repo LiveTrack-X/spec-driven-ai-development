@@ -33,6 +33,8 @@ before judging whether implementation matches the SPEC.
 
 Also identify the approved work packet, autonomy level, and evidence-ready units
 if the handoff provides them.
+If the implementation made decisions the SPEC did not state, inspect
+`docs/implementation-notes.md` or the handoff's Implementation notes section.
 
 ## Source Of Truth
 
@@ -65,6 +67,9 @@ Then include:
 
 - missing tests,
 - docs drift,
+- missing implementation notes for spec-unstated assumptions, changes,
+  compromises, rejected alternatives, owner-relevant tradeoffs, follow-up, or
+  verification impact,
 - hidden assumptions that should become explicit rules,
 - assumptions that required owner input but were silently chosen,
 - speculative abstractions or generalized code that the active SPEC did not need,

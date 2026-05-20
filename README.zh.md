@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-状态：`1.1.3` 稳定文档/包版本。
+状态：`1.1.4` 稳定文档/包版本。
 
 实际效果取决于 project fit、Owner 执行纪律和 evidence quality。
 
@@ -117,6 +117,7 @@ Core 5:
 - [docs/maintenance-cost.md](docs/maintenance-cost.md): 控制文件维护成本
 - [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full 运行强度
 - [docs/session-handoff.md](docs/session-handoff.md): 长会话 handoff 与上下文连续性
+- [docs/implementation-notes.md](docs/implementation-notes.md): 记录 SPEC 未说明的实现决策
 - [docs/diagrams.md](docs/diagrams.md): Mermaid 图示
 - [templates/project-control-files](templates/project-control-files): 项目控制文件模板
 

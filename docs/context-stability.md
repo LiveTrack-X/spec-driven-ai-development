@@ -58,7 +58,8 @@ If the project has stricter local limits, record them in
 
 Files such as `save-state.md`, `next-task.md`, `review-findings.md`, and
 `docs/TODO-Open-Items.md` should stay short enough to read as active operating
-state.
+state. Treat `docs/implementation-notes.md` the same way when a project uses it:
+it is current decision context, not a permanent thought journal.
 
 If a live-state file becomes long, repetitive, or hard to audit:
 

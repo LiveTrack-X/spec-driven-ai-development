@@ -71,7 +71,7 @@ Why it matters: chat memory does not scale across sessions.
 Operational form: update `docs/Repository-Operating-Rules.md`,
 `docs/INDEX.md`, prompts, tests, or templates so the lesson persists.
 
-## Extended 15
+## Extended Rules
 
 Use these when the project grows in scope, risk, team size, tool count, or
 release maturity.
@@ -267,3 +267,18 @@ Operational form: check file size before reading large routed files, use
 headings and targeted sections, move old state into archives, and keep the
 startup path focused on current objective, open items, constraints, validation,
 and next steps.
+
+### 22. Implementation Memory Beats Hidden Rationale
+
+Rule: when implementation requires a choice the active SPEC did not explicitly
+make, record the choice in implementation notes.
+
+Why it matters: code often contains necessary judgments, compromises, and
+unstated assumptions. If those stay only in chat memory, the next AI session or
+human reviewer cannot distinguish intentional implementation from drift.
+
+Operational form: record the SPEC gap, decision, reason, rejected alternatives,
+verification impact, and follow-up in `docs/implementation-notes.md` for
+Standard/Full SDAD. For Mini SDAD, include a short implementation-notes section
+in the evidence-ready summary only when needed. Do not record raw internal
+reasoning, every mechanical edit, or large logs.

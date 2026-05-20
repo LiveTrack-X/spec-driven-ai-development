@@ -78,6 +78,15 @@ For multi-step packets, use a short plan where each step has a matching check.
 This lets the AI continue autonomously inside the packet without asking for
 permission after each small task.
 
+## 5. Preserve Implementation Memory
+
+When the active SPEC does not decide a necessary implementation choice, record
+the decision in [implementation-notes.md](implementation-notes.md).
+
+Record assumptions, SPEC gaps, implementation changes, compromises, rejected
+alternatives, owner-relevant tradeoffs, follow-up work, and verification impact.
+Do not record raw internal reasoning, every mechanical edit, or large logs.
+
 ## Working Signals
 
 This discipline is working when:
@@ -86,4 +95,5 @@ This discipline is working when:
 - simple tasks stay simple,
 - assumptions are visible before they become bugs,
 - verification maps to the stated goal,
+- spec-unstated decisions are available to the next session,
 - owner checkpoints receive evidence instead of apology-driven rewrites.

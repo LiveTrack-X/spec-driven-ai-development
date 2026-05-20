@@ -52,6 +52,10 @@ context-stability check above 200 KB or 2,000 lines; no full startup read above
 - Implementation discipline guards autonomy: surface assumptions, prefer the
   simplest working design, make surgical changes, and tie every step to
   verification.
+- Implementation notes preserve implementation memory: record spec-unstated
+  assumptions, changes, compromises, rejected alternatives, owner-relevant
+  tradeoffs, follow-up, and verification impact in `docs/implementation-notes.md`.
+  Do not record raw internal reasoning, mechanical edits, or large logs.
 
 ## Source Of Truth
 
@@ -63,8 +67,8 @@ history. Treat handoff and save-state files as context, not authority.
 
 State SDAD scale / intensity used, autonomy level used, work packet completed,
 evidence-ready units, changed files, behavior changed, tests run, docs checked,
-open findings, remaining risks, incomplete work, owner decisions needed, owner
-acceptance status, and next concrete steps.
+implementation notes, open findings, remaining risks, incomplete work, owner
+decisions needed, owner acceptance status, and next concrete steps.
 
 Long AI coding sessions are execution traces, not permanent memory. Before
 closing, archiving, replacing, or restarting a long session, create or update a

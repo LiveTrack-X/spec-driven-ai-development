@@ -42,6 +42,7 @@ Field-derived controls:
 Documentation-governance controls keep context, docs, SPECs, TODOs, review findings, and production-readiness status coherent across AI sessions.
 Release-governance controls keep version lanes, migrations, releases, risk domains, and pre-release review honest.
 Context-stability controls keep active state files short and prevent large logs, generated artifacts, old archives, or private data from flooding AI chat context.
+Implementation-notes controls keep spec-unstated implementation decisions visible without turning AI reasoning into a transcript.
 ```
 
 Implicit rules to include:
@@ -121,6 +122,8 @@ active path.
 - Continue autonomously inside the approved work packet until evidence is ready.
 - Surface assumptions, prefer simple designs, make surgical changes, and verify
   goals.
+- Record spec-unstated implementation decisions in `docs/implementation-notes.md`
+  without storing raw internal reasoning or mechanical edit logs.
 - Record blockers in `review-findings.md`.
 - Record open implementation work in `docs/TODO-Open-Items.md`.
 - Update docs when behavior changes.
@@ -149,6 +152,7 @@ Before handoff, state:
 - work packet completed,
 - evidence-ready units,
 - decisions made and why,
+- implementation notes for spec-unstated decisions,
 - tests or commands run,
 - docs checked or updated,
 - remaining risks,

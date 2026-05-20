@@ -60,13 +60,17 @@ authority.
 - Implementation discipline guards autonomy: surface assumptions, prefer the
   simplest working design, make surgical changes, and tie every step to
   verification.
+- Implementation notes preserve implementation memory: record spec-unstated
+  assumptions, changes, compromises, rejected alternatives, owner-relevant
+  tradeoffs, follow-up, and verification impact in `docs/implementation-notes.md`.
+  Do not record raw internal reasoning, mechanical edits, or large logs.
 
 ## Response Expectations
 
 When summarizing work, include SDAD scale / intensity used, autonomy level used,
 work packet completed, evidence-ready units, changed files, tests run, docs
-checked, remaining risks, incomplete work, owner decisions needed, owner
-acceptance status, and next concrete steps.
+checked, implementation notes, remaining risks, incomplete work, owner decisions
+needed, owner acceptance status, and next concrete steps.
 
 Long AI coding sessions are execution traces, not permanent memory. Before
 closing, archiving, replacing, or restarting a long session, create or update a

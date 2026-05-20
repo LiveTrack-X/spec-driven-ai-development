@@ -50,39 +50,49 @@
 |---|---|---|
 | | | |
 
-## 8. Files Touched or Investigated
+## 8. Implementation Notes
+- SPEC gaps or unstated assumptions:
+- Implementation changes or compromises:
+- Alternatives rejected:
+- Verification impact:
+- Follow-up TODO, review finding, or ADR needed:
+
+Use `docs/implementation-notes.md` for current Standard/Full SDAD notes. Do not
+record raw internal reasoning or mechanical edit logs.
+
+## 9. Files Touched or Investigated
 | File/Path | Change Type | Reason | Risk/Notes |
 |---|---|---|---|
 | | | | |
 
-## 9. Commands / Tests Run
+## 10. Commands / Tests Run
 | Command | Result | Notes |
 |---|---|---|
 | | | |
 
-## 10. Current State
+## 11. Current State
 - Working:
 - Broken:
 - Unverified:
 - Unknown:
 - Owner acceptance status:
 
-## 11. Constraints and Do-Not-Touch Areas
+## 12. Constraints and Do-Not-Touch Areas
 -
 -
 -
 
-## 12. Open Decisions
+## 13. Open Decisions
 -
 -
 -
 
-## 13. Next Concrete Steps
+## 14. Next Concrete Steps
 1.
 2.
 3.
 
-## 14. Reactivation Prompt
+## 15. Reactivation Prompt
 
 Paste this into a fresh AI session:
 

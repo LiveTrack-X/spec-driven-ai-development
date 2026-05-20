@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.1.3` stable documentation/package release.
+Status: `1.1.4` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -153,6 +153,15 @@ Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
 or irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or the requested work conflicts with current evidence.
 
+Implement from the active SPEC. When implementation requires a judgment the
+SPEC does not explicitly cover, record the assumption, change, compromise,
+alternative rejected, owner-relevant tradeoff, follow-up, and verification
+impact in implementation notes. Do not record raw internal reasoning,
+mechanical edits, or large logs. For Standard or Full SDAD, keep current notes
+in docs/implementation-notes.md; for Mini SDAD, include a short Implementation
+notes section in the evidence-ready summary only when a spec-unstated decision
+happened.
+
 For Mini SDAD at loop end, do not check SPEC-COMPLETE, TODO, review-findings, or
 ADRs unless the project has escalated. Report the active task, changed files,
 check evidence, limitations or unverified behavior, evidence-ready status, owner
@@ -244,6 +253,8 @@ checking and updating the control files:
 - `SPEC/SPEC-COMPLETE.md`,
 - `docs/TODO-Open-Items.md`,
 - `review-findings.md`,
+- `docs/implementation-notes.md` when implementation made a spec-unstated
+  assumption, change, compromise, or tradeoff,
 - operating rules or ADRs when decisions or repeated pain changed,
 - `save-state.md` when a session pauses or ends, handoff is expected, owner
   direction changes, blocked/partial/unverified state remains, or context would
@@ -437,7 +448,8 @@ Completion is not decided by AI. Completion is decided by evidence:
 
 Inside an approved work packet, AI autonomy is guarded by implementation
 discipline: surface assumptions, keep the design simple, make surgical changes,
-and tie every step to verification.
+tie every step to verification, and record spec-unstated implementation
+decisions in implementation notes.
 
 ## The Loop
 
@@ -447,6 +459,9 @@ Pain -> SPEC -> Work packet -> Review-worthy unit(s) -> Build -> Review -> Evide
 
 This loop repeats every iteration. The goal is not only to fix problems, but to
 turn repeated problems into durable rules, templates, tests, or review gates.
+When implementation requires a judgment the SPEC did not cover, that judgment
+becomes implementation memory in `docs/implementation-notes.md`, not a hidden
+chat assumption.
 
 ```mermaid
 flowchart TD
@@ -530,6 +545,7 @@ AI instruction file, choose one:
 
 docs/INDEX.md                                    # documentation navigation
 docs/Repository-Operating-Rules.md               # durable operating rules
+docs/implementation-notes.md                     # spec-unstated implementation decisions
 SPEC/SPEC-COMPLETE.md                            # current product and implementation truth
 SPEC/adr/                                        # durable decision records
 docs/TODO-Open-Items.md                          # active implementation work
@@ -614,8 +630,9 @@ The Core 5:
 - Owner decision beats AI momentum.
 - Repeated pain becomes a rule.
 
-The Extended 15 cover docs drift, partial or degraded work, version lanes,
-release readiness, environment limits, cross-review, and risk gates.
+The Extended Rules cover docs drift, partial or degraded work, version lanes,
+release readiness, environment limits, cross-review, risk gates, and
+implementation memory.
 
 See [docs/implicit-rules.md](docs/implicit-rules.md).
 
@@ -632,6 +649,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/session-handoff.md](docs/session-handoff.md): long-session handoff and context continuity
 - [docs/autonomy-levels.md](docs/autonomy-levels.md): work packets and low-intervention autonomy
 - [docs/implementation-discipline.md](docs/implementation-discipline.md): assumptions, simplicity, surgical diffs, and verification
+- [docs/implementation-notes.md](docs/implementation-notes.md): bounded decision log for spec-unstated implementation choices
 - [docs/diagrams.md](docs/diagrams.md): workflow diagrams
 - [docs/tool-adapters.md](docs/tool-adapters.md): tool-specific instruction files
 - [docs/field-notes/documentation-governance-method.md](docs/field-notes/documentation-governance-method.md): documentation-governance field pattern

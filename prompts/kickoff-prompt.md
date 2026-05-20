@@ -52,6 +52,10 @@ Create or update:
   verification is blocked, or evidence conflicts with the plan.
 - Surface assumptions, prefer the simplest working design, make surgical
   changes, and tie each step to verification.
+- Record spec-unstated implementation assumptions, changes, compromises,
+  rejected alternatives, owner-relevant tradeoffs, follow-up, and verification
+  impact in implementation notes. Do not record raw internal reasoning or
+  mechanical edit logs.
 - Label partial, degraded, skipped, or unverified behavior.
 - Important changes should receive separate review by another AI, model, or session.
 - Stable/next versions need explicit version lanes and bugfix sync rules.
@@ -73,4 +77,5 @@ Produce:
 9. autonomy level and first work packet,
 10. review-worthy units inside the packet,
 11. test and evidence plan,
-12. required control files.
+12. implementation-notes policy for decisions the SPEC does not state,
+13. required control files.

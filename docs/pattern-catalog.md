@@ -129,6 +129,7 @@ Completion requires evidence appropriate to the slice:
 - focused tests,
 - regression tests where risk is high,
 - docs checked or updated,
+- implementation notes for spec-unstated decisions,
 - remaining risks,
 - known non-goals,
 - owner acceptance.
@@ -157,6 +158,8 @@ When a project hurts, do not only fix the bug. Ask:
 - Should this become an `AGENTS.md` rule?
 - Should it become a docs routing rule?
 - Should it become a review checklist item?
+- Should it become an implementation note so the next session knows why the
+  code differs from the literal SPEC?
 - Should it become a release gate?
 - Should it become a test fixture?
 - Should it become a "do not implement from archive" boundary?
@@ -174,6 +177,7 @@ rules down when they affect execution:
 - release readiness beats feature count,
 - owner decision beats AI momentum,
 - docs drift is a bug,
+- hidden implementation memory becomes implementation notes,
 - partial or unverified behavior must be labeled.
 
 These rules are not bureaucracy. They protect the owner from silent scope drift,
@@ -192,6 +196,9 @@ re-litigate casually:
 
 ADRs preserve why a decision happened, not only what was chosen.
 
+Use implementation notes for smaller spec-unstated implementation choices that
+need to survive handoff but are not durable enough for an ADR.
+
 ## Pattern Matrix
 
 | Situation | Documentation-governance control | Release-governance control |
@@ -199,6 +206,7 @@ ADRs preserve why a decision happened, not only what was chosen.
 | Fresh AI session starts in wrong context | Mandatory docs router and first-read loop | Version-specific rule file and workspace lane |
 | Docs conflict with implementation | Source-of-truth order | Architecture responsibility map |
 | AI says a feature is complete | Evidence handoff and TODO/review ledgers | Release gate and Critical 0 threshold |
+| Code contains unstated implementation choices | Implementation notes with verification impact | ADR or owner gate when the choice affects release/risk |
 | Old plans keep resurfacing | Archive/product-note boundaries | Stable vs next lane boundaries |
 | Refactor makes bugfixes hard to port | Canonical SPEC status | Old-to-new module mapping |
 | High-risk runtime behavior exists | Minimum docs update sets | Thread/lock/danger-zone rules |
@@ -214,8 +222,9 @@ A project using this pattern should be able to show the owner:
 4. open review findings,
 5. tests or commands that prove current state,
 6. docs checked or updated,
-7. next decision required from the owner,
-8. expected risk before release or production use.
+7. implementation notes when the SPEC did not state a decision,
+8. next decision required from the owner,
+9. expected risk before release or production use.
 
 ## Naming The Method
 

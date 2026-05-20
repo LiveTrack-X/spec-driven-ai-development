@@ -117,6 +117,7 @@ Every `Medium` or `High` checkpoint should start with:
 - changed user-facing behavior,
 - safety boundary touched: yes/no,
 - checks summary,
+- implementation notes needed: yes/no,
 - owner decision needed: yes/no,
 - recommended next action,
 - links or references to detailed evidence.
@@ -135,6 +136,11 @@ Add a new evidence surface only when it:
 - protects a real safety boundary,
 - supports a release or production gate,
 - or makes a baseline repeatable.
+
+`docs/implementation-notes.md` is not a new evidence surface for every edit. Use
+it only when implementation made a spec-unstated assumption, change, compromise,
+rejected alternative, owner-relevant tradeoff, follow-up, or verification-impact
+decision.
 
 If evidence grows faster than owner clarity, lower intensity and simplify the
 review path.

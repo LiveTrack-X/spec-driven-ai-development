@@ -22,6 +22,9 @@ Before handoff, owner checkpoint, or session end, update or explicitly check:
 - `docs/TODO-Open-Items.md` when work was completed, added, deferred, or split,
 - `review-findings.md` when bugs, risks, review findings, or blocked issues were
   found, fixed, deferred, or accepted,
+- `docs/implementation-notes.md` when implementation required a spec-unstated
+  assumption, change, compromise, rejected alternative, owner-relevant tradeoff,
+  follow-up, or verification-impact note,
 - `docs/Repository-Operating-Rules.md` when repeated pain becomes a durable rule,
 - ADRs when architecture, policy, release, security, data-boundary, or owner
   tradeoff decisions need durable rationale,
@@ -58,9 +61,10 @@ packets are visible.
 Active live-state files are routing summaries, not permanent session logs.
 
 Keep files such as `save-state.md`, `next-task.md`, `review-findings.md`, and
-`docs/TODO-Open-Items.md` short enough to inspect as current operating state. If
-one becomes long, repetitive, or difficult to audit, preserve the old material in
-an archive/history file and leave the active file focused on:
+`docs/TODO-Open-Items.md` short enough to inspect as current operating state.
+Treat `docs/implementation-notes.md` the same way when a project uses it. If one
+becomes long, repetitive, or difficult to audit, preserve the old material in an
+archive/history file and leave the active file focused on:
 
 - current objective,
 - current/open items,
@@ -112,6 +116,10 @@ Use two states:
 
 Final completion requires evidence, owner acceptance or requested changes,
 updated TODO/review/SPEC state, and known stale items explicitly named.
+
+Implementation notes sit between code comments and ADRs: they preserve why a
+spec-unstated implementation choice was made, but they do not replace TODOs,
+review findings, handoffs, or durable ADRs.
 
 ## Save-State Update Triggers
 

@@ -139,6 +139,11 @@ For each unit, do not call it evidence-ready until changed files, check evidence
 and limitations or unverified behavior are shown. Do not call final completion
 done until owner acceptance is shown or the owner has explicitly delegated the
 acceptance policy.
+
+If the unit required a decision the request or SPEC did not state, include a
+short Implementation notes section in the evidence-ready summary. Do not create
+a persistent implementation-notes file for Mini SDAD unless the project
+escalates.
 ```
 
 ## Escalation Rule

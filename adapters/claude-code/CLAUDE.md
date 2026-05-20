@@ -82,6 +82,10 @@ historical sections.
 - Implementation discipline guards autonomy: surface assumptions, prefer the
   simplest working design, make surgical changes, and tie every step to
   verification.
+- Implementation notes preserve implementation memory: record spec-unstated
+  assumptions, changes, compromises, rejected alternatives, owner-relevant
+  tradeoffs, follow-up, and verification impact in `docs/implementation-notes.md`.
+  Do not record raw internal reasoning, mechanical edits, or large logs.
 - Do not claim completion without commands, results, docs checked, and remaining risks.
 - Use separate review or QA passes for high-risk changes.
 - Do not silently promote product notes, external references, or future ideas into active work.
@@ -99,6 +103,7 @@ Every handoff must include:
 - behavior changed,
 - tests or commands run,
 - docs checked or updated,
+- implementation notes for spec-unstated decisions,
 - open findings,
 - remaining risks,
 - partial/degraded/unverified behavior,

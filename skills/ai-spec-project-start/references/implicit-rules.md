@@ -16,7 +16,7 @@ files.
   release posture changes.
 - Repeated pain becomes a rule, checklist, test, or template update.
 
-## Extended 15
+## Extended Rules
 
 - Work packets and review-worthy units beat micro-approval and large unverified
   progress.
@@ -38,6 +38,8 @@ files.
 - Risk gates beat convenience.
 - Context budget beats full transcript: large state files, archives, logs,
   generated artifacts, and private data require bounded reads.
+- Implementation memory beats hidden rationale: record spec-unstated
+  implementation decisions in implementation notes, not only in chat memory.
 
 ## How To Apply
 
@@ -53,3 +55,4 @@ When starting or reviewing a project, add these checks:
 8. What owner decision is needed?
 9. Which repeated pain should become a durable rule?
 10. Which large files or archives should be read only with bounded queries?
+11. Which spec-unstated implementation decisions need implementation notes?

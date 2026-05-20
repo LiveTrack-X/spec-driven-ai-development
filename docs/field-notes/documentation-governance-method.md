@@ -71,10 +71,13 @@ This pattern uses different files for different kinds of unfinished work:
 - `docs/TODO-Open-Items.md` tracks open implementation work.
 - `review-findings.md` tracks active defects, hardening findings, and review
   backlog.
+- `docs/implementation-notes.md` tracks current spec-unstated implementation
+  decisions that are not defects, TODOs, or ADRs.
 - archived docs preserve rationale but do not drive current implementation.
 
 Reusable rule: do not bury bugs in prose handoffs. Give defects a durable
-review ledger and implementation gaps a durable TODO ledger.
+review ledger, implementation gaps a durable TODO ledger, and spec-unstated
+implementation rationale a bounded implementation-notes surface.
 
 ### 5. Require Documentation Consistency Checks
 
@@ -111,7 +114,8 @@ commands, docs checked, and known remaining gaps. AI confidence is not a valid
 completion artifact by itself.
 
 Reusable rule: ask every builder and reviewer to include commands run, results,
-files changed, docs checked, and remaining risks.
+files changed, docs checked, implementation notes if SPEC gaps affected the
+implementation, and remaining risks.
 
 ## Reusable Documentation Governance Rule Pack
 
@@ -125,6 +129,8 @@ sessions:
 - The first-read chain must apply context-stability before loading routed files.
 - `docs/TODO-Open-Items.md` and `review-findings.md` must stay active and
   separate.
+- `docs/implementation-notes.md` must capture spec-unstated implementation
+  decisions without becoming a raw reasoning transcript.
 - Historical docs must be preserved but clearly excluded from the execution path.
 - Code changes must include a documentation consistency check.
 - Production readiness must be a named gate, not an assumption.

@@ -43,6 +43,11 @@ of every loop, check and update `SPEC/SPEC-COMPLETE.md`,
 `docs/TODO-Open-Items.md`, `review-findings.md`, and any rules or ADRs affected
 by the work.
 
+Update `docs/implementation-notes.md` when implementation required a
+spec-unstated assumption, change, compromise, rejected alternative,
+owner-relevant tradeoff, follow-up, or verification-impact note. Do not turn it
+into a raw thought transcript or mechanical edit log.
+
 Update `save-state.md` when a session pauses or ends, handoff is expected, owner
 direction or acceptance criteria changed, blocked/partial/unverified state
 remains, or context would be expensive to reconstruct.
@@ -300,7 +305,8 @@ unit. Stop only if scope would expand, Q5 risk changes, destructive or
 irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or current evidence conflicts with the plan.
 Before checkpoint handoff, show changed files, verification commands, docs
-checked, evidence-ready units, remaining risks, and what is not complete.
+checked, implementation notes when the SPEC did not cover a decision,
+evidence-ready units, remaining risks, and what is not complete.
 ```
 
 ### Review Prompt
@@ -331,6 +337,7 @@ Before accepting a work packet as "done", check:
 - Are code changes listed?
 - Did tests, builds, lint, or manual checks run?
 - Were docs checked or updated?
+- Were spec-unstated implementation decisions recorded in implementation notes?
 - Are skipped, partial, degraded, or unverified items named?
 - If the project uses `save-state.md`, did a pause, handoff, direction change,
   blocked state, or expensive context trigger require an update?

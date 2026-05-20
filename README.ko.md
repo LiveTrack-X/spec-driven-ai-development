@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-상태: `1.1.3` 안정 문서/패키지 릴리즈.
+상태: `1.1.4` 안정 문서/패키지 릴리즈.
 
 효과는 프로젝트 적합도, 오너의 운영 규율, evidence 품질에 따라 달라집니다.
 
@@ -122,6 +122,7 @@ Core 5:
 - [docs/maintenance-cost.md](docs/maintenance-cost.md): 제어 파일 유지 비용
 - [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full 운영 강도
 - [docs/session-handoff.md](docs/session-handoff.md): 긴 세션 handoff와 컨텍스트 연속성
+- [docs/implementation-notes.md](docs/implementation-notes.md): 명세에 없던 구현 의사결정 기록
 - [docs/diagrams.md](docs/diagrams.md): Mermaid 다이어그램
 - [templates/project-control-files](templates/project-control-files): 프로젝트 제어 파일 템플릿
 

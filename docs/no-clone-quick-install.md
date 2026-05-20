@@ -61,6 +61,9 @@ check and update:
 - `SPEC/SPEC-COMPLETE.md`,
 - `docs/TODO-Open-Items.md`,
 - `review-findings.md`,
+- `docs/implementation-notes.md` when implementation made a spec-unstated
+  assumption, change, compromise, rejected alternative, owner-relevant tradeoff,
+  follow-up, or verification-impact note,
 - operating rules or ADRs when decisions or repeated pain changed,
 - `save-state.md` when a session pauses or ends, handoff is expected, owner
   direction changes, blocked/partial/unverified state remains, or context would
@@ -105,8 +108,8 @@ instruction files:
 - `AI-SESSION-INSTRUCTIONS.md` for a generic AI tool.
 
 After Standard or Full bootstrap, your project should also have control files
-such as `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, and
-`review-findings.md`.
+such as `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`,
+`review-findings.md`, and `docs/implementation-notes.md`.
 
 ## Exact Adapter Sources
 
@@ -259,7 +262,8 @@ project:
 3. create or update SPEC/SPEC-COMPLETE.md,
 4. create or update docs/TODO-Open-Items.md,
 5. create or update review-findings.md,
-6. ask me for product pain, smallest useful version, non-goals, risks,
+6. create or update docs/implementation-notes.md,
+7. ask me for product pain, smallest useful version, non-goals, risks,
    owner-controlled decisions, the first work packet, the review-worthy units
    inside it, and evidence required for completion.
 
@@ -272,6 +276,15 @@ Proceed autonomously inside the approved work packet until evidence is ready.
 Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
 or irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or the requested work conflicts with current evidence.
+
+Implement from the active SPEC. When implementation requires a judgment the
+SPEC does not explicitly cover, record the assumption, change, compromise,
+alternative rejected, owner-relevant tradeoff, follow-up, and verification
+impact in implementation notes. Do not record raw internal reasoning,
+mechanical edits, or large logs. For Standard or Full SDAD, keep current notes
+in docs/implementation-notes.md; for Mini SDAD, include a short Implementation
+notes section in the evidence-ready summary only when a spec-unstated decision
+happened.
 
 Do not overwrite existing project files without showing me what will change.
 Completion requires evidence, not AI confidence.
@@ -303,9 +316,9 @@ Keep repo-packing, graphing, embedding, indexing, and context-building tool
 ignore files aligned with this rule.
 
 For Mini SDAD, an AI may call a unit evidence-ready when changed files, check
-evidence, and limitations or unverified behavior are shown. Do not call final
-completion done until owner acceptance is shown or the owner has explicitly
-delegated the acceptance policy.
+evidence, implementation notes for spec-unstated decisions, and limitations or
+unverified behavior are shown. Do not call final completion done until owner
+acceptance is shown or the owner has explicitly delegated the acceptance policy.
 ```
 
 ## Option 2: One-Paste PowerShell Installer
@@ -400,7 +413,8 @@ The first successful bootstrap should create or update:
 - `docs/Repository-Operating-Rules.md`,
 - `SPEC/SPEC-COMPLETE.md`,
 - `docs/TODO-Open-Items.md`,
-- `review-findings.md`.
+- `review-findings.md`,
+- `docs/implementation-notes.md`.
 
 If those files already exist, the AI should show the proposed changes before
 editing them.

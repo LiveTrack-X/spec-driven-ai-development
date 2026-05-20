@@ -50,6 +50,13 @@ What should the next session do first?
 
 List commands, tests, logs, screenshots, manual checks, or review evidence.
 
+## Implementation Notes
+
+List spec-unstated assumptions, changes, compromises, rejected alternatives,
+owner-relevant tradeoffs, follow-up, or verification-impact notes needed for the
+next session. If the project uses `docs/implementation-notes.md`, link to the
+current entry instead of duplicating it.
+
 ## Open Risks Or Unverified Items
 
 List known blockers, partial work, skipped checks, or uncertain behavior.

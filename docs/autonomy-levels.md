@@ -100,6 +100,7 @@ At the end of a work packet or session, report:
 - changed files,
 - tests, builds, lint, or manual checks run,
 - docs and control files checked or updated,
+- implementation notes for spec-unstated decisions, or "none needed",
 - open findings and remaining risks,
 - partial, skipped, degraded, or unverified behavior,
 - owner decision details, when `owner decision needed` is yes,

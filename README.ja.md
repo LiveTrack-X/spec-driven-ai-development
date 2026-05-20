@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-ステータス: `1.1.3` 安定ドキュメント/パッケージリリース。
+ステータス: `1.1.4` 安定ドキュメント/パッケージリリース。
 
 有効性は project fit、Owner の運用規律、evidence quality に依存します。
 
@@ -119,6 +119,7 @@ Core 5:
 - [docs/maintenance-cost.md](docs/maintenance-cost.md): 制御ファイルの維持コスト
 - [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full の operating intensity
 - [docs/session-handoff.md](docs/session-handoff.md): 長いセッションの handoff と文脈継続
+- [docs/implementation-notes.md](docs/implementation-notes.md): SPEC に書かれていない実装判断の記録
 - [docs/diagrams.md](docs/diagrams.md): Mermaid 図
 - [templates/project-control-files](templates/project-control-files): プロジェクト制御ファイルのテンプレート
 

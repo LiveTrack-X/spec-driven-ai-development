@@ -212,3 +212,18 @@ broken even when runtime code is not involved.
 Replace with: keep active live-state files as short routing summaries, move old
 history to archive/history files, and use bounded reads for archives, logs,
 generated artifacts, private data, and search output.
+
+## 19. Hidden Implementation Memory
+
+Symptom: the code differs from, extends, or compromises around the SPEC, but the
+reason exists only in the AI chat or not at all.
+
+Why it fails: later owners, reviewers, and AI sessions cannot tell whether a
+difference was intentional, accidental, temporary, or blocked by verification.
+They may re-litigate the same choice or mistake a compromise for the desired
+design.
+
+Replace with: implementation notes for spec-unstated assumptions, changes,
+compromises, rejected alternatives, owner-relevant tradeoffs, follow-up, and
+verification impact. Keep the notes bounded; do not store raw internal reasoning
+or mechanical edit logs.
