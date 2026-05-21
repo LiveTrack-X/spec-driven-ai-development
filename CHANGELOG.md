@@ -10,6 +10,11 @@
   before it.
 - Added localized README situation-guide summaries and links to the new user
   guide.
+- Added a symptom-based troubleshooting FAQ for common owner problems such as
+  too many approval requests, vague done claims, excessive docs, context loss,
+  and risk-gate confusion.
+- Mirrored the troubleshooting FAQ summary in the Korean, Japanese, and Chinese
+  README orientation guides.
 
 ## 1.1.5 - 2026-05-20
 

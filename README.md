@@ -30,8 +30,10 @@ SDAD adds a project control layer around AI coding. It helps you:
 - move repeated mistakes into rules, tests, templates, or review gates.
 
 Use [docs/user-guide.md](docs/user-guide.md) when you want the human-facing
-explanation of what to do in common situations. Use the copy-paste prompt below
-when you want an AI coding agent to set SDAD up for a project.
+explanation of what to do in common situations, including troubleshooting such
+as "the AI asks for approval too often" or "the AI says done without evidence".
+Use the copy-paste prompt below when you want an AI coding agent to set SDAD up
+for a project.
 
 ## Use It When
 
@@ -43,6 +45,7 @@ when you want an AI coding agent to set SDAD up for a project.
 | Release, migration, production, user data, auth, money, security, or rollback risk | Full SDAD or Standard minimum with explicit gates |
 | Chat-only tool with no project files | Planning only; install later in a file-editing AI coding tool |
 | AI says "done" | Ask for evidence-ready status, changed files, checks, docs checked, limits, and owner acceptance |
+| AI asks approval after every micro-task | Raise autonomy to a bounded work packet, unless a risk gate is involved |
 
 ## Copy-Paste Start Prompt
 

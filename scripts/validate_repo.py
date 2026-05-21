@@ -180,6 +180,7 @@ def validate_templates() -> None:
         "project fit, owner discipline, and evidence quality",
         "What SDAD Gives You",
         "Use It When",
+        "AI asks approval after every micro-task",
         "Copy-Paste Start Prompt",
         "The block below is an execution prompt",
         "assets/spec-driven-ai-development-infographic.png",
@@ -244,6 +245,24 @@ def validate_templates() -> None:
     readme_positions = [readme.find(phrase) for phrase in readme_order]
     if any(position < 0 for position in readme_positions) or readme_positions != sorted(readme_positions):
         fail("README onboarding order must be: explanation, use cases, prompt, languages, scale, maintenance")
+    user_guide = read("docs/user-guide.md")
+    for phrase in [
+        "Troubleshooting FAQ",
+        "The AI asks for approval too often",
+        "Raise the autonomy level or define a larger work packet",
+        "Level 2 Work Packet Autonomy",
+        "The AI runs ahead too much",
+        "Lower autonomy, narrow the work packet, or lower operating intensity",
+        "The AI says \"done\" but I cannot tell what changed",
+        "Ask for evidence-ready status",
+        "SDAD feels like too many files",
+        "Use a smaller scale or lower intensity",
+        "The next session keeps losing context",
+        "A chat-only tool says it installed SDAD",
+        "Do not solve it by raising autonomy alone",
+    ]:
+        if phrase not in user_guide:
+            fail(f"User guide missing troubleshooting FAQ guidance: {phrase}")
     for phrase in [
         "The first instruction file is tool-specific",
         "Do not create all of them",
@@ -268,6 +287,11 @@ def validate_templates() -> None:
             "Full SDAD / High",
             "고급 확장",
             "chat-only",
+            "문제 해결 FAQ",
+            "승인 요청",
+            "Level 2 Work Packet Autonomy",
+            "Level 1 Unit Autonomy",
+            "evidence-ready",
             "blocking 질문",
             "리뷰 의미가 있는 개발 단위",
             "docs/getting-started.md",
@@ -291,6 +315,11 @@ def validate_templates() -> None:
             "Full SDAD / High",
             "advanced extension",
             "chat-only",
+            "问题排查 FAQ",
+            "批准",
+            "Level 2 Work Packet Autonomy",
+            "Level 1 Unit Autonomy",
+            "evidence-ready",
             "blocking 问题",
             "有评审意义的开发单元",
             "docs/getting-started.md",
@@ -314,6 +343,11 @@ def validate_templates() -> None:
             "Full SDAD / High",
             "advanced extension",
             "chat-only",
+            "トラブルシューティング FAQ",
+            "承認",
+            "Level 2 Work Packet Autonomy",
+            "Level 1 Unit Autonomy",
+            "evidence-ready",
             "blocking question",
             "レビューする意味のある",
             "docs/getting-started.md",

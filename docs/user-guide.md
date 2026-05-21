@@ -34,6 +34,107 @@ yes-counts.
 - Context-stability rules so large logs, archives, generated files, and private
   data do not flood the AI context.
 
+## Troubleshooting FAQ
+
+### Q. The AI asks for approval too often.
+
+A. Raise the autonomy level or define a larger work packet.
+
+If the AI asks after every micro-task, tell it:
+
+```text
+Use Level 2 Work Packet Autonomy for this packet. I approve the packet boundary,
+not every small task inside it. Continue through related review-worthy units
+until evidence is ready, unless a stop condition appears.
+```
+
+Keep Level 4 gates for release, migration, destructive actions, real user data,
+auth, money, security, rollback, production claims, and owner-controlled risk
+decisions.
+
+### Q. The AI runs ahead too much.
+
+A. Lower autonomy, narrow the work packet, or lower operating intensity.
+
+Tell the AI exactly where to stop:
+
+```text
+Use Level 1 Unit Autonomy for this task. Do only this unit, then stop with
+changed files, checks, limitations, and owner decisions needed.
+```
+
+For Standard or Full SDAD, use Medium or Low intensity when the baseline is
+stable and the goal is controlled maintenance, not broad exploration.
+
+### Q. The AI asks questions before checking the repository.
+
+A. Require a clarification checkpoint.
+
+```text
+Inspect repository evidence first: code, tests, active docs, SPEC, TODOs, review
+findings, and ADRs. Ask only the next blocking question, include your
+recommended answer, and explain what changes if I choose differently.
+```
+
+Do not let clarification checkpoints become micro-approval for every small
+task.
+
+### Q. The AI says "done" but I cannot tell what changed.
+
+A. Ask for evidence-ready status, not final completion.
+
+Required evidence should include changed files, checks run, docs checked or
+updated, limitations, unverified behavior, review findings, implementation
+notes when needed, and owner decisions still open.
+
+### Q. SDAD feels like too many files.
+
+A. Use a smaller scale or lower intensity.
+
+For one-off work, use a one-shot prompt. For small work that still needs
+evidence, use Mini SDAD. Use Standard or Full only when you will keep the
+control files current.
+
+### Q. The next session keeps losing context.
+
+A. Update `save-state.md` or create a handoff before ending the session.
+
+Use `save-state.md` for current goal, state, next step, evidence, risks, and
+owner decisions. Use `docs/sdad/handoffs/YYYY-MM-DD-topic.md` before closing or
+restarting a long session.
+
+### Q. The SPEC does not say what to do about an implementation detail.
+
+A. Make the decision visible.
+
+For normal implementation judgments, record the assumption, compromise,
+rejected alternative, tradeoff, follow-up, and verification impact in
+`docs/implementation-notes.md`. Use an ADR only for hard-to-reverse,
+surprising, real-tradeoff decisions.
+
+### Q. Review found a bug after the AI marked work evidence-ready.
+
+A. Treat evidence-ready as reviewable, not owner-accepted.
+
+Fix the finding in the same packet if it fits. Otherwise, move it to
+`review-findings.md` or `docs/TODO-Open-Items.md` and define the next packet.
+
+### Q. A chat-only tool says it installed SDAD.
+
+A. Treat that as invalid unless the tool can edit the project filesystem.
+
+Claude.ai, ChatGPT web, and browser-only chats can plan with SDAD, but they must
+not claim adapter files were saved. Install from Codex, Claude Code, Cursor,
+Copilot Chat, or another file-editing AI coding tool.
+
+### Q. The task touches release, data, auth, money, security, or destructive work.
+
+A. Do not solve it by raising autonomy alone.
+
+Use Standard or Full SDAD with explicit gates. Keep owner approval for risk
+acceptance, rollback posture, production claims, migration, destructive actions,
+and real user data handling.
+
 ## Common Situations
 
 ### I Just Want To Try It
