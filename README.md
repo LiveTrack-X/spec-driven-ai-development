@@ -18,6 +18,26 @@ agents.
 
 ![SPEC-Driven AI Development infographic](assets/spec-driven-ai-development-infographic.png)
 
+## Start Here: User Guide
+
+If you are not sure what to do, start with
+[docs/user-guide.md](docs/user-guide.md).
+Localized versions:
+[한국어](docs/user-guide.ko.md),
+[中文](docs/user-guide.zh.md),
+[日本語](docs/user-guide.ja.md).
+
+It answers practical questions like:
+
+- which scale to use: One-shot, Mini, Standard, or Full,
+- what to do when AI asks for approval too often,
+- what to do when AI runs ahead too much,
+- what evidence to require when AI says "done",
+- when to use implementation notes, ADRs, save-state, or handoff.
+
+The copy-paste prompt below is for running SDAD in an AI coding tool. The user
+guide is the human-facing explanation.
+
 ## What SDAD Gives You
 
 SDAD adds a project control layer around AI coding. It helps you:
@@ -45,7 +65,7 @@ for a project.
 | Release, migration, production, user data, auth, money, security, or rollback risk | Full SDAD or Standard minimum with explicit gates |
 | Chat-only tool with no project files | Planning only; install later in a file-editing AI coding tool |
 | AI says "done" | Ask for evidence-ready status, changed files, checks, docs checked, limits, and owner acceptance |
-| AI asks approval after every micro-task | Raise autonomy to a bounded work packet, unless a risk gate is involved |
+| AI asks approval after every micro-task, or runs ahead too much | Pick the matching autonomy level and packet boundary; do not bypass risk gates |
 
 ## Copy-Paste Start Prompt
 

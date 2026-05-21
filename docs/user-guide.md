@@ -1,7 +1,13 @@
 # User Guide And FAQ
 
+[English](user-guide.md) | [한국어](user-guide.ko.md) | [中文](user-guide.zh.md) | [日本語](user-guide.ja.md)
+
 Use this guide when you want to understand what SDAD does before pasting an
 installer prompt or asking an AI agent to change your project.
+
+English is the canonical documentation language. Localized user guides are
+orientation pages; if they conflict with English docs, templates, or validation
+scripts, prefer the English canonical files.
 
 SDAD is a control method for AI-assisted development. It does not make AI output
 correct by itself. It makes scope, evidence, review, handoff, and owner
@@ -36,9 +42,19 @@ yes-counts.
 
 ## Troubleshooting FAQ
 
-### Q. The AI asks for approval too often.
+### Q. The AI asks for approval too often, or runs ahead too much.
 
-A. Raise the autonomy level or define a larger work packet.
+A. Adjust the autonomy level, packet boundary, and operating intensity together.
+
+Use autonomy levels as a dial:
+
+| Symptom | Try | Meaning |
+|---|---|---|
+| It asks before every small step | Level 2 Work Packet Autonomy | You approve the packet boundary, not every micro-task inside it. |
+| It should finish one small unit and stop | Level 1 Unit Autonomy | One review-worthy unit is the approved packet. |
+| The setup is new, ambiguous, or risky | Level 0 Ask-first | The AI asks before each meaningful step until the boundary is clear. |
+| The work is low-risk and the session goal is clear | Level 3 Session Autonomy | The AI works until the session goal, time box, or stop condition. |
+| The work touches release, migration, destructive action, user data, auth, money, security, rollback, or production claims | Level 4 Release-gated Autonomy | The AI may prepare work, but owner gates risk acceptance and release decisions. |
 
 If the AI asks after every micro-task, tell it:
 
@@ -48,23 +64,16 @@ not every small task inside it. Continue through related review-worthy units
 until evidence is ready, unless a stop condition appears.
 ```
 
-Keep Level 4 gates for release, migration, destructive actions, real user data,
-auth, money, security, rollback, production claims, and owner-controlled risk
-decisions.
-
-### Q. The AI runs ahead too much.
-
-A. Lower autonomy, narrow the work packet, or lower operating intensity.
-
-Tell the AI exactly where to stop:
+If the AI runs ahead too much, tell it:
 
 ```text
 Use Level 1 Unit Autonomy for this task. Do only this unit, then stop with
 changed files, checks, limitations, and owner decisions needed.
 ```
 
-For Standard or Full SDAD, use Medium or Low intensity when the baseline is
-stable and the goal is controlled maintenance, not broad exploration.
+For Standard or Full SDAD, also choose operating intensity. Use Medium or Low
+when the baseline is stable and the goal is controlled maintenance, not broad
+exploration. Do not use higher autonomy to bypass Level 4 owner gates.
 
 ### Q. The AI asks questions before checking the repository.
 

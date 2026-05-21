@@ -15,6 +15,11 @@
   and risk-gate confusion.
 - Mirrored the troubleshooting FAQ summary in the Korean, Japanese, and Chinese
   README orientation guides.
+- Merged the "asks approval too often" and "runs ahead too much" FAQ into one
+  autonomy-level troubleshooting guide and made the main README user-guide link
+  a first-screen entry point.
+- Added localized user guide pages for Korean, Japanese, and Chinese, and
+  routed localized READMEs to the matching user guide.
 
 ## 1.1.5 - 2026-05-20
 

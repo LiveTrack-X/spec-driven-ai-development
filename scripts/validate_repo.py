@@ -16,6 +16,9 @@ REQUIRED_FILES = [
     "LICENSE",
     "docs/pattern-catalog.md",
     "docs/user-guide.md",
+    "docs/user-guide.ko.md",
+    "docs/user-guide.zh.md",
+    "docs/user-guide.ja.md",
     "docs/getting-started.md",
     "docs/mini-sdad.md",
     "docs/maintenance-cost.md",
@@ -178,9 +181,15 @@ def validate_templates() -> None:
         "Status: `1.1.5`",
         "stable documentation/package release",
         "project fit, owner discipline, and evidence quality",
+        "Start Here: User Guide",
+        "If you are not sure what to do",
+        "what to do when AI asks for approval too often",
+        "docs/user-guide.ko.md",
+        "docs/user-guide.zh.md",
+        "docs/user-guide.ja.md",
         "What SDAD Gives You",
         "Use It When",
-        "AI asks approval after every micro-task",
+        "AI asks approval after every micro-task, or runs ahead too much",
         "Copy-Paste Start Prompt",
         "The block below is an execution prompt",
         "assets/spec-driven-ai-development-infographic.png",
@@ -235,6 +244,7 @@ def validate_templates() -> None:
         if phrase not in readme:
             fail(f"README missing language guidance: {phrase}")
     readme_order = [
+        "## Start Here: User Guide",
         "## What SDAD Gives You",
         "## Use It When",
         "## Copy-Paste Start Prompt",
@@ -244,15 +254,19 @@ def validate_templates() -> None:
     ]
     readme_positions = [readme.find(phrase) for phrase in readme_order]
     if any(position < 0 for position in readme_positions) or readme_positions != sorted(readme_positions):
-        fail("README onboarding order must be: explanation, use cases, prompt, languages, scale, maintenance")
+        fail("README onboarding order must be: user guide, explanation, use cases, prompt, languages, scale, maintenance")
     user_guide = read("docs/user-guide.md")
     for phrase in [
         "Troubleshooting FAQ",
-        "The AI asks for approval too often",
-        "Raise the autonomy level or define a larger work packet",
+        "The AI asks for approval too often, or runs ahead too much",
+        "Adjust the autonomy level, packet boundary, and operating intensity together",
+        "Use autonomy levels as a dial",
+        "Level 0 Ask-first",
+        "Level 1 Unit Autonomy",
         "Level 2 Work Packet Autonomy",
-        "The AI runs ahead too much",
-        "Lower autonomy, narrow the work packet, or lower operating intensity",
+        "Level 3 Session Autonomy",
+        "Level 4 Release-gated Autonomy",
+        "Do not use higher autonomy to bypass Level 4 owner gates",
         "The AI says \"done\" but I cannot tell what changed",
         "Ask for evidence-ready status",
         "SDAD feels like too many files",
@@ -291,11 +305,13 @@ def validate_templates() -> None:
             "승인 요청",
             "Level 2 Work Packet Autonomy",
             "Level 1 Unit Autonomy",
+            "Level 3 Session Autonomy",
+            "Level 4 Release-gated Autonomy",
             "evidence-ready",
             "blocking 질문",
             "리뷰 의미가 있는 개발 단위",
             "docs/getting-started.md",
-            "docs/user-guide.md",
+            "docs/user-guide.ko.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
             "docs/operating-intensity.md",
@@ -319,11 +335,13 @@ def validate_templates() -> None:
             "批准",
             "Level 2 Work Packet Autonomy",
             "Level 1 Unit Autonomy",
+            "Level 3 Session Autonomy",
+            "Level 4 Release-gated Autonomy",
             "evidence-ready",
             "blocking 问题",
             "有评审意义的开发单元",
             "docs/getting-started.md",
-            "docs/user-guide.md",
+            "docs/user-guide.zh.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
             "docs/operating-intensity.md",
@@ -347,11 +365,13 @@ def validate_templates() -> None:
             "承認",
             "Level 2 Work Packet Autonomy",
             "Level 1 Unit Autonomy",
+            "Level 3 Session Autonomy",
+            "Level 4 Release-gated Autonomy",
             "evidence-ready",
             "blocking question",
             "レビューする意味のある",
             "docs/getting-started.md",
-            "docs/user-guide.md",
+            "docs/user-guide.ja.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
             "docs/operating-intensity.md",
@@ -366,6 +386,55 @@ def validate_templates() -> None:
         for phrase in phrases:
             if phrase not in content:
                 fail(f"{path} missing localized guidance: {phrase}")
+    localized_user_guides = {
+        "docs/user-guide.ko.md": [
+            "사용자 가이드와 FAQ",
+            "영어 기준 문서",
+            "빠른 선택",
+            "문제 해결 FAQ",
+            "Level 0 Ask-first",
+            "Level 1 Unit Autonomy",
+            "Level 2 Work Packet Autonomy",
+            "Level 3 Session Autonomy",
+            "Level 4 Release-gated Autonomy",
+            "evidence-ready",
+            "docs/implementation-notes.md",
+            "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        ],
+        "docs/user-guide.zh.md": [
+            "用户指南和 FAQ",
+            "英文规范文档",
+            "快速选择",
+            "问题排查 FAQ",
+            "Level 0 Ask-first",
+            "Level 1 Unit Autonomy",
+            "Level 2 Work Packet Autonomy",
+            "Level 3 Session Autonomy",
+            "Level 4 Release-gated Autonomy",
+            "evidence-ready",
+            "docs/implementation-notes.md",
+            "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        ],
+        "docs/user-guide.ja.md": [
+            "ユーザーガイドと FAQ",
+            "英語の正本文書",
+            "早見表",
+            "トラブルシューティング FAQ",
+            "Level 0 Ask-first",
+            "Level 1 Unit Autonomy",
+            "Level 2 Work Packet Autonomy",
+            "Level 3 Session Autonomy",
+            "Level 4 Release-gated Autonomy",
+            "evidence-ready",
+            "docs/implementation-notes.md",
+            "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        ],
+    }
+    for path, phrases in localized_user_guides.items():
+        content = read(path)
+        for phrase in phrases:
+            if phrase not in content:
+                fail(f"{path} missing localized user-guide guidance: {phrase}")
     agents = read("templates/project-control-files/AGENTS.md")
     for phrase in [
         "Mandatory First Read",
