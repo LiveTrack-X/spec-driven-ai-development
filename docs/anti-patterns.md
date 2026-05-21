@@ -70,6 +70,22 @@ files, checks, limits, and evidence are ready. Stop early only for scope
 expansion, Q5 risk changes, destructive actions, owner-controlled decisions,
 blocked verification, or evidence conflicts.
 
+## 5b. Trigger Word Dependency
+
+Symptom: the workflow only activates when the owner knows an exact skill name,
+adapter name, command phrase, or SDAD term.
+
+Why it fails: normal users describe intent in ordinary language. They say
+"check this", "fix it", "release it", "write the guide", or "continue later".
+If the AI waits for a magic word, the control layer becomes invisible exactly
+when it is needed.
+
+Replace with: natural-language intent routing. Infer the dominant intent,
+state the interpretation, choose the smallest safe SDAD route, and ask only one
+blocking clarification question when mixed intents change scope or risk. Keep
+release, data, auth, money, security, migration, destructive action, rollback,
+production claim, and owner risk-acceptance gates intact.
+
 ## 6. Unscoped Percent Complete
 
 Symptom: progress is reported as "80% done" without saying what scope is being

@@ -1,4 +1,4 @@
 interface:
   display_name: "AI-SPEC Project Start"
-  short_description: "Start field-proven, owner-supervised AI projects."
-  default_prompt: "Use this skill to start or publish a project with an owner-supervised, SPEC-driven workflow using documentation-governance controls and release/risk controls when applicable."
+  short_description: "Start, review, release, or hand off owner-supervised AI projects."
+  default_prompt: "Use this skill for natural-language requests like start this project, review this repo, implement the SPEC, release this, update the docs, tune autonomy, or create a handoff using an owner-supervised, SPEC-driven workflow."

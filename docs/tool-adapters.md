@@ -7,9 +7,9 @@ This repository is tool-neutral. Codex skills are one delivery format, not the
 method itself. Use the adapter that matches the AI coding environment.
 
 Each adapter carries the same source-of-truth, evidence, context-stability,
-work-packet autonomy, clarification-checkpoint, implementation discipline,
-implementation-notes, sparse ADR, handoff, and `save-state.md` update trigger
-rules.
+natural-language intent routing, work-packet autonomy, clarification-checkpoint,
+implementation discipline, implementation-notes, sparse ADR, handoff, and
+`save-state.md` update trigger rules.
 
 ## Supported Adapters
 
@@ -52,6 +52,8 @@ Each adapter keeps only the high-signal operating rules:
 - context-stability and bounded-read guard before first-read files,
 - source-of-truth order,
 - current-over-historical SPEC precedence,
+- natural-language intent routing so users can say "review this", "implement
+  this", "release this", or "create a handoff" without knowing skill names,
 - evidence-based completion,
 - implicit rules made explicit,
 - TODO/review ledger separation,

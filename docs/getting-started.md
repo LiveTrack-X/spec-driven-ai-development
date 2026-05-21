@@ -255,6 +255,11 @@ Then start a new Codex session and say:
 $ai-spec-project-start use this workflow to bootstrap my project.
 ```
 
+The skill name is optional for advanced users, not a requirement for normal
+owners. Natural requests such as "review this repo", "implement the current
+SPEC", "prepare a release", "update the docs", or "create a handoff" should be
+routed by intent after the SDAD instructions are installed.
+
 ## First 10 Minutes
 
 After setup, ask the AI for the first work packet, not the whole project and not

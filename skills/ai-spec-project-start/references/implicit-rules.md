@@ -45,6 +45,9 @@ files.
   generated artifacts, and private data require bounded reads.
 - Implementation memory beats hidden rationale: record spec-unstated
   implementation decisions in implementation notes, not only in chat memory.
+- Natural language intent beats skill names: infer review, implementation,
+  release, docs, handoff, reference-intake, or autonomy-tuning intent from
+  ordinary user wording and current repo state.
 
 ## How To Apply
 
@@ -63,3 +66,4 @@ When starting or reviewing a project, add these checks:
 11. Which spec-unstated implementation decisions need implementation notes?
 12. Which fuzzy plan questions can be answered from repository evidence?
 13. Which domain terms need a glossary route?
+14. What user intent was inferred if the request did not use SDAD terms?

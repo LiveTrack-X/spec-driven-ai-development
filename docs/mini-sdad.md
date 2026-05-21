@@ -30,6 +30,18 @@ Mini SDAD exists because full control files have a maintenance cost. If you do
 not want to update SPEC, TODO, and review ledgers at the end of every loop, stay
 Mini.
 
+## Natural-Language Requests In Mini
+
+Mini SDAD also supports natural-language intent routing. The owner can say
+"check this", "fix it", "make the README clearer", or "create a tiny handoff"
+without knowing a skill name.
+
+The AI should infer the intent, keep the work inside one small review-worthy
+unit, and report evidence-ready status. If the request implies release,
+migration, real user data, auth, money, security, destructive action, rollback,
+production claim, or owner risk acceptance, recommend escalation to Standard or
+Full SDAD with explicit gates.
+
 ## Mini Review-Worthy Unit
 
 Mini SDAD should not stop after every micro-task. Define one small

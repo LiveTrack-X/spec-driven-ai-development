@@ -19,6 +19,22 @@ Escalate to Standard or Full SDAD only when:
 - multiple AI tools or reviewers become involved,
 - release, migration, user data, auth, money, or production risk appears.
 
+## Natural-Language Intent Routing
+
+Do not require the owner to know SDAD terms or skill names. Infer intent from
+ordinary wording and the current project state.
+
+- "check", "review", or "find bugs" -> review/audit intent.
+- "implement", "fix", or "match the spec" -> implementation intent.
+- "docs", "README", "FAQ", or "guide" -> documentation intent.
+- "handoff", "continue later", or "lost context" -> handoff intent.
+- "asks too often" or "runs ahead" -> autonomy tuning intent.
+
+If the request implies release, migration, real user data, auth, money,
+security, destructive action, rollback, production claim, or owner risk
+acceptance, stop and recommend escalation to Standard or Full SDAD with explicit
+owner gates.
+
 ## Active Scope
 
 Implement only the requested task or the current review-worthy unit.

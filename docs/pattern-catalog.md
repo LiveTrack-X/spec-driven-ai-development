@@ -15,8 +15,14 @@ patterns into a reusable operating system for SPEC-driven AI development.
 - Clarification patterns adapted from
   [mattpocock/skills](https://github.com/mattpocock/skills) contribute
   plan-pressure checkpoints, glossary discipline, and sparse ADR criteria.
+- Context-engineering patterns adapted from
+  [popup-studio-ai/bkit-codex](https://github.com/popup-studio-ai/bkit-codex)
+  contribute layered context, status recovery, pre/post change guards, and
+  practical evidence examples.
 
-No source code is copied here. The goal is to preserve the working method.
+No source code is copied here. SDAD adopts compatible operating patterns, not
+external MCP mandates, PDCA platform requirements, or project-level terminology.
+The goal is to preserve the working method.
 
 For the explicit list of obvious-but-easy-to-miss rules, see
 [`docs/implicit-rules.md`](implicit-rules.md).
@@ -65,6 +71,51 @@ Every AI session must know where to start. The start route should answer:
 - what defects are active,
 - what tests or docs prove the current state,
 - what the owner still needs to decide.
+
+### 3a. Layer Context By Need
+
+Do not treat "use the repository" as permission to load every file.
+
+Split context into layers:
+
+- always-loaded instructions: short tool-specific rules such as `AGENTS.md`,
+  `CLAUDE.md`, Cursor rules, Copilot instructions, or generic session rules,
+- active control files: current SPEC, TODO, review findings, implementation
+  notes, save-state, and current handoff,
+- on-demand references: pattern catalog, anti-patterns, field notes, setup
+  guides, localized docs, and other explanatory material,
+- archive and evidence: old handoffs, logs, generated reports, historical
+  notes, private data, and large local artifacts.
+
+The AI should load the first layer by default, read only the relevant current
+sections of the second layer, open the third layer when a question requires it,
+and handle the fourth layer through bounded reads and path references.
+
+This is a context-stability rule, not a new source-of-truth order. Current code,
+tests, runtime docs, and the active SPEC still outrank old handoffs, archives,
+external references, and AI memory.
+
+### 3b. Route Natural-Language Intent
+
+Do not assume users know SDAD command names, adapter names, or skill names.
+
+Route ordinary requests by intent:
+
+- review/audit: "check this", "review", "find bugs", "anything wrong",
+- SPEC implementation: "implement", "fix", "build", "match the spec",
+- release: "release", "publish", "tag",
+- documentation: "docs", "README", "FAQ", "guide", "explain",
+- handoff: "continue later", "handoff", "next session", "lost context",
+- reference intake: "borrow from this repo", "can we adopt this idea",
+- autonomy tuning: "asks too often", "runs ahead".
+
+When one intent is dominant, state the interpreted intent, SDAD
+scale/intensity, autonomy level, and expected evidence before proceeding. When
+intents conflict in a way that changes scope or risk, ask one blocking
+clarification question with a recommended default.
+
+Intent routing is not automatic permission to expand scope, read the whole
+repository, skip evidence, or bypass owner gates.
 
 ### 4. Define Source Of Truth Order
 
@@ -249,6 +300,8 @@ need to survive handoff but are not durable enough for an ADR.
 | AI says a feature is complete | Evidence handoff and TODO/review ledgers | Release gate and Critical 0 threshold |
 | Code contains unstated implementation choices | Implementation notes with verification impact | ADR or owner gate when the choice affects release/risk |
 | Plan is fuzzy before coding | Clarification checkpoint with recommended answer | Owner checkpoint when risk, release, data, security, or tradeoff changes |
+| AI loads too much or too little context | Layered context route and bounded reads | Explicit resume package for release or migration work |
+| User uses plain language instead of a skill name | Natural-language intent routing | Gate release, migration, destructive, data, auth, money, security, rollback, and production claims |
 | Domain terms drift across sessions | Small glossary routed from `docs/INDEX.md` only when needed | ADR or SPEC update when terminology defines a durable boundary |
 | Old plans keep resurfacing | Archive/product-note boundaries | Stable vs next lane boundaries |
 | Refactor makes bugfixes hard to port | Canonical SPEC status | Old-to-new module mapping |
@@ -267,8 +320,10 @@ A project using this pattern should be able to show the owner:
 6. docs checked or updated,
 7. clarification assumptions or owner questions resolved,
 8. implementation notes when the SPEC did not state a decision,
-9. next decision required from the owner,
-10. expected risk before release or production use.
+9. context layer used and any bounded-read limits,
+10. interpreted user intent when a request was routed from natural language,
+11. next decision required from the owner,
+12. expected risk before release or production use.
 
 ## Naming The Method
 

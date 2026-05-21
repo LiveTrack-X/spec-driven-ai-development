@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.1.6 - 2026-05-21
+
 - Added `docs/user-guide.md` as a human-facing situation guide and FAQ so users
   can choose One-shot, Mini, Standard, or Full SDAD without reading the
   copy-paste execution prompt.
@@ -20,6 +22,13 @@
   a first-screen entry point.
 - Added localized user guide pages for Korean, Japanese, and Chinese, and
   routed localized READMEs to the matching user guide.
+- Added SDAD-native guidance for layered context, before/after change guards,
+  task-size heuristics, and practical evidence examples after reviewing
+  compatible context-engineering patterns from `popup-studio-ai/bkit-codex`.
+- Added Natural-Language Intent Routing so users can say "review this",
+  "implement the spec", "release this", "update the docs", or "create a
+  handoff" without knowing SDAD command names or skill triggers, with localized
+  user-guide and README coverage.
 
 ## 1.1.5 - 2026-05-20
 

@@ -31,8 +31,59 @@ acceptance を失いにくくします。
 - SPEC にない実装判断を `docs/implementation-notes.md` に残す。
 - `save-state.md` と handoff により、次のセッションが repo state から続けられる。
 - 大きな logs、archives、generated files、private data が AI context に入るのを防ぐ。
+- context layer により、今読むもの、必要時に読むもの、bounded evidence として参照するものを分ける。
+- before/after change guard により、autonomy の結果を監査可能にする。
+
+## SDAD が context を分ける方法
+
+| layer | 例 | 使い方 |
+|---|---|---|
+| always-loaded instructions | `AGENTS.md`, `CLAUDE.md`, Cursor/Copilot rules | 毎回読めるよう短く、現在有効な状態にします。 |
+| active control files | 現在の SPEC、TODO、review findings、implementation notes、save-state | 現在の packet に必要な部分を読みます。 |
+| on-demand references | pattern catalog、anti-patterns、field notes、localized guides | 現在の問いに必要なときだけ開きます。 |
+| archive and evidence | 古い handoff、logs、generated reports、historical notes | path または bounded read で参照し、chat に丸ごと貼りません。 |
+
+AI が迷った場合、まず active packet、source of truth、足りない evidence を
+説明させ、履歴を大量に読ませることから始めないでください。
+
+## 自然言語リクエスト
+
+ユーザーは SDAD 用語、adapter 名、skill 名を覚える必要はありません。普通の
+言葉で依頼してください。AI は intent を推測し、scope、evidence、owner gate
+を守る最小の SDAD route を選び、どう解釈したかを短く説明します。
+
+| このように言った場合 | AI の解釈 |
+|---|---|
+| "全体を見て", "問題がないか確認して", "bug を探して" | review または audit intent |
+| "実装して", "修正して", "SPEC に合わせて" | SPEC implementation intent |
+| "release して", "publish して", "tag を切って" | Level 4 owner gate 付き release intent |
+| "docs が分かりにくい", "guide を書いて", "FAQ を追加して" | documentation intent |
+| "あとで続けられるように", "handoff して" | handoff または save-state intent |
+| "この repo から借りられるものはある?" | reference-intake intent |
+| "approval request が多すぎる", "先に進みすぎる" | autonomy tuning intent |
+
+intent が明確なら AI は進めて構いません。複数の intent が衝突して scope や
+risk が変わる場合だけ、推奨デフォルト付きで blocking question を 1 つだけ
+聞きます。
 
 ## トラブルシューティング FAQ
+
+### Q. 正しい SDAD command や skill 名が分かりません。
+
+A. 自然言語で依頼し、AI に intent を route させてください。
+
+例:
+
+- "この repo で問題になりそうな箇所を確認して。"
+- "現在の SPEC に従って実装し、SPEC にない判断は implementation notes に残して。"
+- "approval request が多すぎる。この packet の autonomy level を調整して。"
+- "release 準備をして。ただし release と rollback decision は owner gate にして。"
+- "初めてのユーザーに分かりやすい README にして。"
+- "次の session が続けられるように handoff を作って。"
+
+AI は interpreted intent、SDAD scale/intensity、autonomy level、必要な
+evidence、owner gate を最初に短く述べます。その解釈が risk や scope を
+変える場合は、続行前に clarification question を 1 つだけ聞きます。
 
 ### Q. AI が頻繁に承認を求める、または先に進みすぎる。
 
@@ -76,6 +127,36 @@ A. より小さい scale、または低い intensity を使います。
 
 一度きりの作業は One-shot prompt、証拠が必要な小さな作業は Mini SDAD を使います。
 Standard/Full は control file を維持できる場合だけ使ってください。
+
+### Q. タスクの大きさがわからない。
+
+A. 予想コード行数だけでなく continuity と risk で分類します。
+
+| サイン | 使うもの |
+|---|---|
+| 一度きりの回答、文言修正、将来の文脈が不要な小変更 | One-shot prompt |
+| 小変更だが done の証拠が必要 | Mini SDAD または Level 1 Unit Autonomy |
+| 関連する docs、prompt、template、code 更新 | Standard SDAD + Level 2 Work Packet Autonomy |
+| 複数ファイル behavior change、反復 bug、review findings、context loss | Standard SDAD / Medium または High |
+| release、migration、destructive action、production claim、real user data、auth、money、security、rollback | Full SDAD または Level 4 gate 付き Standard 以上 |
+
+### Q. ファイル変更の前後に何を確認する？
+
+A. 軽い before/after change guard を使います。
+
+変更前に active SPEC、work packet、autonomy level、allowed scope、non-goals、
+owner gate、stop condition を確認します。
+
+変更後に changed files、checks run、docs checked/updated、implementation notes
+の要否、limitations、unverified behavior、owner decision を報告させます。
+
+### Q. formal test がない場合、どの evidence で足りる？
+
+A. その時点で可能な最も強い practical evidence を使い、限界を明示します。
+
+例: build/lint/typecheck output、targeted script、smoke test steps、curl/API
+response、application logs、screenshot、manual reproduction note、docs diff、
+unverified behavior の一覧。
 
 ### Q. 次のセッションで文脈を失いやすい。
 
@@ -121,6 +202,7 @@ approval を維持します。
 - [getting-started.md](getting-started.md): setup path と最初の 10 分
 - [no-clone-quick-install.md](no-clone-quick-install.md): clone なしで始める
 - [mini-sdad.md](mini-sdad.md): 小さなプロジェクト向け one-file SDAD
+- [context-stability.md](context-stability.md): context layer と bounded read
 - [autonomy-levels.md](autonomy-levels.md): autonomy level と work packet
 - [implementation-notes.md](implementation-notes.md): 実装判断の記録ルール
 - [session-handoff.md](session-handoff.md): 長いセッションの handoff

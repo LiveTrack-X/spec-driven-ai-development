@@ -311,3 +311,18 @@ verification impact, and follow-up in `docs/implementation-notes.md` for
 Standard/Full SDAD. For Mini SDAD, include a short implementation-notes section
 in the evidence-ready summary only when needed. Do not record raw internal
 reasoning, every mechanical edit, or large logs.
+
+### 23. Natural Language Intent Beats Skill Names
+
+Rule: users should not need to know SDAD command names, adapter names, or skill
+names before the AI can route the request.
+
+Why it matters: real owners usually say "check this", "fix it", "release it",
+"make the docs easier", or "create a handoff". If SDAD only works when users
+name the exact skill, the workflow is brittle.
+
+Operational form: infer the dominant intent from the user's wording and current
+repository state. State the interpreted intent, SDAD scale/intensity, autonomy
+level, and expected evidence. If multiple intents conflict in a way that
+changes scope or risk, ask one blocking clarification question with a
+recommended default. Do not use intent routing to bypass owner gates.

@@ -39,8 +39,65 @@ yes-counts.
   state instead of memory.
 - Context-stability rules so large logs, archives, generated files, and private
   data do not flood the AI context.
+- Layered context rules so the AI knows what to load now, what to keep on
+  demand, and what to reference only by bounded evidence.
+- Before/after change checks so an autonomous packet still leaves an auditable
+  trail.
+
+## How SDAD Uses Context
+
+SDAD does not ask an AI to read everything. It gives the AI a context route.
+
+| Layer | What belongs there | How to use it |
+|---|---|---|
+| Always-loaded instructions | The tool adapter or instruction file: `AGENTS.md`, `CLAUDE.md`, Cursor rules, Copilot instructions, or generic session instructions | Keep this short enough to load at every session start. |
+| Active control files | Current SPEC, TODO, review findings, implementation notes, save-state, current handoff | Read the relevant current sections before changing files. |
+| On-demand references | Pattern catalog, anti-patterns, field notes, localized guides, setup docs | Open only when the current packet or owner question needs them. |
+| Archive and evidence | Old handoffs, large logs, generated reports, historical notes, private or local data | Use bounded reads and links. Do not paste whole archives into chat by default. |
+
+If the AI seems lost, do not fix it by loading more history first. Ask it to
+identify the current context layer, active packet, source-of-truth file, and
+evidence it still needs.
+
+## Natural-Language Requests
+
+You do not need to know SDAD terms, adapter names, or skill names. Describe the
+thing you want in normal language. The AI should infer the intent, choose the
+smallest safe route, and tell you briefly how it interpreted the request.
+
+| If you say something like | The AI should treat it as |
+|---|---|
+| "Check this", "review it", "find bugs", "is anything wrong?" | Review or audit intent |
+| "Implement this", "fix it", "make it match the spec" | SPEC implementation intent |
+| "Release it", "publish it", "tag it" | Release intent with Level 4 owner gates |
+| "The docs are confusing", "write a guide", "add FAQ" | Documentation intent |
+| "Continue later", "handoff", "next session lost context" | Handoff or save-state intent |
+| "Can we borrow from this repo?" | Reference-intake intent |
+| "It asks approval too often", "it runs ahead" | Autonomy tuning intent |
+
+If the intent is clear, the AI should proceed. If the request mixes conflicting
+intents, it should ask one blocking question with a recommended default. It
+should not make you memorize exact trigger words.
 
 ## Troubleshooting FAQ
+
+### Q. I do not know the right SDAD command or skill name.
+
+A. Use a natural-language request and let the AI route the intent.
+
+Good examples:
+
+- "Check this repo for likely bugs and tell me what needs fixing."
+- "Implement the current SPEC, and record decisions the SPEC did not state."
+- "This is asking approval too often. Tune the autonomy level for this packet."
+- "Prepare this for release, but keep release and rollback decisions gated."
+- "Make the README easier for first-time users."
+- "Create a handoff so the next session can continue safely."
+
+The AI should answer with the interpreted intent, SDAD scale/intensity,
+autonomy level, expected evidence, and any owner gate. If that interpretation
+would change risk or scope, it should ask one clarification question before
+continuing.
 
 ### Q. The AI asks for approval too often, or runs ahead too much.
 
@@ -103,6 +160,63 @@ A. Use a smaller scale or lower intensity.
 For one-off work, use a one-shot prompt. For small work that still needs
 evidence, use Mini SDAD. Use Standard or Full only when you will keep the
 control files current.
+
+### Q. The task size is unclear.
+
+A. Classify by continuity and risk, not only by estimated lines of code.
+
+| Signal | Use |
+|---|---|
+| Disposable answer, copy edit, or one tiny change with no future context | One-shot prompt |
+| Small change where "done" still needs proof | Mini SDAD or Level 1 Unit Autonomy |
+| Connected docs, prompt, template, or code update with review value | Standard SDAD with Level 2 Work Packet Autonomy |
+| Multi-file behavior change, recurring bug, review findings, or context loss | Standard SDAD / Medium or High |
+| Release, migration, destructive action, production claim, real user data, auth, money, security, rollback, or owner-controlled risk | Full SDAD or Standard minimum with Level 4 gates |
+
+When unsure, choose the smallest scale that still preserves evidence and owner
+control. Escalate only when risk, repeated pain, or context continuity requires
+it.
+
+### Q. What should the AI check before and after changing files?
+
+A. Use a lightweight before/after change guard.
+
+Before changing files, the AI should identify:
+
+- active SPEC or owner request,
+- approved work packet and autonomy level,
+- allowed scope and non-goals,
+- owner gates or stop conditions,
+- current evidence or files that must be read first.
+
+After changing files, the AI should report:
+
+- changed files,
+- checks run or why they could not run,
+- docs and control files checked or updated,
+- implementation notes needed or "none needed",
+- limitations, unverified behavior, and owner decisions still open.
+
+This is not a mandatory MCP flow. It is the minimum audit trail that keeps
+autonomy from becoming invisible.
+
+### Q. What evidence is enough when there is no formal test?
+
+A. Use the strongest practical evidence available and label the limits.
+
+Examples:
+
+- command output from build, lint, typecheck, or targeted scripts,
+- focused unit or regression tests,
+- smoke test steps and observed result,
+- curl/API response checks,
+- application logs that show the relevant behavior,
+- screenshots or manual reproduction notes for UI work,
+- docs diff showing the user-facing contract changed,
+- explicit statement of what remains unverified.
+
+Manual or log-based evidence can support a packet, but it is not a reason to
+pretend the work is fully tested.
 
 ### Q. The next session keeps losing context.
 
@@ -271,6 +385,7 @@ path or URL instead of duplicating long content.
 - [no-clone-quick-install.md](no-clone-quick-install.md): copy-paste setup
 - [mini-sdad.md](mini-sdad.md): one-file SDAD for small projects
 - [maintenance-cost.md](maintenance-cost.md): required loop-end updates
+- [context-stability.md](context-stability.md): context layers and bounded reads
 - [autonomy-levels.md](autonomy-levels.md): work packets and owner checkpoints
 - [implementation-notes.md](implementation-notes.md): decision-log rules
 - [session-handoff.md](session-handoff.md): long-session continuity

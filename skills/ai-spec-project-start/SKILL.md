@@ -7,8 +7,10 @@ description: >-
   AI implementation, cross-model review, evidence-based verification, and
   completion decisions. Trigger for new project kickoff, AGENTS.md/docs/SPEC/TODO
   bootstrap, owner-supervised AI coding, multi-agent review loops, converting
-  lessons from a previous project into reusable operating rules, or creating a
-  public template/repo such as spec-driven-ai-development.
+  lessons from a previous project into reusable operating rules, natural-language
+  requests such as "review this", "implement the spec", "release this", or
+  "create a handoff", or creating a public template/repo such as
+  spec-driven-ai-development.
 ---
 
 # AI-SPEC Project Start
@@ -113,6 +115,15 @@ Mini SDAD, treating the active unit as one small approved packet; use Level 2
 Work Packet Autonomy for Standard SDAD, and Level 4 gates for Full SDAD release,
 migration, destructive actions, data/auth/money/security decisions, rollback,
 and production claims.
+Do not require the user to know SDAD terms, adapter names, or skill names. Infer
+intent from natural language and current repo state. Treat "check/review/audit"
+as review intent, "implement/fix/match the spec" as SPEC implementation intent,
+"release/publish/tag" as release intent, "docs/README/FAQ/guide" as
+documentation intent, "handoff/continue later/lost context" as handoff intent,
+external project references as reference-intake intent, and "asks too often" or
+"runs ahead" as autonomy tuning intent. State the interpreted intent briefly
+before proceeding. If intents conflict in a way that changes scope or risk, ask
+one blocking clarification question with a recommended default.
 Proceed autonomously inside the approved work packet until evidence is ready.
 Do not stop after every micro-task, small SPEC item, or evidence-ready unit.
 Stop for owner input only when scope expands, Q5 risk changes, destructive or
@@ -173,6 +184,26 @@ Explain terms plainly:
 
 If a user asks "how do I start?", provide the AI-agent paste prompt first, then
 offer terminal installers only as an optional path.
+
+## Natural-Language Intent Routing
+
+Users should not have to invoke this skill by name. Route ordinary phrases into
+the right SDAD behavior:
+
+- "check", "review", "audit", "find bugs", or "anything wrong" -> review/audit intent.
+- "implement", "build", "fix", or "match the spec" -> SPEC implementation intent.
+- "release", "publish", or "tag" -> release intent with Level 4 gates.
+- "document", "explain", "README", "FAQ", or "guide" -> documentation intent.
+- "handoff", "continue later", "next session", or "lost context" -> handoff/save-state intent.
+- "borrow from this repo", "reference this project", or "adopt this idea" -> reference-intake intent.
+- "asks too often" or "runs ahead" -> autonomy tuning intent.
+
+If one intent is dominant, state the interpreted intent, SDAD scale/intensity,
+autonomy level, and expected evidence, then continue. If multiple intents would
+change scope or risk, ask one blocking clarification question with a recommended
+default. Never use intent routing to bypass release, data, auth, money,
+security, destructive action, migration, rollback, production claim, or owner
+risk-acceptance gates.
 
 ## Review-Worthy Development Units
 

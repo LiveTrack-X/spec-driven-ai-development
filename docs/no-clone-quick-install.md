@@ -216,6 +216,29 @@ rollback, accepted-memory boundary, external deployment, or major
 owner-controlled risk decision. Lower intensity when control surfaces reduce
 controllability.
 
+Step 0.7 - Route natural-language requests.
+
+Do not require me to know SDAD terms, adapter names, or skill names. Infer the
+work intent from my sentence and the current repository state.
+
+Common intents:
+- "check", "review", "audit", "find bugs" -> review or audit intent.
+- "implement", "build", "fix", "match the spec" -> SPEC implementation intent.
+- "release", "publish", "tag" -> release intent with Level 4 gates.
+- "document", "explain", "README", "FAQ", "guide" -> documentation intent.
+- "handoff", "continue later", "next session", "lost context" -> handoff or
+  save-state intent.
+- "borrow from this repo", "reference this project", "adopt this idea" ->
+  reference-intake intent.
+- "asks too often", "runs ahead" -> autonomy tuning intent.
+
+If one intent is clear, proceed and briefly state the interpreted intent, SDAD
+scale/intensity, autonomy level, and expected evidence. If multiple intents
+conflict in a way that changes scope or risk, ask one blocking clarification
+question with your recommended default. Do not use natural-language routing to
+bypass release, migration, destructive action, real user data, auth, money,
+security, rollback, production claim, or other owner-controlled gates.
+
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
 
@@ -424,6 +447,9 @@ Bootstrap this project with the first active SPEC slice.
 Define the first low-intervention work packet and its review-worthy units.
 Ask me for product pain, smallest useful version, non-goals, risks,
 owner-controlled decisions, autonomy level, and evidence required for completion.
+If my request uses normal language instead of SDAD terms or skill names, infer
+the intent, state the interpreted intent briefly, then route to the smallest
+safe SDAD mode.
 When the plan is fuzzy, inspect repository evidence first, then ask only the
 next blocking clarification question with your recommended answer.
 ```

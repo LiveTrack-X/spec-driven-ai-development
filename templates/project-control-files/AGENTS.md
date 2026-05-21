@@ -41,6 +41,26 @@ If an AI chat becomes unstable, suspect context growth from large state files,
 broad searches, generated output, logs, private data, or old archives before
 changing runtime code.
 
+## Natural-Language Intent Routing
+
+Do not require the owner to know SDAD terms, adapter names, or skill names.
+Infer intent from the user's wording, current repository state, active SPEC,
+TODOs, review findings, and risk gates.
+
+- "check", "review", "audit", or "find bugs" -> review/audit intent.
+- "implement", "build", "fix", or "match the spec" -> SPEC implementation intent.
+- "release", "publish", or "tag" -> release intent with Level 4 gates.
+- "document", "explain", "README", "FAQ", or "guide" -> documentation intent.
+- "handoff", "continue later", "next session", or "lost context" -> handoff/save-state intent.
+- "borrow from this repo", "reference this project", or "adopt this idea" -> reference-intake intent.
+- "asks too often" or "runs ahead" -> autonomy tuning intent.
+
+When one intent is dominant, state the interpreted intent, SDAD
+scale/intensity, autonomy level, and expected evidence, then proceed. If
+intents conflict in a way that changes scope or risk, ask one blocking
+clarification question with a recommended default. Natural-language routing does
+not bypass owner gates.
+
 ## Source Of Truth
 
 When sources conflict, prefer:

@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.1.5` stable documentation/package release.
+Status: `1.1.6` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -30,8 +30,10 @@ Localized versions:
 It answers practical questions like:
 
 - which scale to use: One-shot, Mini, Standard, or Full,
+- what to type when you do not know SDAD terms or skill names,
 - what to do when AI asks for approval too often,
 - what to do when AI runs ahead too much,
+- what context the AI should load now versus keep on demand,
 - what evidence to require when AI says "done",
 - when to use implementation notes, ADRs, save-state, or handoff.
 
@@ -45,7 +47,12 @@ SDAD adds a project control layer around AI coding. It helps you:
 - choose the right workflow scale before creating files,
 - give each AI tool the correct instruction file,
 - keep one current SPEC, TODO list, review ledger, and handoff state,
+- separate always-loaded instructions, active control files, on-demand
+  references, and archived evidence,
+- route natural-language requests into the right SDAD mode without requiring
+  users to know exact skill names,
 - require evidence before accepting AI completion claims,
+- use before/after change checks so autonomy stays auditable,
 - record important spec-unstated implementation decisions,
 - move repeated mistakes into rules, tests, templates, or review gates.
 
@@ -54,6 +61,43 @@ explanation of what to do in common situations, including troubleshooting such
 as "the AI asks for approval too often" or "the AI says done without evidence".
 Use the copy-paste prompt below when you want an AI coding agent to set SDAD up
 for a project.
+
+## How SDAD Organizes Context
+
+SDAD treats context as an operating surface, not a pile of files to load at
+once.
+
+| Context layer | Examples | Rule |
+|---|---|---|
+| Always-loaded instructions | `AGENTS.md`, `CLAUDE.md`, Cursor or Copilot rules | Small, current, tool-specific operating rules. |
+| Active control files | current SPEC, TODO, review findings, implementation notes, save-state | Read enough to execute the current packet and owner gates. |
+| On-demand references | pattern catalog, anti-patterns, field notes, localized guides | Load only when the current question needs them. |
+| Archive and evidence | old handoffs, logs, generated reports, historical notes | Reference by path or bounded read; do not flood chat context. |
+
+This keeps the AI oriented without turning every session into a full repository
+transcript.
+
+## Natural-Language Intent Routing
+
+Users should not need to memorize SDAD terms, adapter names, or skill names.
+When the user's wording is clear enough, the AI should infer the work intent
+from the sentence and current repository state, then choose the smallest SDAD
+route that protects scope, evidence, and owner gates.
+
+| User says something like | Interpret as | Route |
+|---|---|---|
+| "Check if anything is wrong", "review this", "find bugs" | Review or audit intent | Inspect current evidence, findings, tests, and relevant code before recommending fixes. |
+| "Implement this", "make it match the spec", "fix it" | SPEC implementation intent | Identify the active SPEC or owner request, define the packet, then implement within autonomy limits. |
+| "Release it", "publish it", "tag it" | Release intent | Keep Level 4 gates for release, production claims, rollback, migration, and owner risk acceptance. |
+| "The docs are confusing", "write a guide", "explain usage" | Documentation intent | Update user-facing docs and check routing/index consistency. |
+| "Continue later", "handoff", "next session lost context" | Handoff intent | Update save-state or create a session handoff with current evidence and next steps. |
+| "Can we borrow from this project?" | Reference-intake intent | Evaluate fit, adapt compatible patterns, and avoid wholesale workflow transplant. |
+| "It asks too much", "it runs ahead" | Autonomy tuning intent | Adjust autonomy level, packet boundary, and operating intensity without bypassing risk gates. |
+
+If one intent is dominant, proceed and state the interpretation briefly. If two
+or more intents conflict in a way that changes risk or scope, ask one blocking
+clarification question with a recommended default. Natural-language routing is
+not permission to read everything; it should still use the context layers above.
 
 ## Use It When
 
@@ -154,6 +198,29 @@ destructive action, real user data handling, auth, data, money, security,
 rollback, accepted-memory boundary, external deployment, or major
 owner-controlled risk decision. Lower intensity when control surfaces reduce
 controllability.
+
+Step 0.7 - Route natural-language requests.
+
+Do not require me to know SDAD terms, adapter names, or skill names. Infer the
+work intent from my sentence and the current repository state.
+
+Common intents:
+- "check", "review", "audit", "find bugs" -> review or audit intent.
+- "implement", "build", "fix", "match the spec" -> SPEC implementation intent.
+- "release", "publish", "tag" -> release intent with Level 4 gates.
+- "document", "explain", "README", "FAQ", "guide" -> documentation intent.
+- "handoff", "continue later", "next session", "lost context" -> handoff or
+  save-state intent.
+- "borrow from this repo", "reference this project", "adopt this idea" ->
+  reference-intake intent.
+- "asks too often", "runs ahead" -> autonomy tuning intent.
+
+If one intent is clear, proceed and briefly state the interpreted intent, SDAD
+scale/intensity, autonomy level, and expected evidence. If multiple intents
+conflict in a way that changes scope or risk, ask one blocking clarification
+question with your recommended default. Do not use natural-language routing to
+bypass release, migration, destructive action, real user data, auth, money,
+security, rollback, production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md

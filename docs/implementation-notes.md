@@ -111,3 +111,47 @@ Use bounded reads for archived implementation notes.
   examples must validate together because the rule affects the public workflow
   surface rather than runtime behavior.
 - Follow-up: none unless owner wants a release/tag for this documentation slice.
+
+## 2026-05-21 - bkit-codex pattern intake
+
+- SPEC gap: SDAD did not yet explain how to translate a context-engineering /
+  PDCA-style external workflow into its own user-facing guidance without making
+  SDAD depend on a specific MCP server or mandatory phase machine.
+- Decision: adopt the compatible patterns as SDAD-native layered context,
+  before/after change guards, task-size heuristics, and practical evidence
+  examples. Keep SDAD's scale, autonomy, evidence-ready, implementation-notes,
+  handoff, and owner-gate vocabulary.
+- Why: these patterns help users decide what the AI should load, when it should
+  keep working, and what proof to require, while preserving SDAD as a
+  tool-agnostic control layer.
+- Alternatives rejected: mandatory MCP-first initialization, forced PDCA phases
+  for every task, line-count gates as hard rules, 90% match-rate completion
+  metrics, and wholesale external terminology.
+- Verification impact: README, user guides, pattern catalog, changelog, and
+  validation checks should remain aligned because this changes the public
+  explanation surface.
+- Follow-up: consider a future optional status snapshot template only if users
+  repeatedly need machine-readable recovery state.
+
+## 2026-05-21 - natural-language intent routing
+
+- SPEC gap: SDAD still assumed too much explicit vocabulary from users. A
+  normal owner may ask "check this", "fix it", "release it", or "handoff this"
+  without knowing a skill name, adapter name, autonomy term, or SDAD command.
+- Decision: add Natural-Language Intent Routing as an SDAD-native rule. AI
+  agents should infer review/audit, SPEC implementation, release,
+  documentation, handoff, reference-intake, or autonomy-tuning intent from
+  ordinary wording and current repository state.
+- Why: this keeps SDAD usable for non-specialist owners while preserving the
+  control layer: scale, autonomy, evidence-ready status, implementation notes,
+  bounded context, and owner gates.
+- Alternatives rejected: requiring users to invoke exact skill names; adding a
+  rigid command grammar; treating natural-language routing as permission to read
+  the whole repository or bypass risk gates.
+- Verification impact: README, user guides, adapters, templates, skill prompt,
+  pattern catalog, no-clone prompt, tool-adapter docs, changelog, and validation
+  checks should stay aligned because this changes both the public explanation
+  and the execution instructions.
+- Follow-up: if users repeatedly provide mixed intents, consider a compact
+  "intent conflict" checklist, but keep the default to one blocking
+  clarification question.
