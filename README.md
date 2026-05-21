@@ -18,9 +18,38 @@ agents.
 
 ![SPEC-Driven AI Development infographic](assets/spec-driven-ai-development-infographic.png)
 
-## For Beginners: Use In 60 Seconds
+## What SDAD Gives You
+
+SDAD adds a project control layer around AI coding. It helps you:
+
+- choose the right workflow scale before creating files,
+- give each AI tool the correct instruction file,
+- keep one current SPEC, TODO list, review ledger, and handoff state,
+- require evidence before accepting AI completion claims,
+- record important spec-unstated implementation decisions,
+- move repeated mistakes into rules, tests, templates, or review gates.
+
+Use [docs/user-guide.md](docs/user-guide.md) when you want the human-facing
+explanation of what to do in common situations. Use the copy-paste prompt below
+when you want an AI coding agent to set SDAD up for a project.
+
+## Use It When
+
+| Situation | Start with |
+|---|---|
+| One disposable request, no future context needed | One-shot prompt |
+| Small task, but evidence or a tiny handoff matters | Mini SDAD |
+| Multi-session project, review findings, or durable TODOs | Standard SDAD |
+| Release, migration, production, user data, auth, money, security, or rollback risk | Full SDAD or Standard minimum with explicit gates |
+| Chat-only tool with no project files | Planning only; install later in a file-editing AI coding tool |
+| AI says "done" | Ask for evidence-ready status, changed files, checks, docs checked, limits, and owner acceptance |
+
+## Copy-Paste Start Prompt
 
 No terminal. No Git. No Python required.
+
+The block below is an execution prompt for your AI coding tool. It is not the
+main explanation of SDAD.
 
 1. Open your project in an AI coding tool that can edit files, such as Codex,
    Claude Code, Cursor, or Copilot Chat.
@@ -401,10 +430,12 @@ Ask the owner only when:
 
 ## Start Here
 
-New to the workflow? Start with [docs/getting-started.md](docs/getting-started.md).
+New to the workflow? Start with [docs/user-guide.md](docs/user-guide.md).
 
-It shows practical paths:
+[docs/getting-started.md](docs/getting-started.md) then shows practical setup
+paths:
 
+- common-situation FAQ,
 - scale selection,
 - no-clone quick install,
 - Mini SDAD for small projects,
@@ -664,6 +695,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 ## Key Docs
 
 - [docs/pattern-catalog.md](docs/pattern-catalog.md): full method and pattern matrix
+- [docs/user-guide.md](docs/user-guide.md): situation-based user guide and FAQ
 - [docs/getting-started.md](docs/getting-started.md): first-use setup guide
 - [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md): copy-paste setup without cloning
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid

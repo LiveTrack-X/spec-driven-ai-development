@@ -15,6 +15,7 @@ REQUIRED_FILES = [
     "README.ja.md",
     "LICENSE",
     "docs/pattern-catalog.md",
+    "docs/user-guide.md",
     "docs/getting-started.md",
     "docs/mini-sdad.md",
     "docs/maintenance-cost.md",
@@ -177,8 +178,12 @@ def validate_templates() -> None:
         "Status: `1.1.5`",
         "stable documentation/package release",
         "project fit, owner discipline, and evidence quality",
-        "For Beginners: Use In 60 Seconds",
+        "What SDAD Gives You",
+        "Use It When",
+        "Copy-Paste Start Prompt",
+        "The block below is an execution prompt",
         "assets/spec-driven-ai-development-infographic.png",
+        "docs/user-guide.md",
         "Choose Scale First",
         "Override rules beat raw yes-counts",
         "Q5=yes -> Standard SDAD minimum",
@@ -216,6 +221,7 @@ def validate_templates() -> None:
         "first 10 lines",
         "No terminal. No Git. No Python required.",
         "docs/getting-started.md",
+        "docs/user-guide.md",
         "docs/maintenance-cost.md",
         "docs/context-stability.md",
         "docs/implementation-notes.md",
@@ -228,14 +234,16 @@ def validate_templates() -> None:
         if phrase not in readme:
             fail(f"README missing language guidance: {phrase}")
     readme_order = [
-        "## For Beginners: Use In 60 Seconds",
+        "## What SDAD Gives You",
+        "## Use It When",
+        "## Copy-Paste Start Prompt",
         "## Languages",
         "## Choose Scale First",
         "## Maintenance Cost",
     ]
     readme_positions = [readme.find(phrase) for phrase in readme_order]
     if any(position < 0 for position in readme_positions) or readme_positions != sorted(readme_positions):
-        fail("README onboarding order must be: beginners, languages, scale, maintenance")
+        fail("README onboarding order must be: explanation, use cases, prompt, languages, scale, maintenance")
     for phrase in [
         "The first instruction file is tool-specific",
         "Do not create all of them",
@@ -263,6 +271,7 @@ def validate_templates() -> None:
             "blocking 질문",
             "리뷰 의미가 있는 개발 단위",
             "docs/getting-started.md",
+            "docs/user-guide.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
             "docs/operating-intensity.md",
@@ -285,6 +294,7 @@ def validate_templates() -> None:
             "blocking 问题",
             "有评审意义的开发单元",
             "docs/getting-started.md",
+            "docs/user-guide.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
             "docs/operating-intensity.md",
@@ -307,6 +317,7 @@ def validate_templates() -> None:
             "blocking question",
             "レビューする意味のある",
             "docs/getting-started.md",
+            "docs/user-guide.md",
             "docs/mini-sdad.md",
             "docs/maintenance-cost.md",
             "docs/operating-intensity.md",

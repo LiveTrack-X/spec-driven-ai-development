@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Added `docs/user-guide.md` as a human-facing situation guide and FAQ so users
+  can choose One-shot, Mini, Standard, or Full SDAD without reading the
+  copy-paste execution prompt.
+- Reworked the README entry path so the copy-paste prompt is clearly presented
+  as an execution block, with feature explanation and situation-based guidance
+  before it.
+- Added localized README situation-guide summaries and links to the new user
+  guide.
+
 ## 1.1.5 - 2026-05-20
 
 - Added SDAD-native clarification checkpoints: inspect repository evidence

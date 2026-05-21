@@ -3,6 +3,9 @@
 Use this guide when you want to apply SPEC-Driven AI Development to a real
 project for the first time.
 
+If you are still deciding whether SDAD fits your situation, start with
+[user-guide.md](user-guide.md).
+
 The short version:
 
 ```text
