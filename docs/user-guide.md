@@ -79,6 +79,24 @@ If the intent is clear, the AI should proceed. If the request mixes conflicting
 intents, it should ask one blocking question with a recommended default. It
 should not make you memorize exact trigger words.
 
+## Codex Practice In SDAD
+
+Codex works best when requests have enough structure to act like small issues,
+when the development environment can be improved over time, and when exploratory
+work does not become hidden scope. SDAD keeps those habits governed.
+
+| Codex habit | SDAD version |
+|---|---|
+| Ask questions before a large change | Clarification checkpoint after repository evidence is checked |
+| Prompt like a GitHub issue or PR | Work packet with files, examples, constraints, non-goals, and evidence |
+| Improve scripts, env vars, or setup over time | Environment improvement loop routed to TODO, rules, templates, or handoff |
+| Use Codex as a lightweight task queue | Controlled task queue with packet boundaries, evidence, and owner gates |
+| Generate multiple candidate solutions | Optional multi-candidate review for real tradeoffs, not final acceptance |
+
+Use these patterns when they reduce repeated setup friction, improve review
+quality, or preserve flow. Do not use them to bypass tests, docs, release gates,
+or owner acceptance.
+
 ## Troubleshooting FAQ
 
 ### Q. I do not know the right SDAD command or skill name.
@@ -152,6 +170,26 @@ A. Ask for evidence-ready status, not final completion.
 Required evidence should include changed files, checks run, docs checked or
 updated, limitations, unverified behavior, review findings, implementation
 notes when needed, and owner decisions still open.
+
+### Q. Can I use Codex as a task queue or background worker?
+
+A. Yes, but make the queue visible and bounded.
+
+Use Codex background work for small fixes, exploratory branches, or follow-up
+ideas only when each item has a packet boundary, expected evidence, and a clear
+owner gate. If a queued item becomes real work, route it to
+`docs/TODO-Open-Items.md`, `review-findings.md`, `save-state.md`, or handoff.
+
+Do not let queued side quests silently become active SPEC or release scope.
+
+### Q. Should I ask Codex for several possible solutions?
+
+A. Use this for tradeoffs, not for routine edits.
+
+Multiple candidate answers are useful for architecture, migration, performance,
+or refactor choices. After choosing, record the rationale in implementation
+notes or an ADR when the choice is durable. Evidence and owner acceptance still
+decide completion.
 
 ### Q. SDAD feels like too many files.
 

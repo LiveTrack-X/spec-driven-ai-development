@@ -86,6 +86,21 @@ blocking clarification question when mixed intents change scope or risk. Keep
 release, data, auth, money, security, migration, destructive action, rollback,
 production claim, and owner risk-acceptance gates intact.
 
+## 5c. Hidden Codex Queue
+
+Symptom: Codex is used as a background queue for side ideas, small fixes,
+explorations, or cleanup, but the queue is not reflected in TODOs, review
+findings, save-state, handoff, or owner scope.
+
+Why it fails: the project appears to move faster while active scope becomes
+unclear. Queue items can silently become release expectations without evidence
+or owner acceptance.
+
+Replace with: controlled task queues. Each queued item needs a bounded packet,
+expected evidence, and an owner gate before it becomes active scope. Keep side
+ideas in backlog, TODO, review findings, save-state, or handoff instead of
+private chat/task memory.
+
 ## 6. Unscoped Percent Complete
 
 Symptom: progress is reported as "80% done" without saying what scope is being

@@ -155,3 +155,24 @@ Use bounded reads for archived implementation notes.
 - Follow-up: if users repeatedly provide mixed intents, consider a compact
   "intent conflict" checklist, but keep the default to one blocking
   clarification question.
+
+## 2026-05-22 - OpenAI Codex practice intake
+
+- SPEC gap: SDAD covered evidence, autonomy, handoff, and context stability, but
+  did not explicitly translate OpenAI's published Codex operating habits into
+  SDAD vocabulary.
+- Decision: adopt compatible Codex practice as SDAD-native issue-shaped
+  prompting, environment improvement loops, controlled task queues, and
+  optional multi-candidate review.
+- Why: these patterns preserve Codex's practical speed while keeping SDAD's
+  owner control, evidence-ready status, bounded context, TODO/review ledgers,
+  implementation notes, and release gates.
+- Alternatives rejected: treating Codex background work as an invisible backlog;
+  making Best-of-N a default acceptance policy; requiring all projects to add
+  setup automation before it has repeated friction; copying OpenAI's internal
+  team practice as a mandatory workflow.
+- Verification impact: pattern catalog, user guide, anti-patterns, changelog,
+  and validation checks should remain aligned because this is a docs/control
+  behavior change.
+- Follow-up: consider localized FAQ coverage if users ask how to operate Codex
+  queues or multi-candidate review in Korean, Chinese, or Japanese.

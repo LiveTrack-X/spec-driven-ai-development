@@ -19,6 +19,10 @@ patterns into a reusable operating system for SPEC-driven AI development.
   [popup-studio-ai/bkit-codex](https://github.com/popup-studio-ai/bkit-codex)
   contribute layered context, status recovery, pre/post change guards, and
   practical evidence examples.
+- Codex usage patterns described in
+  [OpenAI's Codex guide](https://openai.com/ko-KR/business/guides-and-resources/how-openai-uses-codex/)
+  contribute issue-shaped prompting, environment improvement loops, controlled
+  task queues, and optional multi-candidate review.
 
 No source code is copied here. SDAD adopts compatible operating patterns, not
 external MCP mandates, PDCA platform requirements, or project-level terminology.
@@ -116,6 +120,28 @@ clarification question with a recommended default.
 
 Intent routing is not automatic permission to expand scope, read the whole
 repository, skip evidence, or bypass owner gates.
+
+### 3c. Keep Codex Practice Governed
+
+Codex is strongest when structure, context, and repeatable improvement loops are
+available. In SDAD, useful Codex practice becomes governed operating behavior:
+
+- issue-shaped prompts: write requests like a small issue or PR description,
+  with target files, examples, constraints, non-goals, and expected evidence,
+- environment improvement loop: when setup, scripts, env vars, or dependency
+  gaps repeatedly block verification, route the fix to TODO, rules, templates,
+  or handoff instead of rediscovering it each session,
+- controlled task queue: use Codex-style background work for small fixes,
+  exploratory branches, or follow-up ideas only when each item has a bounded
+  packet, evidence expectation, and owner gate,
+- optional multi-candidate review: use multiple candidate answers for design,
+  refactor, performance, or migration tradeoffs, then record the chosen
+  rationale in implementation notes or an ADR when durable.
+
+Do not let a Codex queue become a hidden backlog. Queue items must either stay
+outside active scope, enter `docs/TODO-Open-Items.md`, become a review finding,
+or be captured in handoff/save-state. Do not treat the best candidate as
+accepted until evidence and owner acceptance are visible.
 
 ### 4. Define Source Of Truth Order
 
@@ -302,6 +328,9 @@ need to survive handoff but are not durable enough for an ADR.
 | Plan is fuzzy before coding | Clarification checkpoint with recommended answer | Owner checkpoint when risk, release, data, security, or tradeoff changes |
 | AI loads too much or too little context | Layered context route and bounded reads | Explicit resume package for release or migration work |
 | User uses plain language instead of a skill name | Natural-language intent routing | Gate release, migration, destructive, data, auth, money, security, rollback, and production claims |
+| Codex setup fails repeatedly | Environment improvement loop into rules, TODOs, templates, or handoff | Release readiness blocks until setup evidence is repeatable |
+| Codex task queue accumulates side quests | Controlled task queue with packet boundaries | Owner gate before queue items become release scope |
+| Several candidate solutions exist | Optional multi-candidate review | ADR or implementation note when the tradeoff is durable |
 | Domain terms drift across sessions | Small glossary routed from `docs/INDEX.md` only when needed | ADR or SPEC update when terminology defines a durable boundary |
 | Old plans keep resurfacing | Archive/product-note boundaries | Stable vs next lane boundaries |
 | Refactor makes bugfixes hard to port | Canonical SPEC status | Old-to-new module mapping |

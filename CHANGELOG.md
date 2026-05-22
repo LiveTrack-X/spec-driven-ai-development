@@ -2,9 +2,14 @@
 
 ## Unreleased
 
+## 1.1.7 - 2026-05-22
+
 - Moved the README `Copy-Paste Start Prompt` directly after the user-guide
   entry so first-time users find the executable prompt before deeper
   explanation sections.
+- Adapted OpenAI Codex usage practices into SDAD-native issue-shaped prompts,
+  environment improvement loops, controlled task queues, and optional
+  multi-candidate review.
 
 ## 1.1.6 - 2026-05-21
 

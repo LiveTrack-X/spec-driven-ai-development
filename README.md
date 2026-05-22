@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.1.6` stable documentation/package release.
+Status: `1.1.7` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
