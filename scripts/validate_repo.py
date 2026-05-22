@@ -256,16 +256,16 @@ def validate_templates() -> None:
             fail(f"README missing language guidance: {phrase}")
     readme_order = [
         "## Start Here: User Guide",
+        "## Copy-Paste Start Prompt",
         "## What SDAD Gives You",
         "## Use It When",
-        "## Copy-Paste Start Prompt",
         "## Languages",
         "## Choose Scale First",
         "## Maintenance Cost",
     ]
     readme_positions = [readme.find(phrase) for phrase in readme_order]
     if any(position < 0 for position in readme_positions) or readme_positions != sorted(readme_positions):
-        fail("README onboarding order must be: user guide, explanation, use cases, prompt, languages, scale, maintenance")
+        fail("README onboarding order must be: user guide, prompt, explanation, use cases, languages, scale, maintenance")
     user_guide = read("docs/user-guide.md")
     for phrase in [
         "Troubleshooting FAQ",

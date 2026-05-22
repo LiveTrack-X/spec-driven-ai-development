@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Moved the README `Copy-Paste Start Prompt` directly after the user-guide
+  entry so first-time users find the executable prompt before deeper
+  explanation sections.
+
 ## 1.1.6 - 2026-05-21
 
 - Added `docs/user-guide.md` as a human-facing situation guide and FAQ so users

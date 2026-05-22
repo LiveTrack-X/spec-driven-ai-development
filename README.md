@@ -40,77 +40,6 @@ It answers practical questions like:
 The copy-paste prompt below is for running SDAD in an AI coding tool. The user
 guide is the human-facing explanation.
 
-## What SDAD Gives You
-
-SDAD adds a project control layer around AI coding. It helps you:
-
-- choose the right workflow scale before creating files,
-- give each AI tool the correct instruction file,
-- keep one current SPEC, TODO list, review ledger, and handoff state,
-- separate always-loaded instructions, active control files, on-demand
-  references, and archived evidence,
-- route natural-language requests into the right SDAD mode without requiring
-  users to know exact skill names,
-- require evidence before accepting AI completion claims,
-- use before/after change checks so autonomy stays auditable,
-- record important spec-unstated implementation decisions,
-- move repeated mistakes into rules, tests, templates, or review gates.
-
-Use [docs/user-guide.md](docs/user-guide.md) when you want the human-facing
-explanation of what to do in common situations, including troubleshooting such
-as "the AI asks for approval too often" or "the AI says done without evidence".
-Use the copy-paste prompt below when you want an AI coding agent to set SDAD up
-for a project.
-
-## How SDAD Organizes Context
-
-SDAD treats context as an operating surface, not a pile of files to load at
-once.
-
-| Context layer | Examples | Rule |
-|---|---|---|
-| Always-loaded instructions | `AGENTS.md`, `CLAUDE.md`, Cursor or Copilot rules | Small, current, tool-specific operating rules. |
-| Active control files | current SPEC, TODO, review findings, implementation notes, save-state | Read enough to execute the current packet and owner gates. |
-| On-demand references | pattern catalog, anti-patterns, field notes, localized guides | Load only when the current question needs them. |
-| Archive and evidence | old handoffs, logs, generated reports, historical notes | Reference by path or bounded read; do not flood chat context. |
-
-This keeps the AI oriented without turning every session into a full repository
-transcript.
-
-## Natural-Language Intent Routing
-
-Users should not need to memorize SDAD terms, adapter names, or skill names.
-When the user's wording is clear enough, the AI should infer the work intent
-from the sentence and current repository state, then choose the smallest SDAD
-route that protects scope, evidence, and owner gates.
-
-| User says something like | Interpret as | Route |
-|---|---|---|
-| "Check if anything is wrong", "review this", "find bugs" | Review or audit intent | Inspect current evidence, findings, tests, and relevant code before recommending fixes. |
-| "Implement this", "make it match the spec", "fix it" | SPEC implementation intent | Identify the active SPEC or owner request, define the packet, then implement within autonomy limits. |
-| "Release it", "publish it", "tag it" | Release intent | Keep Level 4 gates for release, production claims, rollback, migration, and owner risk acceptance. |
-| "The docs are confusing", "write a guide", "explain usage" | Documentation intent | Update user-facing docs and check routing/index consistency. |
-| "Continue later", "handoff", "next session lost context" | Handoff intent | Update save-state or create a session handoff with current evidence and next steps. |
-| "Can we borrow from this project?" | Reference-intake intent | Evaluate fit, adapt compatible patterns, and avoid wholesale workflow transplant. |
-| "It asks too much", "it runs ahead" | Autonomy tuning intent | Adjust autonomy level, packet boundary, and operating intensity without bypassing risk gates. |
-
-If one intent is dominant, proceed and state the interpretation briefly. If two
-or more intents conflict in a way that changes risk or scope, ask one blocking
-clarification question with a recommended default. Natural-language routing is
-not permission to read everything; it should still use the context layers above.
-
-## Use It When
-
-| Situation | Start with |
-|---|---|
-| One disposable request, no future context needed | One-shot prompt |
-| Small task, but evidence or a tiny handoff matters | Mini SDAD |
-| Multi-session project, review findings, or durable TODOs | Standard SDAD |
-| Release, migration, production, user data, auth, money, security, or rollback risk | Full SDAD or Standard minimum with explicit gates |
-| Chat-only tool with no project files | Planning only; install later in a file-editing AI coding tool |
-| AI says "done" | Ask for evidence-ready status, changed files, checks, docs checked, limits, and owner acceptance |
-| AI asks approval after every micro-task, or runs ahead too much | Pick the matching autonomy level and packet boundary; do not bypass risk gates |
-
 ## Copy-Paste Start Prompt
 
 No terminal. No Git. No Python required.
@@ -339,6 +268,77 @@ Completion requires evidence, not AI confidence.
 
 Developers and terminal users can use the one-paste PowerShell/Bash installers
 in [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md).
+
+## What SDAD Gives You
+
+SDAD adds a project control layer around AI coding. It helps you:
+
+- choose the right workflow scale before creating files,
+- give each AI tool the correct instruction file,
+- keep one current SPEC, TODO list, review ledger, and handoff state,
+- separate always-loaded instructions, active control files, on-demand
+  references, and archived evidence,
+- route natural-language requests into the right SDAD mode without requiring
+  users to know exact skill names,
+- require evidence before accepting AI completion claims,
+- use before/after change checks so autonomy stays auditable,
+- record important spec-unstated implementation decisions,
+- move repeated mistakes into rules, tests, templates, or review gates.
+
+Use [docs/user-guide.md](docs/user-guide.md) when you want the human-facing
+explanation of what to do in common situations, including troubleshooting such
+as "the AI asks for approval too often" or "the AI says done without evidence".
+Use the copy-paste prompt below when you want an AI coding agent to set SDAD up
+for a project.
+
+## How SDAD Organizes Context
+
+SDAD treats context as an operating surface, not a pile of files to load at
+once.
+
+| Context layer | Examples | Rule |
+|---|---|---|
+| Always-loaded instructions | `AGENTS.md`, `CLAUDE.md`, Cursor or Copilot rules | Small, current, tool-specific operating rules. |
+| Active control files | current SPEC, TODO, review findings, implementation notes, save-state | Read enough to execute the current packet and owner gates. |
+| On-demand references | pattern catalog, anti-patterns, field notes, localized guides | Load only when the current question needs them. |
+| Archive and evidence | old handoffs, logs, generated reports, historical notes | Reference by path or bounded read; do not flood chat context. |
+
+This keeps the AI oriented without turning every session into a full repository
+transcript.
+
+## Natural-Language Intent Routing
+
+Users should not need to memorize SDAD terms, adapter names, or skill names.
+When the user's wording is clear enough, the AI should infer the work intent
+from the sentence and current repository state, then choose the smallest SDAD
+route that protects scope, evidence, and owner gates.
+
+| User says something like | Interpret as | Route |
+|---|---|---|
+| "Check if anything is wrong", "review this", "find bugs" | Review or audit intent | Inspect current evidence, findings, tests, and relevant code before recommending fixes. |
+| "Implement this", "make it match the spec", "fix it" | SPEC implementation intent | Identify the active SPEC or owner request, define the packet, then implement within autonomy limits. |
+| "Release it", "publish it", "tag it" | Release intent | Keep Level 4 gates for release, production claims, rollback, migration, and owner risk acceptance. |
+| "The docs are confusing", "write a guide", "explain usage" | Documentation intent | Update user-facing docs and check routing/index consistency. |
+| "Continue later", "handoff", "next session lost context" | Handoff intent | Update save-state or create a session handoff with current evidence and next steps. |
+| "Can we borrow from this project?" | Reference-intake intent | Evaluate fit, adapt compatible patterns, and avoid wholesale workflow transplant. |
+| "It asks too much", "it runs ahead" | Autonomy tuning intent | Adjust autonomy level, packet boundary, and operating intensity without bypassing risk gates. |
+
+If one intent is dominant, proceed and state the interpretation briefly. If two
+or more intents conflict in a way that changes risk or scope, ask one blocking
+clarification question with a recommended default. Natural-language routing is
+not permission to read everything; it should still use the context layers above.
+
+## Use It When
+
+| Situation | Start with |
+|---|---|
+| One disposable request, no future context needed | One-shot prompt |
+| Small task, but evidence or a tiny handoff matters | Mini SDAD |
+| Multi-session project, review findings, or durable TODOs | Standard SDAD |
+| Release, migration, production, user data, auth, money, security, or rollback risk | Full SDAD or Standard minimum with explicit gates |
+| Chat-only tool with no project files | Planning only; install later in a file-editing AI coding tool |
+| AI says "done" | Ask for evidence-ready status, changed files, checks, docs checked, limits, and owner acceptance |
+| AI asks approval after every micro-task, or runs ahead too much | Pick the matching autonomy level and packet boundary; do not bypass risk gates |
 
 ## Languages
 
