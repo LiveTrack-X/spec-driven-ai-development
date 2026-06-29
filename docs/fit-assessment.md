@@ -19,6 +19,11 @@ Use this quick gate before the full assessment:
 4. Will multiple AI tools or reviewers be involved?
 5. Is there release, migration, user data, auth, money, or production risk?
 
+Then check the product evidence flag:
+
+- Will product, hardware, compatibility, packaging, remote tester, external lab,
+  or release claims need evidence stronger than local software tests?
+
 Override rules beat raw yes-counts:
 
 | Trigger | Recommendation |
@@ -32,6 +37,12 @@ Override rules beat raw yes-counts:
 
 When unsure, choose the smaller scale only if no Q5 risk exists. Escalate when
 repeated pain, context loss, risk, or multiple sessions appear.
+
+A yes to the product evidence flag is not automatically Full SDAD, but it does
+trigger the relevant product evidence templates. Use Standard SDAD minimum when
+those templates must persist across sessions. Q5 release, production, user data,
+auth, money, migration, destructive-action, or rollback risk still controls
+Full SDAD gates.
 
 Maintenance cost matters: choose Standard or Full SDAD only when you can keep
 `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md`, and
@@ -87,6 +98,11 @@ as a future idea, but it should not become active implementation.
 15. Has repeated project pain already happened and should become durable rules?
 16. Do fuzzy plans or overloaded domain terms repeatedly cause rework or owner
     clarification?
+17. Will product, hardware, compatibility, packaging, remote tester, external
+    lab, or release claims need evidence stronger than local software tests?
+
+Question 17 is also a routing flag. Even at a lower score, a yes means the
+output should name which product evidence templates are needed and why.
 
 ## Score
 
@@ -95,7 +111,7 @@ as a future idea, but it should not become active implementation.
 | 0-8 | Low | Use a one-shot prompt or [Mini SDAD](mini-sdad.md). Do not install the full workflow unless the project grows. |
 | 9-18 | Medium | Use core control files: `AGENTS.md`, `docs/INDEX.md`, SPEC, TODO, review findings, and implementation notes when SPEC gaps affect implementation. |
 | 19-25 | High | Use the full SDAD workflow with cross-review, source-of-truth rules, and documentation consistency checks. |
-| 26-32 | Very high | Use full SDAD plus ADRs, release gates, anti-pattern review, fit reassessment, and tool adapters. |
+| 26-34 | Very high | Use full SDAD plus ADRs, release gates, anti-pattern review, fit reassessment, product evidence templates when needed, and tool adapters. |
 
 ## Output Template
 
@@ -115,6 +131,7 @@ First work packet:
 Review-worthy units inside packet:
 Implementation discipline risks:
 Implementation notes needed:
+Product evidence templates needed:
 ```
 
 ## Reassessment

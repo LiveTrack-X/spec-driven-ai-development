@@ -164,6 +164,9 @@ https://github.com/LiveTrack-X/spec-driven-ai-development.
 I am the owner. Help me create the first active SPEC slice and the first
 low-intervention work packet.
 
+First choose One-shot, Mini, Standard, or Full SDAD. Create only the files that
+scale needs.
+
 Start by asking for:
 1. the product pain or goal,
 2. the smallest useful version,
@@ -174,13 +177,22 @@ Start by asking for:
 7. the review-worthy units inside that packet,
 8. evidence required before I accept completion.
 
-Then create the first project control files:
+If Standard or Full SDAD is selected, create the first project control files:
 - AGENTS.md or equivalent AI instruction file,
 - docs/INDEX.md,
 - docs/Repository-Operating-Rules.md,
 - SPEC/SPEC-COMPLETE.md,
 - docs/TODO-Open-Items.md,
 - review-findings.md.
+
+If product, hardware, compatibility, packaging, remote tester, external lab, or
+release claims need evidence stronger than local software tests, also create
+only the needed product evidence templates:
+- docs/evidence-matrix.md,
+- docs/claim-registry.md,
+- docs/artifact-contracts.md,
+- docs/work-packet-state.md,
+- docs/remote-evidence-import.md.
 ```
 
 This path is fastest, but the AI may forget the workflow in later sessions. Move
@@ -293,6 +305,13 @@ The first useful output should include:
 - review and verification plan,
 - docs that must be created or updated.
 
+For hardware, packaged product, remote tester, compatibility, or release-claim
+projects, also ask whether the optional product evidence templates are needed:
+`docs/evidence-matrix.md`, `docs/claim-registry.md`,
+`docs/artifact-contracts.md`, `docs/work-packet-state.md`, and
+`docs/remote-evidence-import.md`. See
+[product-evidence-templates.md](product-evidence-templates.md).
+
 ## Daily Usage Loop
 
 Use the same loop every session:
@@ -354,6 +373,9 @@ Before accepting a work packet as "done", check:
 - Were docs checked or updated?
 - Were spec-unstated implementation decisions recorded in implementation notes?
 - Are skipped, partial, degraded, or unverified items named?
+- If the packet makes a product, hardware, compatibility, release, package, or
+  remote evidence claim, is it mapped through the evidence matrix and claim
+  registry?
 - If the project uses `save-state.md`, did a pause, handoff, direction change,
   blocked state, or expensive context trigger require an update?
 - Are review findings either fixed or tracked?

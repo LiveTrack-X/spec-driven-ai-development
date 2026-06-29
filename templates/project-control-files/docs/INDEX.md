@@ -15,6 +15,17 @@ Scope: Central documentation navigation and maintenance control
 - `docs/sdad/handoffs/`: session handoffs for fresh AI sessions
 - `docs/domain-language.md`: optional glossary for projects where terminology
   drift affects implementation, review, or tests
+- `docs/evidence-matrix.md`: optional requirement-to-evidence map for product,
+  hardware, release, compatibility, or remote evidence claims
+- `docs/claim-registry.md`: optional allowed/blocked claim registry for README,
+  UI, release notes, manifests, and packaging text
+- `docs/artifact-contracts.md`: optional artifact contract registry for
+  packages, firmware, support bundles, logs, and imported evidence
+- `docs/work-packet-state.md`: optional state model for product packets where
+  "done" must be split into software, tester, hardware, owner, and release
+  states
+- `docs/remote-evidence-import.md`: optional quarantine/import/review pattern
+  for remote tester, lab, hardware, or external evidence bundles
 
 ## Document Classes
 
@@ -53,6 +64,10 @@ Use this table before handoff.
 | Roadmap, implementation status, placeholder, or gap closure | `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md` if review-related |
 | Stable/next version lane, migration, release, or rollback | release docs if present, `docs/Repository-Operating-Rules.md`, relevant SPEC |
 | High-risk domain rule such as locks, real-time path, backup, or platform boundary | module docs if present, `docs/Repository-Operating-Rules.md`, relevant tests |
+| Product, hardware, compatibility, release, or user-facing claim | `docs/evidence-matrix.md`, `docs/claim-registry.md`, relevant SPEC, `review-findings.md` if a claim remains blocked |
+| Package, firmware, support bundle, installer, generated report, or imported log becomes evidence | `docs/artifact-contracts.md`, `docs/evidence-matrix.md`, archive/evidence location, `docs/claim-registry.md` if public claims change |
+| Remote tester, external lab, second machine, or user sends evidence | `docs/remote-evidence-import.md`, `docs/artifact-contracts.md`, `docs/evidence-matrix.md`, `review-findings.md` if quarantine or review fails |
+| Work packet status changes across AI complete, software verified, tester ready, hardware verified, owner accepted, release candidate, or production ready | `docs/work-packet-state.md`, `docs/TODO-Open-Items.md`, `save-state.md` if handoff or pause is expected |
 | Durable architecture, policy, release, or owner tradeoff decision | `SPEC/adr/ADR-0001-template.md` copied to a numbered ADR, relevant SPEC/docs |
 | SDAD scale/intensity change, Baseline Freeze, Evidence Surface Creep, or Heavy control-file budget | `docs/Repository-Operating-Rules.md`, relevant SPEC/docs, `docs/TODO-Open-Items.md`, `review-findings.md` if risk remains |
 | Oversized live-state file, chat instability, large archive/log/generated output, or context-stability change | `docs/Repository-Operating-Rules.md`, `save-state.md`, affected active state files, archive/history location, this index |

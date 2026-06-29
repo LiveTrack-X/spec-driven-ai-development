@@ -217,6 +217,22 @@ Completion requires evidence appropriate to the slice:
 For release or production claims, add deployment, migration, backup/restore,
 observability, security, and rollback evidence as applicable.
 
+For product, hardware, compatibility, package, remote tester, or user-facing
+claims, use the optional Product evidence templates:
+
+- Evidence Matrix: requirement or claim to evidence mapping,
+- Claim Registry: allowed, qualified, blocked, and forbidden claims,
+- Artifact Contract: required files, metadata, verifier, privacy, retention, and
+  lineage for generated or imported artifacts,
+- Work Packet State Model: explicit states from `ai_complete` through
+  `production_ready`,
+- Remote Evidence Import / Quarantine Pattern: quarantine, validation, privacy,
+  review, and acceptance before claim changes.
+
+These templates should reduce active-doc bloat by keeping TODOs and findings
+focused on current decisions while evidence history, raw logs, and imported
+bundles stay linked by ID or archived path.
+
 ### 9. Pressure-Test Plans Before Building
 
 When a work packet is fuzzy, do a short clarification checkpoint before coding.

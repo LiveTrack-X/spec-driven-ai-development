@@ -91,6 +91,12 @@ authority.
 - Use ADRs sparingly for decisions that are hard to reverse, surprising without
   context, and real tradeoffs; smaller spec-unstated choices go to
   implementation notes.
+- If product, hardware, compatibility, packaging, remote tester, external lab,
+  or release claims need evidence stronger than local software tests, route the
+  work through the product evidence templates: `docs/evidence-matrix.md`,
+  `docs/claim-registry.md`, `docs/artifact-contracts.md`,
+  `docs/work-packet-state.md`, and `docs/remote-evidence-import.md`. Keep
+  evidence status, packet state, and owner acceptance separate.
 
 ## Response Expectations
 

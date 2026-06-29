@@ -13,6 +13,7 @@ REQUIRED_FILES = [
     "README.ko.md",
     "README.zh.md",
     "README.ja.md",
+    "CHANGELOG.md",
     "LICENSE",
     "docs/pattern-catalog.md",
     "docs/user-guide.md",
@@ -30,6 +31,7 @@ REQUIRED_FILES = [
     "docs/autonomy-levels.md",
     "docs/implementation-discipline.md",
     "docs/implementation-notes.md",
+    "docs/product-evidence-templates.md",
     "docs/operating-intensity.md",
     "docs/session-handoff.md",
     "docs/implicit-rules.md",
@@ -55,6 +57,11 @@ REQUIRED_FILES = [
     "templates/project-control-files/AGENTS.md",
     "templates/project-control-files/docs/INDEX.md",
     "templates/project-control-files/docs/implementation-notes.md",
+    "templates/project-control-files/docs/evidence-matrix.md",
+    "templates/project-control-files/docs/claim-registry.md",
+    "templates/project-control-files/docs/artifact-contracts.md",
+    "templates/project-control-files/docs/work-packet-state.md",
+    "templates/project-control-files/docs/remote-evidence-import.md",
     "templates/project-control-files/docs/Repository-Operating-Rules.md",
     "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md",
     "templates/project-control-files/docs/TODO-Open-Items.md",
@@ -161,6 +168,9 @@ def validate_skill() -> None:
         "Source Of Truth",
         "Pain-To-Rule",
         "Evidence Rules",
+        "product evidence flag",
+        "docs/evidence-matrix.md",
+        "owner acceptance separate",
         "Field-Proven Baselines",
         "Current-over-historical",
         "implicit-rules",
@@ -176,13 +186,27 @@ def validate_templates() -> None:
         if not (ROOT / path).is_file():
             fail(f"Missing required asset: {path}")
     readme = read("README.md")
+    changelog = read("CHANGELOG.md")
+    for phrase in [
+        "## Unreleased",
+        "## 1.2.0 - 2026-06-29",
+        "Evidence Matrix",
+        "Claim Registry",
+        "Artifact Contracts",
+        "Work Packet State",
+        "Remote Evidence Import",
+        "product evidence flag",
+        "owner acceptance",
+    ]:
+        if phrase not in changelog:
+            fail(f"CHANGELOG missing 1.2.0 release note: {phrase}")
     for phrase in [
         "README.ko.md",
         "README.zh.md",
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.1.7`",
+        "Status: `1.2.0`",
         "stable documentation/package release",
         "project fit, owner discipline, and evidence quality",
         "Start Here: User Guide",
@@ -218,6 +242,7 @@ def validate_templates() -> None:
         "docs/autonomy-levels.md",
         "docs/implementation-discipline.md",
         "docs/implementation-notes.md",
+        "docs/product-evidence-templates.md",
         "docs/operating-intensity.md",
         "docs/session-handoff.md",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
@@ -251,6 +276,9 @@ def validate_templates() -> None:
         "The Problem",
         "Why This Is Different",
         "What This Is Not",
+        "Step 0.1 - Check product evidence flag",
+        "product evidence templates",
+        "docs/evidence-matrix.md",
     ]:
         if phrase not in readme:
             fail(f"README missing language guidance: {phrase}")
@@ -319,7 +347,7 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "1.1.7",
+            "1.2.0",
             "프로젝트 적합도",
             "save-state.md",
             "오너 수락",
@@ -351,7 +379,7 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "1.1.7",
+            "1.2.0",
             "project fit",
             "save-state.md",
             "Owner 验收",
@@ -383,7 +411,7 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "1.1.7",
+            "1.2.0",
             "project fit",
             "save-state.md",
             "Owner の受け入れ",
@@ -515,6 +543,11 @@ def validate_templates() -> None:
         "context-stability change",
         "implementation-notes.md",
         "domain-language.md",
+        "evidence-matrix.md",
+        "claim-registry.md",
+        "artifact-contracts.md",
+        "work-packet-state.md",
+        "remote-evidence-import.md",
         "Advanced extension",
     ]:
         if phrase not in index:
@@ -543,6 +576,12 @@ def validate_templates() -> None:
         "reactivation prompt",
         "Operating Intensity Rules",
         "Evidence Surface Creep",
+        "Product And Hardware Evidence Gates",
+        "docs/evidence-matrix.md",
+        "docs/claim-registry.md",
+        "docs/artifact-contracts.md",
+        "docs/work-packet-state.md",
+        "docs/remote-evidence-import.md",
         "Control File Budget",
         "context-stability pass",
         "bounded reads",
@@ -602,6 +641,103 @@ def validate_templates() -> None:
     ]:
         if phrase not in implementation_notes_template:
             fail(f"Implementation-notes template missing: {phrase}")
+    evidence_templates = read("docs/product-evidence-templates.md")
+    for phrase in [
+        "Product Evidence Templates",
+        "Evidence Matrix",
+        "Claim Registry",
+        "Artifact Contract",
+        "Work Packet State Model",
+        "Remote Evidence Import",
+        "hardware",
+        "software_verified",
+        "tester_ready",
+        "hardware_verified",
+        "production_ready",
+        "quarantine",
+        "claim remains blocked",
+        "product evidence flag",
+        "not a new SDAD scale",
+        "Owner acceptance is an acceptance field or ledger",
+    ]:
+        if phrase not in evidence_templates:
+            fail(f"Product evidence templates doc missing: {phrase}")
+    evidence_matrix = read("templates/project-control-files/docs/evidence-matrix.md")
+    for phrase in [
+        "Evidence Matrix",
+        "Status Values",
+        "software_only",
+        "evidence_received",
+        "reviewed_pass",
+        "Reproducibility Tiers",
+        "Freshness Rules",
+        "Negative Results",
+        "Evidence status stops at review",
+        "Acceptance Tracking",
+        "not_requested",
+        "pending_owner",
+    ]:
+        if phrase not in evidence_matrix:
+            fail(f"Evidence matrix template missing: {phrase}")
+    claim_registry = read("templates/project-control-files/docs/claim-registry.md")
+    for phrase in [
+        "Claim Registry",
+        "allowed_with_qualifier",
+        "blocked_until_evidence",
+        "P0_forbidden",
+        "Claim Scan Checklist",
+        "README.md",
+        "Stop Rules",
+        "Owner Acceptance",
+    ]:
+        if phrase not in claim_registry:
+            fail(f"Claim registry template missing: {phrase}")
+    artifact_contracts = read("templates/project-control-files/docs/artifact-contracts.md")
+    for phrase in [
+        "Artifact Contracts",
+        "Artifact States",
+        "tester_ready",
+        "quarantined",
+        "required_metadata",
+        "privacy_review",
+        "Baseline Gate",
+        "Privacy Rules",
+        "source_commit",
+    ]:
+        if phrase not in artifact_contracts:
+            fail(f"Artifact contracts template missing: {phrase}")
+    work_packet_state = read("templates/project-control-files/docs/work-packet-state.md")
+    for phrase in [
+        "Work Packet State Model",
+        "Packet States",
+        "ai_complete",
+        "software_verified",
+        "tester_ready",
+        "hardware_evidence_received",
+        "hardware_verified",
+        "owner_accepted",
+        "production_ready",
+        "Completion Language",
+        "Stop / Continue Rule",
+        "Packet states are separate from evidence matrix statuses",
+    ]:
+        if phrase not in work_packet_state:
+            fail(f"Work packet state template missing: {phrase}")
+    remote_import = read("templates/project-control-files/docs/remote-evidence-import.md")
+    for phrase in [
+        "Remote Evidence Import / Quarantine Pattern",
+        "Standard Flow",
+        "quarantine",
+        "validated",
+        "accepted",
+        "Import Checklist",
+        "Privacy Scan",
+        "Review Summary Template",
+        "Sufficiency Rule",
+        "Trust Boundary",
+    ]:
+        if phrase not in remote_import:
+            fail(f"Remote evidence import template missing: {phrase}")
     catalog = read("docs/pattern-catalog.md")
     for phrase in [
         "Documentation-governance",
@@ -622,6 +758,11 @@ def validate_templates() -> None:
         "User uses plain language instead of a skill name",
         "Codex task queue accumulates side quests",
         "pre/post change guards",
+        "Product evidence templates",
+        "Evidence Matrix",
+        "Claim Registry",
+        "Artifact Contract",
+        "Remote Evidence Import",
     ]:
         if phrase not in catalog:
             fail(f"Pattern catalog missing: {phrase}")
@@ -653,6 +794,7 @@ def validate_templates() -> None:
         "Complete Beginner Path",
         "Choose A Setup Path",
         "Prompt-Only Start",
+        "First choose One-shot, Mini, Standard, or Full SDAD",
         "Install A Tool Adapter",
         "Install The Codex Skill",
         "Owner Checkpoint Checklist",
@@ -670,12 +812,20 @@ def validate_templates() -> None:
         "Mini SDAD, a unit may be called evidence-ready",
         "The skill name is optional",
         "routed by intent",
+        "product-evidence-templates.md",
+        "evidence-matrix.md",
+        "claim-registry.md",
+        "artifact-contracts.md",
+        "work-packet-state.md",
+        "remote-evidence-import.md",
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
     no_clone = read("docs/no-clone-quick-install.md")
     for phrase in [
         "Step 0: Choose Scale",
+        "Step 0.1 - Check product evidence flag",
+        "product evidence flag",
         "Maintenance Cost",
         "Override rules beat raw yes-counts",
         "Step 0.5 - Choose autonomy",
@@ -711,6 +861,11 @@ def validate_templates() -> None:
         "raw.githubusercontent.com",
         "Do not overwrite existing project files",
         "bounded reads",
+        "docs/evidence-matrix.md",
+        "docs/claim-registry.md",
+        "docs/artifact-contracts.md",
+        "docs/work-packet-state.md",
+        "docs/remote-evidence-import.md",
     ]:
         if phrase not in no_clone:
             fail(f"No-clone quick install doc missing: {phrase}")
@@ -1059,6 +1214,9 @@ def validate_templates() -> None:
             "Natural-Language Intent Routing",
             "review/audit intent",
             "reference-intake intent",
+            "product evidence templates",
+            "docs/evidence-matrix.md",
+            "owner acceptance separate",
         ]:
             if phrase not in content:
                 fail(f"{path} missing expected phrase: {phrase}")

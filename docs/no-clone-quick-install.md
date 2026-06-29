@@ -51,6 +51,14 @@ Override rules beat raw yes-counts:
 When unsure, choose the smaller scale only if no Q5 risk exists. Escalate later
 when repeated pain, context loss, risk, or multiple sessions appear.
 
+Product evidence flag: ask whether product, hardware, compatibility, packaging,
+remote tester, external lab, or release claims need evidence stronger than local
+software tests. A yes is not automatically Full SDAD, but it triggers the
+relevant product evidence templates. Use Standard SDAD minimum when those
+templates must persist across sessions. Q5 release, production, user data, auth,
+money, migration, destructive-action, or rollback risk still controls Full SDAD
+gates.
+
 ## Maintenance Cost
 
 Do not create Standard or Full SDAD files unless you will keep them current.
@@ -175,6 +183,15 @@ Choose:
 Override rules beat raw yes-counts. When unsure, choose the smaller scale only
 if no Q5 risk exists, and explain why.
 
+Step 0.1 - Check product evidence flag.
+
+Ask whether product, hardware, compatibility, packaging, remote tester,
+external lab, or release claims need evidence stronger than local software
+tests. A yes is not automatically Full SDAD, but it triggers the relevant
+product evidence templates. Use Standard SDAD minimum when those templates must
+persist across sessions. Q5 release, production, user data, auth, money,
+migration, destructive-action, or rollback risk still controls Full SDAD gates.
+
 Step 0.5 - Choose autonomy before implementation.
 
 Use these defaults unless I say otherwise:
@@ -286,7 +303,11 @@ project:
 4. create or update docs/TODO-Open-Items.md,
 5. create or update review-findings.md,
 6. create or update docs/implementation-notes.md,
-7. ask me for product pain, smallest useful version, non-goals, risks,
+7. if the product evidence flag is yes, create only the needed maintained
+   product evidence templates: docs/evidence-matrix.md,
+   docs/claim-registry.md, docs/artifact-contracts.md,
+   docs/work-packet-state.md, and docs/remote-evidence-import.md,
+8. ask me for product pain, smallest useful version, non-goals, risks,
    owner-controlled decisions, the first work packet, the review-worthy units
    inside it, and evidence required for completion.
 
@@ -462,6 +483,16 @@ The first successful bootstrap should create or update:
 - `docs/TODO-Open-Items.md`,
 - `review-findings.md`,
 - `docs/implementation-notes.md`.
+
+When product, hardware, compatibility, packaging, remote tester, external lab,
+or release claims need evidence stronger than local software tests, it should
+also create only the needed product evidence templates:
+
+- `docs/evidence-matrix.md`,
+- `docs/claim-registry.md`,
+- `docs/artifact-contracts.md`,
+- `docs/work-packet-state.md`,
+- `docs/remote-evidence-import.md`.
 
 If those files already exist, the AI should show the proposed changes before
 editing them.

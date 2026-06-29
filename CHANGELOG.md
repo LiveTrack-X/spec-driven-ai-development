@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 1.2.0 - 2026-06-29
+
+- Added reusable product evidence templates: Evidence Matrix, Claim Registry,
+  Artifact Contracts, Work Packet State, and Remote Evidence Import /
+  Quarantine workflows.
+- Added a product evidence flag to onboarding, fit assessment, no-clone setup,
+  the Codex skill, and tool adapters so hardware, compatibility, packaging,
+  remote tester, external lab, and release claims route to the right evidence
+  surfaces without automatically forcing Full SDAD.
+- Separated evidence status, work-packet state, and owner acceptance so
+  `evidence_received` or `software_verified` cannot collapse into production
+  readiness or owner acceptance.
+- Expanded repository validation to preserve the new evidence templates,
+  onboarding routes, adapter rules, and status-boundary invariants.
+
 ## 1.1.7 - 2026-05-22
 
 - Moved the README `Copy-Paste Start Prompt` directly after the user-guide

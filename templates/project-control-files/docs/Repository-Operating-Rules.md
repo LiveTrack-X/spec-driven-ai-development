@@ -170,6 +170,43 @@ viewer, report, handoff format, handoff report, or parallel evidence artifact
 unless it reduces owner review time, protects a real boundary, supports a
 release/production gate, or makes a baseline repeatable.
 
+## Product And Hardware Evidence Gates
+
+Use the product evidence templates when local software checks cannot prove the
+claim being made. This applies to hardware behavior, remote tester results,
+external labs, installers, firmware, compatibility, real-user workflows,
+release notes, UI status text, package manifests, or production-readiness
+claims.
+
+Optional standard control files:
+
+- `docs/evidence-matrix.md`: maps requirements and claims to evidence, status,
+  reproducibility tier, freshness, scope, and gaps.
+- `docs/claim-registry.md`: states which README, UI, release, manifest,
+  package, and handoff claims are allowed, qualified, blocked, or forbidden.
+- `docs/artifact-contracts.md`: defines required files, metadata, verifier,
+  retention, privacy, and lineage for packages, firmware, support bundles,
+  logs, screenshots, reports, and imported evidence.
+- `docs/work-packet-state.md`: keeps packet states such as `ai_complete`,
+  `software_verified`, `tester_ready`, `hardware_evidence_received`,
+  `hardware_verified`, `owner_accepted`, `release_candidate`, and
+  `production_ready` distinct.
+- `docs/remote-evidence-import.md`: defines quarantine, validation, privacy,
+  review, evidence mapping, and owner acceptance for remote or external
+  evidence.
+
+Do not upgrade a product, hardware, compatibility, release, or production claim
+because an artifact exists, a bundle arrived, or local software checks passed.
+Upgrade only when the required evidence is fresh, reviewed, mapped to the
+evidence matrix, allowed by the claim registry, and accepted by the owner when
+the gate requires it.
+
+Remote evidence crosses a trust boundary. It must start in quarantine and pass
+structure, metadata, checksum, privacy, lineage, freshness, and scope review
+before it can update evidence status or claim wording. Raw bundles, logs, and
+generated artifacts are not mandatory first-read material; link to accepted
+review summaries and evidence IDs instead.
+
 ## Advanced Extension Fit Gate
 
 Advanced extensions include harness optimization, self-improving agent loops,

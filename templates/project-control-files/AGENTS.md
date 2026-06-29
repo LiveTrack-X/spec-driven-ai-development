@@ -93,6 +93,12 @@ active path.
 - Label partial, degraded, scaffolded, skipped, or unverified behavior.
 - If the project has stable/next versions, define version lanes and bugfix sync rules.
 - If the project has high-risk domains, define domain-specific review checks.
+- If the project has product, hardware, compatibility, packaging, remote tester,
+  or production claims, route them through the product evidence templates:
+  `docs/evidence-matrix.md`, `docs/claim-registry.md`,
+  `docs/artifact-contracts.md`, `docs/work-packet-state.md`, and
+  `docs/remote-evidence-import.md`. Keep evidence status, packet state, and
+  owner acceptance separate.
 
 ## Review-Worthy Unit Rule
 
@@ -200,6 +206,7 @@ concrete budget, and owner adoption gate. Mark missing fields as `unknown` or
 - Release readiness beats feature count.
 - Owner decision beats AI momentum.
 - Scope-specific percent beats vague global percent.
+- Fresh, scoped evidence beats broad product claims.
 
 ## Handoff Rule
 

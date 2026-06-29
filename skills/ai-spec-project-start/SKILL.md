@@ -115,6 +115,13 @@ Mini SDAD, treating the active unit as one small approved packet; use Level 2
 Work Packet Autonomy for Standard SDAD, and Level 4 gates for Full SDAD release,
 migration, destructive actions, data/auth/money/security decisions, rollback,
 and production claims.
+Check the product evidence flag: ask whether product, hardware, compatibility,
+packaging, remote tester, external lab, or release claims need evidence stronger
+than local software tests. A yes is not automatically Full SDAD, but it
+triggers the relevant product evidence templates. Use Standard SDAD minimum when
+those templates must persist across sessions. Q5 release, production, user
+data, auth, money, migration, destructive-action, or rollback risk still
+controls Full SDAD gates.
 Do not require the user to know SDAD terms, adapter names, or skill names. Infer
 intent from natural language and current repo state. Treat "check/review/audit"
 as review intent, "implement/fix/match the spec" as SPEC implementation intent,
@@ -306,6 +313,11 @@ Ask:
 4. Will multiple AI tools or reviewers be involved?
 5. Is there release, migration, user data, auth, money, or production risk?
 
+Then check the product evidence flag:
+
+- Will product, hardware, compatibility, packaging, remote tester, external lab,
+  or release claims need evidence stronger than local software tests?
+
 Choose:
 
 - `0 yes`: One-shot Prompt. Do not create SDAD files.
@@ -320,6 +332,12 @@ Choose:
 Override rules beat raw yes-counts. When unsure, choose the smaller scale only
 if no Q5 risk exists. Escalate when repeated pain, context loss, risk, or
 multiple sessions appear.
+
+A yes to the product evidence flag is not automatically Full SDAD, but it
+triggers the relevant product evidence templates. Use Standard SDAD minimum when
+those templates must persist across sessions. Q5 release, production, user
+data, auth, money, migration, destructive-action, or rollback risk still
+controls Full SDAD gates.
 
 ## Operating Loop
 
@@ -444,6 +462,8 @@ Before writing code, extract the owner's control model:
   packet?
 - What is explicitly not active work yet?
 - What evidence proves the packet is evidence-ready?
+- Do product, hardware, compatibility, packaging, remote tester, external lab,
+  or release claims need evidence stronger than local software tests?
 
 If the owner has already given enough context, proceed and mark assumptions.
 
@@ -467,6 +487,18 @@ Optional but useful:
 - `next-task.md`: next recommended slice.
 - `docs/archive/`: historical docs and completed plans.
 - `docs/product-notes/`: reference ideas that are not active implementation.
+- `docs/evidence-matrix.md`: requirement, claim, evidence status, freshness,
+  scope, gaps, and acceptance tracking for product evidence projects.
+- `docs/claim-registry.md`: allowed, qualified, blocked, forbidden, and retired
+  user-facing or release-facing claims.
+- `docs/artifact-contracts.md`: artifact contents, metadata, verifier, privacy,
+  retention, and lineage for packages, firmware, support bundles, logs, and
+  imported evidence.
+- `docs/work-packet-state.md`: explicit packet states such as `ai_complete`,
+  `software_verified`, `tester_ready`, `hardware_verified`, `owner_accepted`,
+  and `production_ready`.
+- `docs/remote-evidence-import.md`: quarantine, validation, privacy, review,
+  and acceptance flow for remote or external evidence.
 
 ## Source Of Truth
 
@@ -545,6 +577,12 @@ Every implementation handoff must include:
 
 For production-readiness claims, require deployment, migration, auth/security,
 backup/restore, monitoring, and rollback evidence as applicable.
+
+For product, hardware, compatibility, packaging, remote tester, external lab, or
+release claims that need evidence stronger than local software tests, route
+requirements through the product evidence templates. Keep evidence status,
+packet state, and owner acceptance separate; do not upgrade claims because a
+local test passed or a remote bundle arrived.
 
 ## Pain-To-Rule Extraction
 

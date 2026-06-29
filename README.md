@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.1.7` stable documentation/package release.
+Status: `1.2.0` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -86,6 +86,15 @@ Choose:
 
 Override rules beat raw yes-counts. When unsure, choose the smaller scale only
 if no Q5 risk exists, and explain why.
+
+Step 0.1 - Check product evidence flag.
+
+Ask whether product, hardware, compatibility, packaging, remote tester,
+external lab, or release claims need evidence stronger than local software
+tests. A yes is not automatically Full SDAD, but it triggers the relevant
+product evidence templates. Use Standard SDAD minimum when those templates must
+persist across sessions. Q5 release, production, user data, auth, money,
+migration, destructive-action, or rollback risk still controls Full SDAD gates.
 
 Step 0.5 - Choose autonomy before implementation.
 
@@ -190,6 +199,12 @@ clone/download the repository manually.
 Ask me for product pain, smallest useful version, non-goals, risks,
 owner-controlled decisions, the first work packet, the review-worthy units
 inside it, and evidence required for completion.
+
+If the product evidence flag is yes, ask which optional templates are needed and
+create only those that will be maintained:
+`docs/evidence-matrix.md`, `docs/claim-registry.md`,
+`docs/artifact-contracts.md`, `docs/work-packet-state.md`, and
+`docs/remote-evidence-import.md`.
 
 A review-worthy development unit may contain multiple related small tasks. It
 should be large enough that review has meaning, but small enough to verify in one
@@ -797,6 +812,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/autonomy-levels.md](docs/autonomy-levels.md): work packets and low-intervention autonomy
 - [docs/implementation-discipline.md](docs/implementation-discipline.md): assumptions, simplicity, surgical diffs, and verification
 - [docs/implementation-notes.md](docs/implementation-notes.md): bounded decision log for spec-unstated implementation choices
+- [docs/product-evidence-templates.md](docs/product-evidence-templates.md): optional Evidence Matrix, Claim Registry, Artifact Contract, Work Packet State, and Remote Evidence Import templates for product/hardware claims
 - [docs/diagrams.md](docs/diagrams.md): workflow diagrams
 - [docs/tool-adapters.md](docs/tool-adapters.md): tool-specific instruction files
 - [docs/field-notes/documentation-governance-method.md](docs/field-notes/documentation-governance-method.md): documentation-governance field pattern
