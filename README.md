@@ -11,6 +11,9 @@ Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
 
 <p>
+  <a href="https://github.com/sponsors/LiveTrack-X">
+    <img src="https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub">
+  </a>
   <a href="https://buymeacoffee.com/livetrack">
     <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee">
   </a>
