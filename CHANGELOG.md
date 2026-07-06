@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## 1.3.0 - 2026-07-06
+
+- Added a Meta-Harness field note that adapts harness optimization,
+  retrieval/memory tuning, context selection, and repeated evaluation loops into
+  SDAD's advanced-extension fit gate.
+- Added the Slice-First Evidence Loop pattern for feature delivery: one
+  vertical slice, JIT clarification for unresolved decisions, a practical
+  failing test/check first, evidence-ready results, and owner acceptance
+  separation.
+- Strengthened fit assessment, operating intensity, pattern catalog, and the
+  Codex skill so harness optimization and slice-first execution stay bounded by
+  evidence, budget, leakage, and owner adoption gates.
+- Updated the README infographic and added GitHub funding/Sponsors surfaces.
+
 ## 1.2.0 - 2026-06-29
 
 - Added reusable product evidence templates: Evidence Matrix, Claim Registry,

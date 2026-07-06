@@ -237,9 +237,13 @@ State SDAD scale and operating intensity before implementation.
 Advanced extensions such as harness optimization, self-improving loops,
 retrieval/memory tuning, or repeated evaluation automation require an explicit
 fit gate before implementation: repeated task unit, measurable metric, fixed
-model/tool surface, allowed changes, search evidence, owner acceptance evidence,
-leakage risk, concrete budget, and owner adoption gate. Mark missing fields as
-`unknown` or `blocking`; do not hide them as assumptions.
+model/tool surface, allowed changes, harness interface or candidate contract,
+baseline harness, search set, held-out set, offline traces, online candidate
+traces, search evidence, owner acceptance evidence, leakage risk, concrete
+budget, and owner adoption gate. Mark missing fields as `unknown` or
+`blocking`; do not hide them as assumptions. For harness optimization, use
+`docs/field-notes/meta-harness-method.md` and keep discovered harnesses as
+evidence-ready candidates until owner adoption.
 
 A work packet is a bounded container for one or more review-worthy development
 units. The owner approves the packet boundary, not every small task inside it.
@@ -258,6 +262,17 @@ Each unit may include multiple related TODOs. Units help organize review and
 evidence; they do not require separate owner approval while they stay inside the
 approved packet. Continue inside the approved work packet until the packet can
 be reviewed with changed files, checks, known limits, and evidence.
+
+For feature delivery, prefer a Slice-First Evidence Loop: one vertical slice as
+the approved packet or review-worthy unit, JIT clarification only for unresolved
+slice decisions, and the strongest practical failing test or check before
+implementation. The check may be unit, contract, integration, E2E, CLI smoke,
+build, lint, snapshot, or manual verification depending on risk. Use TDD when
+behavior can be specified before implementation; use an equivalent failing check
+for docs, config, tooling, migration, or verification-only work. Green results
+are evidence-ready, not owner-accepted. Use ADRs only for hard-to-reverse
+decisions; keep successful evidence summarized and keep `review-findings.md`
+focused on defects, risks, and unresolved review items.
 
 Use two states:
 

@@ -233,7 +233,48 @@ These templates should reduce active-doc bloat by keeping TODOs and findings
 focused on current decisions while evidence history, raw logs, and imported
 bundles stay linked by ID or archived path.
 
-### 9. Pressure-Test Plans Before Building
+### 9. Use A Slice-First Evidence Loop
+
+For feature delivery, prefer one vertical slice as the approved work packet or
+review-worthy unit. A slice should connect behavior to evidence across the
+smallest useful path, not split the work into isolated layers that cannot prove
+user value.
+
+Use the order: PLAN narrows intent, SPEC fixes the active slice, ADR records
+hard-to-reverse decisions only when needed, and JIT resolves missing slice
+details just before implementation.
+
+Use JIT clarification only for unresolved slice decisions. JIT means "resolve
+the missing detail at the moment it matters"; it does not mean ignoring current
+repository evidence, active SPECs, tests, or operating rules. Inspect routed
+current evidence first, then ask the next blocking question only when the slice
+still cannot be implemented safely.
+
+Start with the strongest practical failing test or check for the slice. This may
+be a unit, contract, integration, E2E, CLI smoke, snapshot, build, lint, or
+manual verification check depending on the risk and project shape. Do not force
+E2E tests when a narrower check proves the claim, and do not skip stronger
+evidence when the claim needs it. Use TDD when behavior can be specified before
+implementation; use an equivalent failing check when the work is docs, config,
+tooling, migration, or verification-only.
+
+Treat green results as evidence-ready, not owner-accepted. Use ADRs only when
+the slice introduces hard-to-reverse architecture, policy, release, security,
+data-boundary, or owner tradeoff decisions. Keep successful evidence summarized
+and linked by command, artifact path, or report; keep `review-findings.md`
+focused on defects, risks, and unresolved review items.
+
+### 10. Gate Evaluation-Driven Harness Extensions
+
+For harness optimization, self-improving loops, retrieval/memory tuning, or
+repeated evaluation automation, keep the work behind the Advanced Extension Fit
+Gate. The SDAD abstraction of Meta-Harness is: fixed base model and tool
+surface, bounded candidate harness interface, search/held-out split, baseline
+comparison, offline/online trace retention, leakage-risk review, concrete
+budget, and owner adoption gate. See
+[field-notes/meta-harness-method.md](field-notes/meta-harness-method.md).
+
+### 11. Pressure-Test Plans Before Building
 
 When a work packet is fuzzy, do a short clarification checkpoint before coding.
 
@@ -253,7 +294,7 @@ micro-approval. Low-risk implementation assumptions may be stated and resolved
 inside the approved packet; owner-controlled product, release, risk, data,
 security, money, migration, or destructive decisions still require a checkpoint.
 
-### 10. Keep Domain Language Bounded
+### 12. Keep Domain Language Bounded
 
 When terminology starts drifting, stabilize the language instead of letting each
 AI session invent its own names.
@@ -268,7 +309,7 @@ language confusion, create a small optional `docs/domain-language.md` routed fro
 `docs/INDEX.md`; keep it glossary-only and separate from implementation notes,
 handoffs, ADRs, and TODOs.
 
-### 11. Use Cross-AI Review Deliberately
+### 13. Use Cross-AI Review Deliberately
 
 Use different AI sessions, models, or reviewers for different roles:
 
@@ -282,7 +323,7 @@ Use different AI sessions, models, or reviewers for different roles:
 The goal is not more AI output. The goal is independent pressure on assumptions,
 bugs, missing tests, docs drift, and false completion claims.
 
-### 12. Convert Lessons Into Rules
+### 14. Convert Lessons Into Rules
 
 When a project hurts, do not only fix the bug. Ask:
 
@@ -297,7 +338,7 @@ When a project hurts, do not only fix the bug. Ask:
 
 This is the core loop: friction becomes reusable structure.
 
-### 13. Make Implicit Rules Explicit
+### 15. Make Implicit Rules Explicit
 
 Do not rely on "the next AI will understand the obvious." Write the obvious
 rules down when they affect execution:
@@ -314,7 +355,7 @@ rules down when they affect execution:
 These rules are not bureaucracy. They protect the owner from silent scope drift,
 false completion claims, stale SPEC execution, and unclear progress reporting.
 
-### 14. Preserve Decisions With ADRs
+### 16. Preserve Decisions With ADRs
 
 Use Architecture Decision Records for decisions that future agents must not
 re-litigate casually:

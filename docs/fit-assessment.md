@@ -65,6 +65,11 @@ Do not enable an advanced extension unless the fit gate is explicit:
 - measurable success metric exists,
 - fixed model and tool surface are named,
 - allowed changes and out-of-scope changes are bounded,
+- harness interface or candidate contract is named when optimizing a harness,
+- search set, held-out set, and baseline harness are named when repeated
+  evaluation is used,
+- offline traces and online candidate traces are either available or explicitly
+  marked absent,
 - search evidence is separate from owner acceptance evidence when possible,
 - held-out acceptance set exists, or its absence is marked as a risk,
 - evaluation leakage risk is named,
@@ -78,6 +83,13 @@ Do not silently turn an unknown into an implementation assumption.
 If this gate is not satisfied, keep the work inside normal SDAD planning,
 manual evaluation, or a smaller work packet. The extension may still be recorded
 as a future idea, but it should not become active implementation.
+
+For harness optimization, use
+[field-notes/meta-harness-method.md](field-notes/meta-harness-method.md) as the
+reference pattern. Treat discovered prompts, retrieval policies, memory
+policies, context selectors, tool scaffolds, or review rules as evidence-ready
+candidates until the owner accepts the split, leakage risk, budget result,
+changed behavior, and adoption plan.
 
 ## Questions
 

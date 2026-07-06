@@ -171,6 +171,10 @@ Before running one, pass the Advanced Extension Fit Gate in
 - what metric decides improvement,
 - what model and tool surface stay fixed,
 - what changes are allowed,
+- what harness interface or candidate contract applies,
+- what baseline harness or manual baseline is being compared,
+- what search set and held-out set are separated,
+- what offline traces and online candidate traces will be retained,
 - what evidence is search evidence,
 - what evidence is reserved for owner acceptance,
 - what leakage risk exists,
@@ -184,3 +188,6 @@ decisions.
 Discovered prompts, rules, retrieval policies, memory policies, or harnesses are
 evidence-ready candidates. They are not owner-accepted until the owner reviews
 the split, leakage risk, budget result, changed behavior, and adoption plan.
+Use [field-notes/meta-harness-method.md](field-notes/meta-harness-method.md)
+when the extension searches over harness code, context selection, memory,
+retrieval, tool scaffolds, or review rules.

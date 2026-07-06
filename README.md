@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.2.0` stable documentation/package release.
+Status: `1.3.0` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -473,7 +473,9 @@ Harness optimization, self-improving loops, retrieval or memory tuning, and
 repeated evaluation automation are optional extensions, not default SDAD loops.
 Use them only when the project has a repeated task unit, measurable success
 metric, fixed model/tool surface, bounded allowed changes, leakage-risk plan,
-concrete budget, and owner adoption gate.
+concrete budget, and owner adoption gate. For harness optimization, also name
+the harness interface, baseline harness, search/held-out split, offline traces,
+online candidate traces, and candidate adoption path.
 
 Each fit-gate field should be answered, marked `unknown`, or marked `blocking`.
 Do not treat a discovered prompt, rule, retrieval policy, memory policy, or
@@ -481,7 +483,9 @@ harness as owner-accepted until the owner reviews the evaluation split, leakage
 risk, budget result, changed behavior, and adoption plan.
 
 See [docs/fit-assessment.md](docs/fit-assessment.md) and
-[docs/anti-patterns.md](docs/anti-patterns.md).
+[docs/anti-patterns.md](docs/anti-patterns.md). For the SDAD abstraction of
+Meta-Harness, see
+[docs/field-notes/meta-harness-method.md](docs/field-notes/meta-harness-method.md).
 
 ## Work Packets And Autonomy Levels
 
@@ -820,6 +824,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/tool-adapters.md](docs/tool-adapters.md): tool-specific instruction files
 - [docs/field-notes/documentation-governance-method.md](docs/field-notes/documentation-governance-method.md): documentation-governance field pattern
 - [docs/field-notes/release-governance-method.md](docs/field-notes/release-governance-method.md): release-governance field pattern
+- [docs/field-notes/meta-harness-method.md](docs/field-notes/meta-harness-method.md): harness optimization fit gate and evidence boundary pattern
 
 ## Validate
 

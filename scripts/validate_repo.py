@@ -38,6 +38,7 @@ REQUIRED_FILES = [
     "docs/tool-adapters.md",
     "docs/field-notes/documentation-governance-method.md",
     "docs/field-notes/release-governance-method.md",
+    "docs/field-notes/meta-harness-method.md",
     "adapters/README.md",
     "adapters/codex/AGENTS.md",
     "adapters/claude-code/CLAUDE.md",
@@ -160,6 +161,8 @@ def validate_skill() -> None:
         "review/audit intent",
         "reference-intake intent",
         "Review-Worthy Development Units",
+        "Slice-First Evidence Loop",
+        "strongest practical failing test or check",
         "implementation discipline",
         "implementation notes",
         "clarification checkpoint",
@@ -189,24 +192,23 @@ def validate_templates() -> None:
     changelog = read("CHANGELOG.md")
     for phrase in [
         "## Unreleased",
-        "## 1.2.0 - 2026-06-29",
-        "Evidence Matrix",
-        "Claim Registry",
-        "Artifact Contracts",
-        "Work Packet State",
-        "Remote Evidence Import",
-        "product evidence flag",
+        "## 1.3.0 - 2026-07-06",
+        "Meta-Harness field note",
+        "advanced-extension fit gate",
+        "Slice-First Evidence Loop",
+        "failing test/check first",
         "owner acceptance",
+        "GitHub funding/Sponsors",
     ]:
         if phrase not in changelog:
-            fail(f"CHANGELOG missing 1.2.0 release note: {phrase}")
+            fail(f"CHANGELOG missing 1.3.0 release note: {phrase}")
     for phrase in [
         "README.ko.md",
         "README.zh.md",
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `1.2.0`",
+        "Status: `1.3.0`",
         "stable documentation/package release",
         "project fit, owner discipline, and evidence quality",
         "Start Here: User Guide",
@@ -272,6 +274,7 @@ def validate_templates() -> None:
         "docs/context-stability.md",
         "docs/implementation-notes.md",
         "docs/domain-language.md",
+        "docs/field-notes/meta-harness-method.md",
         "docs/no-clone-quick-install.md",
         "The Problem",
         "Why This Is Different",
@@ -347,7 +350,7 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "1.2.0",
+            "1.3.0",
             "프로젝트 적합도",
             "save-state.md",
             "오너 수락",
@@ -379,7 +382,7 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "1.2.0",
+            "1.3.0",
             "project fit",
             "save-state.md",
             "Owner 验收",
@@ -411,7 +414,7 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "1.2.0",
+            "1.3.0",
             "project fit",
             "save-state.md",
             "Owner の受け入れ",
@@ -763,6 +766,13 @@ def validate_templates() -> None:
         "Claim Registry",
         "Artifact Contract",
         "Remote Evidence Import",
+        "Slice-First Evidence Loop",
+        "PLAN narrows intent",
+        "strongest practical failing test or check",
+        "Use TDD when behavior can be specified",
+        "not owner-accepted",
+        "review-findings.md",
+        "Gate Evaluation-Driven Harness Extensions",
     ]:
         if phrase not in catalog:
             fail(f"Pattern catalog missing: {phrase}")
@@ -958,6 +968,10 @@ def validate_templates() -> None:
         "Implementation notes needed",
         "Maintenance cost matters",
         "Advanced Extension Fit Gate",
+        "harness interface",
+        "baseline harness",
+        "offline traces",
+        "online candidate traces",
         "search evidence",
         "owner acceptance evidence",
         "evaluation leakage risk",
@@ -1053,6 +1067,10 @@ def validate_templates() -> None:
         "Evidence Surface Rule",
         "Evaluation-Driven Extensions",
         "Advanced Extension Fit Gate",
+        "harness interface",
+        "baseline harness",
+        "offline traces",
+        "online candidate traces",
         "search evidence",
         "owner acceptance",
         "concrete budget",
@@ -1181,6 +1199,24 @@ def validate_templates() -> None:
     ]:
         if phrase not in doc_governance:
             fail(f"Documentation governance field note missing: {phrase}")
+    meta_harness = read("docs/field-notes/meta-harness-method.md")
+    for phrase in [
+        "Meta-Harness Method",
+        "SDAD Translation",
+        "Harness interface",
+        "search set",
+        "held-out set",
+        "Baselines",
+        "Offline experience",
+        "Online experience",
+        "Eleven Harness Surfaces",
+        "Evidence Boundary",
+        "owner-accepted",
+        "concrete budget",
+        "Stop Rules",
+    ]:
+        if phrase not in meta_harness:
+            fail(f"Meta-Harness field note missing: {phrase}")
     codex = read("adapters/codex/AGENTS.md")
     claude = read("adapters/claude-code/CLAUDE.md")
     cursor = read("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc")
