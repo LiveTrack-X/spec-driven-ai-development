@@ -692,6 +692,17 @@ notes, ADR, TODO, review finding, or handoff.
 
 ## The Loop
 
+The full control spine is:
+
+```text
+Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner checkpoint -> Maintenance
+```
+
+Scale and compression happen before creating files. Reference parity and
+evidence-tier checks happen before evidence-ready. ADRs are conditional: create
+one only when a decision is hard to reverse, surprising without context, and a
+real tradeoff.
+
 ```text
 Pain -> SPEC -> Work packet -> Review-worthy unit(s) -> Build -> Review -> Evidence-ready -> Owner checkpoint -> Rule
 ```
@@ -782,7 +793,7 @@ AI instruction file, choose one:
   .github/copilot-instructions.md                # GitHub Copilot
   AI-SESSION-INSTRUCTIONS.md                     # generic AI agent
 
-docs/INDEX.md                                    # documentation navigation
+docs/INDEX.md                                    # working router for active docs
 docs/Repository-Operating-Rules.md               # durable operating rules
 docs/implementation-notes.md                     # spec-unstated implementation decisions
 docs/domain-language.md                          # optional glossary when terminology drift affects execution
@@ -882,6 +893,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/pattern-catalog.md](docs/pattern-catalog.md): full method and pattern matrix
 - [docs/user-guide.md](docs/user-guide.md): situation-based user guide and FAQ
 - [docs/getting-started.md](docs/getting-started.md): first-use setup guide
+- `docs/INDEX.md` in each SDAD project: working router for which active doc to check at each moment
 - [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md): copy-paste setup without cloning
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid
 - [docs/fit-assessment.md](docs/fit-assessment.md): project fit checklist

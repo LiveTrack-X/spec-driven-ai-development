@@ -330,12 +330,37 @@ when that surface has an active job.
 Use the same loop every session:
 
 ```text
+Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner checkpoint -> Maintenance
+```
+
+Choose scale and compression before creating files. Before evidence-ready,
+check only the gates that apply: reference parity for reference-derived work,
+evidence tier for claim scope, product evidence templates for product/hardware
+claims, and Level 4 owner gates for Q5 risk. ADRs are conditional, not a
+mandatory step.
+
+```text
 Pain -> SPEC -> Work packet -> Build -> Review -> Evidence-ready -> Owner checkpoint -> Rule
 ```
 
 In practice, the build/review boundary should be a work packet containing one or
 more review-worthy development units. Do not stop after every micro-task inside
 the approved packet.
+
+### Quick Routing Prompt
+
+Use this when the AI seems unsure which SDAD document to check next:
+
+```text
+Use docs/INDEX.md as the working router for this packet.
+Identify the current moment: starting/resuming, defining scope, choosing next
+task, investigating bug/risk, making a spec-unstated choice, making a claim,
+preparing owner checkpoint, ending/handoff, or turning repeated pain into a rule.
+Then report which active docs must be checked, which optional surfaces are not
+needed, whether any long log/evidence record should be split into a timestamped
+YYYY-MM-DD-HHMM-start-topic.md file, and whether the packet is evidence-ready
+or still owner-accepted pending.
+```
 
 ### Build Prompt
 

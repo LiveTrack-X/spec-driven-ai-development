@@ -74,6 +74,20 @@ If a live-state file becomes long, repetitive, or hard to audit:
 Do not delete history just to reduce context. Move it out of the default startup
 path.
 
+Common split routes:
+
+- completed TODOs -> `docs/archive/todo-history/YYYY-MM-DD-topic.md`,
+- closed findings -> `docs/review/archive/YYYY-MM-DD-topic.md`,
+- old implementation notes -> `docs/archive/implementation-notes/YYYY-MM-DD-topic.md`,
+- old save-state entries -> `docs/state/save-state-archive/YYYY-MM-DD-topic.md`,
+- long command output, screenshots, imports, or traces ->
+  `docs/archive/evidence/YYYY-MM-DD-HHMM-start-topic.md`,
+- remote evidence import records ->
+  `docs/archive/evidence-imports/YYYY-MM-DD-HHMM-source.md`.
+
+Keep the active file as the router and status summary. Put the long record in
+the split file and link it back from the active file.
+
 ## Tool Input Hygiene
 
 Context stability also applies to tools that package or index repository

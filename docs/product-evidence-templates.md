@@ -115,6 +115,25 @@ A higher-sounding tier does not automatically cover a lower one when the scope
 differs. For example, a remote hardware bundle can support a device claim but
 not prove browser UI parity, persisted local state, or production rollback.
 
+## Claim Gate Smoke
+
+Before evidence-ready, owner checkpoint, release notes, or package metadata,
+scan `docs/claim-registry.md` for claims affected by the packet:
+
+- Any `blocked_until_evidence` claim remains blocked unless the required
+  evidence tier, freshness, and scope are present.
+- A warning-level result can become `accepted_with_limits` only when the public
+  claim is qualified to the reviewed scope.
+- A release, production, hardware, compatibility, security, data, money, or
+  rollback claim must fail closed when the evidence tier is missing or weaker
+  than the claim.
+- If a CLI, API, file, manifest, or UI text shape is part of the evidence, the
+  active SPEC or artifact contract must name that output contract before the
+  evidence can support the claim.
+- Keep one canonical artifact manifest for each generated package or evidence
+  bundle; duplicate manifest copies are evidence drift unless one is explicitly
+  marked as derived.
+
 ## Context Budget
 
 These templates should reduce active-doc size, not create another journal.

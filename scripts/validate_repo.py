@@ -171,6 +171,11 @@ def validate_skill() -> None:
         "strongest practical failing test or check",
         "Match evidence tiers to claims",
         "Small Project Compression Rule",
+        "Choose scale, compression, autonomy, and operating intensity",
+        "Use only the gates that apply",
+        "working router for active docs",
+        "YYYY-MM-DD-HHMM-start-topic.md",
+        "output contract",
         "Repository Control Surface",
         "always-loaded guidance",
         "enforced guarantee",
@@ -308,6 +313,9 @@ def validate_templates() -> None:
         "guidance from guarantees",
         "Cost-Aware Agent Routing",
         "Advisor approval, worker completion, and a passing loop evaluator",
+        "Scale/compress -> Active SPEC slice",
+        "ADRs are conditional",
+        "working router for active docs",
         "docs/no-clone-quick-install.md",
         "The Problem",
         "Why This Is Different",
@@ -569,6 +577,7 @@ def validate_templates() -> None:
         "Save-State Update Triggers",
         "past-to-present",
         "Implicit Rules Made Explicit",
+        "working router during implementation",
     ]:
         if phrase not in agents:
             fail(f"AGENTS template missing: {phrase}")
@@ -590,6 +599,16 @@ def validate_templates() -> None:
         "Advanced extension",
         "routes, not mandatory files",
         "Create or copy only the optional evidence files",
+        "Working Route",
+        "Use this table while working",
+        "Single-File Bloat Risk Routes",
+        "When one file starts carrying multiple jobs",
+        "docs/archive/todo-history/YYYY-MM-DD-topic.md",
+        "docs/review/archive/YYYY-MM-DD-topic.md",
+        "YYYY-MM-DD-HHMM-start-topic.md",
+        "Start: YYYY-MM-DD HH:MM",
+        "blocked_until_evidence",
+        "canonical artifact manifest",
     ]:
         if phrase not in index:
             fail(f"docs/INDEX template missing: {phrase}")
@@ -637,6 +656,8 @@ def validate_templates() -> None:
         "smoke installed artifacts from outside the source tree",
         "Match evidence tiers to claims",
         "Small Project Compression Rule",
+        "Logical flow",
+        "Scale/compress -> Active SPEC slice",
     ]:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
@@ -723,6 +744,10 @@ def validate_templates() -> None:
         "persisted_state",
         "remote_hardware",
         "production_evidence",
+        "Claim Gate Smoke",
+        "accepted_with_limits",
+        "output contract",
+        "canonical artifact manifest",
     ]:
         if phrase not in evidence_templates:
             fail(f"Product evidence templates doc missing: {phrase}")
@@ -766,6 +791,8 @@ def validate_templates() -> None:
         "privacy_review",
         "Baseline Gate",
         "Privacy Rules",
+        "Canonical Manifest",
+        "canonical artifact manifest",
         "source_commit",
     ]:
         if phrase not in artifact_contracts:
@@ -807,6 +834,8 @@ def validate_templates() -> None:
         "Documentation-governance",
         "Release-governance",
         "Owner Progress View",
+        "For Standard and Full SDAD",
+        "A single evidence-ready summary",
         "current-over-historical",
         "implementation notes",
         "Pressure-Test Plans Before Building",
@@ -835,10 +864,12 @@ def validate_templates() -> None:
         "Compress Small Projects Before Adding Files",
         "Small Project Compression Rule",
         "One evidence-ready summary is enough",
+        "Scale/compress",
         "Slice-First Evidence Loop",
         "PLAN narrows intent",
         "strongest practical failing test or check",
         "Use TDD when behavior can be specified",
+        "output contract",
         "not owner-accepted",
         "review-findings.md",
         "Gate Evaluation-Driven Harness Extensions",
@@ -911,6 +942,10 @@ def validate_templates() -> None:
         "optional evidence templates are create-on-demand",
         "Small Project Compression Rule",
         "one evidence-ready summary is enough",
+        "Evidence tier/gates",
+        "ADRs are conditional",
+        "Quick Routing Prompt",
+        "Use docs/INDEX.md as the working router",
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
@@ -999,6 +1034,10 @@ def validate_templates() -> None:
         "Small Project Compression Rule",
         "one evidence-ready summary",
         "Evidence Matrix / Claim Registry / Artifact Contract",
+        "YYYY-MM-DD-HHMM-start-topic.md",
+        "Start: YYYY-MM-DD HH:MM",
+        "Common single-file bloat risks",
+        "Single-File Bloat Risk Routes",
         "session is ending or pausing",
         "owner changes direction",
         "context would be expensive to reconstruct",
@@ -1090,6 +1129,8 @@ def validate_templates() -> None:
         "Autonomy Boundary",
         "Batch related small tasks",
         "Rendered Diagram Assets",
+        "Document Relationship Map",
+        "Timestamped Log Split",
         "assets/sdad-control-loop.archify.png",
         "assets/sdad-control-loop.archify.html",
         "assets/sdad-control-loop.archify.workflow.json",
@@ -1221,6 +1262,8 @@ def validate_templates() -> None:
         ">50 KB",
         ">1 MB",
         "Do not treat a mandatory start loop as permission",
+        "Common split routes",
+        "docs/archive/evidence/YYYY-MM-DD-HHMM-start-topic.md",
         "This rule does not add cleanup automation",
     ]:
         if phrase not in context_stability:

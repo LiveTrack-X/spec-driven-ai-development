@@ -31,6 +31,44 @@ Optional product evidence entries are routes, not mandatory files for every
 lean bootstrap. Create or copy only the optional evidence files needed by the
 claims this project actually makes.
 
+## Working Route
+
+Use this table while working, not only at session start.
+
+| Moment | Check first | Then route to | Do not use for |
+| --- | --- | --- | --- |
+| Starting or resuming work | `AGENTS.md`, this index, current source/tests | Active SPEC, TODO, review findings, save-state or current handoff | Reading old archives before current state |
+| Defining scope or acceptance | `SPEC/SPEC-COMPLETE.md` | TODO for active work, review findings for risks, ADR only for durable tradeoffs | Chat memory or old plans as authority |
+| Choosing the next task | `docs/TODO-Open-Items.md` | Active SPEC for scope, review findings for blockers | Future ideas unless promoted |
+| Investigating bugs or risks | `review-findings.md` | Tests, source, TODO, SPEC, evidence files | Closing findings without reproduction or rationale |
+| Making a spec-unstated implementation choice | Active SPEC and source/tests | `docs/implementation-notes.md`; ADR only if hard to reverse | Hiding rationale only in chat |
+| Making a public/product claim | Evidence tier, claim registry, and source/test/runtime state | Evidence Matrix, Claim Registry, Artifact Contract, Remote Evidence Import when needed | Upgrading claims from weak, unreviewed, or `blocked_until_evidence` evidence |
+| Preparing owner checkpoint | Changed files and verification evidence | TODO, review findings, SPEC, implementation notes, save-state if continuity is needed | Calling evidence-ready owner-accepted |
+| Ending or handing off | Current packet state and unresolved risks | `save-state.md` or `docs/sdad/handoffs/` | Dumping a full transcript into active docs |
+| Repeated pain appears | Current failure or confusion evidence | `docs/Repository-Operating-Rules.md`, tests, validators, or templates | Adding prose rules when enforcement is required |
+
+If a moment does not match a row, start with current code/tests, active SPEC,
+TODO, review findings, and this index before opening historical material.
+
+## Single-File Bloat Risk Routes
+
+When one file starts carrying multiple jobs, split by job instead of appending.
+
+| File at risk | Bloat symptom | Keep in active file | Split or archive to |
+| --- | --- | --- | --- |
+| `SPEC/SPEC-COMPLETE.md` | old product history hides current scope | current baseline, active scope, acceptance criteria | `SPEC/archive/` or `docs/product-notes/` |
+| `docs/TODO-Open-Items.md` | completed work and future ideas mix with active work | current open work and next action | `docs/archive/todo-history/YYYY-MM-DD-topic.md` |
+| `review-findings.md` | closed findings or accepted risks bury active blockers | active defects, risks, blocked gates | `docs/review/archive/YYYY-MM-DD-topic.md` |
+| `docs/implementation-notes.md` | implementation diary or raw reasoning grows | current spec-unstated choices and verification impact | `docs/archive/implementation-notes/YYYY-MM-DD-topic.md` |
+| `save-state.md` | session transcript replaces resume state | current objective, state, blockers, next steps | `docs/state/save-state-archive/YYYY-MM-DD-topic.md` or handoff |
+| `docs/sdad/handoffs/` file | one handoff becomes a full evidence dump | resume summary and links | timestamped logs/evidence archives |
+| `docs/evidence-matrix.md` | raw evidence pasted into matrix | claim-to-evidence status and IDs | `docs/archive/evidence/YYYY-MM-DD-HHMM-start-topic.md` |
+| `docs/claim-registry.md` | retired claim history buries current allowed/blocked claims | current allowed, qualified, blocked claims | `docs/archive/claim-history/YYYY-MM-DD-topic.md` |
+| `docs/artifact-contracts.md` | package contents or logs are pasted into contracts | artifact requirements, verifier rules, and canonical artifact manifest | evidence archive by ID or derived manifest reference |
+| `docs/remote-evidence-import.md` | every imported bundle becomes one long ledger | current quarantine/review status | `docs/archive/evidence-imports/YYYY-MM-DD-HHMM-source.md` |
+| `docs/Repository-Operating-Rules.md` | procedures and logs turn into a rule dump | durable rules that change behavior | playbooks, skills, validators, field notes, archives |
+| `docs/INDEX.md` | explanations crowd out routing | current routes and update sets | field notes or user docs |
+
 ## Document Classes
 
 - Active runtime docs live under `docs/`
@@ -38,6 +76,8 @@ claims this project actually makes.
 - Architecture decision records live under `SPEC/adr/`
 - Historical docs live under `docs/archive/`
 - Product notes live under `docs/product-notes/` and are references until promoted into active SPEC
+- Split logs, traces, and long evidence records should live in timestamped
+  archive/evidence files, then be linked from active docs.
 - Implicit operating rules should be promoted into `docs/Repository-Operating-Rules.md`
   instead of left only in chat.
 
@@ -51,6 +91,13 @@ claims this project actually makes.
 6. When a SPEC spans past-to-present history, current active sections override older sections.
 7. Active live-state files should stay short enough to read as current operating
    state. Move old history to archive/history files and use bounded reads there.
+8. Do not keep a growing log in one active file. Split long logs or evidence
+   records into timestamped files such as
+   `docs/archive/logs/YYYY-MM-DD-HHMM-start-topic.md`, then link them from TODO,
+   review findings, evidence matrix, save-state, or handoff.
+9. A timestamped log split file should start with `Start: YYYY-MM-DD HH:MM`,
+   scope, source command or artifact, evidence tier, and the active claim or
+   work packet it supports.
 
 ## Minimum Documentation Update Sets
 

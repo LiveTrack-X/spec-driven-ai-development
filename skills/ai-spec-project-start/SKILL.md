@@ -411,19 +411,27 @@ Use this sequence:
 
 ```text
 1. Prior project pain or product need
-2. Owner + AI planning conversation
-3. SPEC draft with scope, non-goals, risks, acceptance criteria
-4. Define a work packet and review-worthy development units
-5. Builder AI implements the packet, including related small tasks inside scope
-6. Separate AI/model/session reviews the result
-7. Tests, docs, and reproducible commands make units evidence-ready
-8. Owner checkpoint accepts, revises, defers, or rejects
-9. Lessons become operating rules, TODOs, ADRs, or archived notes
+2. Choose scale, compression, autonomy, and operating intensity
+3. Owner + AI planning conversation
+4. SPEC draft with scope, non-goals, risks, acceptance criteria
+5. Define a work packet and review-worthy development units
+6. Builder AI implements the packet, including related small tasks inside scope
+7. Separate AI/model/session reviews the result
+8. Tests, docs, evidence tiers, and applicable gates make units evidence-ready
+9. Owner checkpoint accepts, revises, defers, or rejects
+10. Lessons become operating rules, TODOs, ADRs, or archived notes
 ```
 
-Never collapse steps 4-7 into "AI said it is done." AI-complete means
-evidence-ready. Final completion is a decision based on evidence and owner
-acceptance.
+Use only the gates that apply. Reference parity is for reference-derived work;
+product evidence templates are for product, hardware, package, remote,
+compatibility, or release claims; ADRs are conditional for hard-to-reverse
+tradeoffs. Never collapse steps 5-8 into "AI said it is done." AI-complete
+means evidence-ready. Final completion is a decision based on evidence and
+owner acceptance.
+
+If evidence depends on a CLI, API, file, manifest, or UI text shape, name that
+output contract in the active SPEC or artifact contract before treating the
+result as proof.
 
 ## Control File Maintenance Cost
 
@@ -538,7 +546,9 @@ If the owner has already given enough context, proceed and mark assumptions.
 Create or update these early:
 
 - `AGENTS.md`: mandatory rules for every AI agent/session.
-- `docs/INDEX.md`: the single routing table for active docs.
+- `docs/INDEX.md`: the working router for active docs. Use it during
+  implementation when deciding which SPEC, TODO, review, evidence, handoff,
+  archive, or log file to check next.
 - `docs/Repository-Operating-Rules.md`: durable rulebook for repeated rules.
 - `SPEC/SPEC-COMPLETE.md`: current integrated product and implementation baseline.
 - `SPEC/adr/`: decision records for durable rationale when needed.
@@ -565,6 +575,13 @@ Optional but useful:
   and `production_ready`.
 - `docs/remote-evidence-import.md`: quarantine, validation, privacy, review,
   and acceptance flow for remote or external evidence.
+
+When a log, trace, command output, or imported evidence record becomes too long
+for an active state file, split it into a timestamped archive/evidence file such
+as `docs/archive/logs/YYYY-MM-DD-HHMM-start-topic.md`. Start the file with
+`Start: YYYY-MM-DD HH:MM`, scope, source command or artifact, evidence tier,
+and supported claim or work packet. Link it from the active doc instead of
+pasting the full log.
 
 ## Source Of Truth
 

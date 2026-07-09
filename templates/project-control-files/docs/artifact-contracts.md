@@ -72,6 +72,14 @@ claim_impact:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | ART-001 | Remote support bundle | planned | `docs/evidence/quarantine/` | Not created | import checker | EVID-002 | No claim change | Waiting for tester |
 
+## Canonical Manifest
+
+Each generated package, installer, support bundle, firmware image, or imported
+evidence bundle should have one canonical artifact manifest. Derived manifests
+are allowed only when they name the canonical source and generation command.
+If two manifests disagree, keep the artifact out of `accepted_as_evidence`
+until the contract, verifier, and evidence matrix point to the same manifest.
+
 ## Baseline Gate
 
 Before distributing a tester package, alpha build, firmware image, installer, or

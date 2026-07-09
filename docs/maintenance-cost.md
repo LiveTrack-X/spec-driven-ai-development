@@ -119,6 +119,40 @@ size, read headings or matching sections, limit search output, and use explicit
 excludes. If an AI chat becomes unstable, suspect context growth from large
 state files or broad searches before changing runtime code.
 
+Do not keep a growing work log in one active file. When command output, review
+evidence, imported evidence, screenshots, traces, or manual reproduction notes
+would make TODO, review findings, implementation notes, save-state, or handoff
+hard to scan, split the record into a timestamped archive/evidence file such as:
+
+```text
+docs/archive/logs/YYYY-MM-DD-HHMM-start-topic.md
+```
+
+The split file should begin with `Start: YYYY-MM-DD HH:MM`, scope, source
+command or artifact path, evidence tier, supported claim or work packet, and
+links back to the active docs that reference it. Active docs should keep only
+the summary, status, and link.
+
+Common single-file bloat risks:
+
+- `TODO-Open-Items.md`: move completed work and future ideas to TODO history or
+  backlog references; keep only active open work.
+- `review-findings.md`: move closed findings and accepted risks to review
+  archive; keep only active defects, risks, and blocked gates.
+- `implementation-notes.md`: move old implementation diary material to archive;
+  keep current spec-unstated choices and verification impact.
+- `save-state.md`: move old session state to save-state archive or handoff;
+  keep only current resume state and next steps.
+- Evidence files: keep IDs, status, freshness, and claim scope active; move raw
+  logs, screenshots, imports, and long traces to timestamped evidence archives.
+- `Repository-Operating-Rules.md`: keep durable behavior-changing rules active;
+  move procedures to playbooks/skills and guarantees to validators or CI.
+- `docs/INDEX.md`: keep routes and update sets active; move explanations to
+  user docs or field notes.
+
+Use the Single-File Bloat Risk Routes table in `docs/INDEX.md` when deciding
+where a split record should live.
+
 If repository-packing, graphing, embedding, or indexing tools are used, keep
 their ignore files aligned with this rule so generated, private, log, cache,
 dependency, and local database surfaces do not enter AI context by default.

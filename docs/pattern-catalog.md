@@ -47,6 +47,16 @@ agent.
 
 ## Combined Pattern
 
+The logical control spine is:
+
+```text
+Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner checkpoint -> Maintenance
+```
+
+Scale and compression happen before creating files. Evidence-tier and reference
+gates happen before evidence-ready. Owner acceptance happens after evidence,
+not because a gate passed.
+
 ### 1. Start From Pain
 
 The project begins with a concrete friction:
@@ -61,7 +71,8 @@ Convert that pain into an operating rule before writing new code.
 
 ### 2. Create Control Files Before Expansion
 
-Minimum control files:
+For Standard and Full SDAD, create the core control files before expanding
+implementation:
 
 - `AGENTS.md`
 - `docs/INDEX.md`
@@ -73,6 +84,10 @@ Minimum control files:
 
 These files let a non-coding owner supervise progress by reading current scope,
 open work, review findings, evidence, and handoff notes.
+
+For One-shot, Mini SDAD, or a small Standard packet, apply the Small Project
+Compression Rule before creating this full set. A single evidence-ready summary
+is better than stale control files when no durable surface has an active job.
 
 ### 3. Route Every Agent Through The Same Entry Point
 
@@ -367,6 +382,11 @@ evidence when the claim needs it. Use TDD when behavior can be specified before
 implementation; use an equivalent failing check when the work is docs, config,
 tooling, migration, or verification-only.
 
+When evidence depends on a CLI, API, file, manifest, or UI text shape, define
+that output contract in the active SPEC or artifact contract before treating a
+green command as proof. A command can prove "this output matched this contract";
+it cannot prove an unstated contract.
+
 Treat green results as evidence-ready, not owner-accepted. Use ADRs only when
 the slice introduces hard-to-reverse architecture, policy, release, security,
 data-boundary, or owner tradeoff decisions. Keep successful evidence summarized
@@ -526,6 +546,7 @@ need to survive handoff but are not durable enough for an ADR.
 | Several candidate solutions exist | Optional multi-candidate review | ADR or implementation note when the tradeoff is durable |
 | Existing product, repo, demo, or design is used as a reference | Reference Parity Review Gate with source behavior -> implemented behavior -> evidence | Owner gate before reference-critical gaps become release or production claims |
 | Claim depends on environment or product scope | Evidence tier matched to claim level | Block or qualify claims that outrun the observed tier |
+| Evidence depends on command/API/file shape | Output contract named in SPEC or artifact contract before the check is evidence | Block claims based on unstated output formats |
 | Small packet would create more docs than evidence | Small Project Compression Rule | One evidence-ready summary unless a durable surface has an active job |
 | Domain terms drift across sessions | Small glossary routed from `docs/INDEX.md` only when needed | ADR or SPEC update when terminology defines a durable boundary |
 | Old plans keep resurfacing | Archive/product-note boundaries | Stable vs next lane boundaries |

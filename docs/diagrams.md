@@ -53,6 +53,29 @@ flowchart TD
 Read this as precedence: when two sources disagree, prefer the higher source.
 Inside SPECs, current active sections override older historical sections.
 
+## Document Relationship Map
+
+```mermaid
+flowchart TD
+    O["Owner intent / Pain"] --> X["Scale + Compression"]
+    X --> S["SPEC\nscope, non-goals, acceptance"]
+    S --> P["Work Packet\napproved autonomy boundary"]
+    P --> T["TODO\nactive work"]
+    P --> F["Review Findings\nbugs, risks, blockers"]
+    P --> E["Evidence\nclaim tier and verification"]
+    E --> C["Owner Checkpoint\nevidence-ready vs owner-accepted"]
+    S --> N["Implementation Notes\nspec-unstated choices"]
+    S --> A["ADR\nhard-to-reverse tradeoff only"]
+    C --> R["Repository Rules\nrepeated pain becomes rule"]
+    C --> H["Save-State / Handoff\ncontinuity for next session"]
+    E --> L["Timestamped Log Split\nYYYY-MM-DD-HHMM-start-topic.md"]
+```
+
+Use `docs/INDEX.md` as the working router while the packet is active. It tells
+the AI which current document to check at each moment and when to route long
+logs, traces, or evidence records into timestamped split files instead of
+growing an active state file.
+
 ## Role Split
 
 ```mermaid

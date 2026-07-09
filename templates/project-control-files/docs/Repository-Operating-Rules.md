@@ -8,10 +8,25 @@ Scope: Mandatory rules for code, documentation, review, verification, and handof
 This file collects repeated project rules so they do not remain only in chat,
 handoff notes, or one AI session's memory.
 
+Logical flow:
+
+```text
+Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner checkpoint -> Maintenance
+```
+
+Use only the gates that apply. Reference parity is for reference-derived work,
+product evidence templates are for product, hardware, package, remote,
+compatibility, or release claims, and ADRs are conditional for hard-to-reverse
+tradeoffs.
+
 ## Mandatory Start Loop
 
 Context Stability applies before every item in this start loop. Inspect file
 size first and use bounded reads for large routed files.
+
+`docs/INDEX.md` is the working router during implementation, not only a startup
+file. When the next document is unclear, check its Working Route table before
+opening archives, logs, product notes, or optional evidence templates.
 
 Before changing code, prompts, SPECs, docs, migrations, release assets, or
 automation:
