@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `1.3.0` stable documentation/package release.
+Status: `2.0.0` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -156,12 +156,19 @@ Common intents:
   reference-intake intent.
 - "asks too often", "runs ahead" -> autonomy tuning intent.
 
-If one intent is clear, proceed and briefly state the interpreted intent, SDAD
-scale/intensity, autonomy level, and expected evidence. If multiple intents
-conflict in a way that changes scope or risk, ask one blocking clarification
-question with your recommended default. Do not use natural-language routing to
-bypass release, migration, destructive action, real user data, auth, money,
-security, rollback, production claim, or other owner-controlled gates.
+Treat narrative modifiers as routing signals, not automatic scope expansion.
+"Carefully" increases inspection depth, "fully" continues to evidence-ready for
+the approved scope, "minimal" selects compression rather than weaker evidence,
+and "commit and wait" does not imply push, release, or deploy unless named.
+
+If multiple intents match, first decide whether they can be safely composed
+inside one approved packet. If one route remains dominant, proceed and briefly
+state the interpreted intent, SDAD scale/intensity, autonomy level, and expected
+evidence. If the combination changes scope, risk, claim level, owner gate, or
+durable-doc requirements, ask one blocking clarification question with your
+recommended default. Do not use natural-language routing to bypass release,
+migration, destructive action, real user data, auth, money, security, rollback,
+production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
@@ -333,6 +340,9 @@ not rely on Markdown reminders alone.
 
 For the SDAD abstraction of this repository-structure pattern, see
 [docs/field-notes/repository-control-surface-method.md](docs/field-notes/repository-control-surface-method.md).
+That pattern includes a report-first control surface checkup for stale or
+duplicated skills, MCPs, plugins, hooks, permissions, local instructions, and
+tool versions. Applying those changes still requires the matching owner gate.
 
 ## Natural-Language Intent Routing
 
@@ -350,6 +360,14 @@ route that protects scope, evidence, and owner gates.
 | "Continue later", "handoff", "next session lost context" | Handoff intent | Update save-state or create a session handoff with current evidence and next steps. |
 | "Can we borrow from this project?", "rebuild this from the old app" | Reference-intake intent | Evaluate fit, adapt compatible patterns, avoid wholesale workflow transplant, and run a Reference Parity Review Gate before evidence-ready. |
 | "It asks too much", "it runs ahead" | Autonomy tuning intent | Adjust autonomy level, packet boundary, and operating intensity without bypassing risk gates. |
+
+Treat narrative modifiers as routing signals, not automatic scope expansion.
+"Carefully", "thoroughly", or "audit the whole flow" increases inspection depth
+inside the current scope; it does not authorize unrelated refactors. "Fully" or
+"end-to-end" means continue to evidence-ready for the approved scope and stop at
+owner gates; it does not mean owner-accepted. "Quickly", "lightly", or "minimal"
+selects compression, not weaker evidence. "Commit and wait" does not imply push,
+release, or deploy unless those are named.
 
 If multiple intents match, first decide whether they can be safely composed
 inside one approved packet. If one route remains dominant, proceed and state the

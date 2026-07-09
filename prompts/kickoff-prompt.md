@@ -15,10 +15,17 @@ later/lost context" as handoff intent, external project references as
 reference-intake intent, and "asks too often/runs ahead" as autonomy tuning
 intent.
 
-If one intent is clear, state the interpreted intent, SDAD scale/intensity,
-autonomy level, and expected evidence, then proceed. If intents conflict in a
-way that changes scope or risk, ask one blocking clarification question with
-your recommended default.
+Treat narrative modifiers as routing signals, not automatic scope expansion:
+"carefully" increases inspection depth, "fully" continues to evidence-ready for
+the approved scope, "minimal" selects compression rather than weaker evidence,
+and "commit and wait" does not imply push, release, or deploy unless named.
+
+If multiple intents match, first decide whether they can be safely composed
+inside one approved packet. If one route remains dominant, state the interpreted
+intent, SDAD scale/intensity, autonomy level, and expected evidence, then
+proceed. If the combination changes scope, risk, claim level, owner gate, or
+durable-doc requirements, ask one blocking clarification question with your
+recommended default.
 
 ## Start By Clarifying
 

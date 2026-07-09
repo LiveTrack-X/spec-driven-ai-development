@@ -137,6 +137,14 @@ Route ordinary requests by intent:
 - reference intake: "borrow from this repo", "can we adopt this idea",
 - autonomy tuning: "asks too often", "runs ahead".
 
+Treat narrative modifiers as routing signals, not automatic scope expansion.
+"Carefully", "thoroughly", or "audit the whole flow" increases inspection depth
+inside the current scope; it does not authorize unrelated refactors. "Fully" or
+"end-to-end" means continue to evidence-ready for the approved scope and stop at
+owner gates; it does not mean owner-accepted. "Quickly", "lightly", or "minimal"
+selects compression, not weaker evidence. "Commit and wait" does not imply push,
+release, or deploy unless those are named.
+
 If multiple intents match, first decide whether they can be safely composed
 inside one approved packet. When one route remains dominant, state the
 interpreted intent, SDAD scale/intensity, autonomy level, and expected evidence
@@ -197,6 +205,11 @@ to a skill or playbook, guarantees go to enforcement, durable rationale goes to
 ADR, spec-unstated implementation choices go to implementation notes, and
 repeated failures become operating rules, tests, validators, templates, or
 review gates.
+
+Run a control surface checkup when rules, skills, MCP servers, plugins, hooks,
+permissions, or local tool instructions appear stale, duplicated, slow, or
+overloaded. The report can be evidence-ready, but applying cleanup, auto-mode,
+permission, hook, or tool-version changes requires the appropriate owner gate.
 
 See
 [field-notes/repository-control-surface-method.md](field-notes/repository-control-surface-method.md).

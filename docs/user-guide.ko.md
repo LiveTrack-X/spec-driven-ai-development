@@ -86,6 +86,12 @@ AI는 interpreted intent, SDAD scale/intensity, autonomy level, 필요한 eviden
 owner gate를 먼저 짧게 말해야 합니다. 그 해석이 risk나 scope를 바꾸면 진행
 전에 clarification question 하나를 물어야 합니다.
 
+동사는 작업 경로(route)를 고르고, 수식어는 그 경로를 조정합니다. 예를 들어 "검토해",
+"수정해"는 작업 종류를 고르고, "꼼꼼히", "완전히", "빨리", "최소로",
+"커밋하고 대기(commit and wait)"는 검사 깊이, 압축, 정지 지점을 조정할 뿐 scope를 넓히지
+않습니다. "완전히"도 owner가 수락하기 전에는 evidence-ready에서 멈춥니다.
+"커밋하고 대기"는 push, release, deploy를 뜻하지 않습니다.
+
 ### Q. AI가 너무 자주 승인 요청하거나 너무 앞서 나가요.
 
 A. autonomy level, packet boundary, operating intensity를 같이 조정하세요.

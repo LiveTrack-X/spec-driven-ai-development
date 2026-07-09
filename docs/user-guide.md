@@ -117,6 +117,13 @@ autonomy level, expected evidence, and any owner gate. If that interpretation
 would change risk or scope, it should ask one clarification question before
 continuing.
 
+Action words choose the route; modifiers tune the route. For example, "review"
+or "fix" selects the work type, while "carefully", "fully", "quickly",
+"minimal", or "commit and wait" changes inspection depth, compression, or stop
+point without expanding scope. "Fully" still stops at evidence-ready unless the
+owner accepts the result. "Commit and wait" does not mean push, release, or
+deploy.
+
 ### Q. The AI asks for approval too often, or runs ahead too much.
 
 A. Adjust the autonomy level, packet boundary, and operating intensity together.

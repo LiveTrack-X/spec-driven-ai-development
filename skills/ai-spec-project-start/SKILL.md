@@ -133,6 +133,11 @@ whether they can be safely composed inside one approved packet. State the
 interpreted route briefly before proceeding. If the combination changes scope,
 risk, claim level, owner gate, or durable-doc requirements, ask one blocking
 clarification question with a recommended default.
+Treat narrative modifiers as routing signals, not automatic scope expansion:
+"carefully", "thoroughly", and "audit the whole flow" increase inspection depth;
+"fully" and "end-to-end" continue to evidence-ready for the approved scope;
+"quickly", "lightly", and "minimal" select compression, not weaker evidence;
+"commit and wait" does not imply push, release, or deploy unless named.
 Proceed autonomously inside the approved work packet until evidence is ready.
 Do not stop after every micro-task, small SPEC item, or evidence-ready unit.
 Stop for owner input only when scope expands, Q5 risk changes, destructive or
@@ -219,6 +224,14 @@ the right SDAD behavior:
 - "borrow from this repo", "reference this project", or "adopt this idea" -> reference-intake intent.
 - "asks too often" or "runs ahead" -> autonomy tuning intent.
 
+Treat narrative modifiers as routing signals, not automatic scope expansion.
+"Carefully", "thoroughly", or "audit the whole flow" increases inspection depth
+inside the current scope; it does not authorize unrelated refactors. "Fully" or
+"end-to-end" means continue to evidence-ready for the approved scope and stop at
+owner gates; it does not mean owner-accepted. "Quickly", "lightly", or "minimal"
+selects compression, not weaker evidence. "Commit and wait" does not imply push,
+release, or deploy unless those are named.
+
 If multiple intents match, first decide whether they can be safely composed
 inside one approved packet. When one route remains dominant, state the
 interpreted intent, SDAD scale/intensity, autonomy level, and expected evidence,
@@ -266,7 +279,11 @@ only moves repeated rules into the right control surface. It becomes an advanced
 extension only when the project searches over prompts, rules, retrieval,
 memory, context selection, or agent scaffolds with repeated evaluation. For the
 normal structure pattern, use
-`docs/field-notes/repository-control-surface-method.md`.
+`docs/field-notes/repository-control-surface-method.md`. A control surface checkup
+may report stale or duplicated skills, MCPs, plugins, hooks,
+permissions, local instructions, and tool versions as evidence-ready findings;
+applying cleanup, auto-mode, permission, hook, or tool-version changes is a
+separate owner checkpoint.
 
 Cost-aware agent routing is a normal SDAD structure pattern when it chooses a
 lean executor, advisor checkpoint, orchestrator-worker packet, or bounded loop

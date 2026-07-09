@@ -44,6 +44,14 @@ TODOs, review findings, and risk gates.
 - "borrow from this repo", "reference this project", or "adopt this idea" -> reference-intake intent.
 - "asks too often" or "runs ahead" -> autonomy tuning intent.
 
+Treat narrative modifiers as routing signals, not automatic scope expansion.
+"Carefully", "thoroughly", or "audit the whole flow" increases inspection depth
+inside the current scope; it does not authorize unrelated refactors. "Fully" or
+"end-to-end" means continue to evidence-ready for the approved scope and stop at
+owner gates; it does not mean owner-accepted. "Quickly", "lightly", or "minimal"
+selects compression, not weaker evidence. "Commit and wait" does not imply push,
+release, or deploy unless those are named.
+
 If multiple intents match, first decide whether they can be safely composed
 inside one approved packet. When one route remains dominant, state the
 interpreted intent, SDAD scale/intensity, autonomy level, and expected evidence,

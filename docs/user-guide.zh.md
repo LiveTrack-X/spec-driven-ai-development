@@ -84,6 +84,11 @@ AI 应先简短说明 interpreted intent、SDAD scale/intensity、autonomy level
 需要的 evidence，以及 owner gate。如果这种解释会改变 risk 或 scope，继续前
 只问一个 clarification question。
 
+动词选择工作路线(route)，修饰语只调整这条路线。例如 "review" 或 "fix" 选择工作类型，
+"carefully"、"fully"、"quickly"、"minimal"、"commit and wait" 只调整检查深度、
+压缩程度或停止点，不会扩大 scope。"Fully" 仍然在 evidence-ready 停下，直到
+owner 接受结果。"Commit and wait" 不表示 push、release 或 deploy。
+
 ### Q. AI 太频繁请求批准，或者推进得太远。
 
 A. 同时调整 autonomy level、packet boundary 和 operating intensity。

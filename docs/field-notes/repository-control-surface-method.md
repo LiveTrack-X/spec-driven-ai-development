@@ -127,6 +127,35 @@ summary.
 - Promote repeated owner tradeoffs to ADRs only when they are hard to reverse.
 - Remove or archive rules that no longer change behavior.
 
+## Control Surface Checkup
+
+Use a control surface checkup when context bloat, duplicated local and checked-in
+instructions, stale plugins or MCP servers, unused skills, slow hooks, repeated
+permission denials, or tool-version drift starts to slow the project or confuse
+agent routing.
+
+The checkup is a report-first routine. It may recommend:
+
+- unused skill, MCP, plugin, hook, or rule cleanup,
+- deduplicating local tool instructions against checked-in adapter files,
+- splitting one large root instruction file into routed guidance or on-demand
+  procedures,
+- disabling or replacing slow hooks,
+- updating an AI coding tool,
+- changing auto mode, permission defaults, or read-only command approvals,
+- moving repeated procedures into skills/playbooks and guarantees into
+  validators, CI, hooks, permissions, or deny rules.
+
+Report-only checkup output can be evidence-ready when it lists inspected
+surfaces, proposed changes, expected context savings or routing benefit, and
+risks. Applying the changes is a separate owner checkpoint whenever it changes
+installed tools, permissions, hooks, auto mode, source-of-truth routing,
+enforced guarantees, or default access to local/private data.
+
+Do not let a cleanup routine silently remove rare but critical tools, disable a
+safety hook, enable broader autonomy, or pre-approve commands just because they
+are usually read-only. Treat those as risk-gated control-surface changes.
+
 ## Evidence Boundary
 
 Repository structure can make AI work more reliable. It is not completion

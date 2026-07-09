@@ -85,6 +85,13 @@ AI は interpreted intent、SDAD scale/intensity、autonomy level、必要な
 evidence、owner gate を最初に短く述べます。その解釈が risk や scope を
 変える場合は、続行前に clarification question を 1 つだけ聞きます。
 
+動詞は作業ルート(route)を選び、修飾語はそのルートを調整します。たとえば "review" や
+"fix" は作業種別を選び、"carefully"、"fully"、"quickly"、"minimal"、
+"commit and wait" は inspection depth、compression、stop point を調整する
+だけで、scope を広げません。"Fully" でも owner が受け入れるまでは
+evidence-ready で止まります。"Commit and wait" は push、release、deploy を
+意味しません。
+
 ### Q. AI が頻繁に承認を求める、または先に進みすぎる。
 
 A. autonomy level、packet boundary、operating intensity を一緒に調整します。

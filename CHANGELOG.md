@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Nothing yet.
+
+## 2.0.0 - 2026-07-09
+
 - Added the Repository Control Surface field note and pattern: always-loaded
   guidance, routed rules, on-demand procedures, isolated exploration, enforced
   guarantees, and reviewed project memory.
