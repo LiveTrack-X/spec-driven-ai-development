@@ -4,6 +4,14 @@
 
 Nothing yet.
 
+## 2.1.0 - 2026-07-09
+
+- Added an Owner Quick Adoption Guide for introducing SDAD to users or teams
+  without requiring them to learn the whole framework first.
+- Added a compact AI Work Loop guide with Fast, Normal, Full, and Full + Gate
+  loops, one-line evidence contracts, docs sync rules, stop conditions, and
+  compact report format.
+
 ## 2.0.2 - 2026-07-09
 
 - Replaced the README infographic with the SDAD 2.0 control-surface overview

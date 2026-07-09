@@ -3,12 +3,16 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `2.0.2` stable documentation/package release.
+Status: `2.1.0` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
 Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
 agents.
+
+**Start fast:** [User Guide](docs/user-guide.md) |
+[Owner Guide](docs/owners-guide.md) |
+[AI Work Loop](docs/ai-work-loop.md)
 
 <p>
   <a href="https://github.com/sponsors/LiveTrack-X">
@@ -22,6 +26,12 @@ agents.
 ![SPEC-Driven AI Development infographic](assets/spec-driven-ai-development-infographic.png)
 
 ## Start Here: User Guide
+
+If you are introducing SDAD to users or a team, start with
+[docs/owners-guide.md](docs/owners-guide.md).
+
+If an AI agent is already working and needs the shortest execution loop, use
+[docs/ai-work-loop.md](docs/ai-work-loop.md).
 
 If you are not sure what to do, start with
 [docs/user-guide.md](docs/user-guide.md).
@@ -929,6 +939,8 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 ## Key Docs
 
 - [docs/pattern-catalog.md](docs/pattern-catalog.md): full method and pattern matrix
+- [docs/owners-guide.md](docs/owners-guide.md): quick owner rollout guide for getting users productive
+- [docs/ai-work-loop.md](docs/ai-work-loop.md): short Fast/Normal/Full execution loop for AI agents
 - [docs/user-guide.md](docs/user-guide.md): situation-based user guide and FAQ
 - [docs/getting-started.md](docs/getting-started.md): first-use setup guide
 - `docs/INDEX.md` in each SDAD project: working router for which active doc to check at each moment

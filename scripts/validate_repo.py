@@ -17,6 +17,8 @@ REQUIRED_FILES = [
     "CHANGELOG.md",
     "LICENSE",
     "docs/pattern-catalog.md",
+    "docs/owners-guide.md",
+    "docs/ai-work-loop.md",
     "docs/user-guide.md",
     "docs/user-guide.ko.md",
     "docs/user-guide.zh.md",
@@ -267,6 +269,7 @@ def validate_templates() -> None:
     changelog = read("CHANGELOG.md")
     for phrase in [
         "## Unreleased",
+        "## 2.1.0 - 2026-07-09",
         "## 2.0.2 - 2026-07-09",
         "README infographic",
         "SDAD 2.0 control-surface overview",
@@ -286,19 +289,80 @@ def validate_templates() -> None:
         "loop-end smoke guidance",
         "evidence-tier claim boundaries",
         "Small Project Compression",
+        "Owner Quick Adoption Guide",
+        "users or teams",
+        "AI Work Loop guide",
+        "Fast, Normal, Full, and Full + Gate",
+        "one-line evidence contracts",
+        "compact report format",
     ]:
         if phrase not in changelog:
             fail(f"CHANGELOG missing expected note: {phrase}")
+    owners_guide = read("docs/owners-guide.md")
+    for phrase in [
+        "Owner Quick Adoption Guide",
+        "10-Minute Rollout",
+        "Which Link To Send First",
+        "docs/ai-work-loop.md",
+        "Owner Decisions That Must Stay Explicit",
+        "First Prompt For A New User",
+        "First Prompt For Actual Work",
+        "What To Ask At The Checkpoint",
+        "Fast Scale Rules",
+        "Low-Friction Owner Rules",
+        "Adoption Health Check",
+        "Common Failure Signals",
+        "The Minimum Owner Habit",
+        "evidence-ready",
+        "owner-accepted",
+        "Reference Parity Review",
+        "Small Project Compression",
+        "Level 2 Work Packet Autonomy",
+        "Level 4 owner gate",
+    ]:
+        if phrase not in owners_guide:
+            fail(f"Owner guide missing expected phrase: {phrase}")
+    ai_work_loop = read("docs/ai-work-loop.md")
+    for phrase in [
+        "AI Work Loop",
+        "Choose The Loop",
+        "Fast",
+        "Normal",
+        "Full + Gate",
+        "Recover Lite",
+        "Recover Standard",
+        "Recover Full",
+        "Evidence Contract",
+        "Do not implement first and invent the evidence standard afterward",
+        "Bind Packet",
+        "Review-Worthy Unit",
+        "Docs Sync Rule",
+        "docs checked, no update needed",
+        "Stop Conditions",
+        "Do Not Stop For",
+        "Compact Report",
+        "Full Report",
+        "Evidence-ready is not owner-accepted",
+    ]:
+        if phrase not in ai_work_loop:
+            fail(f"AI work loop missing expected phrase: {phrase}")
     for phrase in [
         "README.ko.md",
         "README.zh.md",
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `2.0.2`",
+        "Status: `2.1.0`",
         "stable documentation/package release",
         "project fit, owner discipline, and evidence quality",
+        "Start fast:",
+        "Owner Guide",
+        "AI Work Loop",
+        "docs/ai-work-loop.md",
         "Start Here: User Guide",
+        "docs/owners-guide.md",
+        "quick owner rollout guide",
+        "shortest execution loop",
         "If you are not sure what to do",
         "bash ./scripts/install-codex-skill.sh",
         "what to do when AI asks for approval too often",
@@ -462,7 +526,7 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "2.0.2",
+            "2.1.0",
             "프로젝트 적합도",
             "save-state.md",
             "오너 수락",
@@ -494,7 +558,7 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "2.0.2",
+            "2.1.0",
             "project fit",
             "save-state.md",
             "Owner 验收",
@@ -526,7 +590,7 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "2.0.2",
+            "2.1.0",
             "project fit",
             "save-state.md",
             "Owner の受け入れ",
