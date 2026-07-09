@@ -101,3 +101,18 @@ flowchart TD
     I --> N["docs/implementation-notes.md\nSpec-unstated decisions"]
     S --> D["SPEC/adr/\nDecision records"]
 ```
+
+## Rendered Diagram Assets
+
+Use these when a static or interactive visual is more useful than Mermaid:
+
+- `assets/spec-driven-ai-development-infographic.png`: public overview
+  infographic used by the README.
+- `assets/sdad-control-loop.archify.png`: rendered SDAD Control Loop diagram.
+- `assets/sdad-control-loop.archify.html`: interactive Archify export for the
+  same control loop.
+- `assets/sdad-control-loop.archify.workflow.json`: source workflow used to
+  regenerate the Archify export.
+
+Rendered assets are explanatory references. They do not outrank the active
+SPEC, source code, tests, current control files, or validator output.

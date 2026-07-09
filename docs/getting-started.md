@@ -312,6 +312,19 @@ projects, also ask whether the optional product evidence templates are needed:
 `docs/remote-evidence-import.md`. See
 [product-evidence-templates.md](product-evidence-templates.md).
 
+For lean Standard bootstraps, optional evidence templates are create-on-demand.
+If `docs/INDEX.md` routes optional evidence docs that do not exist yet, create
+only the ones needed by current product, hardware, package, remote evidence, or
+release claims.
+
+Small Project Compression Rule: for One-shot, Mini SDAD, or a small Standard
+packet, one evidence-ready summary is enough when there is one active slice, no
+Q5 gate changed, no unresolved review finding or durable spec-unstated decision
+must survive the turn, no handoff is expected, and the evidence can be shown
+compactly. Turn on SPEC, TODO, review findings, implementation notes,
+save-state, handoff, Evidence Matrix, Claim Registry, or Artifact Contract only
+when that surface has an active job.
+
 ## Daily Usage Loop
 
 Use the same loop every session:
@@ -373,6 +386,8 @@ Before accepting a work packet as "done", check:
 - Were docs checked or updated?
 - Were spec-unstated implementation decisions recorded in implementation notes?
 - Are skipped, partial, degraded, or unverified items named?
+- If the packet rebuilds or borrows from an existing product, repo, design, or
+  demo, did it map source behavior to implemented behavior and evidence?
 - If the packet makes a product, hardware, compatibility, release, package, or
   remote evidence claim, is it mapped through the evidence matrix and claim
   registry?
@@ -398,6 +413,8 @@ delegated the acceptance policy.
 - Treating each small SPEC item as a separate owner-approval gate.
 - Treating evidence-ready as owner-accepted.
 - Treating confident AI language as completion.
+- Passing tests while losing reference-critical behavior from the old product,
+  repo, design, or demo.
 - Letting future ideas enter the active implementation unit.
 - Forgetting to update TODOs, review findings, or docs after work.
 - Not separating builder and reviewer roles.

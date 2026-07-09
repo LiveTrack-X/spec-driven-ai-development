@@ -326,3 +326,18 @@ repository state. State the interpreted intent, SDAD scale/intensity, autonomy
 level, and expected evidence. If multiple intents conflict in a way that
 changes scope or risk, ask one blocking clarification question with a
 recommended default. Do not use intent routing to bypass owner gates.
+
+### 24. Guarantees Beat Guidance For Non-Negotiables
+
+Rule: if a behavior must always happen or must never happen, enforce it with
+tooling or a risk gate instead of relying only on an AI instruction file.
+
+Why it matters: Markdown guidance can be missed under context pressure,
+adapter differences, tool changes, or human error. Secrets, destructive
+actions, migrations, release artifacts, production deploys, and
+money/data/security boundaries need deterministic controls.
+
+Operational form: keep the readable rule in the adapter or operating rules, but
+back it with CI, required tests, validators, hooks, permissions, deny rules,
+branch protection, release gates, artifact checks, or equivalent tooling. Use
+guidance for judgment and enforcement for non-negotiable guarantees.

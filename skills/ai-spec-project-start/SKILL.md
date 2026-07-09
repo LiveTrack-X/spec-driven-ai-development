@@ -170,6 +170,18 @@ As a default soft trigger, use bounded reads above 50 KB or 500 lines, run a
 context-stability check above 200 KB or 2,000 lines, and do not read files above
 1 MB in full during startup unless the owner explicitly asks for historical
 reconstruction.
+When the owner references "final boss" repository setup, context ladders,
+hooks, tool rules, path-gated rules, skills, subagents, or agent memory,
+abstract the idea into SDAD's Repository Control Surface pattern instead of
+copying a tool-specific folder tree. Separate always-loaded guidance, routed
+guidance, on-demand procedure, isolated exploration, enforced guarantee, and
+reviewed memory. Use guidance for judgment and enforcement for
+non-negotiables such as secrets, destructive actions, migrations, release
+artifacts, production deploys, and money/data/security boundaries. Repeated
+research goes to isolated context; repeated procedure goes to a skill or
+playbook; required guarantees go to CI, validators, hooks, permissions, deny
+rules, release gates, or equivalent tooling; reviewed project memory goes to
+implementation notes, ADRs, operating rules, handoffs, or trace links.
 Do not overwrite existing files without showing proposed changes.
 ```
 
@@ -245,6 +257,22 @@ budget, and owner adoption gate. Mark missing fields as `unknown` or
 `docs/field-notes/meta-harness-method.md` and keep discovered harnesses as
 evidence-ready candidates until owner adoption.
 
+Repository Control Surface hardening is a normal SDAD structure pattern when it
+only moves repeated rules into the right control surface. It becomes an advanced
+extension only when the project searches over prompts, rules, retrieval,
+memory, context selection, or agent scaffolds with repeated evaluation. For the
+normal structure pattern, use
+`docs/field-notes/repository-control-surface-method.md`.
+
+Cost-aware agent routing is a normal SDAD structure pattern when it chooses a
+lean executor, advisor checkpoint, orchestrator-worker packet, or bounded loop
+from fixed rules. Use it to reduce unnecessary model/tool spend while
+preserving evidence and owner gates. It becomes an advanced extension only when
+the project searches over routing policies, models, prompts, evaluators, or
+loop strategies with repeated evaluation. For the normal structure pattern, use
+`docs/field-notes/cost-aware-agent-routing-method.md`. Never treat advisor
+approval, worker completion, or a passing loop evaluator as owner acceptance.
+
 A work packet is a bounded container for one or more review-worthy development
 units. The owner approves the packet boundary, not every small task inside it.
 Do not use every small SPEC item as a separate owner-approval boundary by
@@ -273,6 +301,29 @@ for docs, config, tooling, migration, or verification-only work. Green results
 are evidence-ready, not owner-accepted. Use ADRs only for hard-to-reverse
 decisions; keep successful evidence summarized and keep `review-findings.md`
 focused on defects, risks, and unresolved review items.
+
+When rebuilding, porting, or borrowing from an existing product, repository,
+design, demo, or field project, add a Reference Parity Review Gate before
+evidence-ready. Do not copy the old implementation unless explicitly requested.
+Map `source behavior -> implemented behavior -> evidence -> gap/deferred claim`
+for the reference-critical workflows, state labels, role boundaries, data or
+runtime surfaces, and visible controls. For product UI, screenshots can be
+evidence; for server/package/hardware/deployment claims, keep test runtime,
+live runtime, and persisted state separate.
+
+Match evidence tiers to claims before saying evidence-ready: local test,
+browser render, live runtime, persisted state, remote hardware, and production
+evidence each allow different claims. Do not let local tests unlock hardware,
+browser, persistence, or production claims; do not let a remote bundle unlock
+production readiness or owner acceptance.
+
+Small Project Compression Rule: for One-shot, Mini SDAD, or a small Standard
+packet, one evidence-ready summary is enough when there is one active slice, no
+Q5 gate changed, no unresolved finding or durable spec-unstated decision must
+survive, no handoff is expected, and evidence can be shown compactly. Create
+SPEC, TODO, review-findings, implementation notes, save-state, handoff, Evidence
+Matrix, Claim Registry, or Artifact Contract only when that surface has an
+active job.
 
 Use two states:
 

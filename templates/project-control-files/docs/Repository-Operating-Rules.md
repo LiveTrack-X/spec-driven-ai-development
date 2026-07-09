@@ -288,7 +288,8 @@ risk, budget result, changed behavior, and adoption plan.
 - Review should prioritize bugs, security, data loss, docs drift, missing tests,
   overreach beyond SPEC, and false completion claims.
 - Release or production readiness requires deployment, migration, security,
-  backup/restore, monitoring, rollback, and manual evidence as applicable.
+  backup/restore, monitoring, rollback, installed-artifact smoke, and manual
+  evidence as applicable.
 
 ## Version Lane Rules
 
@@ -376,6 +377,30 @@ expensive to reconstruct.
 
 If no control file needs a content change, state which files were checked and why
 no update was needed. Do not claim completion while control files are stale.
+
+Before declaring a packet evidence-ready, run the relevant tests/checks or state
+why they could not run, sync TODO/review/SPEC/save-state status, check for
+unfinished active work packets, check for generated artifacts or cache files in
+the working tree, smoke installed artifacts from outside the source tree when
+packaging or distribution is part of the claim, and keep owner acceptance
+separate from evidence-ready status.
+
+If the packet rebuilds, ports, abstracts, or borrows from an existing product,
+repo, design, demo, or field project, add a Reference Parity Review Gate before
+evidence-ready: map source behavior to implemented behavior, evidence, and any
+gap or deferred claim. Do not copy the reference implementation unless the owner
+explicitly asks for that.
+
+Match evidence tiers to claims: local test, browser render, live runtime,
+persisted state, remote hardware, and production evidence each allow different
+claim scopes. Do not let a lower tier unlock a higher claim, and do not let a
+remote bundle or passing loop evaluator become owner acceptance.
+
+Small Project Compression Rule: for One-shot, Mini SDAD, or a small Standard
+packet, one evidence-ready summary is enough when there is one active slice, no
+Q5 gate changed, no unresolved finding or durable spec-unstated decision must
+survive, no handoff is expected, and evidence can be shown compactly. Create
+extra state or product evidence files only when that surface has an active job.
 
 Control File Budget for each work packet:
 

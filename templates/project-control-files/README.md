@@ -33,6 +33,15 @@ Read:
    `docs/artifact-contracts.md`, `docs/work-packet-state.md`, and
    `docs/remote-evidence-import.md`
 
+Optional product evidence files are create-on-demand. Do not treat a missing
+optional evidence file as a setup failure unless the project is making a claim
+that needs that evidence boundary.
+
+Small Project Compression Rule: if the current packet has one active slice, no
+Q5 gate changed, no durable finding or spec-unstated decision must survive, no
+handoff is expected, and evidence fits in a short summary, do not create extra
+state files just to look complete.
+
 Use `save-state.md` only when work pauses, changes hands, direction changes, or
 the next session would otherwise need to reconstruct context.
 

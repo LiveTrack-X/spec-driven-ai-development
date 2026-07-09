@@ -71,6 +71,19 @@ Each adapter keeps only the high-signal operating rules:
 
 Longer explanations stay in this repository's docs and templates.
 
+Adapters are guidance, not enforcement. If a behavior must always happen or
+must never happen, route it to an enforced surface such as CI, required tests,
+validators, hooks, permissions, deny rules, branch protection, release gates, or
+artifact verification. Keep the adapter rule as the readable explanation, but
+do not rely on Markdown alone for secrets, destructive actions, migrations,
+production deploys, release assets, or money/data/security boundaries.
+
+Use
+[field-notes/repository-control-surface-method.md](field-notes/repository-control-surface-method.md)
+when deciding whether a repeated rule belongs in always-loaded guidance, routed
+guidance, an on-demand procedure, isolated exploration, an enforced guarantee,
+or reviewed project memory.
+
 ## Tool Notes
 
 - Claude Code uses project `CLAUDE.md` memory files. See Anthropic's memory docs:

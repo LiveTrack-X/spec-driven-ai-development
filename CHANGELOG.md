@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+- Added the Repository Control Surface field note and pattern: always-loaded
+  guidance, routed rules, on-demand procedures, isolated exploration, enforced
+  guarantees, and reviewed project memory.
+- Added the Cost-Aware Agent Routing field note and pattern for lean execution,
+  Executor-Advisor checkpoints, Orchestrator-Worker packets, and bounded Loop
+  Engineering with explicit budgets, evidence boundaries, stop rules, and owner
+  gates.
+- Validated SDAD on a separate sandbox across feature, bugfix, project
+  validation, and local readiness loops; tightened create-on-demand wording for
+  optional evidence templates and added loop-end smoke guidance.
+- Repeated the sandbox through an additional bug/readiness cycle and tightened
+  loop-end guidance so evidence-ready gates check unfinished active work
+  packets, not only historical markers.
+- Validated an installable product artifact in a clean environment and added
+  installed-artifact smoke guidance for packaging or distribution claims.
+- Added a Reference Parity Review Gate for rebuilds, ports, demos, designs, and
+  reference-derived work so evidence-ready checks preserve essential source
+  behavior without cloning old implementations.
+- Clarified evidence-tier claim boundaries and the Small Project Compression
+  Rule so local tests, browser renders, live runtime, persisted state, remote
+  hardware, and production evidence cannot overclaim, and small packets can end
+  with one evidence-ready summary instead of template sprawl.
+
 ## 1.3.0 - 2026-07-06
 
 - Added a Meta-Harness field note that adapts harness optimization,

@@ -98,6 +98,23 @@ Do not use local software evidence to unlock hardware, compatibility,
 production, or release claims unless the evidence matrix and claim registry
 explicitly allow that scope.
 
+## Evidence Tier Claim Boundary
+
+Use the weakest public claim that all required evidence tiers support.
+
+| Evidence tier | Supports claims like | Does not support by itself |
+|---|---|---|
+| `local_test` | source-level behavior, unit/contract/CLI checks, deterministic local regressions | browser UI, live service behavior, persistence after restart, hardware, production |
+| `browser_render` | visible UI render, interaction, layout, screenshot-reviewed product controls | backend correctness, persisted state, remote hardware, deployment safety |
+| `live_runtime` | service starts and works in a real local/dev runtime with its configured dependencies | state durability after restart, remote environment compatibility, production readiness |
+| `persisted_state` | reload/restart/import/export proves durable state for the named scope | live hardware behavior, remote tester results, production operation |
+| `remote_hardware` | named device, tester, lab, or external machine evidence after quarantine and review | all-device compatibility, production rollout, owner acceptance |
+| `production_evidence` | deployed, packaged, monitored, rollback-ready, or release-channel claims for the named environment | broader claims than the deployed scope, owner acceptance without a checkpoint |
+
+A higher-sounding tier does not automatically cover a lower one when the scope
+differs. For example, a remote hardware bundle can support a device claim but
+not prove browser UI parity, persisted local state, or production rollback.
+
 ## Context Budget
 
 These templates should reduce active-doc size, not create another journal.

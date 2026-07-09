@@ -36,6 +36,8 @@ REQUIRED_FILES = [
     "docs/session-handoff.md",
     "docs/implicit-rules.md",
     "docs/tool-adapters.md",
+    "docs/field-notes/repository-control-surface-method.md",
+    "docs/field-notes/cost-aware-agent-routing-method.md",
     "docs/field-notes/documentation-governance-method.md",
     "docs/field-notes/release-governance-method.md",
     "docs/field-notes/meta-harness-method.md",
@@ -56,6 +58,7 @@ REQUIRED_FILES = [
     "scripts/install-agent-adapter.ps1",
     "scripts/install-agent-adapter.sh",
     "templates/project-control-files/AGENTS.md",
+    "templates/project-control-files/README.md",
     "templates/project-control-files/docs/INDEX.md",
     "templates/project-control-files/docs/implementation-notes.md",
     "templates/project-control-files/docs/evidence-matrix.md",
@@ -75,6 +78,9 @@ REQUIRED_FILES = [
 
 REQUIRED_ASSETS = [
     "assets/spec-driven-ai-development-infographic.png",
+    "assets/sdad-control-loop.archify.html",
+    "assets/sdad-control-loop.archify.png",
+    "assets/sdad-control-loop.archify.workflow.json",
 ]
 
 
@@ -163,6 +169,14 @@ def validate_skill() -> None:
         "Review-Worthy Development Units",
         "Slice-First Evidence Loop",
         "strongest practical failing test or check",
+        "Match evidence tiers to claims",
+        "Small Project Compression Rule",
+        "Repository Control Surface",
+        "always-loaded guidance",
+        "enforced guarantee",
+        "Cost-aware agent routing",
+        "advisor checkpoint",
+        "bounded loop",
         "implementation discipline",
         "implementation notes",
         "clarification checkpoint",
@@ -199,9 +213,14 @@ def validate_templates() -> None:
         "failing test/check first",
         "owner acceptance",
         "GitHub funding/Sponsors",
+        "Cost-Aware Agent Routing field note",
+        "create-on-demand wording",
+        "loop-end smoke guidance",
+        "evidence-tier claim boundaries",
+        "Small Project Compression",
     ]:
         if phrase not in changelog:
-            fail(f"CHANGELOG missing 1.3.0 release note: {phrase}")
+            fail(f"CHANGELOG missing expected note: {phrase}")
     for phrase in [
         "README.ko.md",
         "README.zh.md",
@@ -225,6 +244,13 @@ def validate_templates() -> None:
         "Natural-Language Intent Routing",
         "route natural-language requests",
         "Reference-intake intent",
+        "Reference Parity Review",
+        "source behavior -> implemented behavior -> evidence",
+        "Evidence Tiers And Claims",
+        "local test",
+        "browser render",
+        "remote hardware",
+        "production evidence",
         "Use It When",
         "AI asks approval after every micro-task, or runs ahead too much",
         "Copy-Paste Start Prompt",
@@ -257,6 +283,8 @@ def validate_templates() -> None:
         "Maintenance Cost",
         "Do not claim completion while control files are stale",
         "Mini SDAD also has a completion gate",
+        "Small Project Compression Rule",
+        "one evidence-ready summary is enough",
         "spec-unstated implementation",
         "clarification checkpoint",
         "Use ADRs sparingly",
@@ -275,6 +303,11 @@ def validate_templates() -> None:
         "docs/implementation-notes.md",
         "docs/domain-language.md",
         "docs/field-notes/meta-harness-method.md",
+        "docs/field-notes/repository-control-surface-method.md",
+        "docs/field-notes/cost-aware-agent-routing-method.md",
+        "guidance from guarantees",
+        "Cost-Aware Agent Routing",
+        "Advisor approval, worker completion, and a passing loop evaluator",
         "docs/no-clone-quick-install.md",
         "The Problem",
         "Why This Is Different",
@@ -530,6 +563,9 @@ def validate_templates() -> None:
         "docs/implementation-notes.md",
         "Handoff Rule",
         "End-Of-Loop Maintenance Rule",
+        "unfinished active work packets",
+        "generated artifacts or cache files",
+        "smoke installed artifacts from outside the source tree",
         "Save-State Update Triggers",
         "past-to-present",
         "Implicit Rules Made Explicit",
@@ -552,6 +588,8 @@ def validate_templates() -> None:
         "work-packet-state.md",
         "remote-evidence-import.md",
         "Advanced extension",
+        "routes, not mandatory files",
+        "Create or copy only the optional evidence files",
     ]:
         if phrase not in index:
             fail(f"docs/INDEX template missing: {phrase}")
@@ -593,9 +631,25 @@ def validate_templates() -> None:
         "evaluation leakage risk",
         "concrete budget",
         "compressed owner review summary",
+        "installed-artifact smoke",
+        "unfinished active work packets",
+        "generated artifacts or cache files",
+        "smoke installed artifacts from outside the source tree",
+        "Match evidence tiers to claims",
+        "Small Project Compression Rule",
     ]:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
+    project_readme = read("templates/project-control-files/README.md")
+    for phrase in [
+        "Optional product evidence files are create-on-demand",
+        "optional evidence file as a setup failure",
+        "evidence boundary",
+        "Small Project Compression Rule",
+        "do not create extra",
+    ]:
+        if phrase not in project_readme:
+            fail(f"Project control README template missing: {phrase}")
     handoff_template = read("templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md")
     for phrase in [
         "SDAD Session Handoff",
@@ -662,6 +716,13 @@ def validate_templates() -> None:
         "product evidence flag",
         "not a new SDAD scale",
         "Owner acceptance is an acceptance field or ledger",
+        "Evidence Tier Claim Boundary",
+        "local_test",
+        "browser_render",
+        "live_runtime",
+        "persisted_state",
+        "remote_hardware",
+        "production_evidence",
     ]:
         if phrase not in evidence_templates:
             fail(f"Product evidence templates doc missing: {phrase}")
@@ -766,6 +827,14 @@ def validate_templates() -> None:
         "Claim Registry",
         "Artifact Contract",
         "Remote Evidence Import",
+        "Reference Parity Review Gate",
+        "source behavior -> implemented behavior -> evidence",
+        "test runtime, live runtime",
+        "persisted state as separate evidence tiers",
+        "Match Evidence Tiers To Claims",
+        "Compress Small Projects Before Adding Files",
+        "Small Project Compression Rule",
+        "One evidence-ready summary is enough",
         "Slice-First Evidence Loop",
         "PLAN narrows intent",
         "strongest practical failing test or check",
@@ -773,6 +842,16 @@ def validate_templates() -> None:
         "not owner-accepted",
         "review-findings.md",
         "Gate Evaluation-Driven Harness Extensions",
+        "Layer Repository Control Surfaces",
+        "Guidance vs enforcement",
+        "research goes to isolated context",
+        "guarantees go to enforcement",
+        "Use Cost-Aware Agent Routing",
+        "Lean Execution Contract",
+        "Executor-Advisor",
+        "Orchestrator-Worker",
+        "Loop Engineering",
+        "Advisor approval is review evidence, not owner acceptance",
     ]:
         if phrase not in catalog:
             fail(f"Pattern catalog missing: {phrase}")
@@ -790,6 +869,7 @@ def validate_templates() -> None:
         "State the interpreted intent",
         "Repository Evidence Beats Unnecessary Questions",
         "Stable Terms Beat Session Vocabulary",
+        "Guarantees Beat Guidance For Non-Negotiables",
     ]:
         if phrase not in implicit:
             fail(f"Implicit rules doc missing: {phrase}")
@@ -828,6 +908,9 @@ def validate_templates() -> None:
         "artifact-contracts.md",
         "work-packet-state.md",
         "remote-evidence-import.md",
+        "optional evidence templates are create-on-demand",
+        "Small Project Compression Rule",
+        "one evidence-ready summary is enough",
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
@@ -876,6 +959,7 @@ def validate_templates() -> None:
         "docs/artifact-contracts.md",
         "docs/work-packet-state.md",
         "docs/remote-evidence-import.md",
+        "These optional evidence files are create-on-demand",
     ]:
         if phrase not in no_clone:
             fail(f"No-clone quick install doc missing: {phrase}")
@@ -912,10 +996,17 @@ def validate_templates() -> None:
         "hard to reverse",
         "session-handoff.md",
         "Control File Budget",
+        "Small Project Compression Rule",
+        "one evidence-ready summary",
+        "Evidence Matrix / Claim Registry / Artifact Contract",
         "session is ending or pausing",
         "owner changes direction",
         "context would be expensive to reconstruct",
         "Do not claim completion while control files are stale",
+        "Minimum loop-end smoke",
+        "no active numbered work packet remains unchecked",
+        "generated artifacts, caches, logs",
+        "smoke the installed artifact from outside the source tree",
         "Scale Implication",
         "Stale File Warning",
     ]:
@@ -976,6 +1067,11 @@ def validate_templates() -> None:
         "owner acceptance evidence",
         "evaluation leakage risk",
         "concrete budget",
+        "Cost-aware agent routing",
+        "advisor checkpoints",
+        "bounded loops",
+        "searches over routing policies",
+        "field-notes/cost-aware-agent-routing-method.md",
         "unknown",
         "blocking",
     ]:
@@ -993,6 +1089,10 @@ def validate_templates() -> None:
         "Work packet",
         "Autonomy Boundary",
         "Batch related small tasks",
+        "Rendered Diagram Assets",
+        "assets/sdad-control-loop.archify.png",
+        "assets/sdad-control-loop.archify.html",
+        "assets/sdad-control-loop.archify.workflow.json",
         "```mermaid",
     ]:
         if phrase not in diagrams:
@@ -1186,9 +1286,55 @@ def validate_templates() -> None:
         "without knowing skill names",
         "implementation-notes",
         "bounded-read guard",
+        "guidance, not enforcement",
+        "enforced surface",
     ]:
         if phrase not in adapters:
             fail(f"Tool adapters doc missing: {phrase}")
+    control_surface = read("docs/field-notes/repository-control-surface-method.md")
+    for phrase in [
+        "Repository Control Surface Method",
+        "Control Surface Ladder",
+        "Always-loaded guidance",
+        "Routed guidance",
+        "On-demand procedure",
+        "Isolated exploration",
+        "Enforced guarantee",
+        "Reviewed memory",
+        "Guidance vs Enforcement",
+        "Routing Rule",
+        "Minimal Layout",
+        "Bloat Controls",
+        "Evidence Boundary",
+        "Adoption Checklist",
+        "CI, tests, validators, hooks, permissions",
+        "implementation notes, ADRs, operating rules, handoffs",
+    ]:
+        if phrase not in control_surface:
+            fail(f"Repository control surface field note missing: {phrase}")
+    cost_routing = read("docs/field-notes/cost-aware-agent-routing-method.md")
+    for phrase in [
+        "Cost-Aware Agent Routing Method",
+        "Lean Execution Contract",
+        "Executor-Advisor",
+        "Orchestrator-Worker",
+        "Loop Engineering",
+        "Routing Gate",
+        "Evidence Boundary",
+        "Stop Rules",
+        "Default executor",
+        "Escalation trigger",
+        "Worker boundary",
+        "Loop trigger",
+        "Evidence contract",
+        "Owner gate",
+        "Advisor approval is review evidence, not owner acceptance",
+        "Worker completion is candidate evidence",
+        "Benchmark ratios from external sources are reference material",
+        "Do not ask an agent to reproduce hidden reasoning",
+    ]:
+        if phrase not in cost_routing:
+            fail(f"Cost-aware agent routing field note missing: {phrase}")
     doc_governance = read("docs/field-notes/documentation-governance-method.md")
     for phrase in [
         "Reusable context-stability rule",

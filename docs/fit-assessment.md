@@ -59,6 +59,17 @@ self-improving agent loops, repeated evaluation automation, retrieval/memory
 tuning, or any workflow that searches over prompts, tools, context construction,
 review rules, or agent scaffolds.
 
+Repository control surfaces are usually not an advanced extension by
+themselves. Keep them lightweight: always-loaded guidance, routed rules,
+on-demand procedures, isolated exploration, enforced guarantees, and reviewed
+memory. Escalate to the advanced extension gate only when the project starts
+searching over or optimizing those surfaces with repeated evaluation.
+
+Cost-aware agent routing is also usually a normal SDAD structure pattern:
+choose lean execution, advisor checkpoints, orchestrator-worker packets, or
+bounded loops by difficulty, evidence need, budget, and owner risk. Escalate to
+the advanced extension gate only when the project searches over routing policies, models, prompts, evaluators, or loop strategies with repeated evaluation.
+
 Do not enable an advanced extension unless the fit gate is explicit:
 
 - repeated task unit exists,
@@ -90,6 +101,11 @@ reference pattern. Treat discovered prompts, retrieval policies, memory
 policies, context selectors, tool scaffolds, or review rules as evidence-ready
 candidates until the owner accepts the split, leakage risk, budget result,
 changed behavior, and adoption plan.
+
+For repository-structure hardening without harness search, use
+[field-notes/repository-control-surface-method.md](field-notes/repository-control-surface-method.md).
+For advisor, worker, and loop routing without harness search, use
+[field-notes/cost-aware-agent-routing-method.md](field-notes/cost-aware-agent-routing-method.md).
 
 ## Questions
 

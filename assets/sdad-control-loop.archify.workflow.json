@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "SDAD Control Loop",
+    "subtitle": "How SPEC-driven AI development routes intent into bounded work, evidence, and owner decisions",
+    "output": "assets/sdad-control-loop.archify.html"
+  },
+  "lanes": [
+    { "id": "owner", "label": "Owner Direction" },
+    { "id": "routing", "label": "Fit + Risk Routing" },
+    { "id": "control", "label": "Active Control Files" },
+    { "id": "work", "label": "AI Work Packet" },
+    { "id": "evidence", "label": "Evidence + Review" },
+    { "id": "gates", "label": "Owner Gates + Exceptions", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "intake", "label": "Intake", "fromCol": 0, "toCol": 1 },
+    { "id": "govern", "label": "Govern", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "execute", "label": "Execute + decide", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "control_surface", "label": "SPEC + ledger", "lane": "control", "fromCol": 4, "toCol": 5, "variant": "emphasis" },
+    { "id": "bounded_packet", "label": "Low-intervention packet", "lane": "work", "fromCol": 4, "toCol": 5, "variant": "dashed" },
+    { "id": "level4_gates", "label": "Level 4 stop conditions", "lane": "gates", "fromCol": 3, "toCol": 5, "variant": "security" }
+  ],
+  "mainPath": [
+    "need",
+    "fit",
+    "risk",
+    "spec",
+    "packet",
+    "build",
+    "ready",
+    "decision"
+  ],
+  "nodes": [
+    {
+      "id": "need",
+      "lane": "owner",
+      "col": 0,
+      "type": "external",
+      "label": "Need or pain",
+      "sublabel": "request, bug, release"
+    },
+    {
+      "id": "decision",
+      "lane": "owner",
+      "col": 5,
+      "type": "security",
+      "label": "Owner decision",
+      "sublabel": "accept, revise, defer"
+    },
+    {
+      "id": "fit",
+      "lane": "routing",
+      "col": 1,
+      "type": "backend",
+      "label": "Fit gate",
+      "sublabel": "one-shot to full"
+    },
+    {
+      "id": "risk",
+      "lane": "routing",
+      "col": 3,
+      "type": "security",
+      "label": "Risk check",
+      "sublabel": "Q5, data, release"
+    },
+    {
+      "id": "adapter",
+      "lane": "control",
+      "col": 1,
+      "type": "frontend",
+      "label": "Tool adapter",
+      "sublabel": "AGENTS, CLAUDE, rules"
+    },
+    {
+      "id": "spec",
+      "lane": "control",
+      "col": 4,
+      "type": "database",
+      "label": "SPEC truth",
+      "sublabel": "scope, non-goals, risks"
+    },
+    {
+      "id": "ledger",
+      "lane": "control",
+      "col": 5,
+      "type": "database",
+      "label": "Control ledger",
+      "sublabel": "TODO, findings, notes"
+    },
+    {
+      "id": "packet",
+      "lane": "work",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Work packet",
+      "sublabel": "bounded autonomy"
+    },
+    {
+      "id": "build",
+      "lane": "work",
+      "col": 5,
+      "type": "backend",
+      "label": "Builder pass",
+      "sublabel": "surgical changes"
+    },
+    {
+      "id": "review",
+      "lane": "evidence",
+      "col": 4,
+      "type": "backend",
+      "label": "Review + QA",
+      "sublabel": "bugs, drift, checks"
+    },
+    {
+      "id": "ready",
+      "lane": "evidence",
+      "col": 5,
+      "type": "security",
+      "label": "Evidence-ready",
+      "sublabel": "proof, limits, files"
+    },
+    {
+      "id": "owner_gate",
+      "lane": "gates",
+      "col": 3,
+      "type": "security",
+      "label": "Owner gate",
+      "sublabel": "scope or risk change",
+      "tag": "stop"
+    },
+    {
+      "id": "rule_update",
+      "lane": "gates",
+      "col": 5,
+      "type": "database",
+      "label": "Rule update",
+      "sublabel": "pain becomes rule"
+    }
+  ],
+  "edges": [
+    { "from": "need", "to": "fit", "label": "interpret intent", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelSegment": 1 },
+    { "from": "fit", "to": "risk", "label": "choose scale", "variant": "default" },
+    { "from": "fit", "to": "adapter", "label": "select tool rules", "variant": "dashed", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelSegment": 1 },
+    { "from": "risk", "to": "spec", "label": "govern current work", "variant": "security", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelSegment": 1 },
+    { "from": "risk", "to": "owner_gate", "label": "Level 4 trigger", "variant": "security", "role": "branch", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelSegment": 1, "labelDy": 65 },
+    { "from": "spec", "to": "packet", "label": "slice scope", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelSegment": 1 },
+    { "from": "spec", "to": "ledger", "variant": "dashed" },
+    { "from": "packet", "to": "build", "variant": "emphasis" },
+    { "from": "build", "to": "review", "label": "separate pass", "variant": "dashed", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelSegment": 1 },
+    { "from": "review", "to": "ready", "variant": "default" },
+    { "from": "build", "to": "ready", "label": "proof", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelSegment": 1 },
+    { "from": "ready", "to": "decision", "variant": "emphasis", "role": "return", "fromSide": "right", "toSide": "right", "route": "outside-right", "width": 1.2 },
+    { "from": "decision", "to": "ledger", "label": "record outcome", "variant": "dashed", "fromSide": "bottom", "toSide": "top", "route": "drop", "labelSegment": 1 },
+    { "from": "owner_gate", "to": "rule_update", "label": "revise boundary", "variant": "security", "role": "branch" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Context Layers",
+      "items": [
+        "Always-loaded adapter rules stay short",
+        "Active control files guide current work",
+        "References and archives load on demand"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Risk Boundary",
+      "items": [
+        "Q5 risks keep owner decisions explicit",
+        "Release, data, auth, money, migration, and rollback do not become AI momentum",
+        "Evidence is required before acceptance"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Operating Loop",
+      "items": [
+        "Pain becomes SPEC",
+        "SPEC becomes a bounded packet",
+        "Repeated pain becomes a rule, test, template, or gate"
+      ]
+    }
+  ]
+}

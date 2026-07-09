@@ -167,6 +167,8 @@ Core 5:
 - [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full 운영 강도
 - [docs/session-handoff.md](docs/session-handoff.md): 긴 세션 handoff와 컨텍스트 연속성
 - [docs/implementation-notes.md](docs/implementation-notes.md): 명세에 없던 구현 의사결정 기록
+- [docs/field-notes/repository-control-surface-method.md](docs/field-notes/repository-control-surface-method.md): 지침, 강제, 격리, 검토된 메모리 제어면
+- [docs/field-notes/cost-aware-agent-routing-method.md](docs/field-notes/cost-aware-agent-routing-method.md): advisor, worker, loop, 비용, 증거 라우팅
 - [docs/diagrams.md](docs/diagrams.md): Mermaid 다이어그램
 - [templates/project-control-files](templates/project-control-files): 프로젝트 제어 파일 템플릿
 

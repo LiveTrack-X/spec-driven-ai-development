@@ -19,6 +19,15 @@ patterns into a reusable operating system for SPEC-driven AI development.
   [popup-studio-ai/bkit-codex](https://github.com/popup-studio-ai/bkit-codex)
   contribute layered context, status recovery, pre/post change guards, and
   practical evidence examples.
+- Repository-control-surface practice contributes the separation between
+  always-loaded guidance, routed rules, on-demand procedures, isolated
+  exploration, enforced guarantees, and reviewed project memory.
+- Cost-aware agent-routing practice contributes lean execution, advisor
+  checkpoints, orchestrator-worker packets, and bounded loops that preserve
+  evidence and owner gates while reducing unnecessary model/tool spend.
+- Reference-parity practice contributes a small review gate for rebuilding from
+  an existing product, repo, design, demo, or field project without copying its
+  implementation or losing its essential behavior.
 - Codex usage patterns described in
   [OpenAI's Codex guide](https://openai.com/ko-KR/business/guides-and-resources/how-openai-uses-codex/)
   contribute issue-shaped prompting, environment improvement loops, controlled
@@ -143,6 +152,38 @@ outside active scope, enter `docs/TODO-Open-Items.md`, become a review finding,
 or be captured in handoff/save-state. Do not treat the best candidate as
 accepted until evidence and owner acceptance are visible.
 
+### 3d. Layer Repository Control Surfaces
+
+Do not put every AI rule into one always-loaded instruction file. SDAD separates
+control surfaces by what they can reliably do:
+
+- always-loaded guidance: short adapter rules every session should read,
+- routed guidance: path, domain, risk, or intent rules loaded only when needed,
+- on-demand procedure: repeatable playbooks, checklists, or skills,
+- isolated exploration: broad research or comparison that returns a bounded
+  summary instead of flooding the main context,
+- enforced guarantee: CI, tests, validators, hooks, permissions, deny rules, or
+  release gates that must run or must block regardless of AI memory,
+- reviewed memory: implementation notes, ADRs, operating rules, handoffs, and
+  trace links that are safe for later sessions to trust.
+
+Guidance vs enforcement is a safety boundary. Use guidance for judgment,
+style, source-of-truth order, and owner checkpoint criteria. Use enforcement for
+secrets, destructive commands, migrations, release artifacts, production
+deploys, money/data/security boundaries, required tests, and generated-artifact
+exclusion. If the project would be unsafe when the AI follows a rule only most
+of the time, the rule belongs in an enforced surface or explicit risk gate, not
+only in Markdown.
+
+Route repeated work by type: research goes to isolated context, procedure goes
+to a skill or playbook, guarantees go to enforcement, durable rationale goes to
+ADR, spec-unstated implementation choices go to implementation notes, and
+repeated failures become operating rules, tests, validators, templates, or
+review gates.
+
+See
+[field-notes/repository-control-surface-method.md](field-notes/repository-control-surface-method.md).
+
 ### 4. Define Source Of Truth Order
 
 Use this default order:
@@ -233,6 +274,74 @@ These templates should reduce active-doc bloat by keeping TODOs and findings
 focused on current decisions while evidence history, raw logs, and imported
 bundles stay linked by ID or archived path.
 
+### 8a. Use A Reference Parity Review Gate
+
+When a work packet rebuilds, ports, abstracts, or borrows from an existing
+product, repository, design, demo, or field project, do a small reference
+parity review before calling the packet evidence-ready.
+
+The goal is not source-code cloning, framework mimicry, or pixel-perfect
+matching unless the owner explicitly asks for that. The goal is to preserve the
+essential behavior, state model, evidence boundaries, and user-visible control
+surface that made the reference useful.
+
+Use a compact parity map:
+
+- source behavior or control,
+- implemented behavior or control,
+- evidence path,
+- known gap or deferred claim.
+
+Check at least the pieces that define user value or owner risk: primary
+workflows, mode or route distinctions, visible state labels, data persistence,
+runtime/live-state differences, role or permission boundaries, generated or
+imported artifacts, and claim qualifiers. For UI/product work, screenshot review
+can be evidence when it checks a visible behavior or layout claim. For server,
+package, hardware, or deployment work, keep test runtime, live runtime, and
+persisted state as separate evidence tiers.
+
+If parity gaps are outside the approved packet, name them as non-goals or
+deferred review findings. Do not let a thin implementation pass evidence-ready
+only because tests exercise the happy path while reference-critical behavior is
+missing.
+
+### 8b. Match Evidence Tiers To Claims
+
+Evidence tier controls what the project may claim. Keep these tiers distinct:
+
+- local test: source-level behavior, unit/contract/CLI checks, and regressions,
+- browser render: visible UI, interaction, layout, and screenshot-reviewed
+  controls,
+- live runtime: a real local/dev process with configured dependencies,
+- persisted state: reload, restart, import/export, or stored state checks,
+- remote hardware: named device, tester, lab, or external-machine evidence
+  after quarantine and review,
+- production evidence: deployed, packaged, monitored, rollback-ready, or
+  release-channel evidence for the named environment.
+
+Do not let a lower tier unlock a higher claim. A local test does not prove
+hardware compatibility. A browser screenshot does not prove persistence. A
+remote tester bundle does not prove production readiness until production
+evidence and owner gates exist.
+No evidence tier grants owner acceptance without the owner checkpoint or a
+delegated acceptance policy.
+
+### 8c. Compress Small Projects Before Adding Files
+
+Small Project Compression Rule: create the smallest evidence surface that keeps
+the owner in control. One evidence-ready summary is enough for One-shot, Mini
+SDAD, or a small Standard packet when the packet has one active slice, no Q5
+gate changed, no unresolved finding must survive the turn, no durable
+spec-unstated decision exists, no handoff is expected, and evidence can be
+shown compactly.
+
+Turn on separate surfaces only when their job exists: SPEC for changed behavior
+or acceptance criteria, TODO for continuing work, review findings for active
+defects or blocked gates, implementation notes for durable spec-unstated
+choices, save-state or handoff for continuity, and product evidence templates
+for claims that need mapped evidence, claim boundaries, artifact contracts, or
+remote evidence review.
+
 ### 9. Use A Slice-First Evidence Loop
 
 For feature delivery, prefer one vertical slice as the approved work packet or
@@ -264,7 +373,34 @@ data-boundary, or owner tradeoff decisions. Keep successful evidence summarized
 and linked by command, artifact path, or report; keep `review-findings.md`
 focused on defects, risks, and unresolved review items.
 
-### 10. Gate Evaluation-Driven Harness Extensions
+### 10. Use Cost-Aware Agent Routing
+
+Route model/tool effort by packet difficulty, evidence need, and owner risk.
+Start with a Lean Execution Contract: inspect current evidence, act when enough
+information exists, use the simplest solution, report only evidenced claims,
+pause only for real owner gates, and lead with the outcome.
+
+Add an Executor-Advisor pattern when one executor can do most of the work but a
+hard judgment needs review. Advisor checkpoints are useful before approach
+commitment, when evidence conflicts with the plan, when repeated errors appear,
+or before evidence-ready on a complex packet. Advisor approval is review evidence, not owner acceptance.
+
+Add an Orchestrator-Worker pattern when independent units can run with isolated
+context, parallelism, or specialization. Each worker needs a task boundary,
+non-goals, output contract, evidence requirement, and escalation rule. Worker
+completion is candidate evidence until the orchestrator integrates conflicts
+against the active SPEC and source-of-truth order.
+
+Use Loop Engineering only when the next run has a clear trigger and stop rule:
+turn-based, goal-based, time-based, or event-based. Every loop must declare its
+done condition, maximum turns/runtime/spend, evidence contract, stop rules,
+owner gate, and state surface. Scheduled and event-based loops belong in
+enforced or automated surfaces, not hidden chat habits.
+
+See
+[field-notes/cost-aware-agent-routing-method.md](field-notes/cost-aware-agent-routing-method.md).
+
+### 11. Gate Evaluation-Driven Harness Extensions
 
 For harness optimization, self-improving loops, retrieval/memory tuning, or
 repeated evaluation automation, keep the work behind the Advanced Extension Fit
@@ -274,7 +410,7 @@ comparison, offline/online trace retention, leakage-risk review, concrete
 budget, and owner adoption gate. See
 [field-notes/meta-harness-method.md](field-notes/meta-harness-method.md).
 
-### 11. Pressure-Test Plans Before Building
+### 12. Pressure-Test Plans Before Building
 
 When a work packet is fuzzy, do a short clarification checkpoint before coding.
 
@@ -294,7 +430,7 @@ micro-approval. Low-risk implementation assumptions may be stated and resolved
 inside the approved packet; owner-controlled product, release, risk, data,
 security, money, migration, or destructive decisions still require a checkpoint.
 
-### 12. Keep Domain Language Bounded
+### 13. Keep Domain Language Bounded
 
 When terminology starts drifting, stabilize the language instead of letting each
 AI session invent its own names.
@@ -309,7 +445,7 @@ language confusion, create a small optional `docs/domain-language.md` routed fro
 `docs/INDEX.md`; keep it glossary-only and separate from implementation notes,
 handoffs, ADRs, and TODOs.
 
-### 13. Use Cross-AI Review Deliberately
+### 14. Use Cross-AI Review Deliberately
 
 Use different AI sessions, models, or reviewers for different roles:
 
@@ -323,7 +459,7 @@ Use different AI sessions, models, or reviewers for different roles:
 The goal is not more AI output. The goal is independent pressure on assumptions,
 bugs, missing tests, docs drift, and false completion claims.
 
-### 14. Convert Lessons Into Rules
+### 15. Convert Lessons Into Rules
 
 When a project hurts, do not only fix the bug. Ask:
 
@@ -338,7 +474,7 @@ When a project hurts, do not only fix the bug. Ask:
 
 This is the core loop: friction becomes reusable structure.
 
-### 15. Make Implicit Rules Explicit
+### 16. Make Implicit Rules Explicit
 
 Do not rely on "the next AI will understand the obvious." Write the obvious
 rules down when they affect execution:
@@ -355,7 +491,7 @@ rules down when they affect execution:
 These rules are not bureaucracy. They protect the owner from silent scope drift,
 false completion claims, stale SPEC execution, and unclear progress reporting.
 
-### 16. Preserve Decisions With ADRs
+### 17. Preserve Decisions With ADRs
 
 Use Architecture Decision Records for decisions that future agents must not
 re-litigate casually:
@@ -388,6 +524,9 @@ need to survive handoff but are not durable enough for an ADR.
 | Codex setup fails repeatedly | Environment improvement loop into rules, TODOs, templates, or handoff | Release readiness blocks until setup evidence is repeatable |
 | Codex task queue accumulates side quests | Controlled task queue with packet boundaries | Owner gate before queue items become release scope |
 | Several candidate solutions exist | Optional multi-candidate review | ADR or implementation note when the tradeoff is durable |
+| Existing product, repo, demo, or design is used as a reference | Reference Parity Review Gate with source behavior -> implemented behavior -> evidence | Owner gate before reference-critical gaps become release or production claims |
+| Claim depends on environment or product scope | Evidence tier matched to claim level | Block or qualify claims that outrun the observed tier |
+| Small packet would create more docs than evidence | Small Project Compression Rule | One evidence-ready summary unless a durable surface has an active job |
 | Domain terms drift across sessions | Small glossary routed from `docs/INDEX.md` only when needed | ADR or SPEC update when terminology defines a durable boundary |
 | Old plans keep resurfacing | Archive/product-note boundaries | Stable vs next lane boundaries |
 | Refactor makes bugfixes hard to port | Canonical SPEC status | Old-to-new module mapping |
@@ -407,9 +546,10 @@ A project using this pattern should be able to show the owner:
 7. clarification assumptions or owner questions resolved,
 8. implementation notes when the SPEC did not state a decision,
 9. context layer used and any bounded-read limits,
-10. interpreted user intent when a request was routed from natural language,
-11. next decision required from the owner,
-12. expected risk before release or production use.
+10. reference parity gaps or deferred claims when rebuilding from existing work,
+11. interpreted user intent when a request was routed from natural language,
+12. next decision required from the owner,
+13. expected risk before release or production use.
 
 ## Naming The Method
 

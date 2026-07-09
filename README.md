@@ -324,6 +324,16 @@ once.
 This keeps the AI oriented without turning every session into a full repository
 transcript.
 
+SDAD also separates guidance from guarantees. Guidance belongs in adapter files,
+routed rules, playbooks, and review prompts. Non-negotiable behavior belongs in
+enforced surfaces such as CI, validators, hooks, permissions, deny rules,
+release gates, or required checks. Secrets, destructive actions, migrations,
+production deploys, release artifacts, and money/data/security boundaries should
+not rely on Markdown reminders alone.
+
+For the SDAD abstraction of this repository-structure pattern, see
+[docs/field-notes/repository-control-surface-method.md](docs/field-notes/repository-control-surface-method.md).
+
 ## Natural-Language Intent Routing
 
 Users should not need to memorize SDAD terms, adapter names, or skill names.
@@ -338,13 +348,47 @@ route that protects scope, evidence, and owner gates.
 | "Release it", "publish it", "tag it" | Release intent | Keep Level 4 gates for release, production claims, rollback, migration, and owner risk acceptance. |
 | "The docs are confusing", "write a guide", "explain usage" | Documentation intent | Update user-facing docs and check routing/index consistency. |
 | "Continue later", "handoff", "next session lost context" | Handoff intent | Update save-state or create a session handoff with current evidence and next steps. |
-| "Can we borrow from this project?" | Reference-intake intent | Evaluate fit, adapt compatible patterns, and avoid wholesale workflow transplant. |
+| "Can we borrow from this project?", "rebuild this from the old app" | Reference-intake intent | Evaluate fit, adapt compatible patterns, avoid wholesale workflow transplant, and run a Reference Parity Review Gate before evidence-ready. |
 | "It asks too much", "it runs ahead" | Autonomy tuning intent | Adjust autonomy level, packet boundary, and operating intensity without bypassing risk gates. |
 
 If one intent is dominant, proceed and state the interpretation briefly. If two
 or more intents conflict in a way that changes risk or scope, ask one blocking
 clarification question with a recommended default. Natural-language routing is
 not permission to read everything; it should still use the context layers above.
+
+## Reference Parity Review
+
+When a packet is derived from an existing product, repository, design, demo, or
+field project, evidence-ready requires a small reference parity check:
+
+```text
+source behavior -> implemented behavior -> evidence -> gap/deferred claim
+```
+
+This is not permission to clone the old implementation. It is a guard against
+thin rebuilds that pass basic tests while losing reference-critical workflows,
+state labels, role boundaries, live-state behavior, or visible product controls.
+For UI/product work, screenshot review can be evidence. For server, package,
+hardware, or deployment work, keep test runtime, live runtime, and persisted
+state as separate evidence tiers.
+
+## Evidence Tiers And Claims
+
+Evidence tier decides claim scope:
+
+| Evidence | Can support | Cannot support alone |
+|---|---|---|
+| local test | code behavior, regression, CLI or contract checks | browser UI, live runtime, persisted state, hardware, production |
+| browser render | visible UI, interaction, screenshot-reviewed product controls | backend correctness, persisted state, deployment safety |
+| live runtime | real local/dev process and dependency behavior | restart durability, remote compatibility, production readiness |
+| persisted state | reload/restart/import/export state claims | live hardware, all environments, production rollout |
+| remote hardware | named device/tester/lab evidence after review | all devices, production readiness, owner acceptance |
+| production evidence | deployed/package/release/rollback claims for a named environment | broader scope than the observed environment or owner acceptance |
+
+Use the weakest public claim supported by the evidence. Do not upgrade a claim
+because a lower tier passed or because a remote bundle arrived unreviewed.
+No evidence tier grants owner acceptance without the owner checkpoint or a
+delegated acceptance policy.
 
 ## Use It When
 
@@ -435,6 +479,13 @@ limitations must be shown before a slice is called evidence-ready. Owner
 acceptance is still required before final done unless the owner delegates that
 acceptance policy.
 
+Small Project Compression Rule: for One-shot, Mini SDAD, or a small Standard
+packet, one evidence-ready summary is enough when there is one active slice, no
+Q5 gate changed, no unresolved finding must survive, no durable spec-unstated
+decision exists, and no handoff is expected. Create or update SPEC, TODO,
+review-findings, implementation notes, save-state, handoff, Evidence Matrix,
+Claim Registry, or Artifact Contract only when that surface has an active job.
+
 If that cost is too high, choose One-shot Prompt or [Mini SDAD](docs/mini-sdad.md).
 See [docs/maintenance-cost.md](docs/maintenance-cost.md).
 
@@ -466,6 +517,28 @@ The purpose of SDAD is not to create more control files. The purpose is to keep
 the project controllable. When control surfaces reduce controllability, lower
 intensity, freeze the baseline, compress evidence, and simplify owner review.
 See [docs/operating-intensity.md](docs/operating-intensity.md).
+
+## Cost-Aware Agent Routing
+
+SDAD can use stronger models, advisor passes, parallel workers, and automated
+loops, but only when the route protects evidence, cost, or owner risk. Start
+with lean execution: act when repository evidence is enough, use the simplest
+solution, report only evidenced claims, pause only for real owner gates, and
+lead with the outcome.
+
+Escalate deliberately:
+
+- Executor-Advisor: one executor does the work and consults a stronger advisor
+  for hard judgments, conflicts, repeated failure, or pre-completion review.
+- Orchestrator-Worker: one orchestrator splits independent units into workers
+  with explicit boundaries, output contracts, and evidence requirements.
+- Loop Engineering: turn-based, goal-based, time-based, or event-based loops
+  run only with a trigger, done condition, budget, stop rule, evidence
+  contract, owner gate, and state surface.
+
+Advisor approval, worker completion, and a passing loop evaluator are
+evidence-ready signals, not owner acceptance. See
+[docs/field-notes/cost-aware-agent-routing-method.md](docs/field-notes/cost-aware-agent-routing-method.md).
 
 ## Advanced Extension Fit
 
@@ -822,6 +895,8 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/product-evidence-templates.md](docs/product-evidence-templates.md): optional Evidence Matrix, Claim Registry, Artifact Contract, Work Packet State, and Remote Evidence Import templates for product/hardware claims
 - [docs/diagrams.md](docs/diagrams.md): workflow diagrams
 - [docs/tool-adapters.md](docs/tool-adapters.md): tool-specific instruction files
+- [docs/field-notes/repository-control-surface-method.md](docs/field-notes/repository-control-surface-method.md): guidance, enforcement, isolation, and reviewed-memory control surfaces
+- [docs/field-notes/cost-aware-agent-routing-method.md](docs/field-notes/cost-aware-agent-routing-method.md): advisor, worker, loop, cost, and evidence routing
 - [docs/field-notes/documentation-governance-method.md](docs/field-notes/documentation-governance-method.md): documentation-governance field pattern
 - [docs/field-notes/release-governance-method.md](docs/field-notes/release-governance-method.md): release-governance field pattern
 - [docs/field-notes/meta-harness-method.md](docs/field-notes/meta-harness-method.md): harness optimization fit gate and evidence boundary pattern

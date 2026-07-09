@@ -27,6 +27,10 @@ Scope: Central documentation navigation and maintenance control
 - `docs/remote-evidence-import.md`: optional quarantine/import/review pattern
   for remote tester, lab, hardware, or external evidence bundles
 
+Optional product evidence entries are routes, not mandatory files for every
+lean bootstrap. Create or copy only the optional evidence files needed by the
+claims this project actually makes.
+
 ## Document Classes
 
 - Active runtime docs live under `docs/`
@@ -69,6 +73,8 @@ Use this table before handoff.
 | Remote tester, external lab, second machine, or user sends evidence | `docs/remote-evidence-import.md`, `docs/artifact-contracts.md`, `docs/evidence-matrix.md`, `review-findings.md` if quarantine or review fails |
 | Work packet status changes across AI complete, software verified, tester ready, hardware verified, owner accepted, release candidate, or production ready | `docs/work-packet-state.md`, `docs/TODO-Open-Items.md`, `save-state.md` if handoff or pause is expected |
 | Durable architecture, policy, release, or owner tradeoff decision | `SPEC/adr/ADR-0001-template.md` copied to a numbered ADR, relevant SPEC/docs |
+| Repository control surface changes, including always-loaded instructions, routed rules, on-demand procedures, isolated exploration, enforced guarantees, or reviewed memory | `docs/Repository-Operating-Rules.md`, relevant adapter/rule/playbook files, validators or CI checks if a guarantee must be enforced |
+| Cost-aware agent routing changes, including advisor checkpoints, orchestrator-worker packets, goal loops, scheduled loops, event loops, model routing, budget, or stop rules | `docs/Repository-Operating-Rules.md`, relevant SPEC/docs, `docs/TODO-Open-Items.md`, `review-findings.md` if routing risk remains, validators or CI when loop guarantees must be enforced |
 | SDAD scale/intensity change, Baseline Freeze, Evidence Surface Creep, or Heavy control-file budget | `docs/Repository-Operating-Rules.md`, relevant SPEC/docs, `docs/TODO-Open-Items.md`, `review-findings.md` if risk remains |
 | Oversized live-state file, chat instability, large archive/log/generated output, or context-stability change | `docs/Repository-Operating-Rules.md`, `save-state.md`, affected active state files, archive/history location, this index |
 | Advanced extension, repeated eval loop, harness optimization, retrieval/memory tuning, or self-improving agent loop | `docs/Repository-Operating-Rules.md`, relevant SPEC/docs, `docs/TODO-Open-Items.md`, `review-findings.md` if leakage, budget, or adoption risk remains |

@@ -494,5 +494,9 @@ also create only the needed product evidence templates:
 - `docs/work-packet-state.md`,
 - `docs/remote-evidence-import.md`.
 
+These optional evidence files are create-on-demand. A lean Standard bootstrap
+may route them from `docs/INDEX.md` without creating all of them immediately.
+Create them only when the current claim needs that evidence boundary.
+
 If those files already exist, the AI should show the proposed changes before
 editing them.

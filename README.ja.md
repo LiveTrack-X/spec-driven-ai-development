@@ -165,6 +165,8 @@ Core 5:
 - [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full の operating intensity
 - [docs/session-handoff.md](docs/session-handoff.md): 長いセッションの handoff と文脈継続
 - [docs/implementation-notes.md](docs/implementation-notes.md): SPEC に書かれていない実装判断の記録
+- [docs/field-notes/repository-control-surface-method.md](docs/field-notes/repository-control-surface-method.md): guidance、enforcement、隔離、reviewed memory の制御面
+- [docs/field-notes/cost-aware-agent-routing-method.md](docs/field-notes/cost-aware-agent-routing-method.md): advisor、worker、loop、コスト、証拠のルーティング
 - [docs/diagrams.md](docs/diagrams.md): Mermaid 図
 - [templates/project-control-files](templates/project-control-files): プロジェクト制御ファイルのテンプレート
 

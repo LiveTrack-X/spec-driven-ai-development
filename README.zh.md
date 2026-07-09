@@ -161,6 +161,8 @@ Core 5:
 - [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full 运行强度
 - [docs/session-handoff.md](docs/session-handoff.md): 长会话 handoff 与上下文连续性
 - [docs/implementation-notes.md](docs/implementation-notes.md): 记录 SPEC 未说明的实现决策
+- [docs/field-notes/repository-control-surface-method.md](docs/field-notes/repository-control-surface-method.md): guidance、enforcement、隔离、reviewed memory 控制面
+- [docs/field-notes/cost-aware-agent-routing-method.md](docs/field-notes/cost-aware-agent-routing-method.md): advisor、worker、loop、成本、证据路由
 - [docs/diagrams.md](docs/diagrams.md): Mermaid 图示
 - [templates/project-control-files](templates/project-control-files): 项目控制文件模板
 

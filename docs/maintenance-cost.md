@@ -56,6 +56,35 @@ reassessment:
 Record the control-file budget in the handoff summary so repeated `Heavy`
 packets are visible.
 
+## Small Project Compression Rule
+
+For One-shot, Mini SDAD, or a small Standard packet, one evidence-ready summary
+is enough when all of these are true:
+
+- one active slice or bugfix is being reviewed,
+- no Q5 release, production, auth, money, user-data, destructive, or rollback
+  gate changed,
+- no unresolved review finding needs to survive the turn,
+- no spec-unstated decision must be durable after handoff,
+- no other AI/tool/person needs to resume from separate state files,
+- the evidence fits in a short summary with links or command output names.
+
+Turn on separate control files only when their job exists:
+
+| Surface | Create or update when |
+|---|---|
+| `SPEC/SPEC-COMPLETE.md` | behavior, scope, constraints, or acceptance criteria changed |
+| `docs/TODO-Open-Items.md` | work continues beyond the current summary or must survive sessions |
+| `review-findings.md` | a defect, risk, blocked gate, or deferred review item remains active |
+| `docs/implementation-notes.md` | a spec-unstated assumption, compromise, or verification-impact choice must survive |
+| `save-state.md` | a future session would otherwise need to reconstruct context |
+| `docs/sdad/handoffs/` | another session, AI tool, or person will continue the work |
+| Evidence Matrix / Claim Registry / Artifact Contract | a product, hardware, package, remote, compatibility, or release claim needs mapped evidence |
+
+If the table does not trigger a surface, do not create it just to look more
+SDAD-like. Compression is correct when the owner can still see changed files,
+checks, claim scope, known limits, and what is not complete.
+
 ## Live-State Size Budget
 
 Active live-state files are routing summaries, not permanent session logs.
@@ -116,6 +145,19 @@ Use two states:
 
 Final completion requires evidence, owner acceptance or requested changes,
 updated TODO/review/SPEC state, and known stale items explicitly named.
+
+Minimum loop-end smoke:
+
+- run the relevant tests/checks or state why they could not run,
+- sync TODO, review findings, SPEC, implementation notes, and save-state when
+  their status changed,
+- verify that no active numbered work packet remains unchecked unless it is
+  explicitly deferred or blocked,
+- check the working tree for generated artifacts, caches, logs, or package
+  outputs that should be ignored or removed,
+- when packaging, installer, release, or product distribution is part of the
+  claim, smoke the installed artifact from outside the source tree,
+- keep `AI-complete / evidence-ready` separate from `Owner-accepted`.
 
 Implementation notes sit between code comments and ADRs: they preserve why a
 spec-unstated implementation choice was made, but they do not replace TODOs,
