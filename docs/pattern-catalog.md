@@ -371,9 +371,10 @@ review-worthy unit. A slice should connect behavior to evidence across the
 smallest useful path, not split the work into isolated layers that cannot prove
 user value.
 
-Use the order: PLAN narrows intent, SPEC fixes the active slice, ADR records
-hard-to-reverse decisions only when needed, and JIT resolves missing slice
-details just before implementation.
+Use the order: PLAN narrows intent, SPEC fixes the active slice, optional ADR
+records hard-to-reverse decisions only when needed, TODO/work packet turns the
+slice into current work, and JIT resolves missing slice details just before
+implementation.
 
 Use JIT clarification only for unresolved slice decisions. JIT means "resolve
 the missing detail at the moment it matters"; it does not mean ignoring current

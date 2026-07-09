@@ -411,15 +411,18 @@ Use this sequence:
 
 ```text
 1. Prior project pain or product need
-2. Choose scale, compression, autonomy, and operating intensity
-3. Owner + AI planning conversation
-4. SPEC draft with scope, non-goals, risks, acceptance criteria
-5. Define a work packet and review-worthy development units
-6. Builder AI implements the packet, including related small tasks inside scope
-7. Separate AI/model/session reviews the result
-8. Tests, docs, evidence tiers, and applicable gates make units evidence-ready
-9. Owner checkpoint accepts, revises, defers, or rejects
-10. Lessons become operating rules, TODOs, ADRs, or archived notes
+2. Route current state through `docs/INDEX.md` and source-of-truth order
+3. Choose scale, compression, autonomy, and operating intensity
+4. PLAN narrows owner intent into one packet, boundaries, and non-goals
+5. SPEC fixes the active slice with scope, risks, and acceptance criteria
+6. Optional ADR records only hard-to-reverse durable tradeoffs
+7. TODO/work packet turns the slice into review-worthy development units
+8. JIT clarification resolves only missing blocking details before implementation
+9. Builder AI implements the packet, including related small tasks inside scope
+10. Separate AI/model/session reviews the result
+11. Tests, docs, evidence tiers, and applicable gates make units evidence-ready
+12. Owner checkpoint accepts, revises, defers, or rejects
+13. Lessons become operating rules, TODOs, ADRs, or archived notes
 ```
 
 Use only the gates that apply. Reference parity is for reference-derived work;

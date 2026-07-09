@@ -698,6 +698,16 @@ The full control spine is:
 Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner checkpoint -> Maintenance
 ```
 
+The execution routine is:
+
+```text
+Route current state -> Scale/compress -> PLAN -> Active SPEC -> optional ADR -> TODO/work packet -> JIT clarification -> Build/review/evidence -> Owner checkpoint/maintenance
+```
+
+`docs/INDEX.md` is the working router for this order. The order does not require
+every file every time: ADRs, evidence maps, claim registries, save-state, and
+handoffs are created only when their trigger exists.
+
 Scale and compression happen before creating files. Reference parity and
 evidence-tier checks happen before evidence-ready. ADRs are conditional: create
 one only when a decision is hard to reverse, surprising without context, and a

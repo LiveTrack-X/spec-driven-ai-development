@@ -53,6 +53,36 @@ TODO, review findings, and this index before opening historical material.
 Routing order is not source-of-truth precedence. Use this table to find the
 right current files; use the Source Of Truth Role Map below when files disagree.
 
+## SDAD Working Order
+
+Use this order for a normal Standard or Full SDAD packet. Skip outputs whose
+trigger does not exist, but state the skip reason in the evidence-ready,
+owner-checkpoint, or handoff summary.
+
+1. Route: read `AGENTS.md`, this index, current source/tests, and active runtime
+   docs before archives or chat history.
+2. Scale/compress: choose the smallest SDAD scale, control-file budget, and
+   operating intensity that protect the packet.
+3. Recover source-of-truth state: compare code/tests, active docs, canonical
+   SPEC, active SPEC, and current handoff/save-state when they disagree.
+4. PLAN: narrow owner intent into one packet, non-goals, boundaries, and
+   claim/evidence expectations.
+5. SPEC: activate or update only the current SPEC slice and acceptance criteria.
+6. Optional ADR: create one only for hard-to-reverse, surprising, durable
+   tradeoffs; otherwise use implementation notes.
+7. TODO/work packet: turn the slice into current tasks and review-worthy units.
+8. JIT clarification: after routed evidence, SPEC, and TODO still cannot decide,
+   ask the next blocking question and record the resolved choice.
+9. Build/review/evidence: implement, review, match evidence tiers to claims, and
+   run reference parity or product-evidence gates when applicable.
+10. Owner checkpoint/maintenance: distinguish evidence-ready from
+    owner-accepted, run the Documentation Record Audit, update active docs, and
+    archive or link long history.
+
+This is a work routine, not a mandate to create every possible file. Mini SDAD
+and small packets may compress the routine into one evidence-ready summary when
+no durable SPEC, TODO, ADR, review finding, evidence map, or handoff job exists.
+
 ## Single-File Bloat Risk Routes
 
 When one file starts carrying multiple jobs, split by job instead of appending.

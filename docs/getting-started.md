@@ -78,6 +78,19 @@ links, and validation commands.
 If you do not want that maintenance cost, choose One-shot Prompt or
 [Mini SDAD](mini-sdad.md). See [maintenance-cost.md](maintenance-cost.md).
 
+## First Packet Routine
+
+For Standard or Full SDAD, use `docs/INDEX.md` as the working router:
+
+```text
+Route current state -> Scale/compress -> PLAN -> Active SPEC -> optional ADR -> TODO/work packet -> JIT clarification -> Build/review/evidence -> Owner checkpoint/maintenance
+```
+
+This order clarifies what to look at and when. It does not force every file into
+every packet: skip ADR, separate TODO, evidence matrix, claim registry,
+save-state, or handoff when their trigger does not exist, and say why in the
+evidence-ready summary.
+
 After Standard or Full SDAD is installed, choose an operating intensity for each
 packet: `Standard SDAD / High`, `Standard SDAD / Medium`, `Standard SDAD / Low`,
 `Full SDAD / High`, `Full SDAD / Medium`, or `Full SDAD / Low`. Use
