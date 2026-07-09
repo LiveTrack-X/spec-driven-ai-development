@@ -75,6 +75,9 @@ Then include:
 
 - missing tests,
 - docs drift,
+- missing documentation record audit: changed files or claims that implied doc
+  checks, minimum update-set row, docs changed, docs checked with no update
+  needed, stale docs, archive/evidence links, and validation commands,
 - missing implementation notes for spec-unstated assumptions, changes,
   compromises, rejected alternatives, owner-relevant tradeoffs, follow-up, or
   verification impact,

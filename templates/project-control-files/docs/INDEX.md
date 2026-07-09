@@ -43,6 +43,7 @@ Use this table while working, not only at session start.
 | Investigating bugs or risks | `review-findings.md` | Tests, source, TODO, SPEC, evidence files | Closing findings without reproduction or rationale |
 | Making a spec-unstated implementation choice | Active SPEC and source/tests | `docs/implementation-notes.md`; ADR only if hard to reverse | Hiding rationale only in chat |
 | Making a public/product claim | Evidence tier, claim registry, and source/test/runtime state | Evidence Matrix, Claim Registry, Artifact Contract, Remote Evidence Import when needed | Upgrading claims from weak, unreviewed, or `blocked_until_evidence` evidence |
+| Auditing documentation record | Changed files, claims, and minimum update-set row | Active docs changed/checked list, stale-doc list, archive links, validation command | Claiming evidence-ready without docs checked or no-update rationale |
 | Preparing owner checkpoint | Changed files and verification evidence | TODO, review findings, SPEC, implementation notes, save-state if continuity is needed | Calling evidence-ready owner-accepted |
 | Ending or handing off | Current packet state and unresolved risks | `save-state.md` or `docs/sdad/handoffs/` | Dumping a full transcript into active docs |
 | Repeated pain appears | Current failure or confusion evidence | `docs/Repository-Operating-Rules.md`, tests, validators, or templates | Adding prose rules when enforcement is required |
@@ -120,6 +121,9 @@ acceptance to upgrade weak evidence into a stronger evidence tier.
 9. A timestamped log split file should start with `Start: YYYY-MM-DD HH:MM`,
    scope, source command or artifact, evidence tier, and the active claim or
    work packet it supports.
+10. Before evidence-ready, owner checkpoint, or handoff, run a Documentation Record Audit:
+    list docs changed, docs checked with no update needed, stale docs found,
+    archive/evidence links created, and validation commands run.
 
 ## Minimum Documentation Update Sets
 

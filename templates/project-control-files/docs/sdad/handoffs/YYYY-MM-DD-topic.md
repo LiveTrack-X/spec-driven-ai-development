@@ -74,29 +74,37 @@ record raw internal reasoning or mechanical edit logs.
 |---|---|---|
 | | | |
 
-## 11. Current State
+## 11. Documentation Record Audit
+- Minimum update-set row used from `docs/INDEX.md`:
+- Docs changed:
+- Docs checked with no update needed and why:
+- Stale docs found or confirmed absent:
+- Archive/evidence links created:
+- Validation commands run:
+
+## 12. Current State
 - Working:
 - Broken:
 - Unverified:
 - Unknown:
 - Owner acceptance status:
 
-## 12. Constraints and Do-Not-Touch Areas
+## 13. Constraints and Do-Not-Touch Areas
 -
 -
 -
 
-## 13. Open Decisions
+## 14. Open Decisions
 -
 -
 -
 
-## 14. Next Concrete Steps
+## 15. Next Concrete Steps
 1.
 2.
 3.
 
-## 15. Reactivation Prompt
+## 16. Reactivation Prompt
 
 Paste this into a fresh AI session:
 

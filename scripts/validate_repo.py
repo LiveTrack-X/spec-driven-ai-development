@@ -192,6 +192,8 @@ def validate_skill() -> None:
         "Owner decisions control scope",
         "decision for continuity",
         "weak evidence into stronger evidence",
+        "Documentation Record Audit",
+        "minimum update-set row",
         "Pain-To-Rule",
         "Evidence Rules",
         "product evidence flag",
@@ -301,6 +303,8 @@ def validate_templates() -> None:
         "Proceed autonomously inside the approved work packet",
         "Mini SDAD",
         "Maintenance Cost",
+        "documentation routine order",
+        "documentation record audit",
         "Do not claim completion while control files are stale",
         "Mini SDAD also has a completion gate",
         "Small Project Compression Rule",
@@ -627,6 +631,9 @@ def validate_templates() -> None:
         "Start: YYYY-MM-DD HH:MM",
         "blocked_until_evidence",
         "canonical artifact manifest",
+        "Auditing documentation record",
+        "Documentation Record Audit",
+        "minimum update-set row",
         "Source Of Truth Role Map",
         "Routing order is not source-of-truth precedence",
         "Owner decisions control scope",
@@ -682,6 +689,8 @@ def validate_templates() -> None:
         "Scale/compress -> Active SPEC slice",
         "Read order is routing, not authority",
         "weak evidence into stronger evidence",
+        "Documentation Record Audit",
+        "minimum update-set row",
     ]:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
@@ -709,6 +718,10 @@ def validate_templates() -> None:
         "Bounded-read instructions",
         "Implementation Notes",
         "Reference existing SPECs",
+        "Documentation Record Audit",
+        "Minimum update-set row",
+        "Docs checked with no update needed",
+        "Validation commands run",
         "read this current handoff fully",
         "Commands / Tests Run",
         "Reactivation Prompt",
@@ -973,6 +986,7 @@ def validate_templates() -> None:
         "ADRs are conditional",
         "Quick Routing Prompt",
         "Use docs/INDEX.md as the working router",
+        "Documentation Record Audit",
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
@@ -1065,6 +1079,10 @@ def validate_templates() -> None:
         "Start: YYYY-MM-DD HH:MM",
         "Common single-file bloat risks",
         "Single-File Bloat Risk Routes",
+        "Documentation Routine Order",
+        "Documentation Record Audit",
+        "minimum update-set row",
+        "docs checked with no update needed",
         "session is ending or pausing",
         "owner changes direction",
         "context would be expensive to reconstruct",
@@ -1274,6 +1292,10 @@ def validate_templates() -> None:
         "Owner acceptance status",
         "Implementation Notes",
         "docs/implementation-notes.md",
+        "documentation record audit",
+        "minimum update-set row",
+        "docs checked with no update needed",
+        "validation commands",
         "Reactivation Prompt",
         "Do not assume the previous chat context is available",
     ]:
@@ -1320,6 +1342,8 @@ def validate_templates() -> None:
         "no full startup read above 1 MB",
         "implementation-notes.md",
         "clarification",
+        "missing documentation record audit",
+        "minimum update-set row",
     ]:
         if phrase not in review_prompt:
             fail(f"Review prompt missing context-stability guidance: {phrase}")
@@ -1338,6 +1362,10 @@ def validate_templates() -> None:
         "evaluation leakage risk",
         "concrete budget",
         "bounded-read instructions",
+        "documentation record audit",
+        "minimum update-set row",
+        "docs checked with no update needed",
+        "validation commands run",
         "docs/implementation-notes.md",
         "50 KB",
     ]:

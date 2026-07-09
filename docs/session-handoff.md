@@ -92,6 +92,8 @@ A valid SDAD handoff must include:
   were needed,
 - files touched or investigated,
 - commands or tests run and results,
+- documentation record audit: minimum update-set row, docs changed, docs checked with no update needed,
+  stale docs, archive/evidence links, and validation commands,
 - known failures, warnings, or unverified assumptions,
 - open decisions,
 - owner acceptance status,

@@ -34,6 +34,14 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - tests and commands run,
 - test results,
 - docs checked or updated,
+- documentation record audit:
+  - changed files or claims that implied a doc check,
+  - minimum update-set row used from `docs/INDEX.md`,
+  - docs changed,
+  - docs checked with no update needed and why,
+  - stale docs found or confirmed absent,
+  - archive/evidence links created,
+  - validation commands run,
 - implementation notes for spec-unstated assumptions, changes, compromises,
   rejected alternatives, owner-relevant tradeoffs, follow-up, and verification
   impact,
@@ -94,6 +102,8 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
   Implementation notes section for Mini SDAD.
 - Do not bury blockers in prose. Put active defects in `review-findings.md`.
 - Do not leave future ideas mixed into active implementation work.
+- Do not omit the documentation record audit when the packet changed code,
+  claims, docs, evidence, owner decisions, release state, or handoff state.
 - Do not claim release readiness while Critical findings remain open.
 - Do not claim generalized improvement from eval-driven work if search evidence
   and owner acceptance evidence are the same set.

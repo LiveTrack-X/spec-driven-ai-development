@@ -897,7 +897,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md): copy-paste setup without cloning
 - [docs/anti-patterns.md](docs/anti-patterns.md): failure modes to avoid
 - [docs/fit-assessment.md](docs/fit-assessment.md): project fit checklist
-- [docs/maintenance-cost.md](docs/maintenance-cost.md): loop-end control file update cost
+- [docs/maintenance-cost.md](docs/maintenance-cost.md): loop-end control file update cost, documentation routine order, and documentation record audit
 - [docs/context-stability.md](docs/context-stability.md): bounded reads and live-state slimming
 - [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full High, Medium, and Low operating intensity
 - [docs/session-handoff.md](docs/session-handoff.md): long-session handoff and context continuity

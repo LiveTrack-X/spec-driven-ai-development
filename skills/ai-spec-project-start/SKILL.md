@@ -455,6 +455,12 @@ At loop end:
 If no control file needs a content change, state which files were checked and why
 no update was needed. Do not claim completion while control files are stale.
 
+Before evidence-ready, owner checkpoint, or handoff, run a Documentation Record Audit:
+identify the changed files or claims that implied a doc check, the
+minimum update-set row used from `docs/INDEX.md`, docs changed, docs checked
+with no update needed, stale docs found, archive/evidence links created, and
+validation commands run.
+
 If the user cannot afford this maintenance cost, choose Mini SDAD or a one-shot
 prompt instead.
 
@@ -661,6 +667,7 @@ Every implementation handoff must include:
 - behavior changed,
 - tests or commands run,
 - docs checked or updated,
+- documentation record audit summary,
 - implementation notes for spec-unstated decisions,
 - remaining risks,
 - what is not complete,

@@ -294,6 +294,11 @@ risk, budget result, changed behavior, and adoption plan.
 - If a review finding is closed, update `review-findings.md`.
 - If no doc content changed, state which docs were checked and why no update was
   needed.
+- Before evidence-ready, owner checkpoint, or handoff, run a Documentation
+  Record Audit: list the changed files or claims that implied a doc check, the
+  minimum update-set row used from `docs/INDEX.md`, docs changed, docs checked
+  with no update needed, stale docs found, archive/evidence links created, and
+  validation commands run.
 - If repeated ambiguity comes from overloaded domain terms, create or update a
   small glossary routed from `docs/INDEX.md`; keep it glossary-only.
 - Use ADRs for durable architecture, policy, release, source-of-truth, security,
@@ -406,6 +411,7 @@ unfinished active work packets, check for generated artifacts or cache files in
 the working tree, smoke installed artifacts from outside the source tree when
 packaging or distribution is part of the claim, and keep owner acceptance
 separate from evidence-ready status.
+Include the Documentation Record Audit in the evidence-ready or handoff summary.
 
 If the packet rebuilds, ports, abstracts, or borrows from an existing product,
 repo, design, demo, or field project, add a Reference Parity Review Gate before

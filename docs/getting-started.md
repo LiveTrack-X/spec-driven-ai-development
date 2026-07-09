@@ -70,6 +70,10 @@ owner explicitly asks for historical reconstruction.
 
 If no file needs a content change, say which files were checked and why no
 update was needed.
+Before evidence-ready or handoff, run the Documentation Record Audit in
+[maintenance-cost.md](maintenance-cost.md): state the minimum update-set row,
+docs changed, docs checked with no update needed, stale docs, archive/evidence
+links, and validation commands.
 
 If you do not want that maintenance cost, choose One-shot Prompt or
 [Mini SDAD](mini-sdad.md). See [maintenance-cost.md](maintenance-cost.md).

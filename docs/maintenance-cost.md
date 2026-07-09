@@ -36,6 +36,38 @@ Before handoff, owner checkpoint, or session end, update or explicitly check:
 If no file needs a content change, the handoff must say which control files were
 checked and why no update was needed.
 
+## Documentation Routine Order
+
+Use this order before evidence-ready, owner checkpoint, handoff, or session end:
+
+1. Classify the change: behavior, config, docs-only, review finding, release,
+   evidence, owner decision, or handoff.
+2. Check `docs/INDEX.md` for the minimum documentation update set.
+3. Choose the control-file budget: `Minimal`, `Normal`, or `Heavy`.
+4. Update only active docs whose job changed; archive long history, logs, and
+   raw evidence instead of growing active files.
+5. Run the documentation record audit below.
+6. Run repository validation, or name why validation could not run.
+7. In the evidence-ready or handoff summary, state docs changed, docs checked with no update needed,
+   stale docs found, and why any expected doc did not need a content change.
+
+## Documentation Record Audit
+
+Before claiming evidence-ready, verify the documentation record answers:
+
+- Which changed files or claims implied a doc check?
+- Which minimum update-set row in `docs/INDEX.md` applied?
+- Which docs changed?
+- Which docs were checked but did not need content changes, and why?
+- Are SPEC, TODO, review findings, implementation notes, save-state, handoff,
+  evidence matrix, claim registry, and artifact contract current when their job
+  exists?
+- Were stale docs updated, marked stale, or archived?
+- Were long logs, traces, evidence, or history split to archive/evidence files
+  and linked from active docs?
+- Were durable owner decisions recorded in active docs, SPEC, ADR, or claim
+  registry instead of only in chat or handoff?
+
 ## Control File Budget
 
 Choose a control-file budget for each work packet:
