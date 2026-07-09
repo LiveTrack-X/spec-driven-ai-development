@@ -4,6 +4,13 @@
 
 Nothing yet.
 
+## 2.0.1 - 2026-07-09
+
+- Restored executable git modes for the Bash installer scripts and documented
+  `bash ./scripts/...` fallbacks for checkouts that lose executable bits.
+- Added repository validation for installer script presence and executable
+  git modes.
+
 ## 2.0.0 - 2026-07-09
 
 - Added the Repository Control Surface field note and pattern: always-loaded

@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `2.0.0` stable documentation/package release.
+Status: `2.0.1` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -877,6 +877,8 @@ macOS/Linux:
 ```bash
 ./scripts/install-codex-skill.sh
 ```
+
+If your checkout lost executable bits, use `bash ./scripts/install-codex-skill.sh`.
 
 Then start a new Codex session and say:
 

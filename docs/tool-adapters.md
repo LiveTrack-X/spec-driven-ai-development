@@ -41,6 +41,9 @@ macOS/Linux:
 ./scripts/install-agent-adapter.sh generic /path/to/project
 ```
 
+If your checkout lost executable bits, prefix the command with `bash`, for
+example `bash ./scripts/install-agent-adapter.sh claude-code /path/to/project`.
+
 The installer refuses to overwrite existing files unless `-Force` or `--force`
 is used.
 

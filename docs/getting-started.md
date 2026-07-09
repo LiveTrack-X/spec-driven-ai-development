@@ -254,6 +254,9 @@ Bash:
 ./scripts/install-agent-adapter.sh generic /path/to/project
 ```
 
+If your checkout lost executable bits, prefix the command with `bash`, for
+example `bash ./scripts/install-agent-adapter.sh codex /path/to/project`.
+
 Then start your AI tool inside the target project and say:
 
 ```text
@@ -279,6 +282,8 @@ Bash:
 ```bash
 ./scripts/install-codex-skill.sh
 ```
+
+If your checkout lost executable bits, use `bash ./scripts/install-codex-skill.sh`.
 
 Then start a new Codex session and say:
 

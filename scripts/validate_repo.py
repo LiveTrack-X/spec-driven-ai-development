@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import unquote
@@ -58,6 +59,8 @@ REQUIRED_FILES = [
     "skills/ai-spec-project-start/references/starter-templates.md",
     "scripts/install-agent-adapter.ps1",
     "scripts/install-agent-adapter.sh",
+    "scripts/install-codex-skill.ps1",
+    "scripts/install-codex-skill.sh",
     "templates/project-control-files/AGENTS.md",
     "templates/project-control-files/README.md",
     "templates/project-control-files/docs/INDEX.md",
@@ -95,6 +98,26 @@ def read(path: str) -> str:
     if not file_path.exists():
         fail(f"Missing required file: {path}")
     return file_path.read_text(encoding="utf-8")
+
+
+def require_executable(path: str) -> None:
+    file_path = ROOT / path
+    if not file_path.exists():
+        fail(f"Missing executable file: {path}")
+    try:
+        mode = int(
+            subprocess.check_output(
+                ["git", "ls-files", "--stage", path],
+                cwd=ROOT,
+                text=True,
+                stderr=subprocess.STDOUT,
+            ).split()[0],
+            8,
+        )
+    except Exception as exc:
+        fail(f"Could not inspect git mode for {path}: {exc}")
+    if mode != 0o100755:
+        fail(f"{path} must be executable in git mode 100755; found {mode:o}")
 
 
 def strip_fenced_code(text: str) -> str:
@@ -232,6 +255,11 @@ def validate_skill() -> None:
 def validate_templates() -> None:
     for path in REQUIRED_FILES:
         read(path)
+    for path in [
+        "scripts/install-agent-adapter.sh",
+        "scripts/install-codex-skill.sh",
+    ]:
+        require_executable(path)
     for path in REQUIRED_ASSETS:
         if not (ROOT / path).is_file():
             fail(f"Missing required asset: {path}")
@@ -239,7 +267,10 @@ def validate_templates() -> None:
     changelog = read("CHANGELOG.md")
     for phrase in [
         "## Unreleased",
+        "## 2.0.1 - 2026-07-09",
         "## 2.0.0 - 2026-07-09",
+        "executable git modes",
+        "bash ./scripts/",
         "## 1.3.0 - 2026-07-06",
         "Meta-Harness field note",
         "advanced-extension fit gate",
@@ -261,11 +292,12 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `2.0.0`",
+        "Status: `2.0.1`",
         "stable documentation/package release",
         "project fit, owner discipline, and evidence quality",
         "Start Here: User Guide",
         "If you are not sure what to do",
+        "bash ./scripts/install-codex-skill.sh",
         "what to do when AI asks for approval too often",
         "docs/user-guide.ko.md",
         "docs/user-guide.zh.md",
@@ -427,7 +459,7 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "2.0.0",
+            "2.0.1",
             "프로젝트 적합도",
             "save-state.md",
             "오너 수락",
@@ -459,7 +491,7 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "2.0.0",
+            "2.0.1",
             "project fit",
             "save-state.md",
             "Owner 验收",
@@ -491,7 +523,7 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "2.0.0",
+            "2.0.1",
             "project fit",
             "save-state.md",
             "Owner の受け入れ",
@@ -1048,6 +1080,8 @@ def validate_templates() -> None:
         "Use docs/INDEX.md as the working router",
         "that file is a template",
         "Documentation Record Audit",
+        "bash ./scripts/install-agent-adapter.sh codex",
+        "bash ./scripts/install-codex-skill.sh",
     ]:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
@@ -1452,9 +1486,17 @@ def validate_templates() -> None:
         "bounded-read guard",
         "guidance, not enforcement",
         "enforced surface",
+        "bash ./scripts/install-agent-adapter.sh claude-code",
     ]:
         if phrase not in adapters:
             fail(f"Tool adapters doc missing: {phrase}")
+    adapters_readme = read("adapters/README.md")
+    for phrase in [
+        "bash ./scripts/install-agent-adapter.sh claude-code",
+        "lost executable bits",
+    ]:
+        if phrase not in adapters_readme:
+            fail(f"Adapters README missing installer fallback: {phrase}")
     control_surface = read("docs/field-notes/repository-control-surface-method.md")
     for phrase in [
         "Repository Control Surface Method",

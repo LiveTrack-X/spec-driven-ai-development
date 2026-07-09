@@ -25,3 +25,5 @@ Then copy an adapter manually or use an installer.
 ```bash
 ./scripts/install-agent-adapter.sh claude-code /path/to/project
 ```
+
+If your checkout lost executable bits, use `bash ./scripts/install-agent-adapter.sh claude-code /path/to/project`.
