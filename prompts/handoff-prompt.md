@@ -93,8 +93,11 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
   historical reconstruction.
 - When asked to restart, summarize, archive, or continue later, offer to create
   or update a handoff first.
-- Fresh sessions must load the relevant spec, handoff, and current repository
-  state before continuing.
+- Fresh sessions must use the handoff to identify the active route, then load
+  `AGENTS.md`, `docs/INDEX.md`, relevant SPEC, and current repository state
+  before continuing.
+- Handoff-only or save-state-only decisions are continuity hints until promoted
+  into active SPEC, ADR, claim registry, TODO, or review findings.
 - Do not include speculative abstractions, drive-by refactors, or unrelated
   cleanup in the packet handoff as if they were requested work.
 - Do not hide spec-unstated implementation decisions in chat memory. Record

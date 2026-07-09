@@ -58,8 +58,8 @@ Obvious-but-unwritten assumptions should not be treated as accepted project
 rules unless they are present in active docs, SPEC, or owner decisions.
 Owner decisions control scope, risk tolerance, and acceptance; they do not
 upgrade weak evidence. Check whether durable owner decisions were recorded in
-active docs, SPEC, ADR, or claim registry; treat handoff-only decisions as
-continuity until promoted.
+active docs, SPEC, ADR, or claim registry; treat handoff-only or
+save-state-only decisions as continuity until promoted.
 
 ## Output Format
 

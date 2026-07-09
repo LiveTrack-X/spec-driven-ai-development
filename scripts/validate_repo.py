@@ -609,6 +609,7 @@ def validate_templates() -> None:
         "Read order is routing, not authority",
         "decision for continuity",
         "weak evidence into stronger evidence",
+        "Before implementing from a handoff-only or save-state-only decision",
     ]:
         if phrase not in agents:
             fail(f"AGENTS template missing: {phrase}")
@@ -1372,6 +1373,7 @@ def validate_templates() -> None:
         "no full startup read above 1 MB",
         "implementation-notes.md",
         "clarification",
+        "save-state-only decisions",
         "missing documentation record audit",
         "minimum update-set row",
     ]:
@@ -1396,6 +1398,7 @@ def validate_templates() -> None:
         "minimum update-set row",
         "docs checked with no update needed",
         "validation commands run",
+        "Handoff-only or save-state-only decisions",
         "docs/implementation-notes.md",
         "50 KB",
     ]:
@@ -1558,6 +1561,7 @@ def validate_templates() -> None:
             "owner acceptance separate",
             "Read order is routing, not authority",
             "current handoff only for continuity",
+            "Before implementing from a handoff-only or save-state-only decision",
             "does not upgrade weak evidence",
         ]:
             if phrase not in content:

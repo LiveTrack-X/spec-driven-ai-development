@@ -74,6 +74,9 @@ Read order is routing, not authority. Owner decisions control scope, risk
 tolerance, and acceptance. Record durable owner decisions in active docs, SPEC,
 ADR, or claim registry; use a current handoff only for continuity until
 promoted. Owner acceptance does not upgrade weak evidence.
+Before implementing from a handoff-only or save-state-only decision, promote it
+to active SPEC, ADR, claim registry, TODO, or review findings when it affects
+scope, acceptance criteria, public claims, risk, evidence, or owner acceptance.
 
 If a SPEC spans past-to-present history, current active sections override older
 historical sections.
