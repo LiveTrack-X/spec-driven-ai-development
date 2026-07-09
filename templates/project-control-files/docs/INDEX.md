@@ -88,6 +88,28 @@ This is a work routine, not a mandate to create every possible file. Mini SDAD
 and small packets may compress the routine into one evidence-ready summary when
 no durable SPEC, TODO, ADR, review finding, evidence map, or handoff job exists.
 
+## Decision Routing Quick Check
+
+Use this table when a decision appears during planning, implementation, review,
+or handoff. If more than one row applies, record the decision in the highest
+durable surface needed and link from the lighter surface.
+
+| Decision type | Record first in | Also update when needed |
+| --- | --- | --- |
+| Current scope, non-goal, acceptance criterion, or behavior contract | Active SPEC | TODO, review findings, evidence matrix |
+| Spec-unstated implementation choice that affects future understanding | `docs/implementation-notes.md` | TODO or review finding if follow-up remains |
+| Hard-to-reverse, surprising, durable architecture, policy, release, source-of-truth, security, data-boundary, or owner tradeoff | ADR | Active SPEC, TODO, operating rules |
+| Future work, deferred option, or next implementation step | `docs/TODO-Open-Items.md` | SPEC if scope changed |
+| Defect, unresolved risk, failed check, or blocked gate | `review-findings.md` | TODO, SPEC, evidence matrix |
+| Public, product, package, compatibility, release, hardware, or production claim | `docs/claim-registry.md` and `docs/evidence-matrix.md` | Artifact contract or remote evidence import |
+| Current continuity, next step, or restart context only | `save-state.md` or `docs/sdad/handoffs/` | Promote before build if it changes scope, acceptance, risk, claim, or owner decision |
+
+Handoff-only or save-state-only decisions are continuity hints, not durable
+authority. Before implementing from a handoff-only or save-state-only decision,
+promote any decision that affects scope, acceptance criteria, public claims,
+risk, evidence, or owner acceptance into the active SPEC, ADR, claim registry,
+TODO, or review ledger.
+
 ## Single-File Bloat Risk Routes
 
 When one file starts carrying multiple jobs, split by job instead of appending.

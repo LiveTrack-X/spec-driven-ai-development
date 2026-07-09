@@ -704,9 +704,11 @@ The execution routine is:
 Route current state -> Scale/compress -> PLAN -> Active SPEC -> optional ADR -> TODO/work packet -> JIT clarification -> Build/review/evidence -> Owner checkpoint/maintenance
 ```
 
-`docs/INDEX.md` is the working router for this order. The order does not require
-every file every time: ADRs, evidence maps, claim registries, save-state, and
-handoffs are created only when their trigger exists.
+In an installed SDAD project, `docs/INDEX.md` is the working router for this
+order. In this source repository, the installable router template lives at
+`templates/project-control-files/docs/INDEX.md`. The order does not require every
+file every time: ADRs, evidence maps, claim registries, save-state, and handoffs
+are created only when their trigger exists.
 
 Scale and compression happen before creating files. Reference parity and
 evidence-tier checks happen before evidence-ready. ADRs are conditional: create

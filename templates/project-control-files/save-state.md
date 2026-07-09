@@ -21,6 +21,11 @@ Default soft triggers: bounded reads above 50 KB or 500 lines; a
 context-stability check above 200 KB or 2,000 lines; no full startup read above
 1 MB unless the owner explicitly asks for historical reconstruction.
 
+Save-state-only decisions are continuity hints. If a decision affects scope,
+acceptance criteria, public claims, risk, evidence, or owner acceptance, promote
+it to the active SPEC, ADR, claim registry, TODO, or review ledger before using
+it as implementation authority.
+
 ## Update Triggers
 
 Update this file when:

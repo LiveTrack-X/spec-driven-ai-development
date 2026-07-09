@@ -557,7 +557,9 @@ Create or update these early:
 - `AGENTS.md`: mandatory rules for every AI agent/session.
 - `docs/INDEX.md`: the working router for active docs. Use it during
   implementation when deciding which SPEC, TODO, review, evidence, handoff,
-  archive, or log file to check next.
+  archive, or log file to check next. Use its Decision Routing Quick Check when
+  a choice could belong in SPEC, implementation notes, ADR, TODO, review
+  findings, claim registry, save-state, or handoff.
 - `docs/Repository-Operating-Rules.md`: durable rulebook for repeated rules.
 - `SPEC/SPEC-COMPLETE.md`: current integrated product and implementation baseline.
 - `SPEC/adr/`: decision records for durable rationale when needed.

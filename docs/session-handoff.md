@@ -42,6 +42,10 @@ explicitly asks for historical reconstruction.
 
 Use handoffs to point to durable sources of truth. Do not let the handoff become
 a second SPEC, a second TODO ledger, or a hidden implementation journal.
+Handoff-only decisions are continuity hints. If a decision affects scope,
+acceptance criteria, public claims, risk, evidence, or owner acceptance, promote
+it to the active SPEC, ADR, claim registry, TODO, or review ledger before using
+it as implementation authority.
 
 ## Bounded Resume Reads
 

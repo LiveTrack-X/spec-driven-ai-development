@@ -177,6 +177,7 @@ def validate_skill() -> None:
         "PLAN narrows owner intent",
         "TODO/work packet",
         "JIT clarification",
+        "Decision Routing Quick Check",
         "Use only the gates that apply",
         "working router for active docs",
         "YYYY-MM-DD-HHMM-start-topic.md",
@@ -310,6 +311,7 @@ def validate_templates() -> None:
         "Maintenance Cost",
         "Route current state -> Scale/compress -> PLAN",
         "optional ADR -> TODO/work packet -> JIT clarification",
+        "installable router template lives at",
         "documentation routine order",
         "documentation record audit",
         "Do not claim completion while control files are stale",
@@ -631,6 +633,8 @@ def validate_templates() -> None:
         "Working Route",
         "Use this table while working",
         "SDAD Working Order",
+        "Decision Routing Quick Check",
+        "Handoff-only or save-state-only decisions",
         "Route: read",
         "Scale/compress",
         "PLAN",
@@ -653,6 +657,7 @@ def validate_templates() -> None:
         "Routing order is not source-of-truth precedence",
         "Owner decisions control scope",
         "decision for continuity",
+        "Before implementing from a handoff-only or save-state-only decision",
     ]:
         if phrase not in index:
             fail(f"docs/INDEX template missing: {phrase}")
@@ -706,6 +711,7 @@ def validate_templates() -> None:
         "weak evidence into stronger evidence",
         "Documentation Record Audit",
         "minimum update-set row",
+        "Before implementing from a handoff-only or save-state-only decision",
     ]:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
@@ -756,6 +762,7 @@ def validate_templates() -> None:
         "expensive to reconstruct",
         "Implementation Notes",
         "docs/implementation-notes.md",
+        "Save-state-only decisions are continuity hints",
     ]:
         if phrase not in save_state:
             fail(f"Save-state template missing: {phrase}")
@@ -1007,6 +1014,7 @@ def validate_templates() -> None:
         "ADRs are conditional",
         "Quick Routing Prompt",
         "Use docs/INDEX.md as the working router",
+        "that file is a template",
         "Documentation Record Audit",
     ]:
         if phrase not in getting_started:
@@ -1298,6 +1306,7 @@ def validate_templates() -> None:
         "Specs are authority",
         "Handoffs are continuity",
         "Reference, Do Not Duplicate",
+        "Handoff-only decisions are continuity hints",
         "Bounded Resume Reads",
         "bounded reads",
         "docs/sdad/handoffs/YYYY-MM-DD-topic.md",

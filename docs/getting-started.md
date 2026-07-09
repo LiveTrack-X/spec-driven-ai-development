@@ -80,7 +80,9 @@ If you do not want that maintenance cost, choose One-shot Prompt or
 
 ## First Packet Routine
 
-For Standard or Full SDAD, use `docs/INDEX.md` as the working router:
+For Standard or Full SDAD, use `docs/INDEX.md` as the working router after SDAD
+control files are installed. In this source repository, that file is a template
+at `templates/project-control-files/docs/INDEX.md`:
 
 ```text
 Route current state -> Scale/compress -> PLAN -> Active SPEC -> optional ADR -> TODO/work packet -> JIT clarification -> Build/review/evidence -> Owner checkpoint/maintenance

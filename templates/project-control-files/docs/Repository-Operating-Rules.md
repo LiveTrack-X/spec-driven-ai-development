@@ -92,6 +92,9 @@ Owner decisions control scope, risk tolerance, and acceptance. They become a
 durable source of truth only when recorded in active docs, SPEC, ADR, or claim
 registry. A current handoff may carry the decision for continuity until it is
 promoted; it does not turn weak evidence into stronger evidence.
+Before implementing from a handoff-only or save-state-only decision, promote it
+to the active SPEC, ADR, claim registry, TODO, or review ledger when it affects
+scope, acceptance criteria, public claims, risk, evidence, or owner acceptance.
 
 If a SPEC spans past-to-present history, current active sections override older
 sections. Older SPEC material explains rationale; it does not define current
