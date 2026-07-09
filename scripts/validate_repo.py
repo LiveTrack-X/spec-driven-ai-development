@@ -188,6 +188,10 @@ def validate_skill() -> None:
         "docs/implementation-notes.md",
         "Mini Unit Completion",
         "Source Of Truth",
+        "Read order is routing, not authority",
+        "Owner decisions control scope",
+        "decision for continuity",
+        "weak evidence into stronger evidence",
         "Pain-To-Rule",
         "Evidence Rules",
         "product evidence flag",
@@ -199,6 +203,17 @@ def validate_skill() -> None:
     ]:
         if phrase not in body:
             fail(f"Skill body missing expected phrase: {phrase}")
+    starter_templates = read("skills/ai-spec-project-start/references/starter-templates.md")
+    for phrase in [
+        "When sources conflict, prefer:",
+        "Product notes and external references",
+        "Read order is routing, not authority",
+        "Owner decisions control scope",
+        "decision for continuity",
+        "weak evidence into",
+    ]:
+        if phrase not in starter_templates:
+            fail(f"Skill starter templates missing expected phrase: {phrase}")
 
 
 def validate_templates() -> None:
@@ -578,6 +593,9 @@ def validate_templates() -> None:
         "past-to-present",
         "Implicit Rules Made Explicit",
         "working router during implementation",
+        "Read order is routing, not authority",
+        "decision for continuity",
+        "weak evidence into stronger evidence",
     ]:
         if phrase not in agents:
             fail(f"AGENTS template missing: {phrase}")
@@ -609,6 +627,10 @@ def validate_templates() -> None:
         "Start: YYYY-MM-DD HH:MM",
         "blocked_until_evidence",
         "canonical artifact manifest",
+        "Source Of Truth Role Map",
+        "Routing order is not source-of-truth precedence",
+        "Owner decisions control scope",
+        "decision for continuity",
     ]:
         if phrase not in index:
             fail(f"docs/INDEX template missing: {phrase}")
@@ -658,6 +680,8 @@ def validate_templates() -> None:
         "Small Project Compression Rule",
         "Logical flow",
         "Scale/compress -> Active SPEC slice",
+        "Read order is routing, not authority",
+        "weak evidence into stronger evidence",
     ]:
         if phrase not in rules:
             fail(f"Repository operating rules template missing: {phrase}")
@@ -877,6 +901,9 @@ def validate_templates() -> None:
         "Guidance vs enforcement",
         "research goes to isolated context",
         "guarantees go to enforcement",
+        "Read order is routing, not authority",
+        "continuity until it is promoted",
+        "weak evidence into stronger",
         "Use Cost-Aware Agent Routing",
         "Lean Execution Contract",
         "Executor-Advisor",
@@ -1131,6 +1158,8 @@ def validate_templates() -> None:
         "Rendered Diagram Assets",
         "Document Relationship Map",
         "Timestamped Log Split",
+        "Owner decisions",
+        "Owner acceptance does not upgrade",
         "assets/sdad-control-loop.archify.png",
         "assets/sdad-control-loop.archify.html",
         "assets/sdad-control-loop.archify.workflow.json",
@@ -1385,6 +1414,10 @@ def validate_templates() -> None:
         "50 KB or 500 lines",
         "The first-read chain must apply context-stability",
         "docs/implementation-notes.md",
+        "chat memory or AI confidence",
+        "Read order is routing, not authority",
+        "Owner decisions control scope",
+        "Owner acceptance does not upgrade weak evidence",
     ]:
         if phrase not in doc_governance:
             fail(f"Documentation governance field note missing: {phrase}")
@@ -1442,6 +1475,9 @@ def validate_templates() -> None:
             "product evidence templates",
             "docs/evidence-matrix.md",
             "owner acceptance separate",
+            "Read order is routing, not authority",
+            "current handoff only for continuity",
+            "does not upgrade weak evidence",
         ]:
             if phrase not in content:
                 fail(f"{path} missing expected phrase: {phrase}")

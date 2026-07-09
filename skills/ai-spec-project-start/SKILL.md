@@ -596,6 +596,14 @@ When sources disagree, prefer:
 7. archived or historical docs,
 8. chat memory or AI confidence.
 
+Read order is routing, not authority. Startup docs help find the right files;
+the source-of-truth order decides conflicts. Owner decisions control scope, risk
+tolerance, and acceptance. They become durable source of truth only when recorded
+in active docs, SPEC, ADR, or claim registry. A current handoff may carry the
+decision for continuity until it is promoted; it does not turn weak evidence into
+stronger evidence.
+Do not turn weak evidence into stronger evidence.
+
 Current-over-historical rule: if a SPEC includes a timeline from past to
 present, prefer the newest active/current section over older sections. Treat
 older SPEC material as rationale or history unless it is explicitly reaffirmed

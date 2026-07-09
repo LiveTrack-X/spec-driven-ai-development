@@ -123,9 +123,15 @@ When sources conflict, prefer:
 3. Canonical SPEC
 4. Active SPEC files
 5. Handoff/save-state files
-6. Product notes
+6. Product notes and external references
 7. Historical or archived records
 8. Chat memory or AI confidence
+
+Read order is routing, not authority. Owner decisions control scope, risk
+tolerance, and acceptance. They become durable source of truth only when recorded
+in active docs, SPEC, ADR, or claim registry. A current handoff may carry the
+decision for continuity until it is promoted; it does not turn weak evidence into
+stronger evidence.
 
 If a SPEC spans past-to-present history, current active sections override older
 sections. Older SPEC material is rationale unless reaffirmed in the current

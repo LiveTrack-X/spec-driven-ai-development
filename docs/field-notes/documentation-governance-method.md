@@ -55,10 +55,15 @@ This pattern explicitly ranks evidence:
 4. active or planned SPEC files,
 5. current handoff files,
 6. product notes and external references,
-7. historical or archived records.
+7. historical or archived records,
+8. chat memory or AI confidence.
 
 Reusable rule: SPECs can define intent, but implementation status must come from
 code, tests, migrations, and repeatable commands.
+Read order is routing, not authority. Owner decisions control scope, risk
+tolerance, and acceptance; durable owner decisions belong in active docs, SPEC,
+ADR, or claim registry. A current handoff may carry the decision for continuity
+until it is promoted. Owner acceptance does not upgrade weak evidence.
 
 If a SPEC spans past-to-present history, current active sections override older
 sections. Older sections remain useful rationale but should not drive new

@@ -32,6 +32,8 @@ Before code, SPEC, prompt, or documentation work, read:
 5. The relevant active SPEC before architecture, policy, or behavior changes
 
 Do not start from archived docs, historical plans, product notes, or old handoff files without checking `docs/INDEX.md` first.
+Read order is routing, not authority. Use the Source Of Truth order below when
+two sources conflict.
 
 ## Context Stability Rule
 
@@ -88,6 +90,11 @@ When sources conflict, prefer:
 6. Product notes
 7. Historical or archived records
 8. Chat memory or AI confidence
+
+Owner decisions control scope, risk tolerance, and acceptance. They become a
+durable source of truth only when recorded in active docs, SPEC, ADR, or claim
+registry. A current handoff may carry the decision for continuity until it is
+promoted; it does not turn weak evidence into stronger evidence.
 
 If a SPEC spans past-to-present history, current active sections override older
 sections. Older SPEC material is rationale unless reaffirmed in the current

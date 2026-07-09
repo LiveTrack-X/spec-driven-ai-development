@@ -43,18 +43,23 @@ instead of silently chosen.
 
 Prefer:
 
-1. code, migrations, tests, commands,
-2. active docs,
+1. code, migrations, tests, reproducible commands,
+2. active runtime docs,
 3. canonical SPEC,
 4. active SPEC files,
-5. handoff files,
-6. product notes,
-7. archive/history,
-8. AI confidence.
+5. current handoff/save-state files,
+6. product notes and external references,
+7. historical or archived records,
+8. chat memory or AI confidence.
 
 Current active SPEC sections override older historical SPEC sections.
+Read order is routing, not authority.
 Obvious-but-unwritten assumptions should not be treated as accepted project
 rules unless they are present in active docs, SPEC, or owner decisions.
+Owner decisions control scope, risk tolerance, and acceptance; they do not
+upgrade weak evidence. Check whether durable owner decisions were recorded in
+active docs, SPEC, ADR, or claim registry; treat handoff-only decisions as
+continuity until promoted.
 
 ## Output Format
 

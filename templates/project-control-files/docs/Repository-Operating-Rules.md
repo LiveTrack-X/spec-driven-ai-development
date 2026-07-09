@@ -40,6 +40,8 @@ automation:
 
 Do not begin from archived docs, old plans, product notes, or stale handoff
 files without checking `docs/INDEX.md`.
+Read order is routing, not authority. Use the Source Of Truth order below when
+two sources conflict.
 
 The start loop must stay bounded. Before opening routed docs, archives, logs,
 generated artifacts, private data, or search results, check whether the input is
@@ -85,6 +87,11 @@ When sources conflict, prefer:
 6. product notes and external references,
 7. historical or archived records,
 8. chat memory or AI confidence.
+
+Owner decisions control scope, risk tolerance, and acceptance. They become a
+durable source of truth only when recorded in active docs, SPEC, ADR, or claim
+registry. A current handoff may carry the decision for continuity until it is
+promoted; it does not turn weak evidence into stronger evidence.
 
 If a SPEC spans past-to-present history, current active sections override older
 sections. Older SPEC material explains rationale; it does not define current

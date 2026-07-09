@@ -212,6 +212,13 @@ Use this default order:
 7. historical or archived records,
 8. chat memory or AI confidence.
 
+Read order is routing, not authority: startup docs help find current files, but
+this order decides conflicts. Owner decisions control scope, risk tolerance, and
+acceptance. They become durable source of truth only when recorded in active
+docs, SPEC, ADR, or claim registry. A current handoff may carry the decision for
+continuity until it is promoted; it does not turn weak evidence into stronger
+evidence.
+
 Apply current-over-historical precedence inside SPECs: when a SPEC contains a
 timeline from past to present, the newest active/current section wins over older
 sections. Older SPEC material explains why the project changed; it does not

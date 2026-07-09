@@ -70,6 +70,11 @@ When sources conflict, prefer:
 7. historical or archived records,
 8. chat memory or AI confidence.
 
+Read order is routing, not authority. Owner decisions control scope, risk
+tolerance, and acceptance. Record durable owner decisions in active docs, SPEC,
+ADR, or claim registry; use a current handoff only for continuity until
+promoted. Owner acceptance does not upgrade weak evidence.
+
 If a SPEC spans past-to-present history, current active sections override older
 historical sections.
 

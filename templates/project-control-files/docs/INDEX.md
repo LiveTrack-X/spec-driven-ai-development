@@ -49,6 +49,8 @@ Use this table while working, not only at session start.
 
 If a moment does not match a row, start with current code/tests, active SPEC,
 TODO, review findings, and this index before opening historical material.
+Routing order is not source-of-truth precedence. Use this table to find the
+right current files; use the Source Of Truth Role Map below when files disagree.
 
 ## Single-File Bloat Risk Routes
 
@@ -81,13 +83,33 @@ When one file starts carrying multiple jobs, split by job instead of appending.
 - Implicit operating rules should be promoted into `docs/Repository-Operating-Rules.md`
   instead of left only in chat.
 
+## Source Of Truth Role Map
+
+| Precedence | Surface | Decides | Does not decide |
+| --- | --- | --- | --- |
+| 1 | Source code, migrations, tests, reproducible commands | observed behavior and reproducible evidence | owner acceptance or future scope |
+| 2 | Active runtime docs | current operating state, gates, TODOs, findings, evidence status | behavior contradicted by code/tests |
+| 3 | Canonical SPEC | integrated product and implementation baseline | facts disproven by current code/tests |
+| 4 | Active SPEC files | active slice scope, acceptance criteria, planned changes | older history over current baseline |
+| 5 | Handoff/save-state | continuity, next steps, unresolved context | behavior authority when stale |
+| 6 | Product notes and external references | reference material until promoted | implementation requirements by themselves |
+| 7 | Historical or archived records | rationale and audit trail | current work direction |
+| 8 | Chat memory or AI confidence | hints only | completion, acceptance, or evidence |
+
+Owner decisions control scope, risk tolerance, and acceptance. Record durable
+owner decisions in active docs, SPEC, ADR, or claim registry. A current handoff
+may carry the decision for continuity until it is promoted. Do not use owner
+acceptance to upgrade weak evidence into a stronger evidence tier.
+
 ## Maintenance Rules
 
 1. Every active document must be reachable from this file.
 2. Code changes require a documentation consistency check.
 3. Completed plans move to archive.
 4. Product notes do not become implementation requirements until promoted.
-5. When docs conflict, prefer code, tests, active docs, canonical SPEC, active SPECs, then archive/history.
+5. When docs conflict, prefer source code/tests/commands, active runtime docs,
+   canonical SPEC, active SPEC files, current handoff/save-state, product
+   notes/external references, archive/history, then chat or AI confidence.
 6. When a SPEC spans past-to-present history, current active sections override older sections.
 7. Active live-state files should stay short enough to read as current operating
    state. Move old history to archive/history files and use bounded reads there.

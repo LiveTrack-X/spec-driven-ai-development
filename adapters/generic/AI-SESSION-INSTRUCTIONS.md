@@ -56,10 +56,21 @@ not bypass owner gates.
 
 ## Source Of Truth
 
-Current code, tests, migrations, and reproducible commands beat docs. Active
-docs beat SPEC. Current active SPEC beats older SPEC history. Handoff and
-archives are context, not authority.
-Owner decisions control scope, risk tolerance, and acceptance.
+When sources conflict, prefer:
+
+1. source code, migrations, tests, reproducible commands,
+2. active runtime docs,
+3. canonical SPEC,
+4. active SPEC files,
+5. current handoff/save-state files,
+6. product notes and external references,
+7. historical or archived records,
+8. chat memory or AI confidence.
+
+Read order is routing, not authority. Owner decisions control scope, risk
+tolerance, and acceptance. Record durable owner decisions in active docs, SPEC,
+ADR, or claim registry; use a current handoff only for continuity until
+promoted. Owner acceptance does not upgrade weak evidence.
 
 ## Rules
 

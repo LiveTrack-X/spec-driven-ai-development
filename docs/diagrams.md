@@ -48,10 +48,14 @@ flowchart TD
     S5 --> S6["6. Product notes and external references"]
     S6 --> S7["7. Historical or archived records"]
     S7 --> S8["8. Chat memory or AI confidence"]
+    O["Owner decisions\nscope, risk, acceptance"] -. "record durable decision" .-> S2
 ```
 
 Read this as precedence: when two sources disagree, prefer the higher source.
 Inside SPECs, current active sections override older historical sections.
+Owner decisions gate scope, risk, and acceptance; record durable decisions in
+active docs, SPEC, ADR, or claim registry. Owner acceptance does not upgrade
+weak evidence into a stronger evidence tier.
 
 ## Document Relationship Map
 
