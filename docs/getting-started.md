@@ -352,6 +352,9 @@ Use the same loop every session:
 Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner checkpoint -> Maintenance
 ```
 
+This is the control spine. The pain loop below is the feedback cycle, not a
+separate document-read order.
+
 Choose scale and compression before creating files. Before evidence-ready,
 check only the gates that apply: reference parity for reference-derived work,
 evidence tier for claim scope, product evidence templates for product/hardware

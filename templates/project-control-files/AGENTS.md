@@ -14,7 +14,7 @@ product evidence templates are for product, hardware, package, remote,
 compatibility, or release claims, and ADRs are conditional for hard-to-reverse
 tradeoffs.
 
-## Mandatory First Read
+## Mandatory Start Loop
 
 Context Stability applies before every item in this start loop. Inspect file
 size first and use bounded reads for large routed files.
@@ -86,7 +86,7 @@ When sources conflict, prefer:
 2. Active runtime docs
 3. Canonical SPEC
 4. Active SPEC files
-5. Handoff/save-state files
+5. current handoff/save-state files
 6. Product notes
 7. Historical or archived records
 8. Chat memory or AI confidence

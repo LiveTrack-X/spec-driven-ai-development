@@ -570,7 +570,7 @@ Create or update these early:
 
 Optional but useful:
 
-- `save-state.md`: current handoff if work pauses.
+- `save-state.md`: current session recovery state if work pauses.
 - `next-task.md`: next recommended slice.
 - `docs/archive/`: historical docs and completed plans.
 - `docs/product-notes/`: reference ideas that are not active implementation.
@@ -602,7 +602,7 @@ When sources disagree, prefer:
 2. active runtime docs,
 3. canonical SPEC,
 4. active SPEC files,
-5. handoff/save-state files,
+5. current handoff/save-state files,
 6. product notes and external references,
 7. archived or historical docs,
 8. chat memory or AI confidence.

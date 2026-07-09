@@ -53,7 +53,7 @@ This pattern explicitly ranks evidence:
 2. active runtime docs,
 3. canonical integrated SPEC,
 4. active or planned SPEC files,
-5. current handoff files,
+5. current handoff/save-state files,
 6. product notes and external references,
 7. historical or archived records,
 8. chat memory or AI confidence.

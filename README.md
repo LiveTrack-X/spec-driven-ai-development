@@ -692,6 +692,10 @@ notes, ADR, TODO, review finding, or handoff.
 
 ## The Loop
 
+These are three views of one routine, not competing procedures: the control
+spine names the gates, the execution routine names the working order, and the
+pain loop names the feedback cycle.
+
 The full control spine is:
 
 ```text
@@ -813,7 +817,7 @@ SPEC/SPEC-COMPLETE.md                            # current product and implement
 SPEC/adr/                                        # durable decision records
 docs/TODO-Open-Items.md                          # active implementation work
 review-findings.md                               # active bugs and review findings
-save-state.md                                    # optional session recovery handoff
+save-state.md                                    # optional session recovery state
 docs/sdad/handoffs/                              # session handoffs for fresh starts
 docs/archive/                                    # historical material outside startup path
 ```

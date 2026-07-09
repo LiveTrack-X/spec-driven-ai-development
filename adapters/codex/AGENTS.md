@@ -3,7 +3,7 @@
 Status: Active
 Scope: Codex project instructions
 
-## Mandatory First Read
+## Mandatory Start Loop
 
 Context Stability applies before every item in this start loop. Inspect file
 size first and use bounded reads for large routed files.

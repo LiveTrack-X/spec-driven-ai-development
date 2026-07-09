@@ -11,7 +11,7 @@ Scope: Central documentation navigation and maintenance control
 - `docs/TODO-Open-Items.md`: current open implementation work
 - `review-findings.md`: active bug and review backlog
 - `docs/implementation-notes.md`: current spec-unstated implementation decisions
-- `save-state.md`: optional current handoff when work pauses or changes hands
+- `save-state.md`: optional session recovery state when work pauses or changes hands
 - `docs/sdad/handoffs/`: session handoffs for fresh AI sessions
 - `docs/domain-language.md`: optional glossary for projects where terminology
   drift affects implementation, review, or tests

@@ -83,7 +83,7 @@ When sources conflict, prefer:
 2. active runtime docs,
 3. canonical SPEC,
 4. active SPEC files,
-5. current handoff files,
+5. current handoff/save-state files,
 6. product notes and external references,
 7. historical or archived records,
 8. chat memory or AI confidence.

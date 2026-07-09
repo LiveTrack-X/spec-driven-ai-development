@@ -581,7 +581,7 @@ def validate_templates() -> None:
                 fail(f"{path} missing localized user-guide guidance: {phrase}")
     agents = read("templates/project-control-files/AGENTS.md")
     for phrase in [
-        "Mandatory First Read",
+        "Mandatory Start Loop",
         "Context Stability Rule",
         "Context Stability applies before every item",
         "bounded reads",
@@ -590,6 +590,7 @@ def validate_templates() -> None:
         "review/audit intent",
         "reference-intake intent",
         "Source Of Truth",
+        "current handoff/save-state files",
         "Review-Worthy Unit Rule",
         "micro-task",
         "Implementation discipline makes autonomy safe",
@@ -1560,6 +1561,7 @@ def validate_templates() -> None:
             "docs/evidence-matrix.md",
             "owner acceptance separate",
             "Read order is routing, not authority",
+            "current handoff/save-state files",
             "current handoff only for continuity",
             "Before implementing from a handoff-only or save-state-only decision",
             "does not upgrade weak evidence",
