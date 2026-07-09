@@ -79,6 +79,11 @@ owner-checkpoint, or handoff summary.
     owner-accepted, run the Documentation Record Audit, update active docs, and
     archive or link long history.
 
+When a cycle fails, is fixed, or changes release/readiness status, include a
+cycle result record: problem, cause, action taken, evidence command or artifact,
+and residual concern. If a reported count or status was captured before the
+owner checkpoint, label that boundary.
+
 This is a work routine, not a mandate to create every possible file. Mini SDAD
 and small packets may compress the routine into one evidence-ready summary when
 no durable SPEC, TODO, ADR, review finding, evidence map, or handoff job exists.

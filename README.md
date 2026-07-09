@@ -920,6 +920,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/field-notes/repository-control-surface-method.md](docs/field-notes/repository-control-surface-method.md): guidance, enforcement, isolation, and reviewed-memory control surfaces
 - [docs/field-notes/cost-aware-agent-routing-method.md](docs/field-notes/cost-aware-agent-routing-method.md): advisor, worker, loop, cost, and evidence routing
 - [docs/field-notes/documentation-governance-method.md](docs/field-notes/documentation-governance-method.md): documentation-governance field pattern
+- [docs/field-notes/working-order-field-test.md](docs/field-notes/working-order-field-test.md): multi-agent disposable-project test of the SDAD working order
 - [docs/field-notes/release-governance-method.md](docs/field-notes/release-governance-method.md): release-governance field pattern
 - [docs/field-notes/meta-harness-method.md](docs/field-notes/meta-harness-method.md): harness optimization fit gate and evidence boundary pattern
 

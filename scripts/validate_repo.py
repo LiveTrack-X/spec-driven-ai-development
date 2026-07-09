@@ -39,6 +39,7 @@ REQUIRED_FILES = [
     "docs/field-notes/repository-control-surface-method.md",
     "docs/field-notes/cost-aware-agent-routing-method.md",
     "docs/field-notes/documentation-governance-method.md",
+    "docs/field-notes/working-order-field-test.md",
     "docs/field-notes/release-governance-method.md",
     "docs/field-notes/meta-harness-method.md",
     "adapters/README.md",
@@ -636,6 +637,7 @@ def validate_templates() -> None:
         "Optional ADR",
         "TODO/work packet",
         "JIT clarification",
+        "cycle result record",
         "Single-File Bloat Risk Routes",
         "When one file starts carrying multiple jobs",
         "docs/archive/todo-history/YYYY-MM-DD-topic.md",
@@ -796,6 +798,8 @@ def validate_templates() -> None:
         "production_evidence",
         "Claim Gate Smoke",
         "accepted_with_limits",
+        "passing local test may coexist",
+        "Match the check to the artifact type",
         "output contract",
         "canonical artifact manifest",
     ]:
@@ -1466,6 +1470,29 @@ def validate_templates() -> None:
     ]:
         if phrase not in doc_governance:
             fail(f"Documentation governance field note missing: {phrase}")
+    working_order = read("docs/field-notes/working-order-field-test.md")
+    for phrase in [
+        "Working Order Field Test",
+        "Multi-agent disposable-project test",
+        "Route current state -> Scale/compress -> PLAN",
+        "Mini CLI",
+        "Reference parity",
+        "Claim/evidence package",
+        "Handoff/bloat loop",
+        "cycle result record",
+        "problem",
+        "cause",
+        "action taken",
+        "evidence command or artifact",
+        "residual concern",
+        "artifact type",
+        "Passing Tests Can Coexist With A Blocked Claim",
+        "checkpoint_included",
+        "PowerShell-safe commands",
+        "Evidence Boundary",
+    ]:
+        if phrase not in working_order:
+            fail(f"Working order field note missing: {phrase}")
     meta_harness = read("docs/field-notes/meta-harness-method.md")
     for phrase in [
         "Meta-Harness Method",

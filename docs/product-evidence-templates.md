@@ -127,9 +127,15 @@ scan `docs/claim-registry.md` for claims affected by the packet:
 - A release, production, hardware, compatibility, security, data, money, or
   rollback claim must fail closed when the evidence tier is missing or weaker
   than the claim.
+- A passing local test may coexist with a blocked production, release, hardware,
+  compatibility, or rollback claim. Report the local behavior as supported and
+  keep the stronger claim blocked.
 - If a CLI, API, file, manifest, or UI text shape is part of the evidence, the
   active SPEC or artifact contract must name that output contract before the
   evidence can support the claim.
+- Match the check to the artifact type. A syntax check for one language does not
+  prove CSS validity, HTML rendering, browser behavior, persisted state, or live
+  runtime behavior.
 - Keep one canonical artifact manifest for each generated package or evidence
   bundle; duplicate manifest copies are evidence drift unless one is explicitly
   marked as derived.
