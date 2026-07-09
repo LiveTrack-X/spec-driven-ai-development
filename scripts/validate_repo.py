@@ -267,6 +267,9 @@ def validate_templates() -> None:
     changelog = read("CHANGELOG.md")
     for phrase in [
         "## Unreleased",
+        "## 2.0.2 - 2026-07-09",
+        "README infographic",
+        "SDAD 2.0 control-surface overview",
         "## 2.0.1 - 2026-07-09",
         "## 2.0.0 - 2026-07-09",
         "executable git modes",
@@ -292,7 +295,7 @@ def validate_templates() -> None:
         "README.ja.md",
         "canonical documentation language",
         "A control layer for AI coding",
-        "Status: `2.0.1`",
+        "Status: `2.0.2`",
         "stable documentation/package release",
         "project fit, owner discipline, and evidence quality",
         "Start Here: User Guide",
@@ -459,7 +462,7 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "2.0.1",
+            "2.0.2",
             "프로젝트 적합도",
             "save-state.md",
             "오너 수락",
@@ -491,7 +494,7 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "2.0.1",
+            "2.0.2",
             "project fit",
             "save-state.md",
             "Owner 验收",
@@ -523,7 +526,7 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "2.0.1",
+            "2.0.2",
             "project fit",
             "save-state.md",
             "Owner の受け入れ",

@@ -4,6 +4,11 @@
 
 Nothing yet.
 
+## 2.0.2 - 2026-07-09
+
+- Replaced the README infographic with the SDAD 2.0 control-surface overview
+  image.
+
 ## 2.0.1 - 2026-07-09
 
 - Restored executable git modes for the Bash installer scripts and documented
