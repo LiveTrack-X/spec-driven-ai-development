@@ -34,7 +34,7 @@ docs/evidence/rejected/
 docs/evidence/reviews/
 ```
 
-Raw bundles should not be mandatory first-read material. Link to review
+Raw bundles should not be mandatory start-loop material. Link to review
 summaries and evidence IDs instead.
 
 ## Import Checklist
@@ -89,7 +89,7 @@ Accepted scope:
 Remaining gaps:
 Negative results:
 Decision:
-  accepted_as_evidence / accepted_with_limits / rejected / needs_retest
+  accepted_as_evidence / accepted_within_scope / rejected / needs_retest
 Next action:
 ```
 
@@ -108,6 +108,10 @@ A remote bundle is sufficient only when:
 
 If any required field is missing, mark the evidence `weak`,
 `reviewed_warn`, or `reviewed_fail`; do not unlock the claim.
+
+Use `accepted_within_scope` only when the reviewed bundle supports a named,
+limited claim. It does not create production readiness, hardware compatibility,
+or owner acceptance outside that exact scope.
 
 ## Trust Boundary
 

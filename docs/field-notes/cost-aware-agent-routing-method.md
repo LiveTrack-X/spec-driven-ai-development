@@ -142,7 +142,7 @@ Before adding Advisor, Worker, or Loop structure, answer:
 | Evidence contract | What result makes the packet evidence-ready |
 | Stop rule | When the loop stops even if the goal is not met |
 | Owner gate | Which decision still requires owner acceptance |
-| State surface | Where outputs, findings, memory, and handoff state are recorded |
+| State surface | Where outputs, findings, memory, and continuity state are recorded |
 
 If these fields are unknown, start with the Lean Execution Contract and a normal
 work packet. Do not add orchestration to compensate for unclear scope.

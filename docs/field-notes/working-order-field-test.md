@@ -107,6 +107,26 @@ Instead, preserve these lightweight checks:
 - Keep disposable field-test projects outside the SDAD repo and record only the
   reusable finding in field notes.
 
+## Follow-Up: Rule Ambiguity Audit
+
+On 2026-07-09, four additional disposable projects under
+`C:\Users\livet\Desktop\sdad-rule-audit-20260709` tested Mini bugfix,
+reference parity, remote evidence, and long-loop handoff scenarios. The projects
+confirmed the working order but exposed small terminology and routing risks:
+
+- mixed natural-language intents need an explicit compose-or-clarify rule,
+- `save-state.md` is session recovery state, not a handoff authority,
+- current handoff/save-state files must be named consistently in SOT diagrams
+  and routing tables,
+- remote evidence can be accepted only within a named reviewed scope,
+- `owner_accepted` must wait for an owner checkpoint,
+- `review-findings.md` active findings should contain only unresolved items.
+
+Reusable rule: when a user request matches multiple SDAD intents, compose them
+inside one approved packet only if scope, risk, claim level, owner gate, and
+durable-doc requirements stay stable. Otherwise ask one blocking clarification
+question with a recommended default.
+
 ## Evidence Boundary
 
 This field note is not owner acceptance of the disposable projects. It is

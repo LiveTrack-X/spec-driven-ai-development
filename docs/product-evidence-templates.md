@@ -122,7 +122,7 @@ scan `docs/claim-registry.md` for claims affected by the packet:
 
 - Any `blocked_until_evidence` claim remains blocked unless the required
   evidence tier, freshness, and scope are present.
-- A warning-level result can become `accepted_with_limits` only when the public
+- A warning-level result can become `accepted_within_scope` only when the public
   claim is qualified to the reviewed scope.
 - A release, production, hardware, compatibility, security, data, money, or
   rollback claim must fail closed when the evidence tier is missing or weaker
@@ -147,7 +147,7 @@ These templates should reduce active-doc size, not create another journal.
 - Keep `docs/TODO-Open-Items.md` focused on active work and next action.
 - Keep `review-findings.md` focused on active bugs, risks, and blocked gates.
 - Keep long evidence history, raw logs, old bundles, and completed packet
-  details out of mandatory first-read docs.
+  details out of mandatory start-loop docs.
 - Link to accepted evidence paths and archive locations instead of pasting logs
   into active state files.
 - Use bounded reads for imported evidence, generated artifacts, logs, archives,

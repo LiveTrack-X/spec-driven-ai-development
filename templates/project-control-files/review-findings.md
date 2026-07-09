@@ -7,6 +7,9 @@ Scope: Active bugs and review findings only
 
 None currently tracked.
 
+Do not leave closed findings in this section. Move fixed or accepted items to
+`## Recently Closed` before evidence-ready, save-state, or handoff.
+
 ## Severity Gate
 
 - Critical findings block release or production readiness.

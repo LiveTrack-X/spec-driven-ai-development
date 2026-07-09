@@ -33,7 +33,7 @@ flowchart TD
     G --> H["Plan before changes"]
 ```
 
-Use this guard before mandatory first-read files. The start loop routes the
+Use this guard before mandatory start-loop routes. The start loop routes the
 session; it does not authorize full reads of large state files, old handoffs,
 logs, generated artifacts, private data, or archives.
 
@@ -44,7 +44,7 @@ flowchart TD
     S1["1. Source code, migrations, tests, commands"] --> S2["2. Active runtime docs"]
     S2 --> S3["3. Canonical SPEC"]
     S3 --> S4["4. Active SPEC files"]
-    S4 --> S5["5. Current handoff files"]
+    S4 --> S5["5. Current handoff/save-state files"]
     S5 --> S6["6. Product notes and external references"]
     S6 --> S7["7. Historical or archived records"]
     S7 --> S8["8. Chat memory or AI confidence"]

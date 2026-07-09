@@ -321,11 +321,13 @@ Why it matters: real owners usually say "check this", "fix it", "release it",
 "make the docs easier", or "create a handoff". If SDAD only works when users
 name the exact skill, the workflow is brittle.
 
-Operational form: infer the dominant intent from the user's wording and current
-repository state. State the interpreted intent, SDAD scale/intensity, autonomy
-level, and expected evidence. If multiple intents conflict in a way that
-changes scope or risk, ask one blocking clarification question with a
-recommended default. Do not use intent routing to bypass owner gates.
+Operational form: infer matching intents from the user's wording and current
+repository state. If multiple intents match, first decide whether they can be
+safely composed inside one approved packet. State the interpreted intent, SDAD
+scale/intensity, autonomy level, and expected evidence. If the combination
+changes scope, risk, claim level, owner gate, or durable-doc requirements, ask
+one blocking clarification question with a recommended default. Do not use
+intent routing to bypass owner gates.
 
 ### 24. Guarantees Beat Guidance For Non-Negotiables
 

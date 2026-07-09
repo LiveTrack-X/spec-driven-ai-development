@@ -137,10 +137,12 @@ Route ordinary requests by intent:
 - reference intake: "borrow from this repo", "can we adopt this idea",
 - autonomy tuning: "asks too often", "runs ahead".
 
-When one intent is dominant, state the interpreted intent, SDAD
-scale/intensity, autonomy level, and expected evidence before proceeding. When
-intents conflict in a way that changes scope or risk, ask one blocking
-clarification question with a recommended default.
+If multiple intents match, first decide whether they can be safely composed
+inside one approved packet. When one route remains dominant, state the
+interpreted intent, SDAD scale/intensity, autonomy level, and expected evidence
+before proceeding. If the combination changes scope, risk, claim level, owner
+gate, or durable-doc requirements, ask one blocking clarification question with
+a recommended default.
 
 Intent routing is not automatic permission to expand scope, read the whole
 repository, skip evidence, or bypass owner gates.

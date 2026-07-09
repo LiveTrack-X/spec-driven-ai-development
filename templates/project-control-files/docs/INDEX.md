@@ -129,6 +129,10 @@ When one file starts carrying multiple jobs, split by job instead of appending.
 | `docs/Repository-Operating-Rules.md` | procedures and logs turn into a rule dump | durable rules that change behavior | playbooks, skills, validators, field notes, archives |
 | `docs/INDEX.md` | explanations crowd out routing | current routes and update sets | field notes or user docs |
 
+`review-findings.md` `## Active Findings` contains only unresolved findings.
+Move fixed or accepted items to `## Recently Closed` or archive before
+evidence-ready, save-state, or handoff.
+
 ## Document Classes
 
 - Active runtime docs live under `docs/`
@@ -149,7 +153,7 @@ When one file starts carrying multiple jobs, split by job instead of appending.
 | 2 | Active runtime docs | current operating state, gates, TODOs, findings, evidence status | behavior contradicted by code/tests |
 | 3 | Canonical SPEC | integrated product and implementation baseline | facts disproven by current code/tests |
 | 4 | Active SPEC files | active slice scope, acceptance criteria, planned changes | older history over current baseline |
-| 5 | Handoff/save-state | continuity, next steps, unresolved context | behavior authority when stale |
+| 5 | Current handoff/save-state | continuity, next steps, unresolved context | behavior authority when stale |
 | 6 | Product notes and external references | reference material until promoted | implementation requirements by themselves |
 | 7 | Historical or archived records | rationale and audit trail | current work direction |
 | 8 | Chat memory or AI confidence | hints only | completion, acceptance, or evidence |

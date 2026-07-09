@@ -1,6 +1,6 @@
 # Save State
 
-Status: Active handoff
+Status: Active session recovery state
 Last updated: YYYY-MM-DD
 
 Use this file only when current context would be expensive to reconstruct from

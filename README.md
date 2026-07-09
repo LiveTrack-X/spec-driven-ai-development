@@ -293,7 +293,7 @@ SDAD adds a project control layer around AI coding. It helps you:
 
 - choose the right workflow scale before creating files,
 - give each AI tool the correct instruction file,
-- keep one current SPEC, TODO list, review ledger, and handoff state,
+- keep one current SPEC, TODO list, review ledger, and continuity state,
 - separate always-loaded instructions, active control files, on-demand
   references, and archived evidence,
 - route natural-language requests into the right SDAD mode without requiring
@@ -351,10 +351,12 @@ route that protects scope, evidence, and owner gates.
 | "Can we borrow from this project?", "rebuild this from the old app" | Reference-intake intent | Evaluate fit, adapt compatible patterns, avoid wholesale workflow transplant, and run a Reference Parity Review Gate before evidence-ready. |
 | "It asks too much", "it runs ahead" | Autonomy tuning intent | Adjust autonomy level, packet boundary, and operating intensity without bypassing risk gates. |
 
-If one intent is dominant, proceed and state the interpretation briefly. If two
-or more intents conflict in a way that changes risk or scope, ask one blocking
-clarification question with a recommended default. Natural-language routing is
-not permission to read everything; it should still use the context layers above.
+If multiple intents match, first decide whether they can be safely composed
+inside one approved packet. If one route remains dominant, proceed and state the
+interpretation briefly. If the combination changes scope, risk, claim level,
+owner gate, or durable-doc requirements, ask one blocking clarification question
+with a recommended default. Natural-language routing is not permission to read
+everything; it should still use the context layers above.
 
 ## Reference Parity Review
 

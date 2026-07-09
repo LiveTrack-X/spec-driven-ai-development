@@ -165,6 +165,8 @@ def validate_skill() -> None:
         "Autonomy",
         "Natural-Language Intent Routing",
         "ordinary phrases into",
+        "If multiple intents match",
+        "claim level, owner gate",
         "review/audit intent",
         "reference-intake intent",
         "Review-Worthy Development Units",
@@ -587,6 +589,8 @@ def validate_templates() -> None:
         "bounded reads",
         "50 KB",
         "Natural-Language Intent Routing",
+        "If multiple intents match",
+        "claim level, owner gate",
         "review/audit intent",
         "reference-intake intent",
         "Source Of Truth",
@@ -668,6 +672,8 @@ def validate_templates() -> None:
         "Mandatory Start Loop",
         "Context Stability applies before every item",
         "Natural-Language Intent Routing",
+        "If multiple intents match",
+        "claim level, owner gate",
         "review/audit intent",
         "reference-intake intent",
         "Version Lane Rules",
@@ -756,6 +762,7 @@ def validate_templates() -> None:
     save_state = read("templates/project-control-files/save-state.md")
     for phrase in [
         "Update Triggers",
+        "Active session recovery state",
         "Context Stability Rule",
         "50 KB",
         "session is ending or pausing",
@@ -768,6 +775,14 @@ def validate_templates() -> None:
     ]:
         if phrase not in save_state:
             fail(f"Save-state template missing: {phrase}")
+    review_findings_template = read("templates/project-control-files/review-findings.md")
+    for phrase in [
+        "Active Findings",
+        "Recently Closed",
+        "Do not leave closed findings",
+    ]:
+        if phrase not in review_findings_template:
+            fail(f"Review findings template missing: {phrase}")
     implementation_notes_template = read("templates/project-control-files/docs/implementation-notes.md")
     for phrase in [
         "Implementation Notes",
@@ -806,7 +821,7 @@ def validate_templates() -> None:
         "remote_hardware",
         "production_evidence",
         "Claim Gate Smoke",
-        "accepted_with_limits",
+        "accepted_within_scope",
         "passing local test may coexist",
         "Match the check to the artifact type",
         "output contract",
@@ -874,6 +889,7 @@ def validate_templates() -> None:
         "Completion Language",
         "Stop / Continue Rule",
         "Packet states are separate from evidence matrix statuses",
+        "Do not set `owner_accepted` until an owner checkpoint",
     ]:
         if phrase not in work_packet_state:
             fail(f"Work packet state template missing: {phrase}")
@@ -887,6 +903,7 @@ def validate_templates() -> None:
         "Import Checklist",
         "Privacy Scan",
         "Review Summary Template",
+        "accepted_within_scope",
         "Sufficiency Rule",
         "Trust Boundary",
     ]:
@@ -1503,6 +1520,8 @@ def validate_templates() -> None:
         "checkpoint_included",
         "PowerShell-safe commands",
         "Evidence Boundary",
+        "Rule Ambiguity Audit",
+        "compose-or-clarify rule",
     ]:
         if phrase not in working_order:
             fail(f"Working order field note missing: {phrase}")
@@ -1555,6 +1574,8 @@ def validate_templates() -> None:
             "bounded reads",
             "50 KB",
             "Natural-Language Intent Routing",
+            "If multiple intents match",
+            "claim level, owner gate",
             "review/audit intent",
             "reference-intake intent",
             "product evidence templates",

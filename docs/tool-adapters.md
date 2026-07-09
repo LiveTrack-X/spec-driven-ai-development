@@ -48,7 +48,7 @@ is used.
 
 Each adapter keeps only the high-signal operating rules:
 
-- mandatory first-read route,
+- mandatory start-loop route,
 - context-stability and bounded-read guard before first-read files,
 - source-of-truth order,
 - current-over-historical SPEC precedence,

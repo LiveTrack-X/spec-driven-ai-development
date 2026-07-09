@@ -15,6 +15,11 @@ Packet states are separate from evidence matrix statuses. For example,
 `evidence_received` in `docs/evidence-matrix.md`, and it still requires
 quarantine/import/review before any claim changes.
 
+Do not set `owner_accepted` until an owner checkpoint accepts the named scope.
+If evidence is ready but owner acceptance is pending, use the strongest verified
+pre-owner state such as `software_verified`, `hardware_verified`, or
+`release_candidate` and write "owner acceptance pending" in the summary.
+
 | State | Meaning | May continue without owner? | May claim done? | Typical next action |
 | --- | --- | --- | --- | --- |
 | `not_started` | Packet is defined but work has not begun. | Yes, if packet is approved | No | Start implementation |

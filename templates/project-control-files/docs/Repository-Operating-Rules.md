@@ -69,11 +69,12 @@ TODOs, review findings, and risk gates.
 - "borrow from this repo", "reference this project", or "adopt this idea" -> reference-intake intent.
 - "asks too often" or "runs ahead" -> autonomy tuning intent.
 
-When one intent is dominant, state the interpreted intent, SDAD
-scale/intensity, autonomy level, and expected evidence, then proceed. If
-intents conflict in a way that changes scope or risk, ask one blocking
-clarification question with a recommended default. Natural-language routing does
-not bypass owner gates.
+If multiple intents match, first decide whether they can be safely composed
+inside one approved packet. When one route remains dominant, state the
+interpreted intent, SDAD scale/intensity, autonomy level, and expected evidence,
+then proceed. If the combination changes scope, risk, claim level, owner gate,
+or durable-doc requirements, ask one blocking clarification question with a
+recommended default. Natural-language routing does not bypass owner gates.
 
 ## Source Of Truth
 
@@ -229,7 +230,7 @@ the gate requires it.
 Remote evidence crosses a trust boundary. It must start in quarantine and pass
 structure, metadata, checksum, privacy, lineage, freshness, and scope review
 before it can update evidence status or claim wording. Raw bundles, logs, and
-generated artifacts are not mandatory first-read material; link to accepted
+generated artifacts are not mandatory start-loop material; link to accepted
 review summaries and evidence IDs instead.
 
 ## Advanced Extension Fit Gate
@@ -415,6 +416,9 @@ the working tree, smoke installed artifacts from outside the source tree when
 packaging or distribution is part of the claim, and keep owner acceptance
 separate from evidence-ready status.
 Include the Documentation Record Audit in the evidence-ready or handoff summary.
+`review-findings.md` `## Active Findings` must contain only unresolved findings;
+move fixed or accepted items to closed/archive before evidence-ready, save-state,
+or handoff.
 
 If the packet rebuilds, ports, abstracts, or borrows from an existing product,
 repo, design, demo, or field project, add a Reference Parity Review Gate before

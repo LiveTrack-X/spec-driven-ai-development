@@ -44,11 +44,12 @@ TODOs, review findings, and risk gates.
 - "borrow from this repo", "reference this project", or "adopt this idea" -> reference-intake intent.
 - "asks too often" or "runs ahead" -> autonomy tuning intent.
 
-When one intent is dominant, state the interpreted intent, SDAD
-scale/intensity, autonomy level, and expected evidence, then proceed. If
-intents conflict in a way that changes scope or risk, ask one blocking
-clarification question with a recommended default. Natural-language routing does
-not bypass owner gates.
+If multiple intents match, first decide whether they can be safely composed
+inside one approved packet. When one route remains dominant, state the
+interpreted intent, SDAD scale/intensity, autonomy level, and expected evidence,
+then proceed. If the combination changes scope, risk, claim level, owner gate,
+or durable-doc requirements, ask one blocking clarification question with a
+recommended default. Natural-language routing does not bypass owner gates.
 
 ## Operating Rules
 
