@@ -1288,7 +1288,18 @@ class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):
             )
         )
 
-        self.assertFinding(required, "gate.required", Severity.ERROR)
+        self.assertFinding(
+            required,
+            "state.collection.malformed-entry",
+            Severity.ERROR,
+        )
+        self.assertNotFinding(required, "gate.required")
+        self.assertNotFinding(required, "gate.q5-review")
+        self.assertFinding(
+            terminal,
+            "state.collection.malformed-entry",
+            Severity.ERROR,
+        )
         self.assertNotFinding(terminal, "gate.pending-after-acceptance")
 
     def test_parseable_state_keeps_checks_run_when_only_subrules_are_suppressed(self) -> None:

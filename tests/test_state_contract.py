@@ -355,6 +355,127 @@ class StateContractTests(unittest.TestCase):
                 self.assertEqual(status_issues[0].legacy_message, legacy)
                 self.assertEqual(collect_template_state_violations(text), [legacy])
 
+    def test_quoted_whitespace_active_spec_is_invalid_without_legacy_output(self) -> None:
+        text = valid_state().replace(
+            "active_spec: SPEC/SPEC-COMPLETE.md",
+            "active_spec: '   '",
+        )
+
+        result = inspect_state(text)
+
+        self.assertIsNotNone(result.snapshot)
+        assert result.snapshot is not None
+        self.assertEqual(result.snapshot.scalar("active_spec").value, "   ")
+        path_issues = [issue for issue in result.issues if issue.id == "path.invalid"]
+        self.assertEqual(len(result.issues), 1)
+        self.assertEqual(len(path_issues), 1)
+        self.assertEqual(path_issues[0].severity, "error")
+        self.assertEqual(path_issues[0].evidence, "   ")
+        self.assertIsNone(path_issues[0].legacy_message)
+        self.assertEqual(collect_template_state_violations(text), [])
+
+    def test_quoted_whitespace_packet_text_fields_are_blank(self) -> None:
+        for key, original in (
+            ("id", "bootstrap"),
+            ("objective", "Replace with the current evidence-ready objective."),
+        ):
+            with self.subTest(key=key):
+                text = valid_state().replace(
+                    f"  {key}: {original}",
+                    f"  {key}: '   '",
+                )
+                result = inspect_state(text)
+
+                self.assertIsNotNone(result.snapshot)
+                assert result.snapshot is not None
+                self.assertEqual(result.snapshot.active_packet[key].value, "   ")
+                field_issues = [
+                    issue
+                    for issue in result.issues
+                    if issue.id == "state.packet.blank-field"
+                    and issue.evidence == key
+                ]
+                self.assertEqual(len(result.issues), 1)
+                self.assertEqual(len(field_issues), 1)
+                self.assertEqual(field_issues[0].severity, "error")
+                self.assertIsNone(field_issues[0].legacy_message)
+                self.assertEqual(collect_template_state_violations(text), [])
+
+    def test_quoted_whitespace_packet_status_is_one_blank_issue(self) -> None:
+        text = valid_state().replace(
+            "  status: not_started",
+            "  status: '   '",
+        )
+
+        result = inspect_state(text)
+
+        self.assertIsNotNone(result.snapshot)
+        assert result.snapshot is not None
+        self.assertEqual(result.snapshot.active_packet["status"].value, "   ")
+        status_issues = [
+            issue
+            for issue in result.issues
+            if issue.id
+            in {"state.packet.blank-field", "state.schema.unsupported-value"}
+            and issue.line == 15
+        ]
+        self.assertEqual(len(result.issues), 1)
+        self.assertEqual(len(status_issues), 1)
+        self.assertEqual(status_issues[0].id, "state.packet.blank-field")
+        self.assertEqual(status_issues[0].severity, "error")
+        self.assertEqual(
+            status_issues[0].legacy_message,
+            "unsupported active_packet status:    ",
+        )
+        self.assertEqual(
+            collect_template_state_violations(text),
+            ["unsupported active_packet status:    "],
+        )
+
+    def test_quoted_whitespace_collection_entries_are_malformed_but_retained(self) -> None:
+        cases = (
+            (
+                "owner_gates",
+                valid_state().replace(
+                    "owner_gates: []",
+                    "owner_gates:\n  - '   '",
+                ),
+            ),
+            (
+                "routed_docs",
+                valid_state().replace(
+                    "  - docs/TODO-Open-Items.md",
+                    "  - '   '",
+                ),
+            ),
+        )
+
+        for key, text in cases:
+            with self.subTest(key=key):
+                result = inspect_state(text)
+
+                self.assertIsNotNone(result.snapshot)
+                assert result.snapshot is not None
+                values = getattr(result.snapshot, key)
+                self.assertEqual(values[0].value, "   ")
+                collection_issues = [
+                    issue
+                    for issue in result.issues
+                    if issue.id == "state.collection.malformed-entry"
+                    and issue.message.startswith(f"{key} entries ")
+                ]
+                self.assertEqual(len(result.issues), 1)
+                self.assertEqual(len(collection_issues), 1)
+                self.assertEqual(collection_issues[0].severity, "error")
+                self.assertEqual(collection_issues[0].evidence, "blank")
+                self.assertIsNone(collection_issues[0].legacy_message)
+                self.assertFalse(
+                    any(
+                        issue.id == "path.invalid" and issue.evidence == "   "
+                        for issue in result.issues
+                    )
+                )
+
     def test_blank_top_level_value_keeps_the_key_source_line(self) -> None:
         result = inspect_state("scale:\n")
 
@@ -451,6 +572,7 @@ class StateContractTests(unittest.TestCase):
 
         for value in (
             "",
+            "   ",
             "/absolute.md",
             "C:/drive.md",
             "docs\\windows.md",

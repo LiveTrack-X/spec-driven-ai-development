@@ -122,7 +122,13 @@ class _UnsupportedSyntax(ValueError):
 
 
 def is_normalized_relative_posix_path(value: str) -> bool:
-    if not value or value.startswith("/") or "\\" in value or ":" in value:
+    if (
+        not value
+        or not value.strip()
+        or value.startswith("/")
+        or "\\" in value
+        or ":" in value
+    ):
         return False
     path = PurePosixPath(value)
     return (
@@ -483,8 +489,12 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
         active_spec = _compatibility_scalar(active_spec_node)
         if active_spec is not None and not is_normalized_relative_posix_path(active_spec):
             legacy = (
-                "sdad-state.yaml active_spec must be a relative path: "
-                f"{active_spec}"
+                None
+                if not active_spec.strip()
+                else (
+                    "sdad-state.yaml active_spec must be a relative path: "
+                    f"{active_spec}"
+                )
             )
             issues.append(
                 _issue(
@@ -550,9 +560,9 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
                         legacy,
                     )
                 )
-            elif node.kind == "scalar" and not node.scalar:
+            elif node.kind == "scalar" and not node.scalar.strip():
                 legacy = (
-                    "unsupported active_packet status: "
+                    f"unsupported active_packet status: {node.scalar}"
                     if key == "status"
                     else None
                 )
@@ -568,7 +578,11 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
                 )
         status_node = packet_nodes.get("status")
         status = _compatibility_scalar(status_node) if status_node is not None else None
-        if status not in {None, ""} and status not in ACTIVE_PACKET_STATUSES:
+        if (
+            status is not None
+            and status.strip()
+            and status not in ACTIVE_PACKET_STATUSES
+        ):
             legacy = f"unsupported active_packet status: {status}"
             issues.append(
                 _issue(
@@ -683,7 +697,7 @@ def _schema_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
         if collection is None or collection.kind != "list":
             continue
         for item in collection.items:
-            if item.kind != "scalar" or not item.scalar:
+            if item.kind != "scalar" or not item.scalar.strip():
                 issues.append(
                     _issue(
                         "state.collection.malformed-entry",
