@@ -23,7 +23,7 @@ agents.
   </a>
 </p>
 
-![SPEC-Driven AI Development infographic](assets/spec-driven-ai-development-infographic.svg)
+![SPEC-Driven AI Development infographic](assets/spec-driven-ai-development-infographic.png)
 
 ## Start Here
 

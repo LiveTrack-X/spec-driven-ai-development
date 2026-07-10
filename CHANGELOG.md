@@ -63,14 +63,17 @@ Nothing yet.
 - Added a scale/tool gate to the kickoff prompt so One-shot and Mini projects do
   not receive the Standard/Full control-file set.
 - Documented `tests/` as the single repository test directory.
-- Replaced the version-bound README infographic with an editable, versionless
-  progressive-control-plane visual and aligned Mermaid and Archify diagrams to
-  the state -> INDEX -> source/tests -> one-routed-path contract.
+- Preserved the existing README infographic, added an editable, versionless
+  progressive-control-plane companion visual, and aligned Mermaid and Archify
+  diagrams to the state -> INDEX -> source/tests -> one-routed-path contract.
 - Made project control templates tool-neutral, allowed every documented
   autonomy level from 0 through 4 in active state, and corrected Mini
   escalation so normal one- or two-signal Mini projects do not self-promote.
 - Tightened release contracts around manifest metadata, local-only CSP source
   directives, active-packet state, and diagram source/render parity.
+- Canonicalized repository-root path comparisons so Markdown link validation
+  remains correct when Windows runners expose the same directory through an
+  8.3 short-path alias.
 
 ## 2.1.0 - 2026-07-09
 

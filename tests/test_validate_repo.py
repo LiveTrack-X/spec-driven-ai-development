@@ -39,6 +39,15 @@ class MarkdownLinkValidationTests(unittest.TestCase):
 
             self.validate(root)
 
+    def test_accepts_equivalent_noncanonical_root_spelling(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "alias").mkdir()
+            (root / "README.md").write_text("[Guide](guide.md)\n", encoding="utf-8")
+            (root / "guide.md").write_text("# Guide\n", encoding="utf-8")
+
+            self.validate(root / "alias" / "..")
+
     def test_accepts_destination_with_balanced_parentheses(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

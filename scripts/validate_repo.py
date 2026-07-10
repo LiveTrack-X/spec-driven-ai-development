@@ -599,13 +599,15 @@ def markdown_anchors(text: str) -> set[str]:
 
 
 def validate_local_markdown_links() -> None:
+    root = ROOT.resolve()
     anchor_cache: dict[Path, set[str]] = {}
     markdown_paths = sorted(
-        path for path in ROOT.rglob("*") if path.suffix.lower() in {".md", ".mdc"}
+        path for path in root.rglob("*") if path.suffix.lower() in {".md", ".mdc"}
     )
     for md_path in markdown_paths:
         if ".git" in md_path.parts:
             continue
+        source = md_path.relative_to(root)
         content = strip_fenced_code(md_path.read_text(encoding="utf-8"))
         for candidate in iter_markdown_link_targets(content):
             raw_target = candidate.strip()
@@ -616,19 +618,16 @@ def validate_local_markdown_links() -> None:
             target = unquote(target_with_query.split("?", 1)[0])
             resolved = md_path.resolve() if not target else (md_path.parent / target).resolve()
             try:
-                display_target = resolved.relative_to(ROOT)
+                display_target = resolved.relative_to(root)
             except ValueError:
-                source = md_path.relative_to(ROOT)
                 fail(f"Markdown link escapes repository root: {source} -> {raw_target}")
             if not resolved.exists():
-                source = md_path.relative_to(ROOT)
                 fail(f"Broken local Markdown link: {source} -> {raw_target} ({display_target})")
             if separator and fragment and resolved.suffix.lower() in {".md", ".mdc"}:
                 decoded_fragment = unquote(fragment)
                 if resolved not in anchor_cache:
                     anchor_cache[resolved] = markdown_anchors(resolved.read_text(encoding="utf-8"))
                 if decoded_fragment not in anchor_cache[resolved]:
-                    source = md_path.relative_to(ROOT)
                     fail(
                         "Broken local Markdown fragment: "
                         f"{source} -> {raw_target} ({display_target}#{decoded_fragment})"
@@ -916,7 +915,7 @@ def validate_templates() -> None:
             "install-sources.json",
             "docs/known-limitations.md",
             "SECURITY.md",
-            "assets/spec-driven-ai-development-infographic.svg",
+            "assets/spec-driven-ai-development-infographic.png",
             "python -m unittest discover -s tests",
         ],
     )

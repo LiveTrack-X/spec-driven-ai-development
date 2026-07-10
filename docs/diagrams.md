@@ -157,10 +157,10 @@ flowchart TD
 
 Use these when a static or interactive visual is more useful than Mermaid:
 
-- `assets/spec-driven-ai-development-infographic.png`: public overview
-  infographic used by the README.
+- `assets/spec-driven-ai-development-infographic.png`: original public overview
+  infographic retained by the README.
 - `assets/spec-driven-ai-development-infographic.svg`: editable, versionless
-  source for the public overview infographic.
+  progressive-control-plane companion visual.
 - `assets/sdad-control-loop.archify.png`: rendered SDAD Control Loop diagram.
 - `assets/sdad-control-loop.archify.html`: interactive Archify export for the
   same control loop.
