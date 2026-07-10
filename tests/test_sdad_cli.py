@@ -301,6 +301,49 @@ class DoctorCliSubprocessTests(unittest.TestCase):
         self.assertEqual(payload["findings"], [])
         self.assertEqual(result.stderr, "")
 
+    def test_invalid_option_after_explicit_root_preserves_attempted_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+
+            result = _run(
+                "doctor",
+                str(project),
+                "--json",
+                "--strict",
+                "--unknown",
+            )
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["root"], project.resolve().as_posix())
+        self.assertTrue(payload["strict"])
+        self.assertEqual(
+            payload["diagnostic_error"]["kind"],
+            "invalid_invocation",
+        )
+        self.assertEqual(result.stderr, "")
+
+    def test_invalid_option_before_explicit_root_preserves_attempted_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+
+            result = _run(
+                "doctor",
+                "--unknown",
+                str(project),
+                "--json",
+            )
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["root"], project.resolve().as_posix())
+        self.assertFalse(payload["strict"])
+        self.assertEqual(
+            payload["diagnostic_error"]["kind"],
+            "invalid_invocation",
+        )
+        self.assertEqual(result.stderr, "")
+
     def test_invalid_human_invocation_uses_only_one_fatal_stderr_line(self) -> None:
         result = _run("doctor", "--unknown")
 
@@ -391,32 +434,121 @@ class DoctorCliBoundaryTests(unittest.TestCase):
         self.assertNotIn("sensitive implementation detail", stdout)
         self.assertNotIn("Traceback", stdout)
 
-    def test_diagnosis_runs_exactly_once_then_both_renderers_use_the_report(self) -> None:
-        calls = 0
+    def test_diagnosis_runs_exactly_once_for_human_and_json_rendering(self) -> None:
+        for arguments in ((), ("--json",)):
+            with self.subTest(arguments=arguments):
+                calls = 0
 
-        def diagnose(view, _policy):
-            nonlocal calls
-            calls += 1
-            return self.sdad.DoctorReport(
-                root=view.root.as_posix(),
-                findings=(),
-                checks_run=("state_schema",),
-                checks_skipped=("path_integrity",),
-                error_count=0,
-                warning_count=0,
-            )
+                def diagnose(view, _policy):
+                    nonlocal calls
+                    calls += 1
+                    return self.sdad.DoctorReport(
+                        root=view.root.as_posix(),
+                        findings=(),
+                        checks_run=("state_schema",),
+                        checks_skipped=("path_integrity",),
+                        error_count=0,
+                        warning_count=0,
+                    )
 
-        with tempfile.TemporaryDirectory() as tmp:
-            project = Path(tmp)
-            code, stdout, stderr = self.run_injected(project, diagnose)
+                with tempfile.TemporaryDirectory() as tmp:
+                    project = Path(tmp)
+                    code, stdout, stderr = self.run_injected(
+                        project,
+                        diagnose,
+                        *arguments,
+                    )
 
-        self.assertEqual(code, 0)
-        self.assertEqual(calls, 1)
-        self.assertEqual(
-            stdout,
-            "Doctor: 0 errors, 0 warnings, 1 check run, 1 skipped\n",
-        )
-        self.assertEqual(stderr, "")
+                self.assertEqual(code, 0)
+                self.assertEqual(calls, 1)
+                self.assertEqual(stderr, "")
+                if arguments:
+                    self.assertEqual(
+                        json.loads(stdout)["summary"],
+                        {"errors": 0, "warnings": 0},
+                    )
+                else:
+                    self.assertEqual(
+                        stdout,
+                        "Doctor: 0 errors, 0 warnings, 1 check run, 1 skipped\n",
+                    )
+
+    def test_json_render_or_exit_failure_becomes_one_internal_error_document(
+        self,
+    ) -> None:
+        for failure in ("payload", "exit"):
+            with (
+                self.subTest(failure=failure),
+                tempfile.TemporaryDirectory() as tmp,
+            ):
+                project = Path(tmp)
+
+                def malformed(view, _policy):
+                    return self.sdad.DoctorReport(
+                        root=(
+                            None
+                            if failure == "payload"
+                            else view.root.as_posix()
+                        ),
+                        findings=(),
+                        checks_run=("state_schema",),
+                        checks_skipped=(),
+                        error_count=(None if failure == "exit" else 0),
+                        warning_count=0,
+                    )
+
+                code, stdout, stderr = self.run_injected(
+                    project,
+                    malformed,
+                    "--json",
+                )
+
+                payload = json.loads(stdout)
+                self.assertEqual(code, 2)
+                self.assertEqual(stderr, "")
+                self.assertEqual(payload["summary"], {"errors": 0, "warnings": 0})
+                self.assertEqual(payload["checks"], {"run": [], "skipped": []})
+                self.assertEqual(payload["findings"], [])
+                self.assertEqual(
+                    payload["diagnostic_error"]["kind"],
+                    "internal_error",
+                )
+                self.assertNotIn('"errors": null', stdout)
+                self.assertEqual(
+                    stdout.count("\n{") + stdout.startswith("{"),
+                    1,
+                )
+
+    def test_human_render_or_exit_failure_is_fatal_without_partial_report(
+        self,
+    ) -> None:
+        for failure in ("render", "exit"):
+            with (
+                self.subTest(failure=failure),
+                tempfile.TemporaryDirectory() as tmp,
+            ):
+                project = Path(tmp)
+
+                def malformed(view, _policy):
+                    return self.sdad.DoctorReport(
+                        root=view.root.as_posix(),
+                        findings=((object(),) if failure == "render" else ()),
+                        checks_run=("state_schema",),
+                        checks_skipped=(),
+                        error_count=(None if failure == "exit" else 0),
+                        warning_count=0,
+                    )
+
+                code, stdout, stderr = self.run_injected(project, malformed)
+
+                self.assertEqual(code, 2)
+                self.assertEqual(stdout, "")
+                self.assertEqual(
+                    stderr,
+                    "Doctor error [internal_error]: "
+                    "The diagnostic could not be completed.\n",
+                )
+                self.assertNotIn("Doctor: None errors", stderr)
 
     def test_human_exit_two_is_one_exact_fatal_line(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -469,7 +601,13 @@ class DoctorRepositoryContractTests(unittest.TestCase):
         }
         self.assertEqual(expected - set(self.validator.REQUIRED_FILES), set())
 
-    def write_contract_surfaces(self, root: Path, *, advertised: bool = False) -> None:
+    def write_contract_surfaces(
+        self,
+        root: Path,
+        *,
+        advertised_path: str | None = None,
+        marker: str | None = None,
+    ) -> None:
         (root / "scripts").mkdir(parents=True)
         (root / "docs").mkdir(parents=True)
         (root / "scripts" / "sdad.py").write_text(
@@ -477,19 +615,15 @@ class DoctorRepositoryContractTests(unittest.TestCase):
             "SCHEMA_VERSION = 1\n",
             encoding="utf-8",
         )
-        marker = "Run sdad doctor now.\n" if advertised else "Install adapter only.\n"
-        (root / "scripts" / "install-agent-adapter.ps1").write_text(
-            marker,
-            encoding="utf-8",
-        )
-        (root / "scripts" / "install-agent-adapter.sh").write_text(
-            "Install adapter only.\n",
-            encoding="utf-8",
-        )
-        (root / "docs" / "no-clone-quick-install.md").write_text(
-            "# No-Clone\n\nInstall adapters only.\n",
-            encoding="utf-8",
-        )
+        surfaces = {
+            "scripts/install-agent-adapter.ps1": "Install adapter only.\n",
+            "scripts/install-agent-adapter.sh": "Install adapter only.\n",
+            "docs/no-clone-quick-install.md": "# No-Clone\n\nInstall adapters only.\n",
+        }
+        if advertised_path is not None:
+            surfaces[advertised_path] = marker or "Run sdad doctor now.\n"
+        for path, content in surfaces.items():
+            (root / path).write_text(content, encoding="utf-8")
 
     def test_checkout_only_contract_accepts_unadvertised_read_only_cli(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -498,14 +632,27 @@ class DoctorRepositoryContractTests(unittest.TestCase):
             with mock.patch.object(self.validator, "ROOT", root):
                 self.validator.validate_doctor_checkout_contract()
 
-    def test_checkout_only_contract_rejects_installer_advertising(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            self.write_contract_surfaces(root, advertised=True)
-            with mock.patch.object(self.validator, "ROOT", root):
-                with contextlib.redirect_stderr(io.StringIO()):
-                    with self.assertRaises(SystemExit):
-                        self.validator.validate_doctor_checkout_contract()
+    def test_checkout_only_contract_rejects_every_surface_and_marker(self) -> None:
+        for path in (
+            "scripts/install-agent-adapter.ps1",
+            "scripts/install-agent-adapter.sh",
+            "docs/no-clone-quick-install.md",
+        ):
+            for marker in ("Run sdad doctor now.\n", "Install scripts/sdad.py.\n"):
+                with (
+                    self.subTest(path=path, marker=marker),
+                    tempfile.TemporaryDirectory() as tmp,
+                ):
+                    root = Path(tmp)
+                    self.write_contract_surfaces(
+                        root,
+                        advertised_path=path,
+                        marker=marker,
+                    )
+                    with mock.patch.object(self.validator, "ROOT", root):
+                        with contextlib.redirect_stderr(io.StringIO()):
+                            with self.assertRaises(SystemExit):
+                                self.validator.validate_doctor_checkout_contract()
 
 
 if __name__ == "__main__":

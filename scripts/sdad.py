@@ -44,7 +44,9 @@ class _HelpRequested(Exception):
 
 
 class _InvalidInvocation(Exception):
-    pass
+    def __init__(self, message: str, project_root: str | None = None) -> None:
+        super().__init__(message)
+        self.project_root = project_root
 
 
 class _ArgumentParser(argparse.ArgumentParser):
@@ -71,12 +73,14 @@ def _parser(stdout: TextIO) -> _ArgumentParser:
     parser = _ArgumentParser(
         prog="sdad.py",
         description="Inspect an SDAD project without changing it.",
+        allow_abbrev=False,
         stdout=stdout,
     )
     commands = parser.add_subparsers(dest="command", required=True)
     doctor = commands.add_parser(
         "doctor",
         help="diagnose a stateful SDAD control plane",
+        allow_abbrev=False,
         stdout=stdout,
     )
     doctor.add_argument(
@@ -164,8 +168,8 @@ def _error_payload(
     }
 
 
-def _write_json(payload: dict[str, object], stdout: TextIO) -> None:
-    stdout.write(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
+def _json_text(payload: dict[str, object]) -> str:
+    return json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
 
 
 def _quantity(value: int, singular: str) -> str:
@@ -218,9 +222,10 @@ def _emit_error(
         _message(error, _INTERNAL_ERROR_MESSAGE),
     )
     if json_mode:
-        _write_json(
-            _error_payload(root=root, strict=strict, error=safe_error),
-            stdout,
+        stdout.write(
+            _json_text(
+                _error_payload(root=root, strict=strict, error=safe_error)
+            )
         )
     else:
         stderr.write(f"Doctor error [{safe_error.kind}]: {safe_error}\n")
@@ -244,7 +249,12 @@ def run_cli(
     current_root = _path_text(Path.cwd())
 
     try:
-        namespace = _parser(output).parse_args(raw_arguments)
+        namespace, unknown = _parser(output).parse_known_args(raw_arguments)
+        if unknown:
+            raise _InvalidInvocation(
+                "unrecognized arguments: " + " ".join(unknown),
+                project_root=namespace.project_root,
+            )
     except _HelpRequested:
         return 0
     except _InvalidInvocation as exc:
@@ -253,7 +263,11 @@ def run_cli(
                 "invalid_invocation",
                 _message(exc, "The command invocation is invalid."),
             ),
-            root=current_root,
+            root=(
+                _path_text(exc.project_root)
+                if exc.project_root is not None
+                else current_root
+            ),
             strict=strict,
             json_mode=json_mode,
             stdout=output,
@@ -321,11 +335,30 @@ def run_cli(
             stderr=errors,
         )
 
-    if json_mode:
-        _write_json(_completed_payload(report, strict), output)
-    else:
-        output.write(_render_human(report))
-    return int(report.error_count > 0 or (strict and report.warning_count > 0))
+    try:
+        if not isinstance(report, DoctorReport):
+            raise TypeError("diagnostic engine returned an invalid report")
+        exit_code = int(
+            report.error_count > 0
+            or (strict and report.warning_count > 0)
+        )
+        rendered = (
+            _json_text(_completed_payload(report, strict))
+            if json_mode
+            else _render_human(report)
+        )
+    except Exception:
+        return _emit_error(
+            DiagnosticError("internal_error", _INTERNAL_ERROR_MESSAGE),
+            root=accepted_root,
+            strict=strict,
+            json_mode=json_mode,
+            stdout=output,
+            stderr=errors,
+        )
+
+    output.write(rendered)
+    return exit_code
 
 
 if __name__ == "__main__":
