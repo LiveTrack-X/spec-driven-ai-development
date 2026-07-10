@@ -490,7 +490,7 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
         if active_spec is not None and not is_normalized_relative_posix_path(active_spec):
             legacy = (
                 None
-                if not active_spec.strip()
+                if active_spec and not active_spec.strip()
                 else (
                     "sdad-state.yaml active_spec must be a relative path: "
                     f"{active_spec}"

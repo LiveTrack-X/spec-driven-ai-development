@@ -355,24 +355,35 @@ class StateContractTests(unittest.TestCase):
                 self.assertEqual(status_issues[0].legacy_message, legacy)
                 self.assertEqual(collect_template_state_violations(text), [legacy])
 
-    def test_quoted_whitespace_active_spec_is_invalid_without_legacy_output(self) -> None:
-        text = valid_state().replace(
-            "active_spec: SPEC/SPEC-COMPLETE.md",
-            "active_spec: '   '",
+    def test_empty_and_whitespace_active_spec_keep_distinct_legacy_output(self) -> None:
+        cases = (
+            ("''", "", "sdad-state.yaml active_spec must be a relative path: "),
+            ("'   '", "   ", None),
         )
+        for source, value, expected_legacy in cases:
+            with self.subTest(source=source):
+                text = valid_state().replace(
+                    "active_spec: SPEC/SPEC-COMPLETE.md",
+                    f"active_spec: {source}",
+                )
 
-        result = inspect_state(text)
+                result = inspect_state(text)
 
-        self.assertIsNotNone(result.snapshot)
-        assert result.snapshot is not None
-        self.assertEqual(result.snapshot.scalar("active_spec").value, "   ")
-        path_issues = [issue for issue in result.issues if issue.id == "path.invalid"]
-        self.assertEqual(len(result.issues), 1)
-        self.assertEqual(len(path_issues), 1)
-        self.assertEqual(path_issues[0].severity, "error")
-        self.assertEqual(path_issues[0].evidence, "   ")
-        self.assertIsNone(path_issues[0].legacy_message)
-        self.assertEqual(collect_template_state_violations(text), [])
+                self.assertIsNotNone(result.snapshot)
+                assert result.snapshot is not None
+                self.assertEqual(result.snapshot.scalar("active_spec").value, value)
+                path_issues = [
+                    issue for issue in result.issues if issue.id == "path.invalid"
+                ]
+                self.assertEqual(len(result.issues), 1)
+                self.assertEqual(len(path_issues), 1)
+                self.assertEqual(path_issues[0].severity, "error")
+                self.assertEqual(path_issues[0].evidence, value)
+                self.assertEqual(path_issues[0].legacy_message, expected_legacy)
+                self.assertEqual(
+                    collect_template_state_violations(text),
+                    [] if expected_legacy is None else [expected_legacy],
+                )
 
     def test_quoted_whitespace_packet_text_fields_are_blank(self) -> None:
         for key, original in (
