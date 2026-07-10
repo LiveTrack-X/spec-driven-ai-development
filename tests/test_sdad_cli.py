@@ -121,7 +121,10 @@ class DoctorCliSubprocessTests(unittest.TestCase):
         self.assertEqual(payload["findings"], [])
         self.assertNotIn("diagnostic_error", payload)
         self.assertEqual(result.stderr, "")
-        self.assertEqual(result.stdout.count("\n{") + result.stdout.startswith("{"), 1)
+        self.assertEqual(
+            result.stdout.count("\n{") + result.stdout.startswith("{"),
+            1,
+        )
 
     def test_default_project_root_is_current_directory(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -343,6 +346,50 @@ class DoctorCliSubprocessTests(unittest.TestCase):
             "invalid_invocation",
         )
         self.assertEqual(result.stderr, "")
+
+    def test_malformed_json_flag_after_root_preserves_attempted_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+
+            result = _run("doctor", str(project), "--json=false")
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["root"], project.resolve().as_posix())
+        self.assertFalse(payload["strict"])
+        self.assertEqual(
+            payload["diagnostic_error"]["kind"],
+            "invalid_invocation",
+        )
+        self.assertEqual(result.stderr, "")
+        self.assertEqual(
+            result.stdout.count("\n{") + result.stdout.startswith("{"),
+            1,
+        )
+
+    def test_malformed_strict_flag_after_root_preserves_root_and_explicit_flag(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+
+            result = _run(
+                "doctor",
+                str(project),
+                "--json",
+                "--strict=false",
+            )
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["root"], project.resolve().as_posix())
+        self.assertTrue(payload["strict"])
+        self.assertEqual(
+            payload["diagnostic_error"]["kind"],
+            "invalid_invocation",
+        )
+        self.assertEqual(result.stderr, "")
+        self.assertEqual(result.stdout.count("\n{") + result.stdout.startswith("{"), 1)
 
     def test_invalid_human_invocation_uses_only_one_fatal_stderr_line(self) -> None:
         result = _run("doctor", "--unknown")

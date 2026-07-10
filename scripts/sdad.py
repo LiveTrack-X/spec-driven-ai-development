@@ -9,6 +9,7 @@ on the owner's behalf.
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import sys
 from collections.abc import Callable, Sequence
@@ -105,6 +106,27 @@ def _parser(stdout: TextIO) -> _ArgumentParser:
 
 def _explicit_flag(arguments: Sequence[str], flag: str) -> bool:
     return any(value == flag or value.startswith(flag + "=") for value in arguments)
+
+
+def _probe_project_root(arguments: Sequence[str]) -> str | None:
+    normalized: list[str] = []
+    options_enabled = True
+    for value in arguments:
+        if value == "--":
+            options_enabled = False
+        if options_enabled and (
+            value.startswith("--json=")
+            or value.startswith("--strict=")
+        ):
+            normalized.append(value.split("=", 1)[0])
+        else:
+            normalized.append(value)
+
+    try:
+        namespace, _unknown = _parser(io.StringIO()).parse_known_args(normalized)
+    except (_HelpRequested, _InvalidInvocation):
+        return None
+    return namespace.project_root
 
 
 def _path_text(value: str | Path) -> str:
@@ -247,6 +269,7 @@ def run_cli(
     json_mode = _explicit_flag(raw_arguments, "--json")
     strict = _explicit_flag(raw_arguments, "--strict")
     current_root = _path_text(Path.cwd())
+    probed_root = _probe_project_root(raw_arguments)
 
     try:
         namespace, unknown = _parser(output).parse_known_args(raw_arguments)
@@ -258,14 +281,19 @@ def run_cli(
     except _HelpRequested:
         return 0
     except _InvalidInvocation as exc:
+        invalid_root = (
+            exc.project_root
+            if exc.project_root is not None
+            else probed_root
+        )
         return _emit_error(
             DiagnosticError(
                 "invalid_invocation",
                 _message(exc, "The command invocation is invalid."),
             ),
             root=(
-                _path_text(exc.project_root)
-                if exc.project_root is not None
+                _path_text(invalid_root)
+                if invalid_root is not None
                 else current_root
             ),
             strict=strict,
