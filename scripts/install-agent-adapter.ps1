@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet("codex", "claude-code", "cursor", "github-copilot", "generic")]
+    [ValidateSet("codex", "claude-code", "gemini-cli", "cursor", "github-copilot", "generic")]
     [string]$Adapter,
 
     [Parameter(Mandatory = $false)]
@@ -20,6 +20,9 @@ $copies = @{
     )
     "claude-code" = @(
         @{ Source = "adapters\claude-code\CLAUDE.md"; Target = "CLAUDE.md" }
+    )
+    "gemini-cli" = @(
+        @{ Source = "adapters\gemini-cli\GEMINI.md"; Target = "GEMINI.md" }
     )
     "cursor" = @(
         @{ Source = "adapters\cursor\.cursor\rules\spec-driven-ai-development.mdc"; Target = ".cursor\rules\spec-driven-ai-development.mdc" }

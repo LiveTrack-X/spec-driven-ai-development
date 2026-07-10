@@ -30,6 +30,11 @@ SURFACES = {
         "Scope: Claude Code project memory",
         "",
     ),
+    "adapters/gemini-cli/GEMINI.md": (
+        "# SPEC-Driven AI Development",
+        "Scope: Gemini CLI project context",
+        "",
+    ),
     "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc": (
         "# SPEC-Driven AI Development",
         "Scope: Cursor project rule",

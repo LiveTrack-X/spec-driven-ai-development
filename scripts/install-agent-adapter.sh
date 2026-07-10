@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-  echo "Usage: $0 <codex|claude-code|cursor|github-copilot|generic> [target-path] [--force]" >&2
+  echo "Usage: $0 <codex|claude-code|gemini-cli|cursor|github-copilot|generic> [target-path] [--force]" >&2
 }
 
 if [[ $# -lt 1 ]]; then
@@ -40,6 +40,10 @@ case "${adapter}" in
   claude-code)
     source_rel="adapters/claude-code/CLAUDE.md"
     target_rel="CLAUDE.md"
+    ;;
+  gemini-cli)
+    source_rel="adapters/gemini-cli/GEMINI.md"
+    target_rel="GEMINI.md"
     ;;
   cursor)
     source_rel="adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc"

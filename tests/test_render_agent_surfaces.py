@@ -27,6 +27,23 @@ class RenderAgentSurfacesTests(unittest.TestCase):
     def test_committed_adapters_match_the_canonical_runtime_kernel(self) -> None:
         self.assertEqual(self.module.collect_surface_drift(ROOT), [])
 
+    def test_renders_gemini_from_the_canonical_kernel(self) -> None:
+        rendered = self.module.render_surfaces(ROOT)
+        gemini = rendered["adapters/gemini-cli/GEMINI.md"]
+        canonical = (ROOT / self.module.CANONICAL_PATH).read_text(encoding="utf-8")
+        expected = canonical.replace(
+            self.module.CANONICAL_TITLE,
+            "# SPEC-Driven AI Development",
+            1,
+        ).replace(
+            self.module.CANONICAL_SCOPE,
+            "Scope: Gemini CLI project context",
+            1,
+        )
+
+        self.assertEqual(gemini, expected.replace("\r\n", "\n"))
+        self.assertIn("sdad-state.yaml", gemini)
+
     def test_reports_a_drifted_surface_without_rewriting_it(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

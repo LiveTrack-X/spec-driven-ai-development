@@ -166,6 +166,7 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         adapters = (
             "adapters/codex/AGENTS.md",
             "adapters/claude-code/CLAUDE.md",
+            "adapters/gemini-cli/GEMINI.md",
             "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
             "adapters/github-copilot/.github/copilot-instructions.md",
             "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
@@ -250,6 +251,7 @@ class AgentExperienceValidatorTests(unittest.TestCase):
             "templates/project-control-files/AGENTS.md",
             "adapters/codex/AGENTS.md",
             "adapters/claude-code/CLAUDE.md",
+            "adapters/gemini-cli/GEMINI.md",
             "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
             "adapters/github-copilot/.github/copilot-instructions.md",
             "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
