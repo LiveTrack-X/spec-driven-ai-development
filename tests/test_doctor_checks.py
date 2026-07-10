@@ -23,6 +23,7 @@ from sdad_validator.diagnostics import (  # noqa: E402
 from sdad_validator.doctor import (  # noqa: E402
     ALLOWED_FINDING_IDS,
     DiagnosticEngine,
+    _CachedProjectView,
 )
 from sdad_validator.project_view import (  # noqa: E402
     PathInspection,
@@ -676,6 +677,67 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
         self.assertFinding(report, "packet.open-todo", Severity.ERROR)
         self.assertEqual(view.read_counts["review-findings.md"], 1)
         self.assertEqual(view.read_counts["docs/TODO-Open-Items.md"], 1)
+
+    def test_state_file_can_be_active_spec_and_route_without_second_read(self) -> None:
+        state = valid_state(
+            active_spec="sdad-state.yaml",
+            routed_docs=("sdad-state.yaml",),
+        )
+        state_size = len(state.encode("utf-8"))
+        view = make_view(state)
+
+        report = DiagnosticEngine().diagnose(
+            view,
+            DoctorPolicy(
+                today=date(2026, 7, 10),
+                max_state_bytes=state_size,
+                max_control_document_bytes=state_size + 1,
+            ),
+        )
+
+        self.assertEqual(view.read_counts["sdad-state.yaml"], 1)
+        self.assertEqual(view.inspect_counts["sdad-state.yaml"], 1)
+        self.assertEqual(report.checks_run, FIXED_CHECKS)
+        self.assertEqual(report.checks_skipped, ())
+        self.assertEqual(report.error_count, 0)
+        self.assertEqual(report.warning_count, 0)
+
+    def test_cached_state_bytes_apply_later_smaller_control_limit(self) -> None:
+        state = valid_state(
+            active_spec="sdad-state.yaml",
+            routed_docs=("sdad-state.yaml",),
+        )
+        state_size = len(state.encode("utf-8"))
+        view = make_view(state)
+
+        report = DiagnosticEngine().diagnose(
+            view,
+            DoctorPolicy(
+                today=date(2026, 7, 10),
+                max_state_bytes=state_size,
+                max_control_document_bytes=state_size - 1,
+            ),
+        )
+
+        self.assertEqual(view.read_counts["sdad-state.yaml"], 1)
+        self.assertFinding(report, "path.too-large", Severity.WARNING)
+        self.assertEqual(report.checks_run, FIXED_CHECKS)
+        self.assertEqual(report.checks_skipped, ())
+        self.assertEqual(report.error_count, 0)
+        self.assertEqual(report.warning_count, 1)
+
+    def test_cached_view_rereads_too_large_only_for_a_larger_limit(self) -> None:
+        view = InMemoryProjectView({"doc.md": b"12345678"})
+        cached = _CachedProjectView(view)
+
+        self.assertEqual(cached.read_bytes("doc.md", 4), ReadResult("too_large", None))
+        self.assertEqual(cached.read_bytes("doc.md", 3), ReadResult("too_large", None))
+        self.assertEqual(cached.read_bytes("doc.md", 4), ReadResult("too_large", None))
+        self.assertEqual(cached.read_bytes("doc.md", 8), ReadResult("ok", b"12345678"))
+        self.assertEqual(cached.read_bytes("doc.md", 6), ReadResult("too_large", None))
+        self.assertEqual(cached.read_bytes("doc.md", 10), ReadResult("ok", b"12345678"))
+        self.assertEqual(view.inspect_counts["doc.md"], 1)
+        self.assertEqual(view.read_counts["doc.md"], 2)
 
     def test_findings_have_stable_check_path_line_id_order_and_exact_counts(self) -> None:
         state = valid_state(updated="2026-06-09", routed_docs=("docs/missing.md",))

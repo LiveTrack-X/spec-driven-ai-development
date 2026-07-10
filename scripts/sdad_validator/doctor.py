@@ -187,12 +187,19 @@ class _CachedProjectView:
         cached = self._reads.get(relative_path)
         if cached is not None:
             cached_limit, cached_result = cached
-            if cached_limit != max_bytes:
-                raise DiagnosticError(
-                    "internal_error",
-                    "A control document was requested with inconsistent read limits.",
-                )
-            return cached_result
+            if cached_result.status == "ok":
+                if cached_result.data is None:
+                    raise DiagnosticError(
+                        "internal_error",
+                        "A cached readable document has no bytes.",
+                    )
+                if len(cached_result.data) > max_bytes:
+                    return ReadResult("too_large", None)
+                return cached_result
+            if cached_result.status != "too_large":
+                return cached_result
+            if max_bytes <= cached_limit:
+                return cached_result
 
         inspection = self.inspect(relative_path)
         if inspection.status != "ok":
@@ -310,9 +317,10 @@ def _conditional_severity(
 
 class DiagnosticEngine:
     def diagnose(self, view: ProjectView, policy: DoctorPolicy) -> DoctorReport:
-        state_result = _read_state(view, policy)
+        diagnostic_view = _CachedProjectView(view)
+        state_result = _read_state(diagnostic_view, policy)
         context = DoctorContext(
-            view=_CachedProjectView(view),
+            view=diagnostic_view,
             policy=policy,
             state_result=state_result,
         )
