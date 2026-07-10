@@ -1,6 +1,6 @@
 # SDAD Doctor Architecture And Diagnostic Contract
 
-Status: Scope approved; written design pending owner review; implementation deferred
+Status: Owner-approved; implementation authorized
 Date: 2026-07-10
 
 ## Scope
@@ -614,7 +614,5 @@ or owner approval.
 
 ## Implementation Gate
 
-This document authorizes design review only. It does not authorize doctor code,
-template changes, `[packet:...]` rollout, installer changes, or release work.
-Implementation begins only after the owner approves this written design and a
-separate implementation plan.
+The owner approved this written design and the separate implementation plan on
+2026-07-10. Implementation is authorized within the boundaries above.

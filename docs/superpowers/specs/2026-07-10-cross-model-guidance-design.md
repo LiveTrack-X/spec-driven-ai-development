@@ -1,10 +1,10 @@
 # SDAD 3.1.0 Cross-Model Guidance Supplement
 
-Status: Direction approved; written design pending owner review; implementation deferred
+Status: Owner-approved; implementation authorized
 Date: 2026-07-10
 
-The owner approved the scope and recommended approach on 2026-07-10. The only
-remaining design gate is review of this committed written specification.
+The owner approved the scope, recommended approach, written specification, and
+implementation plan on 2026-07-10.
 
 ## Purpose
 
@@ -366,6 +366,6 @@ Implementation is acceptable only when:
 
 ## Implementation Gate
 
-The direction is approved. Code, adapter, installer, prompt, manifest, version,
-tag, push, and release changes begin only after the owner reviews this committed
-supplement and an implementation plan is written.
+The owner reviewed this committed supplement and the separate implementation
+plan on 2026-07-10. Code, adapter, installer, prompt, manifest, version, tag,
+push, and release work is authorized within the boundaries above.
