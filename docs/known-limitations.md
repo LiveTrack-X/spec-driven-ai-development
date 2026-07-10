@@ -15,6 +15,21 @@ The repository validator protects important documentation, template, adapter,
 and link contracts. It is not a substitute for downstream product tests,
 security review, or owner acceptance.
 
+## Doctor Diagnostic Boundary
+
+`sdad doctor` is checkout-only in 3.1.0 and is a read-only diagnostic. Adapter
+installers and no-clone setup do not install it in downstream projects.
+
+Doctor checks the state contract and selected control-plane coherence.
+Doctor does not execute validation commands. It does not mutate or fix project files.
+It does not use the network. A missing state is a completed finding rather than
+proof of installation or invocation failure.
+
+A clean report is not proof of correctness, effectiveness, release approval, or owner acceptance.
+Doctor cannot inspect runtime behavior beyond its bounded files, establish that
+declared validation commands ran, resolve ambiguous prose, or replace product
+tests, security review, release gates, or owner judgment.
+
 ## Regression Evidence And Method Claims
 
 Repository regression tests do not establish SDAD effectiveness or comparative

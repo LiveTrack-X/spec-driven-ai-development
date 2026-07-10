@@ -16,6 +16,7 @@ policy or playbooks on demand.
 | --- | --- | --- |
 | Codex | `AGENTS.md` + `ai-spec-project-start` skill | You want repository rules plus an installable Codex skill. |
 | Claude Code | `CLAUDE.md` | You want project memory loaded by Claude Code at session start. |
+| Gemini CLI | `GEMINI.md` | You want repository-root project context for Gemini CLI. |
 | Cursor | `.cursor/rules/spec-driven-ai-development.mdc` | You want persistent project rules for Cursor Agent and inline edit. |
 | GitHub Copilot | `.github/copilot-instructions.md` | You want repository-level custom instructions for Copilot Chat, review, or coding agent flows. |
 | Generic AI coding tool | `AI-SESSION-INSTRUCTIONS.md` | The tool has no special instruction-file convention. |
@@ -26,6 +27,7 @@ PowerShell:
 
 ```powershell
 .\scripts\install-agent-adapter.ps1 -Adapter claude-code -TargetPath C:\path\to\project
+.\scripts\install-agent-adapter.ps1 -Adapter gemini-cli -TargetPath C:\path\to\project
 .\scripts\install-agent-adapter.ps1 -Adapter cursor -TargetPath C:\path\to\project
 .\scripts\install-agent-adapter.ps1 -Adapter github-copilot -TargetPath C:\path\to\project
 .\scripts\install-agent-adapter.ps1 -Adapter generic -TargetPath C:\path\to\project
@@ -35,6 +37,7 @@ macOS/Linux:
 
 ```bash
 ./scripts/install-agent-adapter.sh claude-code /path/to/project
+./scripts/install-agent-adapter.sh gemini-cli /path/to/project
 ./scripts/install-agent-adapter.sh cursor /path/to/project
 ./scripts/install-agent-adapter.sh github-copilot /path/to/project
 ./scripts/install-agent-adapter.sh generic /path/to/project
@@ -45,6 +48,8 @@ example `bash ./scripts/install-agent-adapter.sh claude-code /path/to/project`.
 
 The installer refuses to overwrite existing files unless `-Force` or `--force`
 is used.
+Adapter installation produces guidance, not enforcement. Keep non-negotiable
+controls in their actual enforcement surfaces.
 
 ## Adapter Design
 
@@ -108,17 +113,24 @@ or reviewed project memory.
 ### Provider Runtime Boundaries
 
 Provider rules remain guidance unless the provider or repository enforces them.
-Sandbox, policy, permission, and trusted-folder controls can constrain actions;
-they do not prove completion, product correctness, or owner approval. Likewise,
-valid syntax proves structure, while observed results and task-specific semantic
-validation establish the evidence claim.
+Provider sandbox, policy, permission, and trusted-folder controls are distinct
+from SDAD guidance and can constrain actions.
+Neither tool success nor provider enforcement proves completion, product correctness, or owner approval.
+Likewise, valid syntax proves structure, while observed results and
+task-specific semantic validation establish the evidence claim.
 
-Gemini CLI reads repository `GEMINI.md` as project context.
-`GEMINI_SYSTEM_MD` replaces its system prompt and is not an SDAD installation
-surface. Gemini headless Plan Mode, like provider plan modes generally, is not
-owner acceptance and cannot bypass Q5 controls. Nested or path-specific Claude,
-Cursor, Copilot, or Gemini instructions should be added only after an observed
-domain-specific failure justifies the extra always-loaded context.
+Gemini CLI reads repository `GEMINI.md` as project context. When troubleshooting
+what it actually loaded, use the stable `/memory show` command. Reload and
+refresh aliases vary across official documentation, so this guide does not
+promise or validate them.
+
+`GEMINI_SYSTEM_MD` replaces the system prompt; it is not the project adapter install path.
+The override can replace or bypass the expected baseline.
+Gemini headless Plan Mode is not owner acceptance and cannot bypass Q5 controls.
+
+Nested or path-specific Claude, Cursor, Copilot, or Gemini instructions should
+be added only after an observed domain-specific failure justifies the extra
+always-loaded context.
 
 ### Provider References
 
@@ -128,6 +140,8 @@ domain-specific failure justifies the extra always-loaded context.
   rules docs: <https://cursor.com/docs/rules>
 - GitHub Copilot repository instructions use `.github/copilot-instructions.md`.
   See GitHub's docs: <https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions>
+- Gemini CLI project context uses repository `GEMINI.md`. See Gemini CLI's
+  context docs: <https://geminicli.com/docs/cli/gemini-md/>
 
 Tool behavior can change. If a tool stops loading the expected file, keep the
 method content and update only the adapter path.

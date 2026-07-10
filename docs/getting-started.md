@@ -169,6 +169,37 @@ git clone https://github.com/LiveTrack-X/spec-driven-ai-development.git
 cd spec-driven-ai-development
 ```
 
+## Diagnose With SDAD Doctor
+
+Doctor is for stateful Standard or Full SDAD projects.
+It also supports any project that adopts the `sdad-state.yaml` state contract.
+Checkout-only in 3.1.0, it is not copied into a target project by adapter
+installation.
+
+```text
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] [--json] [--strict]
+```
+
+Replace `<SDAD_CHECKOUT>` with the path to this repository checkout. Replace
+`[PROJECT_ROOT]` with the project to inspect, or omit it to inspect the current
+directory.
+
+- `--json` emits exactly one versioned JSON document.
+- `--strict` makes warnings fail without reclassifying them.
+
+| Exit | Meaning |
+| --- | --- |
+| 0 | Diagnosis completed and the selected policy passes: no errors, and no warnings when `--strict` is set. |
+| 1 | Diagnosis completed, but findings fail policy: errors, or warnings with `--strict`. |
+| 2 | Diagnosis did not complete because of invalid invocation, an unusable root, state I/O, or an internal failure. |
+
+At exit `1`, a missing state file is the completed `state.missing` finding, not
+an installation or invocation failure.
+
+Doctor is read-only: it never executes validation commands, mutates or fixes
+files, uses the network, or grants or claims owner acceptance. Findings are
+diagnostic evidence, not proof of correctness, effectiveness, or owner acceptance.
+
 ## Choose A Setup Path
 
 ### Path 1: Prompt-Only Start
@@ -244,6 +275,7 @@ PowerShell:
 ```powershell
 .\scripts\install-agent-adapter.ps1 -Adapter codex -TargetPath C:\path\to\project
 .\scripts\install-agent-adapter.ps1 -Adapter claude-code -TargetPath C:\path\to\project
+.\scripts\install-agent-adapter.ps1 -Adapter gemini-cli -TargetPath C:\path\to\project
 .\scripts\install-agent-adapter.ps1 -Adapter cursor -TargetPath C:\path\to\project
 .\scripts\install-agent-adapter.ps1 -Adapter github-copilot -TargetPath C:\path\to\project
 .\scripts\install-agent-adapter.ps1 -Adapter generic -TargetPath C:\path\to\project
@@ -254,6 +286,7 @@ Bash:
 ```bash
 ./scripts/install-agent-adapter.sh codex /path/to/project
 ./scripts/install-agent-adapter.sh claude-code /path/to/project
+./scripts/install-agent-adapter.sh gemini-cli /path/to/project
 ./scripts/install-agent-adapter.sh cursor /path/to/project
 ./scripts/install-agent-adapter.sh github-copilot /path/to/project
 ./scripts/install-agent-adapter.sh generic /path/to/project

@@ -7,8 +7,8 @@ Status: `3.0.0` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
-Works with Codex, Claude Code, Cursor, Copilot Chat, and generic AI coding
-agents.
+Works with Codex, Claude Code, Gemini CLI, Cursor, Copilot Chat, and generic AI
+coding agents.
 
 **Start fast:** [User Guide](docs/user-guide.md) |
 [Owner Guide](docs/owners-guide.md) |
@@ -344,6 +344,24 @@ makes it immutable. Use `/main/` only when you explicitly want the latest,
 unpinned instructions, and record the chosen revision in setup notes. See
 [install-sources.json](install-sources.json) for the canonical revision/path/hash
 contract and [docs/known-limitations.md](docs/known-limitations.md) for its limits.
+
+## Diagnose Stateful Projects
+
+For a stateful Standard or Full SDAD project, the checkout-only Doctor can
+inspect control-plane consistency without changing the project:
+
+```text
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] [--json] [--strict]
+```
+
+Replace `<SDAD_CHECKOUT>` with this repository checkout. `--json` emits one versioned machine-readable document.
+`--strict` makes warnings fail policy without reclassifying them.
+
+Doctor is read-only. It never executes validation commands, changes or fixes
+files, uses the network, or grants acceptance. Its findings are
+diagnostic evidence, not proof of correctness, effectiveness, or owner acceptance.
+See [Getting Started](docs/getting-started.md#diagnose-with-sdad-doctor) for the
+full operating and exit-code contract.
 
 ## What SDAD Gives You
 
@@ -898,6 +916,7 @@ Use adapters when you want the same control layer in different AI coding tools:
 
 - Codex: `AGENTS.md` + `ai-spec-project-start` skill
 - Claude Code: `CLAUDE.md`
+- Gemini CLI: repository-root `GEMINI.md`
 - Cursor: `.cursor/rules/spec-driven-ai-development.mdc`
 - GitHub Copilot: `.github/copilot-instructions.md`
 - Generic AI tool: `AI-SESSION-INSTRUCTIONS.md`
@@ -906,6 +925,7 @@ Install examples:
 
 ```powershell
 .\scripts\install-agent-adapter.ps1 -Adapter claude-code -TargetPath C:\path\to\project
+.\scripts\install-agent-adapter.ps1 -Adapter gemini-cli -TargetPath C:\path\to\project
 .\scripts\install-agent-adapter.ps1 -Adapter cursor -TargetPath C:\path\to\project
 .\scripts\install-agent-adapter.ps1 -Adapter github-copilot -TargetPath C:\path\to\project
 ```

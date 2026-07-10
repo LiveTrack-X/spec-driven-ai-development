@@ -5,6 +5,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import re
 import subprocess
 import tempfile
 import unittest
@@ -342,6 +343,185 @@ class RequiredPhraseContractTests(unittest.TestCase):
                         )
 
             self.assertIn("Config missing: beta", error_output.getvalue())
+
+
+class DoctorGeminiDocumentationContractTests(unittest.TestCase):
+    CONTRACT_PATHS = {
+        "README.md",
+        "adapters/README.md",
+        "docs/getting-started.md",
+        "docs/user-guide.md",
+        "docs/tool-adapters.md",
+        "docs/known-limitations.md",
+    }
+
+    def write_current_contract_fixture(self, root: Path) -> None:
+        for relative_path in self.CONTRACT_PATHS:
+            source = ROOT / relative_path
+            target = root / relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+
+    def validate(self, root: Path) -> None:
+        validator = getattr(
+            VALIDATE_REPO,
+            "validate_doctor_gemini_documentation_contract",
+            None,
+        )
+        self.assertIsNotNone(
+            validator,
+            "doctor/Gemini documentation validator is missing",
+        )
+        with mock.patch.object(VALIDATE_REPO, "ROOT", root):
+            validator()
+
+    def test_contract_mapping_covers_only_the_public_documentation_routes(self) -> None:
+        contracts = getattr(VALIDATE_REPO, "DOCTOR_GEMINI_DOC_CONTRACTS", None)
+        self.assertIsNotNone(contracts, "doctor/Gemini contract mapping is missing")
+        self.assertEqual(set(contracts), self.CONTRACT_PATHS)
+
+    def test_current_documentation_satisfies_the_contract(self) -> None:
+        self.validate(ROOT)
+
+    def test_rejects_a_full_exit_table_in_the_compact_readme_section(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_current_contract_fixture(root)
+            readme_path = root / "README.md"
+            readme = readme_path.read_text(encoding="utf-8")
+            readme_path.write_text(
+                readme.replace(
+                    "## What SDAD Gives You",
+                    "| Exit | Meaning |\n| --- | --- |\n| 0 | Clean |\n\n"
+                    "## What SDAD Gives You",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    self.validate(root)
+
+    def test_rejects_an_incomplete_getting_started_exit_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_current_contract_fixture(root)
+            guide_path = root / "docs/getting-started.md"
+            guide = guide_path.read_text(encoding="utf-8")
+            guide_path.write_text(
+                re.sub(r"(?m)^\| 1 \|.*\n", "", guide, count=1),
+                encoding="utf-8",
+            )
+
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    self.validate(root)
+
+    def test_rejects_wrong_getting_started_exit_meanings(self) -> None:
+        def replace_exit_rows(guide: str, replacements: dict[str, str]) -> str:
+            return re.sub(
+                r"(?m)^\| ([012]) \| ([^\n]+) \|$",
+                lambda match: (
+                    f"| {match.group(1)} | "
+                    f"{replacements.get(match.group(1), match.group(2))} |"
+                ),
+                guide,
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp)
+            self.write_current_contract_fixture(fixture)
+            original = (fixture / "docs/getting-started.md").read_text(
+                encoding="utf-8"
+            )
+            meanings = dict(
+                re.findall(r"(?m)^\| ([012]) \| ([^\n]+) \|$", original)
+            )
+            cases = (
+                {"0": meanings["2"], "2": meanings["0"]},
+                {"1": "Arbitrary text that does not define completed findings."},
+            )
+
+            for replacements in cases:
+                with self.subTest(replacements=replacements):
+                    root = fixture / next(iter(replacements))
+                    self.write_current_contract_fixture(root)
+                    guide_path = root / "docs/getting-started.md"
+                    guide_path.write_text(
+                        replace_exit_rows(original, replacements),
+                        encoding="utf-8",
+                    )
+                    with contextlib.redirect_stderr(io.StringIO()):
+                        with self.assertRaises(SystemExit):
+                            self.validate(root)
+
+    def test_rejects_a_contradictory_duplicate_exit_row(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_current_contract_fixture(root)
+            guide_path = root / "docs/getting-started.md"
+            guide = guide_path.read_text(encoding="utf-8")
+            correct_zero_row = re.search(r"(?m)^\| 0 \| [^\n]+ \|$", guide)
+            self.assertIsNotNone(correct_zero_row)
+            guide_path.write_text(
+                guide.replace(
+                    correct_zero_row.group(0),
+                    "| 0 | Diagnosis did not complete because the root failed. |\n"
+                    + correct_zero_row.group(0),
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    self.validate(root)
+
+    def test_rejects_an_unstable_gemini_memory_command(self) -> None:
+        for unstable_command in ("/memory reload", "/memory show --refresh"):
+            with self.subTest(command=unstable_command), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.write_current_contract_fixture(root)
+                guide_path = root / "docs/tool-adapters.md"
+                guide = guide_path.read_text(encoding="utf-8")
+                guide_path.write_text(
+                    guide + f"\nUnstable alias: `{unstable_command}`\n",
+                    encoding="utf-8",
+                )
+
+                with contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit):
+                        self.validate(root)
+
+    def test_checkout_only_doctor_stays_out_of_distribution_surfaces(self) -> None:
+        for relative_path in (
+            "scripts/install-agent-adapter.ps1",
+            "scripts/install-agent-adapter.sh",
+            "docs/no-clone-quick-install.md",
+        ):
+            with self.subTest(path=relative_path):
+                content = (ROOT / relative_path).read_text(encoding="utf-8")
+                self.assertIsNone(
+                    re.search(r"\bdoctor\b|scripts[/\\]sdad\.py", content, flags=re.I)
+                )
+
+    def test_owner_artwork_and_expanded_copy_prompt_are_unchanged(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        no_clone = (ROOT / "docs/no-clone-quick-install.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertEqual(
+            VALIDATE_REPO.prompt_content(readme, VALIDATE_REPO.README_HEADING),
+            VALIDATE_REPO.prompt_content(no_clone, VALIDATE_REPO.CANONICAL_HEADING),
+        )
+        self.assertNotIn("<details", readme)
+        self.assertEqual(
+            hashlib.sha256(
+                (ROOT / "assets/spec-driven-ai-development-infographic.png").read_bytes()
+            ).hexdigest(),
+            "5c5a53a8973599839a83cefa8ea787277cbe580c98d04eb608b597a84b540793",
+        )
 
 
 class WorkflowActionPinContractTests(unittest.TestCase):

@@ -100,6 +100,30 @@ or owner acceptance.
 
 ## Troubleshooting FAQ
 
+### Q. How do I diagnose a stateful SDAD project?
+
+A. Run the checkout-only Doctor from an SDAD repository checkout:
+
+```text
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] [--json] [--strict]
+```
+
+Replace `<SDAD_CHECKOUT>` with the checkout path. This is intended for
+stateful Standard or Full projects, or another project that uses the SDAD state
+contract. A missing `sdad-state.yaml` is a completed finding with exit `1`, not
+proof that Doctor was installed in the target project.
+
+Exit `0` means the completed report passes policy; exit `1` means completed
+findings fail policy.
+`--json` returns one versioned JSON document for automation.
+`--strict` makes warnings fail without changing their severity. Exit `2` means
+diagnosis could not complete because of invocation, root, state-I/O, or internal
+failure.
+
+Doctor is read-only. It never runs validation commands, changes or fixes files,
+uses the network, or accepts work for the owner. Findings are
+diagnostic evidence, not proof of correctness, effectiveness, or owner acceptance.
+
 ### Q. I do not know the right SDAD command or skill name.
 
 A. Use a natural-language request and let the AI route the intent.
