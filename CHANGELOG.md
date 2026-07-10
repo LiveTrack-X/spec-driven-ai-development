@@ -30,9 +30,9 @@ Nothing yet.
 - Added `scripts/render_agent_surfaces.py` so five self-contained tool adapters
   are rendered deterministically from one canonical runtime kernel and checked
   for drift without changing the single-file installer contract.
-- Delegated raw install revision/path/hash details from the README to
-  `install-sources.json` and the no-clone guide, removing a large duplicated
-  bootstrap prompt surface while retaining fail-closed verification.
+- Made `install-sources.json` the revision/path/hash contract and no-clone
+  Option 1 the canonical copy-paste prompt, with the README mirror generated
+  and checked for exact parity while retaining fail-closed verification.
 - Added a security policy for reporting unsafe installer, adapter, raw fetch,
   or security-boundary guidance issues.
 - Added known limitations and adoption notes covering validator
@@ -74,6 +74,9 @@ Nothing yet.
 - Canonicalized repository-root path comparisons so Markdown link validation
   remains correct when Windows runners expose the same directory through an
   8.3 short-path alias.
+- Kept the README copy-paste start prompt permanently expanded, made no-clone
+  Option 1 its exact canonical source, and added sync/parity contracts that
+  reject collapsible or divergent prompt markup.
 
 ## 2.1.0 - 2026-07-09
 

@@ -14,10 +14,20 @@ from urllib.parse import unquote
 try:
     from sdad_validator.agent_experience import collect_agent_experience_violations
     from render_agent_surfaces import collect_surface_drift
+    from sync_copy_prompt import (
+        CANONICAL_HEADING,
+        README_HEADING,
+        prompt_content,
+    )
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from sdad_validator.agent_experience import collect_agent_experience_violations
     from render_agent_surfaces import collect_surface_drift
+    from sync_copy_prompt import (
+        CANONICAL_HEADING,
+        README_HEADING,
+        prompt_content,
+    )
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -91,10 +101,12 @@ REQUIRED_FILES = [
     "scripts/install-codex-skill.ps1",
     "scripts/install-codex-skill.sh",
     "scripts/render_agent_surfaces.py",
+    "scripts/sync_copy_prompt.py",
     "tests/test_install_agent_adapter.py",
     "tests/test_install_codex_skill.py",
     "tests/test_agent_experience_contracts.py",
     "tests/test_render_agent_surfaces.py",
+    "tests/test_sync_copy_prompt.py",
     "tests/test_validate_repo.py",
     "scripts/sdad_validator/__init__.py",
     "scripts/sdad_validator/agent_experience.py",
@@ -1485,6 +1497,13 @@ def validate_templates() -> None:
         if phrase not in getting_started:
             fail(f"Getting started doc missing: {phrase}")
     no_clone = read("docs/no-clone-quick-install.md")
+    try:
+        canonical_copy_prompt = prompt_content(no_clone, CANONICAL_HEADING)
+        readme_copy_prompt = prompt_content(readme, README_HEADING)
+    except ValueError as exc:
+        fail(str(exc))
+    if readme_copy_prompt != canonical_copy_prompt:
+        fail("README copy-paste prompt must exactly match no-clone Option 1")
     for phrase in [
         "Step 0: Choose Scale",
         "Step 0.1 - Check product evidence flag",

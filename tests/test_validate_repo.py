@@ -281,7 +281,7 @@ class WorkflowActionPinContractTests(unittest.TestCase):
 
 
 class InstallSourceManifestContractTests(unittest.TestCase):
-    def test_readme_delegates_pinned_source_details_to_the_manifest(self) -> None:
+    def test_readme_inherits_pins_through_canonical_option_one_parity(self) -> None:
         self.assertNotIn("README.md", VALIDATE_REPO.INSTALL_SOURCE_SURFACES)
         self.assertEqual(
             VALIDATE_REPO.INSTALL_SOURCE_SURFACES["docs/no-clone-quick-install.md"],

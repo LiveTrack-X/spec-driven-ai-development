@@ -18,6 +18,16 @@ def line_count(text: str) -> int:
     return len(text.splitlines())
 
 
+def fenced_prompt(text: str, heading: str) -> str:
+    match = re.search(
+        rf"(?ms)^{re.escape(heading)}\s+.*?^```text\s*\n(.*?)^```\s*$",
+        text,
+    )
+    if match is None:
+        raise AssertionError(f"Missing fenced prompt under {heading}")
+    return match.group(1)
+
+
 def substantive_lines(text: str) -> set[str]:
     return {
         line.strip()
@@ -115,20 +125,29 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
 
         self.assertIn("Create or update `README.md` only when", kickoff)
 
-    def test_readme_has_one_start_and_a_bounded_copy_prompt(self) -> None:
+    def test_readme_has_one_start_and_the_canonical_option_one_prompt(self) -> None:
         readme = read("README.md")
+        no_clone = read("docs/no-clone-quick-install.md")
         start_headings = re.findall(r"^## Start Here(?:\:.*)?$", readme, re.MULTILINE)
 
         self.assertEqual(start_headings, ["## Start Here"])
+        prompt_section = re.search(
+            r"^## Copy-Paste Start Prompt\s+(.*?)(?=^## |\Z)",
+            readme,
+            re.MULTILINE | re.DOTALL,
+        )
+        self.assertIsNotNone(prompt_section)
+        self.assertNotRegex(prompt_section.group(1), r"(?i)<\s*(?:details|summary)\b")
         prompt_match = re.search(
             r"^## Copy-Paste Start Prompt\s+.*?^```(?:text)?\s*\n(.*?)^```",
             readme,
             re.MULTILINE | re.DOTALL,
         )
         self.assertIsNotNone(prompt_match, "README must keep one copy-paste start prompt")
-        prompt = prompt_match.group(1)
-        self.assertLessEqual(line_count(prompt), 100)
-        self.assertLessEqual(len(prompt), 6_000)
+        self.assertEqual(
+            fenced_prompt(readme, "## Copy-Paste Start Prompt"),
+            fenced_prompt(no_clone, "## Option 1: Give This To Your AI Agent"),
+        )
 
     def test_always_loaded_rules_do_not_duplicate_the_full_rulebook(self) -> None:
         agents = read("templates/project-control-files/AGENTS.md")
@@ -300,6 +319,25 @@ class AgentExperienceValidatorTests(unittest.TestCase):
             self.build_valid_tree(root)
 
             self.assertEqual(self.collect(root), [])
+
+    def test_readme_copy_prompt_cannot_be_collapsed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.build_valid_tree(root)
+            readme = root / "README.md"
+            readme.write_text(
+                readme.read_text(encoding="utf-8").replace(
+                    "```text\nstart\n```",
+                    "<details>\n<summary>Show prompt</summary>\n\n"
+                    "```text\nstart\n```\n</details>",
+                ),
+                encoding="utf-8",
+            )
+
+            self.assertIn(
+                "README copy-paste start prompt must remain expanded",
+                self.collect(root),
+            )
 
     def test_reports_line_budget_violation_without_fixture_noise(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

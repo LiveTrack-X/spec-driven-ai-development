@@ -304,6 +304,17 @@ def collect_agent_experience_violations(root: Path) -> list[str]:
             violations.append(
                 f"README must have one canonical '## Start Here' heading: {headings}"
             )
+        prompt_section_match = re.search(
+            r"^## Copy-Paste Start Prompt\s+(.*?)(?=^## |\Z)",
+            readme,
+            re.MULTILINE | re.DOTALL,
+        )
+        if prompt_section_match and re.search(
+            r"<\s*(?:details|summary)\b",
+            prompt_section_match.group(1),
+            re.IGNORECASE,
+        ):
+            violations.append("README copy-paste start prompt must remain expanded")
         prompt_match = re.search(
             r"^## Copy-Paste Start Prompt\s+.*?^```(?:text)?\s*\n(.*?)^```",
             readme,
@@ -311,17 +322,6 @@ def collect_agent_experience_violations(root: Path) -> list[str]:
         )
         if prompt_match is None:
             violations.append("README copy-paste start prompt is missing")
-        else:
-            prompt = prompt_match.group(1)
-            prompt_lines = _line_count(prompt)
-            if prompt_lines > 100:
-                violations.append(
-                    f"README copy-paste prompt exceeds 100 lines: {prompt_lines}"
-                )
-            if len(prompt) > 6_000:
-                violations.append(
-                    f"README copy-paste prompt exceeds 6000 characters: {len(prompt)}"
-                )
         for route in ("docs/user-guide.md", "docs/getting-started.md"):
             if route not in readme:
                 violations.append(f"README Start Here missing route: {route}")
