@@ -52,7 +52,9 @@ STATE_COLLECTION_KINDS = {
 
 _KNOWN_TOP_LEVEL_KEYS = frozenset(("version", "updated", *STATE_KEYS))
 _KEY_PATTERN = r"[A-Za-z_][\w-]*"
-_MAPPING_LINE = re.compile(rf"^(?P<key>{_KEY_PATTERN}):(?P<tail>.*)$")
+_MAPPING_LINE = re.compile(
+    rf"^(?P<key>{_KEY_PATTERN}):(?P<tail>(?:[ \t].*)?)$"
+)
 _PLAIN_YAML_DIRECTIVE = re.compile(r"(?:^|\s)[&*!](?:\S+|$)")
 
 
@@ -178,8 +180,11 @@ def _quoted_scalar(value: str, line: int) -> str:
                 decoded.append("'")
                 index += 2
                 continue
-            tail = value[index + 1 :].strip()
-            if tail and not tail.startswith("#"):
+            raw_tail = value[index + 1 :]
+            tail = raw_tail.strip()
+            if tail and (
+                not raw_tail[0].isspace() or not tail.startswith("#")
+            ):
                 raise _UnsupportedSyntax("content follows a quoted scalar", line)
             return "".join(decoded)
         if quote == '"' and character == '"':
@@ -193,8 +198,11 @@ def _quoted_scalar(value: str, line: int) -> str:
                 index += 1
                 continue
             token = value[: index + 1]
-            tail = value[index + 1 :].strip()
-            if tail and not tail.startswith("#"):
+            raw_tail = value[index + 1 :]
+            tail = raw_tail.strip()
+            if tail and (
+                not raw_tail[0].isspace() or not tail.startswith("#")
+            ):
                 raise _UnsupportedSyntax("content follows a quoted scalar", line)
             try:
                 parsed = json.loads(token)
@@ -288,6 +296,8 @@ def _list_mapping_item(
         key, node = _mapping_item(line, 4, child_line)
         fields.append(_MappingItem(key, node or _Node("empty", child_line), child_line))
         index += 1
+    if not fields:
+        return _Node("empty", line_number), index
     return _Node("mapping", line_number, mapping=tuple(fields)), index
 
 
@@ -393,18 +403,22 @@ def _duplicate_issues(
 ) -> list[StateIssue]:
     issues: list[StateIssue] = []
     for key in sorted(key for key, values in grouped.items() if len(values) > 1):
-        duplicate = grouped[key][1]
-        legacy = f"{legacy_prefix}{key}" if legacy_prefix is not None else None
-        issues.append(
-            _issue(
-                "state.schema.duplicate-key",
-                "error",
-                f"Duplicate {context} key: {key}",
-                key,
-                duplicate.line,
-                legacy,
+        for duplicate_index, duplicate in enumerate(grouped[key][1:]):
+            legacy = (
+                f"{legacy_prefix}{key}"
+                if legacy_prefix is not None and duplicate_index == 0
+                else None
             )
-        )
+            issues.append(
+                _issue(
+                    "state.schema.duplicate-key",
+                    "error",
+                    f"Duplicate {context} key: {key}",
+                    key,
+                    duplicate.line,
+                    legacy,
+                )
+            )
     return issues
 
 
@@ -512,8 +526,7 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
         )
         for key in ACTIVE_PACKET_KEYS:
             node = packet_nodes.get(key)
-            value = _compatibility_scalar(node) if node is not None else None
-            if value is None:
+            if node is None:
                 legacy = f"sdad-state.yaml active_packet missing key: {key}"
                 issues.append(
                     _issue(
@@ -521,7 +534,19 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
                         "error",
                         f"active_packet is missing {key}",
                         key,
-                        node.line if node is not None else packet_node.line,
+                        packet_node.line,
+                        legacy,
+                    )
+                )
+            elif node.kind == "empty":
+                legacy = f"sdad-state.yaml active_packet missing key: {key}"
+                issues.append(
+                    _issue(
+                        "state.packet.blank-field",
+                        "error",
+                        f"active_packet {key} must not be blank",
+                        key,
+                        node.line,
                         legacy,
                     )
                 )
@@ -624,6 +649,8 @@ def _schema_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
             node = packet_nodes.get(key)
             if node is None:
                 continue
+            if node.kind == "empty":
+                continue
             if node.kind != "scalar":
                 issues.append(
                     _issue(
@@ -715,18 +742,19 @@ def _schema_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
 def _snapshot(top_level: tuple[_MappingItem, ...]) -> StateSnapshot:
     nodes = _last_nodes(top_level)
     scalars = {
-        item.key: LocatedScalar(item.node.scalar or "", item.node.line)
-        for item in top_level
-        if item.node.kind == "scalar"
+        key: LocatedScalar(node.scalar or "", node.line)
+        for key, node in nodes.items()
+        if node.kind == "scalar"
     }
 
     active_packet: dict[str, LocatedScalar] = {}
     packet = nodes.get("active_packet")
     if packet is not None and packet.kind == "mapping":
+        packet_nodes = _last_nodes(packet.mapping)
         active_packet = {
-            item.key: LocatedScalar(item.node.scalar or "", item.node.line)
-            for item in packet.mapping
-            if item.node.kind == "scalar"
+            key: LocatedScalar(node.scalar or "", node.line)
+            for key, node in packet_nodes.items()
+            if node.kind == "scalar"
         }
 
     def scalar_collection(key: str) -> tuple[LocatedScalar, ...]:
@@ -745,10 +773,11 @@ def _snapshot(top_level: tuple[_MappingItem, ...]) -> StateSnapshot:
         for entry in validation.items:
             if entry.kind != "mapping":
                 continue
+            field_nodes = _last_nodes(entry.mapping)
             fields = {
-                item.key: LocatedScalar(item.node.scalar or "", item.node.line)
-                for item in entry.mapping
-                if item.node.kind == "scalar"
+                key: LocatedScalar(node.scalar or "", node.line)
+                for key, node in field_nodes.items()
+                if node.kind == "scalar"
             }
             validation_entries.append(
                 ValidationEntry(MappingProxyType(fields), entry.line)

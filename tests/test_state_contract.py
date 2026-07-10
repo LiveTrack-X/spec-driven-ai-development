@@ -48,6 +48,20 @@ class StateContractTests(unittest.TestCase):
         self.assertEqual(result.issues[0].line, 2)
         self.assertIsNone(result.issues[0].legacy_message)
 
+    def test_rejects_mapping_colons_without_separation(self) -> None:
+        result = inspect_state("scale:standard\n")
+
+        self.assertIsNone(result.snapshot)
+        self.assertEqual(result.issues[0].id, "state.syntax.unsupported")
+        self.assertEqual(result.issues[0].line, 1)
+
+    def test_rejects_quoted_comments_without_separation(self) -> None:
+        result = inspect_state("scale: 'standard'#comment\n")
+
+        self.assertIsNone(result.snapshot)
+        self.assertEqual(result.issues[0].id, "state.syntax.unsupported")
+        self.assertEqual(result.issues[0].line, 1)
+
     def test_rejects_each_unsupported_yaml_form(self) -> None:
         cases = {
             "tab indentation": "active_packet:\n\tid: packet-1\n",
@@ -164,6 +178,157 @@ class StateContractTests(unittest.TestCase):
             [(issue.evidence, issue.line) for issue in duplicates],
             [("scale", 6), ("status", 17), ("proves", 26)],
         )
+
+    def test_reports_every_top_level_duplicate_but_only_one_legacy_message(self) -> None:
+        text = "scale: standard\nscale: full\nscale: mini\n"
+
+        result = inspect_state(text)
+        duplicates = [
+            issue
+            for issue in result.issues
+            if issue.id == "state.schema.duplicate-key"
+            and issue.evidence == "scale"
+        ]
+
+        self.assertEqual([issue.line for issue in duplicates], [2, 3])
+        self.assertEqual(
+            [issue.legacy_message for issue in duplicates],
+            ["sdad-state.yaml duplicate top-level key: scale", None],
+        )
+        self.assertEqual(
+            collect_template_state_violations(text).count(
+                "sdad-state.yaml duplicate top-level key: scale"
+            ),
+            1,
+        )
+
+    def test_reports_every_packet_duplicate_but_only_one_legacy_message(self) -> None:
+        text = (
+            "active_packet:\n"
+            "  status: not_started\n"
+            "  status: blocked\n"
+            "  status: deferred\n"
+        )
+
+        result = inspect_state(text)
+        duplicates = [
+            issue
+            for issue in result.issues
+            if issue.id == "state.schema.duplicate-key"
+            and issue.evidence == "status"
+        ]
+
+        self.assertEqual([issue.line for issue in duplicates], [3, 4])
+        self.assertEqual(
+            [issue.legacy_message for issue in duplicates],
+            ["sdad-state.yaml active_packet duplicate key: status", None],
+        )
+        self.assertEqual(
+            collect_template_state_violations(text).count(
+                "sdad-state.yaml active_packet duplicate key: status"
+            ),
+            1,
+        )
+
+    def test_reports_every_validation_entry_duplicate(self) -> None:
+        text = (
+            "validation:\n"
+            "  - command: first\n"
+            "    command: second\n"
+            "    command: third\n"
+        )
+
+        result = inspect_state(text)
+        duplicates = [
+            issue
+            for issue in result.issues
+            if issue.id == "state.schema.duplicate-key"
+            and issue.evidence == "command"
+        ]
+
+        self.assertEqual([issue.line for issue in duplicates], [3, 4])
+        self.assertEqual(
+            [issue.legacy_message for issue in duplicates],
+            [None, None],
+        )
+
+    def test_last_top_level_occurrence_controls_the_snapshot(self) -> None:
+        for replacement in (
+            "scale: standard\nscale:",
+            "scale: standard\nscale: []",
+        ):
+            with self.subTest(replacement=replacement):
+                result = inspect_state(valid_state().replace("scale: standard", replacement))
+                self.assertIsNotNone(result.snapshot)
+                assert result.snapshot is not None
+                self.assertIsNone(result.snapshot.scalar("scale"))
+
+    def test_last_packet_occurrence_controls_the_snapshot(self) -> None:
+        for replacement in (
+            "  status: not_started\n  status:",
+            "  status: not_started\n  status: []",
+        ):
+            with self.subTest(replacement=replacement):
+                result = inspect_state(
+                    valid_state().replace("  status: not_started", replacement)
+                )
+                self.assertIsNotNone(result.snapshot)
+                assert result.snapshot is not None
+                self.assertNotIn("status", result.snapshot.active_packet)
+
+    def test_last_validation_field_occurrence_controls_the_snapshot(self) -> None:
+        original = "  - command: Replace with the project validation command."
+        for replacement in (
+            f"{original}\n    command:",
+            f"{original}\n    command: []",
+        ):
+            with self.subTest(replacement=replacement):
+                result = inspect_state(valid_state().replace(original, replacement))
+                self.assertIsNotNone(result.snapshot)
+                assert result.snapshot is not None
+                self.assertNotIn("command", result.snapshot.validation[0].fields)
+
+    def test_bare_validation_item_is_malformed_and_not_snapshotted(self) -> None:
+        original = (
+            "validation:\n"
+            "  - command: Replace with the project validation command.\n"
+            "    proves: Replace with the claim this command supports."
+        )
+        result = inspect_state(valid_state().replace(original, "validation:\n  -"))
+
+        self.assertIsNotNone(result.snapshot)
+        assert result.snapshot is not None
+        self.assertEqual(result.snapshot.validation, ())
+        self.assertTrue(
+            any(
+                issue.id == "state.collection.malformed-entry"
+                for issue in result.issues
+            )
+        )
+
+    def test_blank_packet_fields_emit_one_modern_issue(self) -> None:
+        cases = (
+            ("  id: bootstrap", "  id:", "sdad-state.yaml active_packet missing key: id"),
+            ("  id: bootstrap", "  id: ''", None),
+        )
+
+        for old, new, expected_legacy in cases:
+            with self.subTest(value=new):
+                result = inspect_state(valid_state().replace(old, new))
+                packet_issues = [
+                    issue
+                    for issue in result.issues
+                    if issue.line == 13
+                    and issue.id
+                    in {
+                        "state.packet.missing-field",
+                        "state.packet.blank-field",
+                        "state.schema.wrong-kind",
+                    }
+                ]
+                self.assertEqual(len(packet_issues), 1)
+                self.assertEqual(packet_issues[0].id, "state.packet.blank-field")
+                self.assertEqual(packet_issues[0].legacy_message, expected_legacy)
 
     def test_blank_top_level_value_keeps_the_key_source_line(self) -> None:
         result = inspect_state("scale:\n")
