@@ -101,15 +101,30 @@ REQUIRED_FILES = [
     "scripts/install-codex-skill.ps1",
     "scripts/install-codex-skill.sh",
     "scripts/render_agent_surfaces.py",
+    "scripts/sdad.py",
+    "scripts/sdad_validator/__init__.py",
+    "scripts/sdad_validator/agent_experience.py",
+    "scripts/sdad_validator/state_contract.py",
+    "scripts/sdad_validator/diagnostics.py",
+    "scripts/sdad_validator/project_view.py",
+    "scripts/sdad_validator/doctor.py",
+    "scripts/sdad_validator/checks/__init__.py",
+    "scripts/sdad_validator/checks/state_schema.py",
+    "scripts/sdad_validator/checks/path_integrity.py",
+    "scripts/sdad_validator/checks/packet_coherence.py",
+    "scripts/sdad_validator/checks/owner_gates.py",
+    "scripts/sdad_validator/checks/review_state.py",
     "scripts/sync_copy_prompt.py",
     "tests/test_install_agent_adapter.py",
     "tests/test_install_codex_skill.py",
     "tests/test_agent_experience_contracts.py",
+    "tests/test_state_contract.py",
+    "tests/test_project_view.py",
+    "tests/test_doctor_checks.py",
+    "tests/test_sdad_cli.py",
     "tests/test_render_agent_surfaces.py",
     "tests/test_sync_copy_prompt.py",
     "tests/test_validate_repo.py",
-    "scripts/sdad_validator/__init__.py",
-    "scripts/sdad_validator/agent_experience.py",
     "templates/project-control-files/AGENTS.md",
     "templates/project-control-files/README.md",
     "templates/project-control-files/sdad-state.yaml",
@@ -196,6 +211,22 @@ def require_phrases(path: str, label: str, phrases: list[str]) -> str:
         if phrase not in content:
             fail(f"{label} missing: {phrase}")
     return content
+
+
+def validate_doctor_checkout_contract() -> None:
+    require_phrases(
+        "scripts/sdad.py",
+        "SDAD doctor CLI",
+        ["Checkout-only, read-only", "SCHEMA_VERSION = 1"],
+    )
+    for path in (
+        "scripts/install-agent-adapter.ps1",
+        "scripts/install-agent-adapter.sh",
+        "docs/no-clone-quick-install.md",
+    ):
+        content = read(path)
+        if re.search(r"\bdoctor\b|scripts[/\\]sdad\.py", content, flags=re.I):
+            fail(f"Checkout-only doctor must not be installed or advertised by {path}")
 
 
 def require_pinned_workflow_actions(path: str, expected_actions: set[str]) -> None:
@@ -740,6 +771,7 @@ def validate_skill() -> None:
 def validate_templates() -> None:
     for path in REQUIRED_FILES:
         read(path)
+    validate_doctor_checkout_contract()
     manifest = validate_install_source_manifest()
     release_version = install_manifest_release_version(manifest)
     for path in SENSITIVE_DATA_SURFACES:
