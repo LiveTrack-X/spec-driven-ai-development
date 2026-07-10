@@ -1,22 +1,41 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 import subprocess
 import sys
-from pathlib import Path
+import unittest
+from collections.abc import Iterator
+from html import unescape
+from pathlib import Path, PurePosixPath
 from urllib.parse import unquote
+
+try:
+    from sdad_validator.agent_experience import collect_agent_experience_violations
+    from render_agent_surfaces import collect_surface_drift
+except ModuleNotFoundError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from sdad_validator.agent_experience import collect_agent_experience_violations
+    from render_agent_surfaces import collect_surface_drift
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = [
+    ".gitattributes",
+    ".github/dependabot.yml",
+    ".github/workflows/validate.yml",
+    "install-sources.json",
     "README.md",
     "README.ko.md",
     "README.zh.md",
     "README.ja.md",
     "CHANGELOG.md",
+    "SECURITY.md",
     "LICENSE",
     "docs/pattern-catalog.md",
+    "docs/known-limitations.md",
     "docs/owners-guide.md",
     "docs/ai-work-loop.md",
     "docs/user-guide.md",
@@ -51,6 +70,13 @@ REQUIRED_FILES = [
     "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
     "adapters/github-copilot/.github/copilot-instructions.md",
     "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
+    "examples/minimal-project/AGENTS.md",
+    "examples/minimal-project/sdad-state.yaml",
+    "examples/minimal-project/docs/INDEX.md",
+    "examples/minimal-project/docs/Repository-Operating-Rules.md",
+    "examples/minimal-project/docs/TODO-Open-Items.md",
+    "examples/minimal-project/review-findings.md",
+    "examples/minimal-project/SPEC/SPEC-COMPLETE.md",
     "prompts/kickoff-prompt.md",
     "prompts/review-prompt.md",
     "prompts/handoff-prompt.md",
@@ -58,13 +84,23 @@ REQUIRED_FILES = [
     "skills/ai-spec-project-start/agents/openai.yaml",
     "skills/ai-spec-project-start/references/field-patterns.md",
     "skills/ai-spec-project-start/references/implicit-rules.md",
+    "skills/ai-spec-project-start/references/runtime-contract.md",
     "skills/ai-spec-project-start/references/starter-templates.md",
     "scripts/install-agent-adapter.ps1",
     "scripts/install-agent-adapter.sh",
     "scripts/install-codex-skill.ps1",
     "scripts/install-codex-skill.sh",
+    "scripts/render_agent_surfaces.py",
+    "tests/test_install_agent_adapter.py",
+    "tests/test_install_codex_skill.py",
+    "tests/test_agent_experience_contracts.py",
+    "tests/test_render_agent_surfaces.py",
+    "tests/test_validate_repo.py",
+    "scripts/sdad_validator/__init__.py",
+    "scripts/sdad_validator/agent_experience.py",
     "templates/project-control-files/AGENTS.md",
     "templates/project-control-files/README.md",
+    "templates/project-control-files/sdad-state.yaml",
     "templates/project-control-files/docs/INDEX.md",
     "templates/project-control-files/docs/implementation-notes.md",
     "templates/project-control-files/docs/evidence-matrix.md",
@@ -73,6 +109,11 @@ REQUIRED_FILES = [
     "templates/project-control-files/docs/work-packet-state.md",
     "templates/project-control-files/docs/remote-evidence-import.md",
     "templates/project-control-files/docs/Repository-Operating-Rules.md",
+    "templates/project-control-files/docs/sdad/playbooks/context-and-data.md",
+    "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+    "templates/project-control-files/docs/sdad/playbooks/evidence-and-risk-gates.md",
+    "templates/project-control-files/docs/sdad/playbooks/documentation-and-handoff.md",
+    "templates/project-control-files/docs/sdad/playbooks/advanced-extensions.md",
     "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md",
     "templates/project-control-files/docs/TODO-Open-Items.md",
     "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
@@ -80,13 +121,36 @@ REQUIRED_FILES = [
     "templates/project-control-files/review-findings.md",
     "templates/project-control-files/save-state.md",
     "templates/mini-sdad/MINI-SDAD.md",
+    "templates/mini-sdad/cursor-mini-sdad.mdc",
 ]
 
 REQUIRED_ASSETS = [
     "assets/spec-driven-ai-development-infographic.png",
+    "assets/spec-driven-ai-development-infographic.svg",
     "assets/sdad-control-loop.archify.html",
     "assets/sdad-control-loop.archify.png",
     "assets/sdad-control-loop.archify.workflow.json",
+]
+
+INSTALL_SOURCE_KEYS = {
+    "mini",
+    "codex",
+    "claude-code",
+    "cursor",
+    "github-copilot",
+    "generic",
+}
+INSTALL_SOURCE_SURFACES = {
+    "docs/no-clone-quick-install.md": INSTALL_SOURCE_KEYS,
+    "docs/mini-sdad.md": {"mini"},
+}
+SENSITIVE_DATA_SURFACES = [
+    "README.md",
+    "docs/no-clone-quick-install.md",
+    "prompts/kickoff-prompt.md",
+    "prompts/review-prompt.md",
+    "prompts/handoff-prompt.md",
+    "templates/project-control-files/docs/Repository-Operating-Rules.md",
 ]
 
 
@@ -100,6 +164,215 @@ def read(path: str) -> str:
     if not file_path.exists():
         fail(f"Missing required file: {path}")
     return file_path.read_text(encoding="utf-8")
+
+
+def validate_agent_experience_contract() -> None:
+    violations = collect_agent_experience_violations(ROOT)
+    if violations:
+        fail(violations[0])
+
+
+def validate_rendered_agent_surfaces() -> None:
+    violations = collect_surface_drift(ROOT)
+    if violations:
+        fail(violations[0])
+
+
+def require_phrases(path: str, label: str, phrases: list[str]) -> str:
+    content = read(path)
+    for phrase in phrases:
+        if phrase not in content:
+            fail(f"{label} missing: {phrase}")
+    return content
+
+
+def require_pinned_workflow_actions(path: str, expected_actions: set[str]) -> None:
+    content = read(path)
+    action_refs = re.findall(
+        r"^\s*(?:-\s*)?uses:\s*([^\s#]+)",
+        content,
+        flags=re.M,
+    )
+    seen_actions: set[str] = set()
+    for reference in action_refs:
+        if reference.startswith("./"):
+            continue
+        match = re.fullmatch(r"(?P<action>[^@]+)@(?P<sha>[0-9a-fA-F]{40})", reference)
+        if not match:
+            fail(f"Workflow action must use a full commit SHA: {reference}")
+        seen_actions.add(match.group("action"))
+    missing = expected_actions - seen_actions
+    if missing:
+        fail(f"Validation workflow missing pinned actions: {', '.join(sorted(missing))}")
+
+
+def is_normalized_relative_posix_path(value: str) -> bool:
+    if not value or value.startswith("/") or "\\" in value or ":" in value:
+        return False
+    path = PurePosixPath(value)
+    return (
+        not path.is_absolute()
+        and "." not in path.parts
+        and ".." not in path.parts
+        and path.as_posix() == value
+    )
+
+
+def validate_install_source_manifest() -> dict[str, object]:
+    try:
+        manifest = json.loads(read("install-sources.json"))
+    except json.JSONDecodeError as exc:
+        fail(f"Invalid install-sources.json: {exc}")
+    if not isinstance(manifest, dict):
+        fail("install-sources.json must contain a JSON object")
+
+    if manifest.get("schema_version") != 1:
+        fail("Install source schema_version must equal 1")
+    label = manifest.get("label")
+    if not isinstance(label, str) or not re.fullmatch(
+        r"v\d+\.\d+\.\d+ stable baseline",
+        label,
+    ):
+        fail("Install source label must use 'vX.Y.Z stable baseline'")
+
+    revision = manifest.get("revision")
+    if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}", revision):
+        fail("Install source revision must be a lowercase 40-character commit SHA")
+    capabilities = manifest.get("capabilities")
+    if not isinstance(capabilities, dict):
+        fail("Install source capabilities must be an object")
+    progressive_control_plane = capabilities.get("progressive_control_plane")
+    if not isinstance(progressive_control_plane, bool):
+        fail("Install source progressive_control_plane capability must be boolean")
+    sources = manifest.get("sources")
+    if not isinstance(sources, dict) or set(sources) != INSTALL_SOURCE_KEYS:
+        fail("Install source manifest keys do not match the supported source set")
+
+    raw_base = (
+        "https://raw.githubusercontent.com/LiveTrack-X/"
+        f"spec-driven-ai-development/{revision}/"
+    )
+    resolved_sources: dict[str, dict[str, str]] = {}
+    for name, raw_entry in sources.items():
+        if not isinstance(raw_entry, dict):
+            fail(f"Install source entry must be an object: {name}")
+        path = raw_entry.get("path")
+        expected_hash = raw_entry.get("sha256")
+        if not isinstance(path, str):
+            fail(f"Install source path must be a string: {name}")
+        if not is_normalized_relative_posix_path(path):
+            fail(f"Install source path must be a normalized repository path: {path}")
+        if not isinstance(expected_hash, str) or not re.fullmatch(
+            r"[0-9a-f]{64}", expected_hash
+        ):
+            fail(f"Install source SHA-256 is invalid: {name}")
+
+        result = subprocess.run(
+            ["git", "show", f"{revision}:{path}"],
+            cwd=ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        if result.returncode != 0:
+            fail(f"Pinned install source is not available from Git: {revision}:{path}")
+        actual_hash = hashlib.sha256(result.stdout).hexdigest()
+        if actual_hash != expected_hash:
+            fail(
+                f"Install source hash mismatch for {name}: "
+                f"expected {expected_hash}, got {actual_hash}"
+            )
+        resolved_sources[name] = {
+            "path": path,
+            "url": raw_base + path,
+            "sha256": expected_hash,
+        }
+        target = raw_entry.get("target")
+        if name != "mini":
+            if not isinstance(target, str) or not is_normalized_relative_posix_path(target):
+                fail(f"Install source target is invalid: {name}")
+            resolved_sources[name]["target"] = target
+
+    for surface, required_names in INSTALL_SOURCE_SURFACES.items():
+        content = read(surface)
+        for name in required_names:
+            source = resolved_sources[name]
+            if source["url"] not in content or source["sha256"] not in content:
+                fail(f"{surface} does not match install source manifest entry: {name}")
+
+    if "docs/no-clone-quick-install.md" in INSTALL_SOURCE_SURFACES:
+        no_clone = read("docs/no-clone-quick-install.md")
+        capability_marker = (
+            "progressive_control_plane="
+            f"{str(progressive_control_plane).lower()}"
+        )
+        if capability_marker not in no_clone:
+            fail("No-clone guide does not disclose the pinned runtime capability")
+        for expected_revision in (f'$revision = "{revision}"', f'revision="{revision}"'):
+            if expected_revision not in no_clone:
+                fail("No-clone installer revision does not match install-sources.json")
+        for name in INSTALL_SOURCE_KEYS - {"mini"}:
+            source = resolved_sources[name]
+            powershell_tuple = (
+                f'"{name}" = @("{source["path"]}", "{source["target"]}", '
+                f'"{source["sha256"]}")'
+            )
+            if powershell_tuple not in no_clone:
+                fail(f"PowerShell no-clone mapping does not match manifest: {name}")
+            bash_mapping = re.compile(
+                rf'''source="{re.escape(source["path"])}".*?'''
+                rf'''target="{re.escape(source["target"])}".*?'''
+                rf'''expected_sha256="{source["sha256"]}"''',
+                flags=re.S,
+            )
+            if not bash_mapping.search(no_clone):
+                fail(f"Bash no-clone mapping does not match manifest: {name}")
+    return manifest
+
+
+def install_manifest_release_version(manifest: dict[str, object]) -> str:
+    label = manifest.get("label")
+    if not isinstance(label, str):
+        fail("Install source label must be a string")
+    match = re.fullmatch(r"v(?P<version>\d+\.\d+\.\d+) stable baseline", label)
+    if match is None:
+        fail("Install source label must use 'vX.Y.Z stable baseline'")
+    return match.group("version")
+
+
+def require_local_only_csp(path: str) -> None:
+    html = read(path)
+    meta = re.search(
+        r'''<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>''',
+        html,
+        flags=re.I,
+    )
+    if not meta:
+        fail(f"{path} must declare a Content Security Policy meta tag")
+    content_match = re.search(
+        r'''\bcontent=(?P<quote>["'])(?P<value>.*?)(?P=quote)''',
+        meta.group(0),
+        flags=re.I,
+    )
+    if not content_match:
+        fail(f"{path} CSP meta tag must declare content")
+    directives: dict[str, list[str]] = {}
+    for raw_directive in content_match.group("value").split(";"):
+        parts = raw_directive.split()
+        if parts:
+            directives[parts[0].lower()] = parts[1:]
+    if directives.get("default-src") != ["'none'"]:
+        fail(f"{path} CSP must use default-src 'none'")
+    if directives.get("connect-src") != ["'none'"]:
+        fail(f"{path} CSP must use connect-src 'none'")
+    allowed_local_values = {"'none'", "'self'", "'unsafe-inline'", "data:", "blob:"}
+    for directive, values in directives.items():
+        if directive != "default-src" and not directive.endswith("-src"):
+            continue
+        if any(value not in allowed_local_values for value in values):
+            fail(f"{path} CSP {directive} contains a remote or unsafe source")
+    if "fonts.googleapis.com" in html or "fonts.gstatic.com" in html:
+        fail(f"{path} must not load third-party fonts")
 
 
 def require_executable(path: str) -> None:
@@ -122,6 +395,112 @@ def require_executable(path: str) -> None:
         fail(f"{path} must be executable in git mode 100755; found {mode:o}")
 
 
+def _workflow_copy_values(value: object, parent_key: str = "") -> Iterator[str]:
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if key in {"title", "subtitle", "label", "sublabel", "tag"}:
+                if isinstance(child, str) and child:
+                    yield child
+            elif key == "items" and isinstance(child, list):
+                for item in child:
+                    if isinstance(item, str) and item:
+                        yield item
+            else:
+                yield from _workflow_copy_values(child, key)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _workflow_copy_values(child, parent_key)
+
+
+def validate_workflow_copy_parity(workflow_path: str, html_path: str) -> None:
+    try:
+        workflow = json.loads(read(workflow_path))
+    except json.JSONDecodeError as exc:
+        fail(f"Invalid workflow diagram JSON: {exc}")
+    html = unescape(read(html_path))
+    missing = sorted({copy for copy in _workflow_copy_values(workflow) if copy not in html})
+    if missing:
+        fail(f"Workflow diagram HTML is missing source copy: {missing[0]}")
+
+
+def validate_mermaid_node_id_consistency(path: str) -> None:
+    content = read(path)
+    blocks = re.findall(r"```mermaid\s*\n(.*?)```", content, flags=re.S)
+    declaration = re.compile(
+        r'''(?<![\w-])(?P<id>[A-Za-z_][\w-]*)\s*'''
+        r'''(?:\[\s*"(?P<bracket>[^"]*)"|'''
+        r'''\{\s*"(?P<brace>[^"]*)"|'''
+        r'''\(\s*"(?P<paren>[^"]*)")'''
+    )
+    for block_number, block in enumerate(blocks, start=1):
+        labels: dict[str, str] = {}
+        for match in declaration.finditer(block):
+            node_id = match.group("id")
+            label = next(
+                value
+                for value in (
+                    match.group("bracket"),
+                    match.group("brace"),
+                    match.group("paren"),
+                )
+                if value is not None
+            )
+            previous = labels.get(node_id)
+            if previous is not None and previous != label:
+                fail(
+                    f"{path} Mermaid block {block_number} reuses node ID "
+                    f"{node_id} for different labels"
+                )
+            labels[node_id] = label
+
+
+def iter_unittest_cases(suite: unittest.TestSuite) -> list[unittest.TestCase]:
+    cases: list[unittest.TestCase] = []
+    for item in suite:
+        if isinstance(item, unittest.TestSuite):
+            cases.extend(iter_unittest_cases(item))
+        else:
+            cases.append(item)
+    return cases
+
+
+def require_discovered_tests() -> int:
+    tests_dir = ROOT / "tests"
+    try:
+        suite = unittest.TestLoader().discover(str(tests_dir), pattern="test_*.py")
+    except Exception as exc:
+        fail(f"Unittest discovery failed: {exc}")
+    cases = iter_unittest_cases(suite)
+    failed_imports = [
+        case.id()
+        for case in cases
+        if case.__class__.__name__ == "_FailedTest"
+    ]
+    if failed_imports:
+        fail(f"Unittest discovery contains import failures: {', '.join(failed_imports)}")
+
+    expected_modules = {
+        ".".join(path.relative_to(tests_dir).with_suffix("").parts)
+        for path in tests_dir.rglob("test_*.py")
+    }
+    discovered_ids = [case.id() for case in cases]
+    empty_modules = sorted(
+        module
+        for module in expected_modules
+        if not any(
+            test_id == module or test_id.startswith(f"{module}.")
+            for test_id in discovered_ids
+        )
+    )
+    if empty_modules:
+        fail(f"Test modules contain no discovered cases: {', '.join(empty_modules)}")
+
+    test_count = len(cases)
+    if test_count == 0:
+        fail("No unittest cases were discovered under tests/")
+    return test_count
+
+
 def strip_fenced_code(text: str) -> str:
     return re.sub(r"```.*?```", "", text, flags=re.S)
 
@@ -130,23 +509,112 @@ def is_external_link(target: str) -> bool:
     return target.lower().startswith(("http://", "https://", "mailto:", "tel:"))
 
 
+def markdown_link_destination(raw_target: str) -> str:
+    raw_target = raw_target.strip()
+    if raw_target.startswith("<"):
+        closing = raw_target.find(">")
+        if closing != -1:
+            return raw_target[1:closing].strip()
+
+    match = re.fullmatch(
+        r'''(?P<destination>\S+?)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?''',
+        raw_target,
+    )
+    return match.group("destination") if match else raw_target
+
+
+def iter_markdown_link_targets(text: str) -> Iterator[str]:
+    search_from = 0
+    while True:
+        opener = text.find("](", search_from)
+        if opener == -1:
+            return
+
+        start = opener + 2
+        index = start
+        depth = 1
+        quote: str | None = None
+        angle_destination = False
+        escaped = False
+        while index < len(text):
+            char = text[index]
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif quote:
+                if char == quote:
+                    quote = None
+            elif char in {'"', "'"} and index > start and text[index - 1].isspace():
+                quote = char
+            elif char == "<" and not text[start:index].strip():
+                angle_destination = True
+            elif char == ">" and angle_destination:
+                angle_destination = False
+            elif not angle_destination and char == "(":
+                depth += 1
+            elif not angle_destination and char == ")":
+                depth -= 1
+                if depth == 0:
+                    yield text[start:index]
+                    search_from = index + 1
+                    break
+            index += 1
+        else:
+            search_from = start
+
+
+def github_heading_slug(heading: str) -> str:
+    heading = re.sub(r"<[^>]+>", "", heading)
+    heading = re.sub(r"!?\[([^]]+)]\([^)]+\)", r"\1", heading)
+    heading = heading.replace("`", "").replace("*", "").replace("_", "")
+    heading = re.sub(r"[^\w\s-]", "", heading.lower(), flags=re.UNICODE)
+    return re.sub(r"\s+", "-", heading.strip())
+
+
+def markdown_anchors(text: str) -> set[str]:
+    content = strip_fenced_code(text)
+    anchors = {
+        unquote(anchor)
+        for anchor in re.findall(r'''\b(?:id|name)=["']([^"']+)["']''', content)
+    }
+    slug_counts: dict[str, int] = {}
+    lines = content.splitlines()
+    for index, line in enumerate(lines):
+        match = re.match(r"^ {0,3}#{1,6}\s+(.+?)\s*#*\s*$", line)
+        heading = match.group(1) if match else None
+        if heading is None and index + 1 < len(lines):
+            if re.match(r"^ {0,3}(?:=+|-+)\s*$", lines[index + 1]) and line.strip():
+                heading = line.strip()
+        if heading is None:
+            continue
+
+        base_slug = github_heading_slug(heading)
+        if not base_slug:
+            continue
+        duplicate_index = slug_counts.get(base_slug, 0)
+        slug_counts[base_slug] = duplicate_index + 1
+        anchors.add(base_slug if duplicate_index == 0 else f"{base_slug}-{duplicate_index}")
+    return anchors
+
+
 def validate_local_markdown_links() -> None:
-    link_pattern = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
-    for md_path in sorted(ROOT.rglob("*.md")):
+    anchor_cache: dict[Path, set[str]] = {}
+    markdown_paths = sorted(
+        path for path in ROOT.rglob("*") if path.suffix.lower() in {".md", ".mdc"}
+    )
+    for md_path in markdown_paths:
         if ".git" in md_path.parts:
             continue
         content = strip_fenced_code(md_path.read_text(encoding="utf-8"))
-        for match in link_pattern.finditer(content):
-            raw_target = match.group(1).strip()
-            if not raw_target or raw_target.startswith("#") or is_external_link(raw_target):
+        for candidate in iter_markdown_link_targets(content):
+            raw_target = candidate.strip()
+            destination = markdown_link_destination(raw_target)
+            if not destination or is_external_link(destination):
                 continue
-            if raw_target.startswith("<") and raw_target.endswith(">"):
-                raw_target = raw_target[1:-1].strip()
-            target = raw_target.split("#", 1)[0].split("?", 1)[0]
-            if not target:
-                continue
-            target = unquote(target)
-            resolved = (md_path.parent / target).resolve()
+            target_with_query, separator, fragment = destination.partition("#")
+            target = unquote(target_with_query.split("?", 1)[0])
+            resolved = md_path.resolve() if not target else (md_path.parent / target).resolve()
             try:
                 display_target = resolved.relative_to(ROOT)
             except ValueError:
@@ -155,6 +623,16 @@ def validate_local_markdown_links() -> None:
             if not resolved.exists():
                 source = md_path.relative_to(ROOT)
                 fail(f"Broken local Markdown link: {source} -> {raw_target} ({display_target})")
+            if separator and fragment and resolved.suffix.lower() in {".md", ".mdc"}:
+                decoded_fragment = unquote(fragment)
+                if resolved not in anchor_cache:
+                    anchor_cache[resolved] = markdown_anchors(resolved.read_text(encoding="utf-8"))
+                if decoded_fragment not in anchor_cache[resolved]:
+                    source = md_path.relative_to(ROOT)
+                    fail(
+                        "Broken local Markdown fragment: "
+                        f"{source} -> {raw_target} ({display_target}#{decoded_fragment})"
+                    )
 
 
 def validate_skill() -> None:
@@ -165,98 +643,137 @@ def validate_skill() -> None:
     if not match:
         fail("Skill frontmatter is not closed")
     frontmatter = match.group(1)
+    top_level_keys = re.findall(r"^([a-z][a-z0-9_-]*):", frontmatter, flags=re.M)
+    if top_level_keys != ["name", "description"]:
+        fail(f"Skill frontmatter must contain only name and description: {top_level_keys}")
     if "name: ai-spec-project-start" not in frontmatter:
         fail("Skill frontmatter must include name: ai-spec-project-start")
-    if "description:" not in frontmatter:
-        fail("Skill frontmatter must include description")
+
     body = content[match.end() :]
+    if len(content.splitlines()) > 500 or len(content) > 25_000:
+        fail("Skill exceeds the progressive-disclosure budget")
     for phrase in [
-        "Owner-supervised",
-        "Beginner-Friendly Behavior",
-        "Do not infer adapter paths",
-        "Before fetching",
-        "Codex / Claude Code / Cursor / Copilot Chat / Generic",
-        "Scale Selection Rule",
-        "Override rules beat raw yes-counts",
-        "Q5=yes",
-        "chat-only environment such as Claude.ai",
-        "Claude Code means the local/CLI coding tool",
-        "Offer deterministic fallback options",
-        "Save-State Update Triggers",
-        "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
-        "bounded reads",
-        "50 KB",
-        "State SDAD scale and operating intensity",
-        "Autonomy",
-        "Natural-Language Intent Routing",
-        "ordinary phrases into",
-        "If multiple intents match",
-        "claim level, owner gate",
-        "Treat narrative modifiers as routing signals",
-        "Commit and wait",
-        "review/audit intent",
-        "reference-intake intent",
-        "Review-Worthy Development Units",
-        "Slice-First Evidence Loop",
-        "strongest practical failing test or check",
-        "Match evidence tiers to claims",
-        "Small Project Compression Rule",
-        "Choose scale, compression, autonomy, and operating intensity",
-        "Route current state through",
-        "PLAN narrows owner intent",
-        "TODO/work packet",
-        "JIT clarification",
-        "Decision Routing Quick Check",
-        "Use only the gates that apply",
-        "working router for active docs",
-        "YYYY-MM-DD-HHMM-start-topic.md",
-        "output contract",
-        "Repository Control Surface",
-        "control surface checkup",
-        "always-loaded guidance",
-        "enforced guarantee",
-        "Cost-aware agent routing",
-        "advisor checkpoint",
-        "bounded loop",
-        "implementation discipline",
-        "implementation notes",
-        "clarification checkpoint",
-        "docs/implementation-notes.md",
-        "Mini Unit Completion",
-        "Source Of Truth",
-        "Read order is routing, not authority",
-        "Owner decisions control scope",
-        "decision for continuity",
-        "weak evidence into stronger evidence",
-        "Documentation Record Audit",
-        "minimum update-set row",
-        "Pain-To-Rule",
-        "Evidence Rules",
-        "product evidence flag",
-        "docs/evidence-matrix.md",
-        "owner acceptance separate",
-        "Field-Proven Baselines",
-        "Current-over-historical",
-        "implicit-rules",
+        "# AI-SPEC Project Start",
+        "## Reference Routing",
+        "references/runtime-contract.md",
+        "references/starter-templates.md",
+        "references/field-patterns.md",
+        "references/implicit-rules.md",
+        "Do not load every reference by default",
+        "## Workflow",
+        "install-sources.json",
+        "SHA-256",
+        "One-shot",
+        "Mini",
+        "Standard",
+        "Full",
+        "sdad-state.yaml",
+        "docs/INDEX.md",
+        "Level 2 Work Packet Autonomy",
+        "Level 4 owner gates",
+        "evidence-ready",
+        "owner-accepted",
+        "## Existing-Project Rules",
+        "## Sensitive Data Boundary",
+        "metadata-only",
+        "owner policy plus tool policy",
+        "## Guardrails",
     ]:
         if phrase not in body:
-            fail(f"Skill body missing expected phrase: {phrase}")
-    starter_templates = read("skills/ai-spec-project-start/references/starter-templates.md")
-    for phrase in [
-        "When sources conflict, prefer:",
-        "Product notes and external references",
-        "Read order is routing, not authority",
-        "Owner decisions control scope",
-        "decision for continuity",
-        "weak evidence into",
-    ]:
-        if phrase not in starter_templates:
-            fail(f"Skill starter templates missing expected phrase: {phrase}")
+            fail(f"Skill body missing expected contract: {phrase}")
 
+    runtime_contract = require_phrases(
+        "skills/ai-spec-project-start/references/runtime-contract.md",
+        "Skill runtime contract",
+        [
+            "## Scale Truth Table",
+            "## Intent Route",
+            "## Autonomy And Stop Contract",
+            "## Progressive Control Plane",
+            "## Sensitive Data Boundary",
+            "## Context Stability",
+            "## Source Of Truth",
+            "## Evidence And Completion",
+            "## Durable Records",
+            "## Finish Contract",
+        ],
+    )
+    if len(runtime_contract.splitlines()) > 220:
+        fail("Skill runtime contract is too large")
+
+    require_phrases(
+        "skills/ai-spec-project-start/references/starter-templates.md",
+        "Skill starter templates",
+        [
+            "## Scale Output",
+            "## Single-Responsibility Control Plane",
+            "## Minimum Standard Tree",
+            "## Active State Schema",
+            "## INDEX Schema",
+            "## Adapter Contract",
+            "## Core Rules And Playbooks",
+            "## Optional Evidence Files",
+            "## Merge Safety",
+        ],
+    )
+    require_phrases(
+        "skills/ai-spec-project-start/agents/openai.yaml",
+        "Skill UI metadata",
+        [
+            'display_name: "AI-SPEC Project Start"',
+            "Start, review, release, or hand off",
+            "owner-supervised, SPEC-driven workflow",
+        ],
+    )
 
 def validate_templates() -> None:
     for path in REQUIRED_FILES:
         read(path)
+    manifest = validate_install_source_manifest()
+    release_version = install_manifest_release_version(manifest)
+    for path in SENSITIVE_DATA_SURFACES:
+        require_phrases(
+            path,
+            f"Sensitive-data surface {path}",
+            ["authorization boundary", "metadata-only", "owner policy plus tool policy"],
+        )
+    require_phrases(
+        ".github/workflows/validate.yml",
+        "Validation workflow",
+        [
+            "permissions:",
+            "contents: read",
+            "windows-latest",
+            'python-version: ["3.10", "3.12"]',
+            "persist-credentials: false",
+            "fetch-depth: 0",
+            "timeout-minutes: 10",
+            "python -m unittest discover -s tests -v",
+            "bash -n scripts/install-agent-adapter.sh scripts/install-codex-skill.sh",
+            "System.Management.Automation.Language.Parser",
+        ],
+    )
+    require_pinned_workflow_actions(
+        ".github/workflows/validate.yml",
+        {"actions/checkout", "actions/setup-python"},
+    )
+    require_phrases(
+        ".github/dependabot.yml",
+        "Dependabot configuration",
+        ["version: 2", "package-ecosystem: github-actions", "interval: weekly"],
+    )
+    require_phrases(
+        ".gitattributes",
+        "Git attributes",
+        [
+            "*.sh text eol=lf",
+            "*.ps1 text eol=lf",
+            "*.html text eol=lf",
+            "*.svg text eol=lf",
+            "*.png binary",
+        ],
+    )
+    require_discovered_tests()
     for path in [
         "scripts/install-agent-adapter.sh",
         "scripts/install-codex-skill.sh",
@@ -265,10 +782,42 @@ def validate_templates() -> None:
     for path in REQUIRED_ASSETS:
         if not (ROOT / path).is_file():
             fail(f"Missing required asset: {path}")
+    require_local_only_csp("assets/sdad-control-loop.archify.html")
+    validate_workflow_copy_parity(
+        "assets/sdad-control-loop.archify.workflow.json",
+        "assets/sdad-control-loop.archify.html",
+    )
+    require_phrases(
+        "assets/sdad-control-loop.archify.workflow.json",
+        "Archify workflow source",
+        [
+            "sdad-state.yaml",
+            "INDEX + route",
+            "source/tests + route",
+            "Level 4 release gates",
+            "release approval",
+            "push, tag, publish",
+        ],
+    )
+    require_phrases(
+        "assets/spec-driven-ai-development-infographic.svg",
+        "Public overview infographic source",
+        [
+            "Tool adapter",
+            "sdad-state.yaml",
+            "docs/INDEX.md",
+            "Current source/tests",
+            "One routed path",
+            "LEVEL 4 RELEASE GATE",
+            "push -> tag -> publish",
+        ],
+    )
+    validate_mermaid_node_id_consistency("docs/diagrams.md")
     readme = read("README.md")
     changelog = read("CHANGELOG.md")
     for phrase in [
         "## Unreleased",
+        f"## {release_version} -",
         "## 2.1.0 - 2026-07-09",
         "## 2.0.2 - 2026-07-09",
         "README infographic",
@@ -295,6 +844,10 @@ def validate_templates() -> None:
         "Fast, Normal, Full, and Full + Gate",
         "one-line evidence contracts",
         "compact report format",
+        "security policy",
+        "known limitations and adoption notes",
+        "installer smoke tests",
+        "commit-pinned raw URLs",
     ]:
         if phrase not in changelog:
             fail(f"CHANGELOG missing expected note: {phrase}")
@@ -303,7 +856,6 @@ def validate_templates() -> None:
         "Owner Quick Adoption Guide",
         "10-Minute Rollout",
         "Which Link To Send First",
-        "docs/ai-work-loop.md",
         "Owner Decisions That Must Stay Explicit",
         "First Prompt For A New User",
         "First Prompt For Actual Work",
@@ -346,121 +898,30 @@ def validate_templates() -> None:
     ]:
         if phrase not in ai_work_loop:
             fail(f"AI work loop missing expected phrase: {phrase}")
-    for phrase in [
-        "README.ko.md",
-        "README.zh.md",
-        "README.ja.md",
-        "canonical documentation language",
-        "A control layer for AI coding",
-        "Status: `2.1.0`",
-        "stable documentation/package release",
-        "project fit, owner discipline, and evidence quality",
-        "Start fast:",
-        "Owner Guide",
-        "AI Work Loop",
-        "docs/ai-work-loop.md",
-        "Start Here: User Guide",
-        "docs/owners-guide.md",
-        "quick owner rollout guide",
-        "shortest execution loop",
-        "If you are not sure what to do",
-        "bash ./scripts/install-codex-skill.sh",
-        "what to do when AI asks for approval too often",
-        "docs/user-guide.ko.md",
-        "docs/user-guide.zh.md",
-        "docs/user-guide.ja.md",
-        "What SDAD Gives You",
-        "How SDAD Organizes Context",
-        "Always-loaded instructions",
-        "active control files",
-        "On-demand references",
-        "Natural-Language Intent Routing",
-        "route natural-language requests",
-        "Reference-intake intent",
-        "Reference Parity Review",
-        "source behavior -> implemented behavior -> evidence",
-        "Evidence Tiers And Claims",
-        "local test",
-        "browser render",
-        "remote hardware",
-        "production evidence",
-        "Use It When",
-        "AI asks approval after every micro-task, or runs ahead too much",
-        "Copy-Paste Start Prompt",
-        "The block below is an execution prompt",
-        "assets/spec-driven-ai-development-infographic.png",
-        "docs/user-guide.md",
-        "Choose Scale First",
-        "Override rules beat raw yes-counts",
-        "Q5=yes -> Standard SDAD minimum",
-        "chat-only environment such as Claude.ai",
-        "Claude Code means the local/CLI coding tool",
-        "Offer deterministic fallback options",
-        "For Mini SDAD at loop end",
-        "Work Packets And Autonomy Levels",
-        "Level 2 Work Packet Autonomy",
-        "AI-complete / evidence-ready",
-        "docs/autonomy-levels.md",
-        "docs/implementation-discipline.md",
-        "docs/implementation-notes.md",
-        "docs/product-evidence-templates.md",
-        "docs/operating-intensity.md",
-        "docs/session-handoff.md",
-        "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
-        "execution trace",
-        "Full SDAD / High",
-        "control surfaces reduce controllability",
-        "Do not stop for owner approval after every micro-task",
-        "Proceed autonomously inside the approved work packet",
-        "Mini SDAD",
-        "Maintenance Cost",
-        "Route current state -> Scale/compress -> PLAN",
-        "optional ADR -> TODO/work packet -> JIT clarification",
-        "installable router template lives at",
-        "documentation routine order",
-        "documentation record audit",
-        "Do not claim completion while control files are stale",
-        "Mini SDAD also has a completion gate",
-        "Small Project Compression Rule",
-        "one evidence-ready summary is enough",
-        "spec-unstated implementation",
-        "clarification checkpoint",
-        "Use ADRs sparingly",
-        "Update save-state.md when a session pauses or ends",
-        "bounded reads",
-        "50 KB",
-        "Do not infer adapter paths",
-        "Before fetching, state which adapter you are installing and why",
-        "If you cannot determine the current tool",
-        "first 10 lines",
-        "No terminal. No Git. No Python required.",
-        "docs/getting-started.md",
-        "docs/user-guide.md",
-        "docs/maintenance-cost.md",
-        "docs/context-stability.md",
-        "docs/implementation-notes.md",
-        "docs/domain-language.md",
-        "docs/field-notes/meta-harness-method.md",
-        "docs/field-notes/repository-control-surface-method.md",
-        "docs/field-notes/cost-aware-agent-routing-method.md",
-        "guidance from guarantees",
-        "Cost-Aware Agent Routing",
-        "Advisor approval, worker completion, and a passing loop evaluator",
-        "Scale/compress -> Active SPEC slice",
-        "ADRs are conditional",
-        "working router for active docs",
-        "docs/no-clone-quick-install.md",
-        "The Problem",
-        "Why This Is Different",
-        "What This Is Not",
-        "Step 0.1 - Check product evidence flag",
-        "product evidence templates",
-        "docs/evidence-matrix.md",
-    ]:
-        if phrase not in readme:
-            fail(f"README missing language guidance: {phrase}")
-    readme_order = [
-        "## Start Here: User Guide",
+    require_phrases(
+        "README.md",
+        "README",
+        [
+            "README.ko.md",
+            "README.zh.md",
+            "README.ja.md",
+            "A control layer for AI coding",
+            f"Status: `{release_version}`",
+            "Start fast:",
+            "docs/user-guide.md",
+            "docs/owners-guide.md",
+            "docs/ai-work-loop.md",
+            "docs/getting-started.md",
+            "docs/no-clone-quick-install.md",
+            "install-sources.json",
+            "docs/known-limitations.md",
+            "SECURITY.md",
+            "assets/spec-driven-ai-development-infographic.svg",
+            "python -m unittest discover -s tests",
+        ],
+    )
+    expected_readme_order = [
+        "## Start Here",
         "## Copy-Paste Start Prompt",
         "## What SDAD Gives You",
         "## Use It When",
@@ -468,9 +929,11 @@ def validate_templates() -> None:
         "## Choose Scale First",
         "## Maintenance Cost",
     ]
-    readme_positions = [readme.find(phrase) for phrase in readme_order]
-    if any(position < 0 for position in readme_positions) or readme_positions != sorted(readme_positions):
-        fail("README onboarding order must be: user guide, prompt, explanation, use cases, languages, scale, maintenance")
+    readme_positions = [readme.find(heading) for heading in expected_readme_order]
+    if any(position < 0 for position in readme_positions):
+        fail("README is missing a canonical onboarding heading")
+    if readme_positions != sorted(readme_positions):
+        fail("README canonical onboarding headings are out of order")
     user_guide = read("docs/user-guide.md")
     for phrase in [
         "Troubleshooting FAQ",
@@ -526,7 +989,7 @@ def validate_templates() -> None:
         "README.ko.md": [
             "한국어",
             "영어",
-            "2.1.0",
+            release_version,
             "프로젝트 적합도",
             "save-state.md",
             "오너 수락",
@@ -558,7 +1021,7 @@ def validate_templates() -> None:
         "README.zh.md": [
             "中文",
             "英文",
-            "2.1.0",
+            release_version,
             "project fit",
             "save-state.md",
             "Owner 验收",
@@ -590,7 +1053,7 @@ def validate_templates() -> None:
         "README.ja.md": [
             "日本語",
             "英語",
-            "2.1.0",
+            release_version,
             "project fit",
             "save-state.md",
             "Owner の受け入れ",
@@ -689,152 +1152,20 @@ def validate_templates() -> None:
         for phrase in phrases:
             if phrase not in content:
                 fail(f"{path} missing localized user-guide guidance: {phrase}")
-    agents = read("templates/project-control-files/AGENTS.md")
-    for phrase in [
-        "Mandatory Start Loop",
-        "Context Stability Rule",
-        "Context Stability applies before every item",
-        "bounded reads",
-        "50 KB",
-        "Natural-Language Intent Routing",
-        "If multiple intents match",
-        "claim level, owner gate",
-        "Treat narrative modifiers as routing signals",
-        "Commit and wait",
-        "review/audit intent",
-        "reference-intake intent",
-        "Source Of Truth",
-        "current handoff/save-state files",
-        "Review-Worthy Unit Rule",
-        "micro-task",
-        "Implementation discipline makes autonomy safe",
-        "Implementation memory beats hidden rationale",
-        "clarification checkpoint",
-        "Use ADRs sparingly",
-        "docs/implementation-notes.md",
-        "Handoff Rule",
-        "End-Of-Loop Maintenance Rule",
-        "unfinished active work packets",
-        "generated artifacts or cache files",
-        "smoke installed artifacts from outside the source tree",
-        "Save-State Update Triggers",
-        "past-to-present",
-        "Implicit Rules Made Explicit",
-        "working router during implementation",
-        "Read order is routing, not authority",
-        "decision for continuity",
-        "weak evidence into stronger evidence",
-        "Before implementing from a handoff-only or save-state-only decision",
-    ]:
-        if phrase not in agents:
-            fail(f"AGENTS template missing: {phrase}")
-    index = read("templates/project-control-files/docs/INDEX.md")
-    for phrase in [
-        "Repository-Operating-Rules",
-        "Minimum Documentation Update Sets",
-        "docs/sdad/handoffs",
-        "SDAD scale/intensity change",
-        "Heavy control-file budget",
-        "context-stability change",
-        "implementation-notes.md",
-        "domain-language.md",
-        "evidence-matrix.md",
-        "claim-registry.md",
-        "artifact-contracts.md",
-        "work-packet-state.md",
-        "remote-evidence-import.md",
-        "Advanced extension",
-        "routes, not mandatory files",
-        "Create or copy only the optional evidence files",
-        "Working Route",
-        "Use this table while working",
-        "SDAD Working Order",
-        "Decision Routing Quick Check",
-        "Handoff-only or save-state-only decisions",
-        "Route: read",
-        "Scale/compress",
-        "PLAN",
-        "Optional ADR",
-        "TODO/work packet",
-        "JIT clarification",
-        "cycle result record",
-        "Single-File Bloat Risk Routes",
-        "When one file starts carrying multiple jobs",
-        "docs/archive/todo-history/YYYY-MM-DD-topic.md",
-        "docs/review/archive/YYYY-MM-DD-topic.md",
-        "YYYY-MM-DD-HHMM-start-topic.md",
-        "Start: YYYY-MM-DD HH:MM",
-        "blocked_until_evidence",
-        "canonical artifact manifest",
-        "Auditing documentation record",
-        "Documentation Record Audit",
-        "minimum update-set row",
-        "Source Of Truth Role Map",
-        "Routing order is not source-of-truth precedence",
-        "Owner decisions control scope",
-        "decision for continuity",
-        "Before implementing from a handoff-only or save-state-only decision",
-    ]:
-        if phrase not in index:
-            fail(f"docs/INDEX template missing: {phrase}")
-    rules = read("templates/project-control-files/docs/Repository-Operating-Rules.md")
-    for phrase in [
-        "Mandatory Start Loop",
-        "Context Stability applies before every item",
-        "Natural-Language Intent Routing",
-        "If multiple intents match",
-        "claim level, owner gate",
-        "Treat narrative modifiers as routing signals",
-        "Commit and wait",
-        "review/audit intent",
-        "reference-intake intent",
-        "Version Lane Rules",
-        "Review And Verification Rules",
-        "Review-Worthy Unit Rule",
-        "Proceed autonomously inside the approved work packet",
-        "Implementation discipline makes autonomy safe",
-        "Implementation memory beats hidden rationale",
-        "clarification checkpoint",
-        "hard to reverse",
-        "implementation notes for spec-unstated decisions",
-        "End-Of-Loop Maintenance Rule",
-        "Control files have maintenance cost",
-        "Save-State Update Triggers",
-        "Long AI coding sessions are execution traces",
-        "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
-        "reactivation prompt",
-        "Operating Intensity Rules",
-        "Evidence Surface Creep",
-        "Product And Hardware Evidence Gates",
-        "docs/evidence-matrix.md",
-        "docs/claim-registry.md",
-        "docs/artifact-contracts.md",
-        "docs/work-packet-state.md",
-        "docs/remote-evidence-import.md",
-        "Control File Budget",
-        "context-stability pass",
-        "bounded reads",
-        "50 KB",
-        "Advanced Extension Fit Gate",
-        "evaluation leakage risk",
-        "concrete budget",
-        "compressed owner review summary",
-        "installed-artifact smoke",
-        "unfinished active work packets",
-        "generated artifacts or cache files",
-        "smoke installed artifacts from outside the source tree",
-        "Match evidence tiers to claims",
-        "Small Project Compression Rule",
-        "Logical flow",
-        "Scale/compress -> Active SPEC slice",
-        "Read order is routing, not authority",
-        "weak evidence into stronger evidence",
-        "Documentation Record Audit",
-        "minimum update-set row",
-        "Before implementing from a handoff-only or save-state-only decision",
-    ]:
-        if phrase not in rules:
-            fail(f"Repository operating rules template missing: {phrase}")
+    require_phrases(
+        "templates/project-control-files/docs/Repository-Operating-Rules.md",
+        "Repository operating rules",
+        [
+            "# Repository Operating Rules",
+            "## How To Use This Rulebook",
+            "## Source Of Truth",
+            "## Owner Authority And Evidence States",
+            "## Code Consistency",
+            "## Durable Decision Policy",
+            "## Review And Verification",
+            "## On-Demand Playbooks",
+        ],
+    )
     project_readme = read("templates/project-control-files/README.md")
     for phrase in [
         "Optional product evidence files are create-on-demand",
@@ -860,13 +1191,15 @@ def validate_templates() -> None:
         "Implementation Notes",
         "Reference existing SPECs",
         "Documentation Record Audit",
-        "Minimum update-set row",
+        "Change type and routed documentation surfaces",
         "Docs checked with no update needed",
         "Validation commands run",
-        "read this current handoff fully",
+        "First, load the installed tool adapter",
+        "Then read this current handoff only as deeply as needed",
+        "current source/tests",
+        "authorized private data",
         "Commands / Tests Run",
         "Reactivation Prompt",
-        "read this current handoff fully",
         "Do not assume the previous chat context is available",
     ]:
         if phrase not in handoff_template:
@@ -1140,12 +1473,12 @@ def validate_templates() -> None:
         "Small Project Compression Rule",
         "one evidence-ready summary is enough",
         "Evidence tier/gates",
-        "Route current state -> Scale/compress -> PLAN",
-        "optional ADR -> TODO/work packet -> JIT clarification",
+        "Adapter -> sdad-state.yaml -> docs/INDEX.md -> source/tests -> one routed path",
+        "Do not load the full rulebook",
+        "on-demand files under docs/sdad/playbooks",
         "ADRs are conditional",
         "Quick Routing Prompt",
         "Use docs/INDEX.md as the working router",
-        "that file is a template",
         "Documentation Record Audit",
         "bash ./scripts/install-agent-adapter.sh codex",
         "bash ./scripts/install-codex-skill.sh",
@@ -1190,6 +1523,13 @@ def validate_templates() -> None:
         "One-Paste PowerShell Installer",
         "One-Paste Bash Installer",
         "raw.githubusercontent.com",
+        "Latest Versus Pinned Sources",
+        "40-character commit SHA",
+        "Do not mix",
+        "Refusing to install through linked path",
+        ".sdad-download",
+        "[IO.File]::Move($tempPath, $targetPath)",
+        "Publication did not create the exact target file",
         "Do not overwrite existing project files",
         "bounded reads",
         "docs/evidence-matrix.md",
@@ -1240,10 +1580,10 @@ def validate_templates() -> None:
         "YYYY-MM-DD-HHMM-start-topic.md",
         "Start: YYYY-MM-DD HH:MM",
         "Common single-file bloat risks",
-        "Single-File Bloat Risk Routes",
+        "record-routing and bloat guidance",
         "Documentation Routine Order",
         "Documentation Record Audit",
-        "minimum update-set row",
+        "change type and routed documentation surfaces",
         "docs checked with no update needed",
         "session is ending or pausing",
         "owner changes direction",
@@ -1261,6 +1601,8 @@ def validate_templates() -> None:
     mini_template = read("templates/mini-sdad/MINI-SDAD.md")
     for phrase in [
         "This project uses Mini SDAD",
+        "Sensitive Data Boundary",
+        "metadata-only",
         "Natural-Language Intent Routing",
         "review/audit intent",
         "Active Scope",
@@ -1275,6 +1617,14 @@ def validate_templates() -> None:
     ]:
         if phrase not in mini_template:
             fail(f"Mini SDAD template missing: {phrase}")
+    cursor_mini_template = read("templates/mini-sdad/cursor-mini-sdad.mdc")
+    cursor_frontmatter = re.match(r"---\n(.*?)\n---\n(.*)", cursor_mini_template, flags=re.S)
+    if not cursor_frontmatter:
+        fail("Cursor Mini SDAD template must include MDC frontmatter")
+    if "alwaysApply: true" not in cursor_frontmatter.group(1):
+        fail("Cursor Mini SDAD template must always apply")
+    if cursor_frontmatter.group(2).strip() != mini_template.strip():
+        fail("Cursor Mini SDAD body must match the canonical Mini SDAD template")
     anti_patterns = read("docs/anti-patterns.md")
     for phrase in [
         "AI Confidence As Completion",
@@ -1327,7 +1677,7 @@ def validate_templates() -> None:
     for phrase in [
         "Operating Loop",
         "Fresh Session Start Guard",
-        "Check file size and scope",
+        "Select one routed policy, playbook, or current doc",
         "Bounded read",
         "Source Of Truth Order",
         "Review-worthy development unit",
@@ -1340,6 +1690,10 @@ def validate_templates() -> None:
         "Timestamped Log Split",
         "Owner decisions",
         "Owner acceptance does not upgrade",
+        "Current source/tests",
+        "One routed path",
+        "Level 4 Release Gate",
+        "Push -> tag -> publish",
         "assets/sdad-control-loop.archify.png",
         "assets/sdad-control-loop.archify.html",
         "assets/sdad-control-loop.archify.workflow.json",
@@ -1370,7 +1724,7 @@ def validate_templates() -> None:
         "Make Goals Verifiable",
         "Preserve Implementation Memory",
         "implementation-notes.md",
-        "forrestchang/andrej-karpathy-skills",
+        "multica-ai/andrej-karpathy-skills",
     ]:
         if phrase not in implementation:
             fail(f"Implementation discipline doc missing: {phrase}")
@@ -1456,7 +1810,7 @@ def validate_templates() -> None:
         "Implementation Notes",
         "docs/implementation-notes.md",
         "documentation record audit",
-        "minimum update-set row",
+        "change type and routed documentation surfaces",
         "docs checked with no update needed",
         "validation commands",
         "Reactivation Prompt",
@@ -1467,6 +1821,8 @@ def validate_templates() -> None:
     context_stability = read("docs/context-stability.md")
     for phrase in [
         "Context Stability & Bounded Reads",
+        "Sensitive Data Is An Authorization Boundary",
+        "metadata-only",
         "Bounded Read Rule",
         "Live-State Size Budget",
         "docs/implementation-notes.md",
@@ -1475,7 +1831,7 @@ def validate_templates() -> None:
         "Tool Input Hygiene",
         ">50 KB",
         ">1 MB",
-        "Do not treat a mandatory start loop as permission",
+        "Do not treat a routed start path as permission",
         "Common split routes",
         "docs/archive/evidence/YYYY-MM-DD-HHMM-start-topic.md",
         "This rule does not add cleanup automation",
@@ -1485,10 +1841,16 @@ def validate_templates() -> None:
     kickoff = read("prompts/kickoff-prompt.md")
     for phrase in [
         "Natural-Language Intent Routing",
+        "Scale And Tool Gate",
+        "One-shot: no persistent SDAD files",
+        "templates/mini-sdad/cursor-mini-sdad.mdc",
+        ".cursor/rules/mini-sdad.mdc",
         "review intent",
         "reference-intake intent",
         "review-worthy development unit",
-        "related small tasks",
+        "Ask only for missing information",
+        "sdad-state.yaml",
+        "Do not load the full rulebook",
         "Continue autonomously inside the approved work packet",
         "simplest working design",
         "clarification checkpoint",
@@ -1507,7 +1869,7 @@ def validate_templates() -> None:
         "clarification",
         "save-state-only decisions",
         "missing documentation record audit",
-        "minimum update-set row",
+        "change type and routed documentation surfaces",
     ]:
         if phrase not in review_prompt:
             fail(f"Review prompt missing context-stability guidance: {phrase}")
@@ -1527,7 +1889,7 @@ def validate_templates() -> None:
         "concrete budget",
         "bounded-read instructions",
         "documentation record audit",
-        "minimum update-set row",
+        "change type and routed documentation surfaces",
         "docs checked with no update needed",
         "validation commands run",
         "Handoff-only or save-state-only decisions",
@@ -1549,7 +1911,9 @@ def validate_templates() -> None:
         "context-stability",
         "natural-language intent routing",
         "without knowing skill names",
-        "implementation-notes",
+        "implementation notes",
+        "sdad-state.yaml",
+        "render_agent_surfaces.py --check",
         "bounded-read guard",
         "guidance, not enforcement",
         "enforced surface",
@@ -1557,6 +1921,35 @@ def validate_templates() -> None:
     ]:
         if phrase not in adapters:
             fail(f"Tool adapters doc missing: {phrase}")
+    known_limitations = read("docs/known-limitations.md")
+    for phrase in [
+        "Known Limitations And Adoption Notes",
+        "Enforcement Scope",
+        "Validator Maintainability",
+        "Installer Test Coverage",
+        "Raw URL Reproducibility",
+        "Collaboration Signals",
+        "Example Depth",
+        "Automated repository tests live under `tests/`",
+        "python -m unittest discover -s tests",
+        "40-character commit SHA",
+        "Do not mix",
+    ]:
+        if phrase not in known_limitations:
+            fail(f"Known limitations doc missing: {phrase}")
+    security = read("SECURITY.md")
+    for phrase in [
+        "Security Policy",
+        "Supported Versions",
+        "What To Report",
+        "Reporting Path",
+        "Boundary",
+        "raw fetch URLs",
+        "Do not publish exploit details",
+        "surfaces such as CI",
+    ]:
+        if phrase not in security:
+            fail(f"Security policy missing: {phrase}")
     adapters_readme = read("adapters/README.md")
     for phrase in [
         "bash ./scripts/install-agent-adapter.sh claude-code",
@@ -1614,7 +2007,9 @@ def validate_templates() -> None:
     doc_governance = read("docs/field-notes/documentation-governance-method.md")
     for phrase in [
         "Reusable context-stability rule",
-        "start loop is a routing requirement",
+        "installed tool adapter",
+        "sdad-state.yaml",
+        "start route is a routing requirement",
         "50 KB or 500 lines",
         "The first-read chain must apply context-stability",
         "docs/implementation-notes.md",
@@ -1622,6 +2017,7 @@ def validate_templates() -> None:
         "Read order is routing, not authority",
         "Owner decisions control scope",
         "Owner acceptance does not upgrade weak evidence",
+        "Confirm authorization before reading private data",
     ]:
         if phrase not in doc_governance:
             fail(f"Documentation governance field note missing: {phrase}")
@@ -1668,57 +2064,11 @@ def validate_templates() -> None:
     ]:
         if phrase not in meta_harness:
             fail(f"Meta-Harness field note missing: {phrase}")
-    codex = read("adapters/codex/AGENTS.md")
-    claude = read("adapters/claude-code/CLAUDE.md")
-    cursor = read("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc")
-    copilot = read("adapters/github-copilot/.github/copilot-instructions.md")
-    generic = read("adapters/generic/AI-SESSION-INSTRUCTIONS.md")
-    for path, content in [
-        ("Codex adapter", codex),
-        ("Claude adapter", claude),
-        ("Cursor adapter", cursor),
-        ("Copilot adapter", copilot),
-        ("Generic adapter", generic),
-    ]:
-        for phrase in [
-            "Source Of Truth",
-            "Evidence beats",
-            "owner",
-            "Save-State Update Triggers",
-            "review-worthy",
-            "Continue autonomously inside the approved work packet",
-            "Implementation discipline guards autonomy",
-            "Implementation notes preserve implementation memory",
-            "clarification checkpoint",
-            "Use ADRs sparingly",
-            "docs/implementation-notes.md",
-            "docs/sdad/handoffs/YYYY-MM-DD-topic.md",
-            "Full SDAD / High",
-            "operating intensity",
-            "Context Stability applies before every item",
-            "bounded reads",
-            "50 KB",
-            "Natural-Language Intent Routing",
-            "If multiple intents match",
-            "claim level, owner gate",
-            "Treat narrative modifiers as routing signals",
-            "Commit and wait",
-            "review/audit intent",
-            "reference-intake intent",
-            "product evidence templates",
-            "docs/evidence-matrix.md",
-            "owner acceptance separate",
-            "Read order is routing, not authority",
-            "current handoff/save-state files",
-            "current handoff only for continuity",
-            "Before implementing from a handoff-only or save-state-only decision",
-            "does not upgrade weak evidence",
-        ]:
-            if phrase not in content:
-                fail(f"{path} missing expected phrase: {phrase}")
 
 
 def main() -> None:
+    validate_agent_experience_contract()
+    validate_rendered_agent_surfaces()
     validate_local_markdown_links()
     validate_templates()
     validate_skill()

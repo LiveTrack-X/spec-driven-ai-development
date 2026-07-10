@@ -18,15 +18,23 @@ bounded reads above 50 KB or 500 lines, context-stability check above 200 KB or
 2,000 lines, and no full startup read above 1 MB unless the owner explicitly
 asks for historical reconstruction.
 
+Sensitive data is an authorization boundary, not a size threshold. Use
+metadata-only inspection by default. Do not read `.env` files, credentials,
+keys, tokens, cookies, raw customer records, or private corpora unless the
+review requires it and owner policy plus tool policy explicitly permit it.
+Prefer redacted samples; if authorization is unclear, stop before reading.
+
 Read:
 
-1. `docs/INDEX.md`
-2. `docs/Repository-Operating-Rules.md`
-3. `AGENTS.md`
-4. `SPEC/SPEC-COMPLETE.md`
-5. `docs/TODO-Open-Items.md`
-6. `review-findings.md`
-7. The changed files and relevant tests
+1. the active tool adapter or `AGENTS.md`,
+2. `sdad-state.yaml` when present,
+3. `docs/INDEX.md`,
+4. changed source/tests and only the active SPEC, TODO, findings, notes, or
+   policy/playbook headings routed for this review.
+
+Do not read `docs/Repository-Operating-Rules.md` in full by default. Load the
+relevant heading only when policy, risk, evidence, or maintenance behavior is
+under review.
 
 If the SPEC spans past-to-present history, identify the current active section
 before judging whether implementation matches the SPEC.
@@ -76,7 +84,7 @@ Then include:
 - missing tests,
 - docs drift,
 - missing documentation record audit: changed files or claims that implied doc
-  checks, minimum update-set row, docs changed, docs checked with no update
+  checks, change type and routed documentation surfaces, docs changed, docs checked with no update
   needed, stale docs, archive/evidence links, and validation commands,
 - missing implementation notes for spec-unstated assumptions, changes,
   compromises, rejected alternatives, owner-relevant tradeoffs, follow-up, or

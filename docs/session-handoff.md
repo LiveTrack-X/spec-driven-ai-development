@@ -96,7 +96,8 @@ A valid SDAD handoff must include:
   were needed,
 - files touched or investigated,
 - commands or tests run and results,
-- documentation record audit: minimum update-set row, docs changed, docs checked with no update needed,
+- documentation record audit: change type and routed documentation surfaces,
+  docs changed, docs checked with no update needed,
   stale docs, archive/evidence links, and validation commands,
 - known failures, warnings, or unverified assumptions,
 - open decisions,
@@ -225,9 +226,9 @@ Paste this into a fresh AI session:
 ```text
 You are continuing an SDAD-guided project from a handoff document.
 
-First, read this current handoff fully enough to identify the active route,
-objective, constraints, and referenced current files.
-Then inspect `AGENTS.md`, `docs/INDEX.md`, and the current repository state before making changes.
+First, load the project adapter, `sdad-state.yaml`, and `docs/INDEX.md`.
+Then read this current handoff only as deeply as needed to recover the objective,
+constraints, and referenced current files. Inspect current source/tests before changes.
 Do not assume the previous chat context is available.
 Treat the project specification as the source of authority.
 Treat handoff-only decisions as continuity hints until promoted into active SPEC, ADR, claim registry, TODO, or review ledger.
@@ -240,5 +241,5 @@ Before modifying files, produce a short implementation plan.
 ## Resuming From A Handoff
 
 The AI must not rely on the previous chat as the only memory source when
-resuming work. It should load the relevant spec, handoff, and current repository
-state before continuing.
+resuming work. It should load state and INDEX first, then the relevant SPEC,
+handoff, and current repository evidence before continuing.

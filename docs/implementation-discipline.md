@@ -7,7 +7,7 @@ SDAD is the project control layer. Implementation discipline is the lower-level
 coding behavior that keeps AI autonomy from becoming messy.
 
 This page adapts compatible lessons from
-[forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)
+[multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)
 and Andrej Karpathy's public observations about LLM coding pitfalls. It also
 adapts compatible clarification and documentation patterns from
 [mattpocock/skills](https://github.com/mattpocock/skills). Keep this as a

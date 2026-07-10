@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src 'self' data:; connect-src 'none'">
   <meta name="generator" content="archify 2.10.0">
   <title>SDAD Control Loop Diagram</title>
   <script>
@@ -25,14 +26,6 @@
       } catch (_) {}
     })();
   </script>
-  <!-- Async font load: a blackholed network must not block first paint.
-       The body font stack falls back to system monospace until it lands. -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </noscript>
   <style>
     /* ==========================================================
        THEME VARIABLES — switch by toggling [data-theme] on <html>
@@ -588,25 +581,26 @@
 
         <!-- Workflow groups -->
         <rect x="450" y="338" width="225" height="58" rx="9" class="c-lane" stroke-width="1"/>
-        <text x="460" y="352" class="t-backend" font-size="7" font-weight="600">SPEC + ledger</text>
+        <text x="460" y="352" class="t-backend" font-size="7" font-weight="600">Progressive startup</text>
         <rect x="450" y="462" width="225" height="58" rx="9" class="c-lane" stroke-width="1"/>
         <text x="460" y="476" class="t-messagebus" font-size="7" font-weight="600">Low-intervention packet</text>
         <rect x="380" y="710" width="295" height="58" rx="9" class="c-security-group" stroke-width="1"/>
-        <text x="390" y="724" class="t-security" font-size="7" font-weight="600">Level 4 stop conditions</text>
+        <text x="390" y="724" class="t-security" font-size="7" font-weight="600">Level 4 release gates</text>
 
         <!-- Edge paths -->
         <path d="M 88 145 L 88 166 L 220 166 L 220 217" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 266 243 L 384 243" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
         <path d="M 220 269 L 220 290 L 220 290 L 220 341" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
-        <path d="M 430 269 L 430 290 L 500 290 L 500 341" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
+        <path d="M 266 367 L 454 367" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 430 269 L 430 476 L 430 476 L 430 705" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path d="M 500 393 L 500 414 L 500 414 L 500 465" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 625 393 L 625 414 L 500 414 L 500 465" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 546 367 L 579 367" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
         <path d="M 546 491 L 579 491" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 625 517 L 625 538 L 500 538 L 500 589" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
         <path d="M 546 615 L 579 615" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)"/>
         <path d="M 625 517 L 625 538 L 625 538 L 625 589" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path d="M 671 615 L 692 615 L 692 119 L 671 119" class="a-emphasis" stroke-width="1.2" marker-end="url(#arrowhead-emphasis)"/>
+        <path d="M 625 641 L 625 663 L 430 663 L 430 705" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
         <path d="M 625 145 L 625 228 L 625 228 L 625 341" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
         <path d="M 476 739 L 579 739" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
 
@@ -638,13 +632,13 @@
 
         <rect x="454" y="341" width="92" height="52" rx="6" class="c-mask"/>
         <rect x="454" y="341" width="92" height="52" rx="6" class="c-database" stroke-width="1.5"/>
-        <text x="500" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">SPEC truth</text>
-        <text x="500" y="379" class="t-muted" font-size="8" text-anchor="middle">scope, non-goals, risks</text>
+        <text x="500" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Active state</text>
+        <text x="500" y="379" class="t-muted" font-size="8" text-anchor="middle">sdad-state.yaml</text>
 
         <rect x="579" y="341" width="92" height="52" rx="6" class="c-mask"/>
         <rect x="579" y="341" width="92" height="52" rx="6" class="c-database" stroke-width="1.5"/>
-        <text x="625" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Control ledger</text>
-        <text x="625" y="379" class="t-muted" font-size="8" text-anchor="middle">TODO, findings, notes</text>
+        <text x="625" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">INDEX + route</text>
+        <text x="625" y="379" class="t-muted" font-size="8" text-anchor="middle">source/tests + route</text>
 
         <rect x="454" y="465" width="92" height="52" rx="6" class="c-mask"/>
         <rect x="454" y="465" width="92" height="52" rx="6" class="c-messagebus" stroke-width="1.5"/>
@@ -669,27 +663,27 @@
         <rect x="384" y="705" width="92" height="68" rx="6" class="c-mask"/>
         <rect x="384" y="705" width="92" height="68" rx="6" class="c-security" stroke-width="1.5"/>
         <text x="430" y="726" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Owner gate</text>
-        <text x="430" y="743" class="t-muted" font-size="8" text-anchor="middle">scope or risk change</text>
-        <text x="430" y="761" class="t-security" font-size="7" text-anchor="middle">stop</text>
+        <text x="430" y="743" class="t-muted" font-size="8" text-anchor="middle">release approval</text>
+        <text x="430" y="761" class="t-security" font-size="7" text-anchor="middle">owner</text>
 
         <rect x="579" y="713" width="92" height="52" rx="6" class="c-mask"/>
         <rect x="579" y="713" width="92" height="52" rx="6" class="c-database" stroke-width="1.5"/>
-        <text x="625" y="734" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Rule update</text>
-        <text x="625" y="751" class="t-muted" font-size="8" text-anchor="middle">pain becomes rule</text>
+        <text x="625" y="734" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Gated action</text>
+        <text x="625" y="751" class="t-muted" font-size="8" text-anchor="middle">push, tag, publish</text>
 
         <!-- Edge labels -->
         <rect x="110.6" y="146" width="86.8" height="14" rx="3" class="c-mask"/>
         <text x="154" y="156" class="t-backend" font-size="8" text-anchor="middle">interpret intent</text>
         <rect x="291.2" y="223" width="67.6" height="14" rx="3" class="c-mask"/>
-        <text x="325" y="233" class="t-muted" font-size="8" text-anchor="middle">choose scale</text>
+        <text x="325" y="233" class="t-muted" font-size="8" text-anchor="middle">check Q5 risk</text>
         <rect x="174.2" y="270" width="91.6" height="14" rx="3" class="c-mask"/>
         <text x="220" y="280" class="t-database" font-size="8" text-anchor="middle">select tool rules</text>
         <rect x="414.4" y="270" width="101.2" height="14" rx="3" class="c-mask"/>
-        <text x="465" y="280" class="t-security" font-size="8" text-anchor="middle">govern current work</text>
+        <text x="360" y="357" class="t-backend" font-size="8" text-anchor="middle">load state</text>
         <rect x="389" y="521" width="82" height="14" rx="3" class="c-mask"/>
         <text x="430" y="531" class="t-security" font-size="8" text-anchor="middle">Level 4 trigger</text>
         <rect x="468.6" y="394" width="62.8" height="14" rx="3" class="c-mask"/>
-        <text x="500" y="404" class="t-backend" font-size="8" text-anchor="middle">slice scope</text>
+        <text x="562.5" y="404" class="t-backend" font-size="8" text-anchor="middle">bind packet</text>
 
 
         <rect x="526.3" y="518" width="72.4" height="14" rx="3" class="c-mask"/>
@@ -701,7 +695,9 @@
         <rect x="586.4" y="208" width="77.2" height="14" rx="3" class="c-mask"/>
         <text x="625" y="218" class="t-database" font-size="8" text-anchor="middle">record outcome</text>
         <rect x="486.5" y="719" width="82" height="14" rx="3" class="c-mask"/>
-        <text x="527.5" y="729" class="t-security" font-size="8" text-anchor="middle">revise boundary</text>
+        <text x="527.5" y="729" class="t-security" font-size="8" text-anchor="middle">approve action</text>
+        <rect x="485" y="646" width="90" height="14" rx="3" class="c-mask"/>
+        <text x="530" y="656" class="t-security" font-size="8" text-anchor="middle">release proof</text>
 
         <!-- Legend -->
         <text x="175" y="800" class="t-primary" font-size="10" font-weight="600">Legend</text>
@@ -726,9 +722,9 @@
           <h3>Context Layers</h3>
         </div>
         <ul>
-          <li>&bull; Always-loaded adapter rules stay short</li>
-          <li>&bull; Active control files guide current work</li>
-          <li>&bull; References and archives load on demand</li>
+          <li>&bull; Adapter -&gt; state -&gt; INDEX stays fixed</li>
+          <li>&bull; Current source/tests precede routed docs</li>
+          <li>&bull; One policy or playbook loads on demand</li>
         </ul>
       </div>
 
@@ -738,9 +734,9 @@
           <h3>Risk Boundary</h3>
         </div>
         <ul>
-          <li>&bull; Q5 risks keep owner decisions explicit</li>
-          <li>&bull; Release, data, auth, money, migration, and rollback do not become AI momentum</li>
-          <li>&bull; Evidence is required before acceptance</li>
+          <li>&bull; Inspect, document, or test is Standard minimum</li>
+          <li>&bull; Change, accept, or execute uses Full + Level 4</li>
+          <li>&bull; Push, tag, and publish follow the owner release gate</li>
         </ul>
       </div>
 

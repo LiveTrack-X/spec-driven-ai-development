@@ -1,754 +1,251 @@
 ---
 name: ai-spec-project-start
 description: >-
-  Use when starting, publishing, or reorganizing a project around
-  SPEC-driven AI development as practiced by a human owner who does not
-  necessarily write code directly but supervises product direction, AI planning,
-  AI implementation, cross-model review, evidence-based verification, and
-  completion decisions. Trigger for new project kickoff, AGENTS.md/docs/SPEC/TODO
-  bootstrap, owner-supervised AI coding, multi-agent review loops, converting
-  lessons from a previous project into reusable operating rules, natural-language
-  requests such as "review this", "implement the spec", "release this", or
-  "create a handoff", or creating a public template/repo such as
-  spec-driven-ai-development.
+  Start, adopt, review, implement, reorganize, release, or hand off a project
+  using owner-supervised SPEC-driven AI development. Use for new-project
+  kickoff, AGENTS/docs/SPEC/TODO bootstrap, natural-language requests such as
+  review this repo, implement the spec, release this, tune autonomy, or create a
+  handoff, and for converting repeated project lessons into durable rules,
+  playbooks, tests, or templates.
 ---
 
 # AI-SPEC Project Start
 
-## Identity
+Create the smallest SDAD control plane that lets an owner direct AI work,
+separate evidence from confidence, and keep future sessions recoverable.
 
-Treat this workflow as:
+## Reference Routing
 
-```text
-Owner-supervised, SPEC-driven, multi-agent, evidence-based AI development.
-```
+Read references only when their trigger applies:
 
-Korean:
+- Read [references/runtime-contract.md](references/runtime-contract.md) before
+  creating or changing an SDAD control surface. It owns scale, autonomy, stop,
+  privacy, source-of-truth, evidence, and completion semantics.
+- Read [references/starter-templates.md](references/starter-templates.md) when
+  bootstrapping or repairing Standard/Full control files.
+- Read [references/field-patterns.md](references/field-patterns.md) when
+  translating lessons from another project, release/migration practice, or a
+  reference implementation.
+- Read [references/implicit-rules.md](references/implicit-rules.md) when repeated
+  confusion or failure should become a rule, playbook, test, validator, or
+  template.
 
-```text
-인간 오너 감독형, SPEC 주도, 다중 AI 교차검증 기반 개발 플로우.
-```
+Do not load every reference by default.
 
-This is not "AI writes code from a spec." It is a project-control loop where a
-human owner keeps direction, priority, risk judgment, and final acceptance while
-AI sessions take roles such as planner, spec writer, builder, reviewer, QA, and
-documentation maintainer.
+## Workflow
 
-## Field-Proven Baselines
+### 1. Inspect Capability And Existing State
 
-This workflow should preserve two concrete families of practice:
+Determine whether the environment can edit the project filesystem.
 
-- Documentation-governance controls for documentation routing, source-of-truth
-  order, active TODO/review ledgers, and production-readiness hardening.
-- Release-governance controls for version lanes, migration maps, release gates,
-  risk-domain rules, and cross-AI pre-release review.
+- In chat-only environments, plan and explain only. Do not install files or
+  claim they were saved.
+- In file-editing environments, inspect repository instructions, current files,
+  version control state, source/tests, and existing SDAD surfaces before
+  proposing changes.
+- Preserve unrelated owner changes. Do not replace an existing control system
+  merely because SDAD was requested.
+- Treat review/audit requests as read-only unless the request also authorizes a
+  change.
 
-Compatible external clarification patterns should be adapted as SDAD-native
-clarification checkpoints, glossary routing, sparse ADR criteria, or handoff
-compression. Do not make external skill frameworks the source of authority for
-an SDAD project unless the owner explicitly asks for dependency adoption.
+If the repository already has SDAD, start from its current adapter,
+`sdad-state.yaml`, and `docs/INDEX.md`. Repair drift rather than rebuilding
+from scratch.
 
-When the user asks whether their development flow is reasonable, references a
-previous project, asks to encode lessons into a reusable pattern, or is starting
-a project with releases/migrations/high-risk behavior, load
-`references/field-patterns.md`.
+### 2. Interpret The Request
 
-When the user asks to capture "obvious" rules, reduce repeated confusion, harden
-agent behavior, or prevent stale SPEC/history mistakes, load
-`references/implicit-rules.md`.
+Map plain language to the dominant intent:
 
-When the user asks whether SDAD fits a project, whether a project is ready for
-this workflow, or what to add before 1.0-style release, route to the public docs:
-`docs/fit-assessment.md`, `docs/anti-patterns.md`, `docs/diagrams.md`,
-`docs/autonomy-levels.md`, `docs/implementation-discipline.md`, and the ADR
-template under `templates/project-control-files/SPEC/adr/`.
+- kickoff/adopt/reorganize: select scale and bootstrap;
+- review/audit: inspect and report evidence;
+- implement/fix: bind work to active acceptance criteria;
+- release/publish/tag/deploy/migrate: activate the named owner gates;
+- docs/README/guide: update affected documentation and source-of-truth state;
+- handoff/resume: recover or write continuity state;
+- autonomy complaints: tune packet size, autonomy, and intensity together;
+- reference intake: compare source behavior, implementation, evidence, and gaps.
 
-## Core Assumption
+Compose multiple intents only when they fit one packet without changing scope,
+risk, claim level, owner gate, or durable-record needs. Otherwise ask one
+blocking question with a recommended default.
 
-The owner may understand logic, architecture, product intent, risks, and user
-pain without personally writing implementation code. Design the project system so
-that the owner can still govern development through:
-
-- clear SPECs,
-- explicit non-goals,
-- work packets and autonomy levels,
-- review-worthy development units,
-- implementation discipline,
-- implementation notes,
-- cross-model review,
-- reproducible tests,
-- active TODO/review ledgers,
-- and evidence-based completion criteria.
-
-## Beginner-Friendly Behavior
-
-When the user appears new to development tools, do not lead with Git, Python,
-PowerShell, Bash, or script installation.
-
-Start with the no-clone path:
-
-```text
-Use SPEC-Driven AI Development as the project control method.
-Source repository: https://github.com/LiveTrack-X/spec-driven-ai-development
-First determine whether you can edit files in this project. If this is a
-chat-only environment such as Claude.ai, ChatGPT web, or another browser chat
-with no project filesystem, do not install adapters or claim files were saved.
-Use the repository for planning only, then tell the user to open the project in
-Codex, Claude Code, Cursor, Copilot Chat, or another file-editing AI coding
-tool.
-Before fetching, state which adapter or Mini SDAD template you are installing
-and why.
-If you cannot determine the current tool, ask the user to specify one of:
-Codex / Claude Code / Cursor / Copilot Chat / Generic.
-Do not infer adapter paths. Use the exact raw adapter URL for this tool.
-Show the source URL and first 10 lines of the fetched adapter before saving.
-If fetching fails, stop and report the failure instead of inventing an adapter.
-Offer deterministic fallback options: retry with network access, ask the user
-to paste the raw file content from the source URL, use the terminal installer,
-or clone/download the repository manually.
-Bootstrap the first active SPEC slice and project control files.
-Ask for the first work packet and the review-worthy development units inside
-it. A unit may contain multiple related small tasks and should be large enough
-that review has meaning, but small enough to verify in one checkpoint.
-Choose autonomy before implementation. Default to Level 1 Unit Autonomy for
-Mini SDAD, treating the active unit as one small approved packet; use Level 2
-Work Packet Autonomy for Standard SDAD, and Level 4 gates for Full SDAD release,
-migration, destructive actions, data/auth/money/security decisions, rollback,
-and production claims.
-Check the product evidence flag: ask whether product, hardware, compatibility,
-packaging, remote tester, external lab, or release claims need evidence stronger
-than local software tests. A yes is not automatically Full SDAD, but it
-triggers the relevant product evidence templates. Use Standard SDAD minimum when
-those templates must persist across sessions. Q5 release, production, user
-data, auth, money, migration, destructive-action, or rollback risk still
-controls Full SDAD gates.
-Do not require the user to know SDAD terms, adapter names, or skill names. Infer
-intent from natural language and current repo state. Treat "check/review/audit"
-as review intent, "implement/fix/match the spec" as SPEC implementation intent,
-"release/publish/tag" as release intent, "docs/README/FAQ/guide" as
-documentation intent, "handoff/continue later/lost context" as handoff intent,
-external project references as reference-intake intent, and "asks too often" or
-"runs ahead" as autonomy tuning intent. If multiple intents match, first decide
-whether they can be safely composed inside one approved packet. State the
-interpreted route briefly before proceeding. If the combination changes scope,
-risk, claim level, owner gate, or durable-doc requirements, ask one blocking
-clarification question with a recommended default.
-Treat narrative modifiers as routing signals, not automatic scope expansion:
-"carefully", "thoroughly", and "audit the whole flow" increase inspection depth;
-"fully" and "end-to-end" continue to evidence-ready for the approved scope;
-"quickly", "lightly", and "minimal" select compression, not weaker evidence;
-"commit and wait" does not imply push, release, or deploy unless named.
-Proceed autonomously inside the approved work packet until evidence is ready.
-Do not stop after every micro-task, small SPEC item, or evidence-ready unit.
-Stop for owner input only when scope expands, Q5 risk changes, destructive or
-irreversible action is needed, an owner-controlled decision is required,
-verification is blocked, or evidence conflicts with the plan.
-Use implementation discipline inside the packet: surface assumptions, prefer the
-simplest working design, make surgical changes, and tie every step to
-verification.
-When a plan is fuzzy, run a clarification checkpoint before coding: inspect
-repository evidence first, ask only the next blocking owner question, include
-the AI's recommended answer, and route the resolved decision to SPEC,
-implementation notes, ADR, TODO, review finding, or handoff as appropriate.
-If repeated ambiguity comes from overloaded domain terms, create or update a
-small glossary routed from `docs/INDEX.md`; keep it glossary-only.
-When implementation requires a judgment the active SPEC did not explicitly
-cover, record the assumption, change, compromise, alternative rejected,
-owner-relevant tradeoff, follow-up, and verification impact in implementation
-notes. Do not record raw internal reasoning, mechanical edits, or large logs.
-For Standard or Full SDAD, keep current notes in
-`docs/implementation-notes.md`; for Mini SDAD, include a short Implementation
-notes section in the evidence-ready summary only when a spec-unstated decision
-happened.
-At loop end, update save-state.md when work pauses, handoff is expected,
-direction changes, blocked/partial/unverified state remains, or context would be
-expensive to reconstruct.
-Before closing, archiving, replacing, or restarting a long AI coding session,
-create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat the
-chat as an execution trace, not permanent memory; a fresh session must continue
-from the handoff, active spec, and current repository state.
-Reference existing artifacts by path or URL instead of duplicating long content
-in the handoff.
-Before reading large state files, archives, logs, generated artifacts, private
-data, or broad search output, check size and use bounded reads: headings,
-current sections, targeted matches, output limits, and explicit excludes. If
-chat stability degrades, suspect context growth before changing runtime code.
-As a default soft trigger, use bounded reads above 50 KB or 500 lines, run a
-context-stability check above 200 KB or 2,000 lines, and do not read files above
-1 MB in full during startup unless the owner explicitly asks for historical
-reconstruction.
-When the owner references "final boss" repository setup, context ladders,
-hooks, tool rules, path-gated rules, skills, subagents, or agent memory,
-abstract the idea into SDAD's Repository Control Surface pattern instead of
-copying a tool-specific folder tree. Separate always-loaded guidance, routed
-guidance, on-demand procedure, isolated exploration, enforced guarantee, and
-reviewed memory. Use guidance for judgment and enforcement for
-non-negotiables such as secrets, destructive actions, migrations, release
-artifacts, production deploys, and money/data/security boundaries. Repeated
-research goes to isolated context; repeated procedure goes to a skill or
-playbook; required guarantees go to CI, validators, hooks, permissions, deny
-rules, release gates, or equivalent tooling; reviewed project memory goes to
-implementation notes, ADRs, operating rules, handoffs, or trace links.
-Do not overwrite existing files without showing proposed changes.
-```
-
-Explain terms plainly:
-
-- A Codex skill is optional and only applies to Codex.
-- An adapter is a project instruction file for a specific AI coding tool.
-- The user does not need Git or Python for the prompt-only path.
-- Terminal commands are optional setup shortcuts, not the main requirement.
-- Adapter installation is deterministic. Prefer exact raw URLs, target paths,
-  and fetch evidence over model guesses.
-- Before fetching, name the adapter/template and explain why. If the current
-  tool is unclear, ask the user to choose Codex, Claude Code, Cursor, Copilot
-  Chat, or Generic.
-- Claude Code means the local/CLI coding tool with project filesystem access,
-  not Claude.ai chat.
-- Chat-only browser tools can plan and explain, but must not claim adapter
-  installation unless they can edit files in the target project.
-
-If a user asks "how do I start?", provide the AI-agent paste prompt first, then
-offer terminal installers only as an optional path.
-
-## Natural-Language Intent Routing
-
-Users should not have to invoke this skill by name. Route ordinary phrases into
-the right SDAD behavior:
-
-- "check", "review", "audit", "find bugs", or "anything wrong" -> review/audit intent.
-- "implement", "build", "fix", or "match the spec" -> SPEC implementation intent.
-- "release", "publish", or "tag" -> release intent with Level 4 gates.
-- "document", "explain", "README", "FAQ", or "guide" -> documentation intent.
-- "handoff", "continue later", "next session", or "lost context" -> handoff/save-state intent.
-- "borrow from this repo", "reference this project", or "adopt this idea" -> reference-intake intent.
-- "asks too often" or "runs ahead" -> autonomy tuning intent.
-
-Treat narrative modifiers as routing signals, not automatic scope expansion.
-"Carefully", "thoroughly", or "audit the whole flow" increases inspection depth
-inside the current scope; it does not authorize unrelated refactors. "Fully" or
-"end-to-end" means continue to evidence-ready for the approved scope and stop at
-owner gates; it does not mean owner-accepted. "Quickly", "lightly", or "minimal"
-selects compression, not weaker evidence. "Commit and wait" does not imply push,
-release, or deploy unless those are named.
-
-If multiple intents match, first decide whether they can be safely composed
-inside one approved packet. When one route remains dominant, state the
-interpreted intent, SDAD scale/intensity, autonomy level, and expected evidence,
-then continue. If the combination changes scope, risk, claim level, owner gate,
-or durable-doc requirements, ask one blocking clarification question with a
-recommended default. Never use intent routing to bypass release, data, auth,
-money, security, destructive action, migration, rollback, production claim, or
-owner risk-acceptance gates.
-
-## Review-Worthy Development Units
-
-Do not stop development after every micro-task.
-
-Prefer low-intervention owner control:
-
-- Mini SDAD: Level 1 Unit Autonomy.
-- Standard SDAD: Level 2 Work Packet Autonomy.
-- Full SDAD or Q5 risk: Level 2 for implementation, with Level 4 gates for
-  release, migration, destructive actions, data/auth/money/security decisions,
-  rollback, and production claims.
-
-For Standard and Full SDAD, also state SDAD scale and operating intensity:
-`Standard SDAD / High`, `Standard SDAD / Medium`, `Standard SDAD / Low`,
-`Full SDAD / High`, `Full SDAD / Medium`, or `Full SDAD / Low`. A Q5 project
-does not make every packet High. Raise the current packet to `Full SDAD / High`
-only when it changes a Q5 gate. Use `Standard SDAD / High` for non-Q5 packets
-with major product or architecture tradeoffs, hard-to-reverse implementation
-choices, or explicit owner checkpoints. Lower intensity when control surfaces
-reduce controllability.
-State SDAD scale and operating intensity before implementation.
-
-Advanced extensions such as harness optimization, self-improving loops,
-retrieval/memory tuning, or repeated evaluation automation require an explicit
-fit gate before implementation: repeated task unit, measurable metric, fixed
-model/tool surface, allowed changes, harness interface or candidate contract,
-baseline harness, search set, held-out set, offline traces, online candidate
-traces, search evidence, owner acceptance evidence, leakage risk, concrete
-budget, and owner adoption gate. Mark missing fields as `unknown` or
-`blocking`; do not hide them as assumptions. For harness optimization, use
-`docs/field-notes/meta-harness-method.md` and keep discovered harnesses as
-evidence-ready candidates until owner adoption.
-
-Repository Control Surface hardening is a normal SDAD structure pattern when it
-only moves repeated rules into the right control surface. It becomes an advanced
-extension only when the project searches over prompts, rules, retrieval,
-memory, context selection, or agent scaffolds with repeated evaluation. For the
-normal structure pattern, use
-`docs/field-notes/repository-control-surface-method.md`. A control surface checkup
-may report stale or duplicated skills, MCPs, plugins, hooks,
-permissions, local instructions, and tool versions as evidence-ready findings;
-applying cleanup, auto-mode, permission, hook, or tool-version changes is a
-separate owner checkpoint.
-
-Cost-aware agent routing is a normal SDAD structure pattern when it chooses a
-lean executor, advisor checkpoint, orchestrator-worker packet, or bounded loop
-from fixed rules. Use it to reduce unnecessary model/tool spend while
-preserving evidence and owner gates. It becomes an advanced extension only when
-the project searches over routing policies, models, prompts, evaluators, or
-loop strategies with repeated evaluation. For the normal structure pattern, use
-`docs/field-notes/cost-aware-agent-routing-method.md`. Never treat advisor
-approval, worker completion, or a passing loop evaluator as owner acceptance.
-
-A work packet is a bounded container for one or more review-worthy development
-units. The owner approves the packet boundary, not every small task inside it.
-Do not use every small SPEC item as a separate owner-approval boundary by
-default.
-
-Before implementation, define a review-worthy development unit:
-
-- one user-visible workflow,
-- one bugfix with its regression check,
-- one connected docs/template/prompt update,
-- one risk-domain hardening pass,
-- or one small feature path from behavior to evidence.
-
-Each unit may include multiple related TODOs. Units help organize review and
-evidence; they do not require separate owner approval while they stay inside the
-approved packet. Continue inside the approved work packet until the packet can
-be reviewed with changed files, checks, known limits, and evidence.
-
-For feature delivery, prefer a Slice-First Evidence Loop: one vertical slice as
-the approved packet or review-worthy unit, JIT clarification only for unresolved
-slice decisions, and the strongest practical failing test or check before
-implementation. The check may be unit, contract, integration, E2E, CLI smoke,
-build, lint, snapshot, or manual verification depending on risk. Use TDD when
-behavior can be specified before implementation; use an equivalent failing check
-for docs, config, tooling, migration, or verification-only work. Green results
-are evidence-ready, not owner-accepted. Use ADRs only for hard-to-reverse
-decisions; keep successful evidence summarized and keep `review-findings.md`
-focused on defects, risks, and unresolved review items.
-
-When rebuilding, porting, or borrowing from an existing product, repository,
-design, demo, or field project, add a Reference Parity Review Gate before
-evidence-ready. Do not copy the old implementation unless explicitly requested.
-Map `source behavior -> implemented behavior -> evidence -> gap/deferred claim`
-for the reference-critical workflows, state labels, role boundaries, data or
-runtime surfaces, and visible controls. For product UI, screenshots can be
-evidence; for server/package/hardware/deployment claims, keep test runtime,
-live runtime, and persisted state separate.
-
-Match evidence tiers to claims before saying evidence-ready: local test,
-browser render, live runtime, persisted state, remote hardware, and production
-evidence each allow different claims. Do not let local tests unlock hardware,
-browser, persistence, or production claims; do not let a remote bundle unlock
-production readiness or owner acceptance.
-
-Small Project Compression Rule: for One-shot, Mini SDAD, or a small Standard
-packet, one evidence-ready summary is enough when there is one active slice, no
-Q5 gate changed, no unresolved finding or durable spec-unstated decision must
-survive, no handoff is expected, and evidence can be shown compactly. Create
-SPEC, TODO, review-findings, implementation notes, save-state, handoff, Evidence
-Matrix, Claim Registry, or Artifact Contract only when that surface has an
-active job.
-
-Use two states:
-
-- `AI-complete / evidence-ready`: changed files, checks, docs checked, limits,
-  and risks are shown.
-- `Owner-accepted`: the owner accepts, rejects, revises, or defers at a
-  checkpoint.
-
-Evidence-ready units may continue inside the approved packet. Final completion
-requires owner acceptance or an explicitly delegated acceptance policy.
-
-Inside the packet, enforce implementation discipline:
-
-- surface assumptions without hiding confusion,
-- run a clarification checkpoint when the plan is fuzzy, inspecting repository
-  evidence before asking the owner,
-- prefer the simplest working design,
-- make surgical changes only,
-- tie each step to verification.
-
-If the active SPEC does not decide a necessary implementation choice, preserve
-that implementation memory:
-
-- record SPEC gaps and unstated assumptions,
-- record implementation changes, compromises, and owner-relevant tradeoffs,
-- record alternatives rejected when the choice affects future work,
-- record verification impact and follow-up TODO/review/ADR needs,
-- avoid raw internal reasoning, mechanical edit logs, and large logs.
-
-Use ADRs sparingly for decisions that are hard to reverse, surprising without
-context, and real tradeoffs; smaller spec-unstated choices belong in
-implementation notes.
-
-Ask the owner only when:
-
-- scope would expand beyond the approved packet,
-- Q5 risk, release posture, data, auth, money, migration, or destructive action
-  changes,
-- a tradeoff belongs to the owner,
-- verification is blocked or impossible,
-- current evidence conflicts with the requested plan.
-
-## Scale Selection Rule
-
-Before installing adapters or bootstrapping control files, choose the smallest
-workflow scale that fits.
+### 3. Select Scale
 
 Ask:
 
 1. Will this take more than one AI session?
-2. Will the owner come back to this project later?
-3. Does "done" need evidence beyond "AI said so"?
+2. Will the owner return later?
+3. Does done need evidence beyond AI confidence?
 4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, user data, auth, money, or production risk?
-
-Then check the product evidence flag:
-
-- Will product, hardware, compatibility, packaging, remote tester, external lab,
-  or release claims need evidence stronger than local software tests?
-
-Choose:
-
-- `0 yes`: One-shot Prompt. Do not create SDAD files.
-- `1-2 yes from questions 1-3 only, with Q4=no and Q5=no`: Mini SDAD. Create
-  one instruction file from `templates/mini-sdad/MINI-SDAD.md`.
-- `Q4=yes or 3 yes total`: Standard SDAD. Create core control files.
-- `Q5=yes`: Standard SDAD minimum, even if it is the only yes.
-- `Q5=yes with production-facing, destructive, migration, real user data, auth,
-  money, release, or rollback risk`: Full SDAD.
-- `4-5 yes`: Full SDAD. Use full workflow, review, ADRs, and risk gates.
-
-Override rules beat raw yes-counts. When unsure, choose the smaller scale only
-if no Q5 risk exists. Escalate when repeated pain, context loss, risk, or
-multiple sessions appear.
-
-A yes to the product evidence flag is not automatically Full SDAD, but it
-triggers the relevant product evidence templates. Use Standard SDAD minimum when
-those templates must persist across sessions. Q5 release, production, user
-data, auth, money, migration, destructive-action, or rollback risk still
-controls Full SDAD gates.
-
-## Operating Loop
-
-Use this sequence:
-
-```text
-1. Prior project pain or product need
-2. Route current state through `docs/INDEX.md` and source-of-truth order
-3. Choose scale, compression, autonomy, and operating intensity
-4. PLAN narrows owner intent into one packet, boundaries, and non-goals
-5. SPEC fixes the active slice with scope, risks, and acceptance criteria
-6. Optional ADR records only hard-to-reverse durable tradeoffs
-7. TODO/work packet turns the slice into review-worthy development units
-8. JIT clarification resolves only missing blocking details before implementation
-9. Builder AI implements the packet, including related small tasks inside scope
-10. Separate AI/model/session reviews the result
-11. Tests, docs, evidence tiers, and applicable gates make units evidence-ready
-12. Owner checkpoint accepts, revises, defers, or rejects
-13. Lessons become operating rules, TODOs, ADRs, or archived notes
-```
-
-Use only the gates that apply. Reference parity is for reference-derived work;
-product evidence templates are for product, hardware, package, remote,
-compatibility, or release claims; ADRs are conditional for hard-to-reverse
-tradeoffs. Never collapse steps 5-8 into "AI said it is done." AI-complete
-means evidence-ready. Final completion is a decision based on evidence and
-owner acceptance.
-
-If evidence depends on a CLI, API, file, manifest, or UI text shape, name that
-output contract in the active SPEC or artifact contract before treating the
-result as proof.
-
-## Control File Maintenance Cost
-
-Standard and Full SDAD control files are not write-once setup files. They must
-be checked and updated at the end of every work packet, handoff, or session.
-
-At loop end:
-
-- update `SPEC/SPEC-COMPLETE.md` when behavior, implementation status, scope,
-  constraints, or acceptance criteria changed,
-- update `docs/TODO-Open-Items.md` when work was completed, added, deferred, or
-  split,
-- update `review-findings.md` when bugs, risks, review findings, or blocked
-  issues were found, fixed, deferred, or accepted,
-- update `docs/implementation-notes.md` when implementation required a
-  spec-unstated assumption, change, compromise, rejected alternative,
-  owner-relevant tradeoff, follow-up, or verification-impact note,
-- update operating rules or ADRs when repeated pain, decisions, boundaries, or
-  tradeoffs changed.
-
-If no control file needs a content change, state which files were checked and why
-no update was needed. Do not claim completion while control files are stale.
-
-Before evidence-ready, owner checkpoint, or handoff, run a Documentation Record Audit:
-identify the changed files or claims that implied a doc check, the
-minimum update-set row used from `docs/INDEX.md`, docs changed, docs checked
-with no update needed, stale docs found, archive/evidence links created, and
-validation commands run.
-
-If the user cannot afford this maintenance cost, choose Mini SDAD or a one-shot
-prompt instead.
-
-Use a control-file budget for each Standard or Full SDAD packet: `Minimal`,
-`Normal`, or `Heavy`. `Heavy` means SPEC/TODO/review-findings/save-state/ADR/
-rules as a bundle, or four or more control files in one packet. If `Heavy`
-appears in three consecutive packets, reassess operating intensity and consider
-Baseline Freeze. Record the control-file budget in the handoff summary.
-
-Keep active live-state files short. If `save-state.md`,
-`docs/TODO-Open-Items.md`, `review-findings.md`, or similar files become long
-journals, preserve old material in archive/history files, link it, and keep the
-active file focused on current objective, open items, constraints, validation,
-and next steps.
-Keep graphing, repo-packing, embedding, indexing, and context-building tool
-ignore files aligned with this rule so generated, private, log, cache,
-dependency, and local database surfaces do not enter AI context by default.
-
-Mini SDAD loop-end behavior is smaller: do not check `SPEC/SPEC-COMPLETE.md`,
-`docs/TODO-Open-Items.md`, `review-findings.md`, or ADRs unless the project has
-escalated. For Mini, report the active task, changed files, check evidence,
-limitations or unverified behavior, evidence-ready status, owner decisions or
-acceptance needed, and whether to escalate.
-
-## Save-State Update Triggers
-
-`save-state.md` is optional. If the project uses it, update it when:
-
-- a session is ending or pausing before work is fully accepted,
-- an active slice completes and the next slice is not obvious from TODO/SPEC,
-- the owner changes direction, priority, acceptance criteria, or risk tolerance,
-- work is blocked, skipped, partial, degraded, or unverified,
-- another AI tool, model, session, or person is expected to continue the work,
-- current context would be expensive to reconstruct from code and docs alone.
-
-For long AI sessions that will be closed, replaced, restarted, or resumed in a
-fresh session, create a session handoff under
-`docs/sdad/handoffs/YYYY-MM-DD-topic.md`. Chats are execution traces, specs are
-authority, and handoffs are continuity.
-
-Fresh sessions should use bounded reads for large state files, archives, logs,
-generated artifacts, private data, and old handoffs instead of loading them in
-full.
-
-If none of these triggers apply, say so. If `save-state.md` exists but is stale,
-update it, mark it stale, or archive it before handoff.
-
-## Mini Unit Completion
-
-For Mini SDAD, do not call a unit evidence-ready until:
-
-- the active review-worthy unit is restated,
-- changed files are listed,
-- tests, commands, or manual checks are shown, or the reason they could not run
-  is stated,
-- implementation notes are included when a spec-unstated decision was made,
-- user-visible behavior or output is described,
-- limitations and unverified behavior are named,
-- unrelated scope was not added,
-- owner decisions or acceptance needed are named.
-
-Not evidence-ready when the AI only says it is done, checks are hidden,
-uncertainty is hidden, or unrelated changes were made without owner approval.
-Final done still requires owner acceptance unless the owner has explicitly
-delegated the acceptance policy. Requested changes or deferred decisions mean
-the unit is not done.
-
-## First Conversation
-
-Before writing code, extract the owner's control model:
-
-- What previous project pain triggered this project?
-- What would have made that previous project easier?
-- What must the next AI session know before touching code?
-- Which decisions must remain owner-controlled?
-- What is the smallest useful result?
-- What is the first work packet?
-- Which review-worthy units or related small tasks should be batched into that
-  packet?
-- What is explicitly not active work yet?
-- What evidence proves the packet is evidence-ready?
-- Do product, hardware, compatibility, packaging, remote tester, external lab,
-  or release claims need evidence stronger than local software tests?
-
-If the owner has already given enough context, proceed and mark assumptions.
-
-## Required Project Control Files
-
-Create or update these early:
-
-- `AGENTS.md`: mandatory rules for every AI agent/session.
-- `docs/INDEX.md`: the working router for active docs. Use it during
-  implementation when deciding which SPEC, TODO, review, evidence, handoff,
-  archive, or log file to check next. Use its Decision Routing Quick Check when
-  a choice could belong in SPEC, implementation notes, ADR, TODO, review
-  findings, claim registry, save-state, or handoff.
-- `docs/Repository-Operating-Rules.md`: durable rulebook for repeated rules.
-- `SPEC/SPEC-COMPLETE.md`: current integrated product and implementation baseline.
-- `SPEC/adr/`: decision records for durable rationale when needed.
-- `docs/TODO-Open-Items.md`: current open work only.
-- `review-findings.md`: active bug/review findings only.
-- `docs/implementation-notes.md`: current spec-unstated implementation decisions.
-- `README.md`: human-facing current project summary.
-
-Optional but useful:
-
-- `save-state.md`: current session recovery state if work pauses.
-- `next-task.md`: next recommended slice.
-- `docs/archive/`: historical docs and completed plans.
-- `docs/product-notes/`: reference ideas that are not active implementation.
-- `docs/evidence-matrix.md`: requirement, claim, evidence status, freshness,
-  scope, gaps, and acceptance tracking for product evidence projects.
-- `docs/claim-registry.md`: allowed, qualified, blocked, forbidden, and retired
-  user-facing or release-facing claims.
-- `docs/artifact-contracts.md`: artifact contents, metadata, verifier, privacy,
-  retention, and lineage for packages, firmware, support bundles, logs, and
-  imported evidence.
-- `docs/work-packet-state.md`: explicit packet states such as `ai_complete`,
-  `software_verified`, `tester_ready`, `hardware_verified`, `owner_accepted`,
-  and `production_ready`.
-- `docs/remote-evidence-import.md`: quarantine, validation, privacy, review,
-  and acceptance flow for remote or external evidence.
-
-When a log, trace, command output, or imported evidence record becomes too long
-for an active state file, split it into a timestamped archive/evidence file such
-as `docs/archive/logs/YYYY-MM-DD-HHMM-start-topic.md`. Start the file with
-`Start: YYYY-MM-DD HH:MM`, scope, source command or artifact, evidence tier,
-and supported claim or work packet. Link it from the active doc instead of
-pasting the full log.
-
-## Source Of Truth
-
-When sources disagree, prefer:
-
-1. source code, migrations, tests, reproducible commands,
-2. active runtime docs,
-3. canonical SPEC,
-4. active SPEC files,
-5. current handoff/save-state files,
-6. product notes and external references,
-7. archived or historical docs,
-8. chat memory or AI confidence.
-
-Read order is routing, not authority. Startup docs help find the right files;
-the source-of-truth order decides conflicts. Owner decisions control scope, risk
-tolerance, and acceptance. They become durable source of truth only when recorded
-in active docs, SPEC, ADR, or claim registry. A current handoff may carry the
-decision for continuity until it is promoted; it does not turn weak evidence into
-stronger evidence.
-Do not turn weak evidence into stronger evidence.
-
-Current-over-historical rule: if a SPEC includes a timeline from past to
-present, prefer the newest active/current section over older sections. Treat
-older SPEC material as rationale or history unless it is explicitly reaffirmed
-in the current active SPEC path.
-
-## AI Role Split
-
-Use role separation to reduce single-model blind spots:
-
-- Planning AI: turns owner pain into product scope and non-goals.
-- SPEC AI: writes implementation-ready SPEC with acceptance criteria.
-- Builder AI: implements a bounded review-worthy unit.
-- Reviewer AI: finds bugs, security risks, missing tests, docs drift, and overreach.
-- QA AI: tries to reproduce behavior and verify commands.
-- Maintainer AI: updates docs, TODO, findings, and handoff.
-- Owner: sets direction, priority, risk tolerance, and final acceptance.
-
-One AI session may perform more than one role, but important changes should get a
-separate review pass.
-
-## SPEC Rules
-
-Keep three layers distinct:
-
-- Vision: desired future and product philosophy.
-- Active SPEC: implementation scope for now, with completion criteria.
-- Research/backlog: useful ideas not approved for current implementation.
-
-Do not let research notes become active work just because they are exciting.
-Do not let a SPEC claim implementation status without code/test evidence.
-Do not implement from an older SPEC section when a newer active SPEC, current
-code, or current test evidence supersedes it.
-
-## Version And Risk Rules
-
-If the project has stable/beta/rewrite/migration lines, define version lanes:
-
-- allowed changes per lane,
-- where agents should work,
-- how critical fixes sync across lanes,
-- what must not sync,
-- release-channel and rollback rules.
-
-If the project has high-risk domains, name them explicitly. Examples include
-auth/tenant isolation, database migrations, backup/restore, real-time callbacks,
-thread/lock ownership, platform boundaries, release assets, prompt contracts, or
-model/tool permissions. Each risk domain needs review checks, docs, tests, and
-handoff evidence.
-
-## Evidence Rules
-
-Every implementation handoff must include:
-
-- changed files,
-- behavior changed,
-- tests or commands run,
-- docs checked or updated,
-- documentation record audit summary,
-- implementation notes for spec-unstated decisions,
-- remaining risks,
-- what is not complete,
-- owner decision needed, if any.
-
-For production-readiness claims, require deployment, migration, auth/security,
-backup/restore, monitoring, and rollback evidence as applicable.
-
-For product, hardware, compatibility, packaging, remote tester, external lab, or
-release claims that need evidence stronger than local software tests, route
-requirements through the product evidence templates. Keep evidence status,
-packet state, and owner acceptance separate; do not upgrade claims because a
-local test passed or a remote bundle arrived.
-
-## Pain-To-Rule Extraction
-
-When the owner references a previous project, convert pain into reusable rules.
-
-Examples:
-
-- "AI sessions forgot context" -> require `AGENTS.md` and `docs/INDEX.md`.
-- "Docs were scattered" -> require document classes and archive rules.
-- "AI said complete but bugs remained" -> require review findings and tests.
-- "Old plans misled new sessions" -> define source-of-truth order.
-- "Large refactors became hard to verify" -> require review-worthy units and cross-review.
-
-This is the heart of the workflow: past friction becomes future operating
-structure.
-
-## Bootstrap Output
-
-For a new project, produce a compact bootstrap rather than a huge master plan:
-
-1. product definition,
-2. first user and first use case,
-3. non-goals,
-4. risk list,
-5. required control files,
-6. first active SPEC slice, work packet, and review-worthy development units,
-7. validation commands,
-8. review loop.
-
-Use `references/starter-templates.md` for copyable prompts and file templates.
-Use `references/field-patterns.md` when translating previous-project lessons
-into operating rules.
-Use `references/implicit-rules.md` for Core 5 and Extended Rules checks.
+5. Is there release, production, migration, destructive action, real user data,
+   auth, money, security, rollback, or another owner-controlled risk?
+
+Select:
+
+- One-shot: zero yes; create no persistent files.
+- Mini: one or two yes from questions 1-3 only, with Q4/Q5 no.
+- Standard: Q4 yes, three yes total, persistent state, or a packet that only
+  inspects, documents, or tests a Q5 area.
+- Full: four or five yes, or a packet that changes, accepts, or executes a Q5
+  gate.
+
+Override rules beat raw counts. State the selected scale and why before creating
+files. Ask whether product, hardware, compatibility, package, remote tester,
+external lab, public, or release claims need evidence beyond local software
+tests; create optional evidence surfaces only for active claims.
+
+### 4. Select Tool And Install One Adapter
+
+Identify Codex, Claude Code, Cursor, Copilot Chat, or Generic. If ambiguous, ask
+which file-editing tool is active. Claude Code means the local coding tool, not
+Claude.ai browser chat.
+
+For a source checkout, prefer the repository's installer. For no-clone setup:
+
+1. Read the canonical `install-sources.json`.
+2. Read the matching route in `docs/no-clone-quick-install.md`.
+3. Use the exact revision, path, target, and SHA-256 from the manifest.
+4. Show the source and hash result before saving.
+5. Fail closed on fetch or hash mismatch.
+6. Offer retry, pasted source, terminal installer, or manual clone/download;
+   never invent an adapter from memory.
+
+Install exactly one active adapter. One-shot installs none. Mini installs only
+the matching Mini instruction file. Standard/Full installs the matching
+full adapter before creating project control files.
+
+Do not overwrite an existing file without showing the proposed difference.
+Use force/replace only with owner authorization and preserve rollback behavior.
+
+### 5. Bootstrap The Progressive Control Plane
+
+For Standard or Full, create the files defined by
+[references/starter-templates.md](references/starter-templates.md). The fixed
+startup path is:
+
+1. tool adapter;
+2. `sdad-state.yaml`;
+3. `docs/INDEX.md`;
+4. current source/tests/runtime state;
+5. only documents or policy/playbook headings routed for the active packet.
+
+Do not make the full rulebook, archives, old handoffs, or optional evidence
+files mandatory startup reads.
+
+Keep roles singular:
+
+- adapter: always-loaded safety and execution kernel;
+- `sdad-state.yaml`: current scale, intensity, autonomy, packet, gates, checks,
+  and routed docs;
+- `docs/INDEX.md`: trigger-to-file routing only;
+- operating rules: durable policy loaded by heading;
+- playbooks: procedures loaded on demand;
+- SPEC/TODO/findings/notes: current authoritative work state;
+- save-state/handoff: continuity only;
+- evidence/claim files: created only for an active claim.
+
+If required files already exist, inspect and merge. Do not silently replace
+project-specific paths, commands, decisions, or constraints.
+
+### 6. Bind The First Work Packet
+
+Capture:
+
+- owner outcome and user pain;
+- smallest useful behavior;
+- active SPEC slice and acceptance criteria;
+- non-goals and do-not-touch areas;
+- current repository evidence;
+- review-worthy development units;
+- validation commands and the claims they support;
+- owner-controlled gates and stop conditions;
+- next owner checkpoint.
+
+Write current routing values to `sdad-state.yaml`. Keep `routed_docs` limited
+to files that can affect the packet. Use the current source and tests before
+implementing from a plan.
+
+### 7. Choose Autonomy And Intensity
+
+Use Level 1 for Mini and Level 2 Work Packet Autonomy for normal Standard/Full
+implementation. Use Level 4 owner gates for release, migration, destructive
+actions, data/auth/money/security decisions, rollback, and production claims.
+
+Use Low intensity for small docs/index/helper edits, Medium for normal
+implementation and review, and High only when the packet changes behavior,
+policy, boundary, evidence claim, or a hard-to-reverse owner tradeoff. A Q5
+project does not make every packet High.
+
+Proceed through review-worthy units without micro-approval. Stop only for the
+conditions in the runtime contract.
+
+### 8. Execute Or Route
+
+For review-only work, return prioritized findings with file/line evidence,
+impact, and validation limits.
+
+For implementation, use a failing test or check first when the behavior is
+testable, make the smallest coherent change, run focused checks, then run the
+full relevant validation surface. Keep docs and current control state aligned.
+
+For reference-derived work, create a source behavior to implemented behavior to
+evidence map and label gaps. For product/hardware/package/remote/release claims,
+use the optional evidence files named by the active route.
+
+Record spec-unstated durable implementation judgments in
+`docs/implementation-notes.md`. Use an ADR only for a hard-to-reverse,
+surprising tradeoff. Do not record raw internal reasoning.
+
+### 9. Finish At The Right Boundary
+
+Call work evidence-ready only when scoped implementation, relevant checks, docs,
+and residual risk are shown. Keep owner-accepted, hardware-verified,
+release-candidate, and production-ready states separate.
+
+Return a compact checkpoint:
+
+- scale, intensity, autonomy, and packet;
+- changed files and behavior;
+- checks run and what they prove;
+- docs/control state changed or checked;
+- open findings and unverified behavior;
+- remaining risk and owner decisions;
+- acceptance state and next step.
+
+Update save-state or create a handoff only when the session pauses, changes
+hands, remains blocked/partial/unverified, owner direction changes, or context
+would be expensive to reconstruct. Link existing artifacts rather than copying
+long transcripts.
+
+## Existing-Project Rules
+
+- Do not force SDAD onto a project that is better served by One-shot or Mini.
+- Do not create optional files without an active job.
+- Do not treat archived plans, product notes, external references, handoffs, or
+  chat memory as current implementation authority.
+- Do not let a lower evidence tier support a stronger claim.
+- Do not use higher autonomy to bypass owner gates.
+- Do not assume commit authorizes push, release, deployment, migration, or an
+  external message.
+- Do not hide partial, degraded, skipped, simulated, or unverified behavior.
+- Do not claim completion while current control state is stale.
+
+## Sensitive Data Boundary
+
+Sensitive data is an authorization boundary, not a size threshold. Use
+metadata-only inspection by default. Do not read or expose credentials, keys,
+tokens, cookies, `.env` contents, raw customer records, or private corpora
+unless the task requires it and owner policy plus tool policy permit it. Stop
+before reading when authorization is unclear.
 
 ## Guardrails
 
-- Keep the owner in control of scope and acceptance.
-- Keep AI output auditable.
-- Keep active docs smaller and clearer than archives.
-- Keep future ideas out of the active implementation path.
-- Make obvious but consequential rules explicit.
-- Prefer a boring verified review-worthy unit over an impressive unverified
-  expansion.
-- Use Korean for owner-facing explanation when helpful; keep filenames and
-  machine-facing identifiers stable and ASCII.
+- Use evidence before questions; ask only the next blocking owner question.
+- Use bounded reads for large or broad inputs.
+- Prefer reversible local changes and preserve dirty working trees.
+- Keep adapters self-contained; do not introduce runtime includes that their
+  host tool will not load.
+- Keep no-clone sources commit-pinned and hash-verified.
+- Keep the fixed startup control plane inside repository line/character budgets.
+- Validate links, templates, skill metadata, installers, and tests before
+  declaring the bootstrap evidence-ready.

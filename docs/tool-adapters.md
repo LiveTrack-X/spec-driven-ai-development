@@ -6,10 +6,9 @@ Scope: How to use SPEC-Driven AI Development across AI coding tools
 This repository is tool-neutral. Codex skills are one delivery format, not the
 method itself. Use the adapter that matches the AI coding environment.
 
-Each adapter carries the same source-of-truth, evidence, context-stability,
-natural-language intent routing, work-packet autonomy, clarification-checkpoint,
-implementation discipline, implementation-notes, sparse ADR, handoff, and
-`save-state.md` update trigger rules.
+Each adapter is a self-contained rendering of the same compact runtime kernel.
+It routes through `sdad-state.yaml` and `docs/INDEX.md`, then loads detailed
+policy or playbooks on demand.
 
 ## Supported Adapters
 
@@ -51,7 +50,7 @@ is used.
 
 Each adapter keeps only the high-signal operating rules:
 
-- mandatory start-loop route,
+- progressive state -> INDEX -> source/tests -> on-demand route,
 - context-stability and bounded-read guard before first-read files,
 - source-of-truth order,
 - current-over-historical SPEC precedence,
@@ -74,6 +73,19 @@ Each adapter keeps only the high-signal operating rules:
 
 Longer explanations stay in this repository's docs and templates.
 
+`templates/project-control-files/AGENTS.md` is the canonical runtime kernel.
+Regenerate all self-contained adapters with:
+
+```bash
+python scripts/render_agent_surfaces.py --write
+```
+
+Check for drift without writing with:
+
+```bash
+python scripts/render_agent_surfaces.py --check
+```
+
 Adapters are guidance, not enforcement. If a behavior must always happen or
 must never happen, route it to an enforced surface such as CI, required tests,
 validators, hooks, permissions, deny rules, branch protection, release gates, or
@@ -90,9 +102,9 @@ or reviewed project memory.
 ## Tool Notes
 
 - Claude Code uses project `CLAUDE.md` memory files. See Anthropic's memory docs:
-  <https://docs.anthropic.com/en/docs/claude-code/memory>
+  <https://code.claude.com/docs/en/memory>
 - Cursor project rules live under `.cursor/rules` as `.mdc` files. See Cursor's
-  rules docs: <https://docs.cursor.com/context/rules>
+  rules docs: <https://cursor.com/docs/rules>
 - GitHub Copilot repository instructions use `.github/copilot-instructions.md`.
   See GitHub's docs: <https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions>
 

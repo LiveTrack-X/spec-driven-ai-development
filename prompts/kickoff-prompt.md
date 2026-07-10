@@ -27,23 +27,57 @@ proceed. If the combination changes scope, risk, claim level, owner gate, or
 durable-doc requirements, ask one blocking clarification question with your
 recommended default.
 
+## Scale And Tool Gate
+
+Before creating files, identify the active AI tool and ask:
+
+1. Will this take more than one AI session?
+2. Will the owner return to this project later?
+3. Does done need evidence beyond "AI said so"?
+4. Will multiple AI tools or reviewers be involved?
+5. Is there release, migration, real user data, auth, money, security, rollback,
+   destructive action, or production risk?
+
+Choose the smallest safe scale:
+
+- 0 yes: One-shot prompt. Create no SDAD control files by default.
+- 1-2 yes from questions 1-3 only, with Q4=no and Q5=no: Mini SDAD. Create one
+  tool-specific instruction file only.
+- Q4=yes or 3 yes total: Standard SDAD.
+- Q5=yes, but the packet only inspects, documents, or tests the risk area:
+  Standard SDAD minimum.
+- Q5=yes and the packet changes, accepts, or executes the gate: Full SDAD.
+- 4-5 yes: Full SDAD.
+
+Override rules beat raw yes-counts. When uncertain, choose the smaller scale
+only when no Q5 gate is active. Select exactly one active adapter: Codex `AGENTS.md`, Claude
+Code `CLAUDE.md`, Cursor `.cursor/rules/mini-sdad.mdc` for Mini or
+`.cursor/rules/spec-driven-ai-development.mdc` for Standard/Full, GitHub Copilot
+`.github/copilot-instructions.md`, or generic
+`AI-SESSION-INSTRUCTIONS.md`. Multiple adapters are allowed only when the
+repository intentionally uses multiple tools.
+
+## Sensitive Data Gate
+
+Sensitive data is an authorization boundary, not a size threshold. Use
+metadata-only inspection by default. Do not read, copy, transmit, summarize, or
+paste `.env` files, credentials, private keys, tokens, cookies, raw customer
+records, or private corpora into AI context unless the task requires it and
+owner policy plus tool policy explicitly permit it. Prefer redacted samples;
+if authorization is unclear, stop before reading the content and ask.
+
 ## Start By Clarifying
 
-1. What previous project pain or product need motivates this project?
-2. Who is the first user?
-3. What is the smallest useful version?
-4. What must not happen?
-5. Which decisions must remain owner-controlled?
-6. What autonomy level should this project use?
-7. What is the first work packet?
-8. Which review-worthy units or related small tasks should be batched into that packet?
-9. What evidence proves the first packet is evidence-ready?
-10. Does this project need documentation-governance controls for docs/SPEC/backlog governance?
-11. Does this project need release-governance controls for version lanes, migration, release gates, or high-risk runtime rules?
-12. If the SPEC contains past-to-present history, which sections are current active instructions and which are historical rationale?
-13. Which obvious-but-unwritten rules should become explicit project rules?
-14. Does this project need ADRs for architecture, policy, release, security, or owner tradeoff decisions?
-15. Are there overloaded domain terms that need a small glossary before implementation?
+Ask only for missing information that current repository evidence cannot answer:
+
+1. owner outcome, first user, and smallest useful behavior;
+2. non-goals and what must not happen;
+3. first work packet and review-worthy units;
+4. evidence required for evidence-ready;
+5. owner-controlled decisions and Q5 gates;
+6. active SPEC or historical material that must be promoted;
+7. spec-unstated decisions that need notes or a sparse ADR;
+8. overloaded terms that block implementation or review.
 
 If enough context is already available, proceed with reasonable assumptions and
 mark them clearly. If the repository can answer a clarification question, inspect
@@ -51,15 +85,29 @@ the repository before asking me.
 
 ## Required Bootstrap
 
-Create or update:
+Create only what the selected scale requires:
 
-- `AGENTS.md`
-- `docs/INDEX.md`
-- `docs/Repository-Operating-Rules.md`
-- `SPEC/SPEC-COMPLETE.md`
-- `docs/TODO-Open-Items.md`
-- `review-findings.md`
-- `README.md`
+- One-shot: no persistent SDAD files unless the owner requests one.
+- Mini: one tool-specific instruction file based on
+  `templates/mini-sdad/MINI-SDAD.md`; Cursor uses
+  `templates/mini-sdad/cursor-mini-sdad.mdc` saved as
+  `.cursor/rules/mini-sdad.mdc`.
+- Standard or Full: the one selected adapter plus `docs/INDEX.md`,
+  `sdad-state.yaml`, `docs/Repository-Operating-Rules.md`, the on-demand
+  playbooks under `docs/sdad/playbooks/`, `SPEC/SPEC-COMPLETE.md`,
+  `docs/TODO-Open-Items.md`, `review-findings.md`,
+  and `docs/implementation-notes.md`.
+
+Create or update `README.md` only when it is missing or the current packet
+changes user-visible setup, usage, behavior, support, or release claims.
+
+Do not create Codex `AGENTS.md` for a different active tool. Do not create the
+Standard/Full control-file set for One-shot or Mini work.
+
+For Standard/Full, keep the fixed read path compact: adapter ->
+`sdad-state.yaml` -> `docs/INDEX.md` -> current source/tests -> only the routed
+docs or policy/playbook headings. Do not load the full rulebook, archives, old
+handoffs, or optional evidence files by default.
 
 ## Operating Rules
 

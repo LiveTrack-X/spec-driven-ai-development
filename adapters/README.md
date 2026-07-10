@@ -2,7 +2,9 @@
 
 These adapters let SPEC-Driven AI Development run in different AI coding tools.
 
-Use one or more:
+Install the one adapter that matches the active tool. Install multiple adapters
+only when the repository intentionally uses multiple tools and will keep their
+shared contract synchronized:
 
 - `codex/AGENTS.md`
 - `claude-code/CLAUDE.md`
@@ -13,8 +15,13 @@ Use one or more:
 Before installing, you can verify this repository with:
 
 ```bash
+python scripts/render_agent_surfaces.py --check
 python scripts/validate_repo.py
+python -m unittest discover -s tests -v
+git diff --check
 ```
+
+Repository validation requires Python 3.10 or newer.
 
 Then copy an adapter manually or use an installer.
 

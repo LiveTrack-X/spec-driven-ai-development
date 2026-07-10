@@ -42,7 +42,7 @@ Use this order before evidence-ready, owner checkpoint, handoff, or session end:
 
 1. Classify the change: behavior, config, docs-only, review finding, release,
    evidence, owner decision, or handoff.
-2. Check `docs/INDEX.md` for the minimum documentation update set.
+2. Check `sdad-state.yaml` and `docs/INDEX.md` for the current routed surfaces.
 3. Choose the control-file budget: `Minimal`, `Normal`, or `Heavy`.
 4. Update only active docs whose job changed; archive long history, logs, and
    raw evidence instead of growing active files.
@@ -56,7 +56,7 @@ Use this order before evidence-ready, owner checkpoint, handoff, or session end:
 Before claiming evidence-ready, verify the documentation record answers:
 
 - Which changed files or claims implied a doc check?
-- Which minimum update-set row in `docs/INDEX.md` applied?
+- Which change type and routed documentation surfaces applied?
 - Which docs changed?
 - Which docs were checked but did not need content changes, and why?
 - Are SPEC, TODO, review findings, implementation notes, save-state, handoff,
@@ -179,11 +179,12 @@ Common single-file bloat risks:
   logs, screenshots, imports, and long traces to timestamped evidence archives.
 - `Repository-Operating-Rules.md`: keep durable behavior-changing rules active;
   move procedures to playbooks/skills and guarantees to validators or CI.
-- `docs/INDEX.md`: keep routes and update sets active; move explanations to
-  user docs or field notes.
+- `docs/INDEX.md`: keep routes only; move update procedures and explanations to
+  a playbook, user doc, or field note.
 
-Use the Single-File Bloat Risk Routes table in `docs/INDEX.md` when deciding
-where a split record should live.
+Use the record-routing and bloat guidance in this document or the installed
+`docs/sdad/playbooks/documentation-and-handoff.md` when deciding where a split
+record should live.
 
 If repository-packing, graphing, embedding, or indexing tools are used, keep
 their ignore files aligned with this rule so generated, private, log, cache,
@@ -265,8 +266,8 @@ If this maintenance cost is too high, choose a smaller scale:
 - One-shot prompt: no persistent files.
 - Mini SDAD: one instruction file and a short handoff.
 - Standard SDAD: core control files kept current at packet or handoff boundaries.
-- Full SDAD: core files plus review, ADRs, release/risk gates, and stronger
-  documentation consistency.
+- Full SDAD: core files plus review, ADRs only for hard-to-reverse surprising
+  tradeoffs, active release/risk gates, and stronger documentation consistency.
 
 The right workflow is the largest one you can keep current, not the largest one
 you can generate once.

@@ -18,6 +18,10 @@ Always use the smallest loop that preserves evidence and owner gates.
 
 ## Recover Modes
 
+For installed Standard/Full projects, begin with `sdad-state.yaml` and
+`docs/INDEX.md`, then load only the Recover mode's routed files. The adapter is
+already always-loaded; the full rulebook and optional evidence set are not.
+
 ### Recover Lite
 
 Use for small, local changes:

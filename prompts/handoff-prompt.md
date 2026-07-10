@@ -36,7 +36,7 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - docs checked or updated,
 - documentation record audit:
   - changed files or claims that implied a doc check,
-  - minimum update-set row used from `docs/INDEX.md`,
+  - change type and routed documentation surfaces used,
   - docs changed,
   - docs checked with no update needed and why,
   - stale docs found or confirmed absent,
@@ -84,8 +84,14 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
 - Do not duplicate long SPECs, ADRs, TODOs, review findings, implementation
   notes, logs, diffs, or evidence files in the handoff. Link or name the
   existing artifact and summarize only what a fresh session needs next.
+- Sensitive data is an authorization boundary, not a size threshold. Use
+  metadata-only inspection by default. Keep `.env` files, credentials, keys,
+  tokens, cookies, raw customer records, and private corpora out of the handoff
+  unless the task requires them and owner policy plus tool policy explicitly
+  permit it. Prefer redacted samples; if authorization is unclear, stop before
+  reading.
 - Do not make a fresh session read large state files, archives, logs, generated
-  artifacts, private data, or old handoffs in full. Provide bounded-read
+  artifacts, authorized private data, or old handoffs in full. Provide bounded-read
   instructions instead.
 - Use the default soft triggers unless the project defines stricter limits:
   bounded reads above 50 KB or 500 lines, context-stability check above 200 KB
@@ -93,9 +99,9 @@ docs/sdad/handoffs/YYYY-MM-DD-topic.md
   historical reconstruction.
 - When asked to restart, summarize, archive, or continue later, offer to create
   or update a handoff first.
-- Fresh sessions must use the handoff to identify the active route, then load
-  `AGENTS.md`, `docs/INDEX.md`, relevant SPEC, and current repository state
-  before continuing.
+- Fresh sessions load the adapter, `sdad-state.yaml`, and `docs/INDEX.md`, then
+  use the handoff only when the active route names it. Inspect current source,
+  tests, and relevant SPEC before continuing.
 - Handoff-only or save-state-only decisions are continuity hints until promoted
   into active SPEC, ADR, claim registry, TODO, or review findings.
 - Do not include speculative abstractions, drive-by refactors, or unrelated

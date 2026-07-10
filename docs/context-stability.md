@@ -38,8 +38,22 @@ Use bounded reads:
   data, local databases, dependency directories, or session transcripts,
 - quote or paste only the specific lines needed for the current decision.
 
-Do not treat a mandatory start loop as permission to dump every routed file into
+Do not treat a routed start path as permission to dump every linked file into
 the AI chat context.
+
+## Sensitive Data Is An Authorization Boundary
+
+Bounded does not mean authorized. A ten-line `.env` excerpt or one raw customer
+record can still expose credentials or private data. Use metadata-only
+inspection by default: filenames, schemas, field names, counts, sizes, and
+hashes.
+
+Do not read, copy, transmit, summarize, or paste `.env` files, credentials,
+private keys, tokens, cookies, raw customer records, or private corpora into an
+AI context unless the task requires it and both owner policy and tool policy
+explicitly permit it. Prefer redacted synthetic samples and keep sensitive
+material out of prompts, logs, TODOs, findings, handoffs, and generated
+artifacts. If authorization is unclear, stop before content access and ask.
 
 ## Soft Size Triggers
 

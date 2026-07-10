@@ -1,23 +1,26 @@
 # Minimal Example Docs Index
 
 Status: Active
+Purpose: routing only
 
-## Start Here
+## Working Route
 
-- `docs/Repository-Operating-Rules.md`
-- `SPEC/SPEC-COMPLETE.md`
-- `docs/TODO-Open-Items.md`
-- `review-findings.md`
+| Trigger | Read now | On demand |
+| --- | --- | --- |
+| Any packet | `../sdad-state.yaml`, current source/tests | current handoff if present |
+| Implement/fix | `../SPEC/SPEC-COMPLETE.md`, `TODO-Open-Items.md`, `../review-findings.md` | rulebook heading |
+| Policy/risk change | active SPEC | `Repository-Operating-Rules.md` |
+| Handoff | current state, TODO, findings | save-state/handoff if present |
 
-Current active SPEC sections override older historical sections.
+## Write Route
 
-## Minimum Documentation Update Sets
+- behavior/scope/acceptance -> active SPEC;
+- current work -> TODO;
+- defect/risk/block -> review findings;
+- durable policy -> operating rules;
+- continuity only -> state or handoff.
 
-Use this table before handoff.
+## Source Of Truth
 
-| Change type | Minimum docs to check or update |
-| --- | --- |
-| User-facing behavior or workflow | `README.md`, relevant user docs, `SPEC/SPEC-COMPLETE.md` |
-| Configuration, startup, deployment, or CLI | `README.md`, relevant runtime docs, `SPEC/SPEC-COMPLETE.md` |
-| Roadmap, implementation status, placeholder, or gap closure | `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md` if review-related |
-| Stable/next version lane, migration, release, or rollback | release docs if present, `docs/Repository-Operating-Rules.md`, relevant SPEC |
+Current source/tests > active docs > canonical and active SPEC > continuity >
+history > chat confidence. Owner decisions control scope, risk, and acceptance.

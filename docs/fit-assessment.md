@@ -17,7 +17,8 @@ Use this quick gate before the full assessment:
 2. Will you come back to this project later?
 3. Does "done" need evidence beyond "AI said so"?
 4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, user data, auth, money, or production risk?
+5. Is there release, migration, real user data, auth, money, security, rollback,
+   destructive action, or production risk?
 
 Then check the product evidence flag:
 
@@ -31,18 +32,18 @@ Override rules beat raw yes-counts:
 | 0 yes | Use a one-shot prompt. Do not install SDAD files. |
 | 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | Use [Mini SDAD](mini-sdad.md). |
 | Q4=yes or 3 yes total | Use Standard SDAD with core control files. |
-| Q5=yes | Use Standard SDAD minimum, even if it is the only yes. |
-| Q5=yes with production-facing, destructive, migration, real user data, auth, money, release, or rollback risk | Use Full SDAD with review, ADRs, and risk gates. |
-| 4-5 yes | Use Full SDAD with review, ADRs, and risk gates. |
+| Q5=yes, but the packet only inspects, documents, or tests the risk area | Use Standard SDAD minimum, even if it is the only yes. |
+| Q5=yes and the packet changes, accepts, or executes the gate | Use Full SDAD with review, conditional ADRs, and risk gates. |
+| 4-5 yes | Use Full SDAD with review, conditional ADRs, and active risk gates. |
 
-When unsure, choose the smaller scale only if no Q5 risk exists. Escalate when
-repeated pain, context loss, risk, or multiple sessions appear.
+When unsure, choose the smaller scale only if no Q5 gate is active. Escalate
+when repeated pain, context loss, risk, or multiple sessions appear.
 
 A yes to the product evidence flag is not automatically Full SDAD, but it does
 trigger the relevant product evidence templates. Use Standard SDAD minimum when
-those templates must persist across sessions. Q5 release, production, user data,
-auth, money, migration, destructive-action, or rollback risk still controls
-Full SDAD gates.
+those templates must persist across sessions. Changing, accepting, or executing
+a Q5 release, production, user-data, auth, money, migration,
+destructive-action, or rollback gate still requires Full SDAD.
 
 Maintenance cost matters: choose Standard or Full SDAD only when you can keep
 `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md`, and
@@ -137,7 +138,7 @@ output should name which product evidence templates are needed and why.
 | Score | Fit | Recommendation |
 | --- | --- | --- |
 | 0-8 | Low | Use a one-shot prompt or [Mini SDAD](mini-sdad.md). Do not install the full workflow unless the project grows. |
-| 9-18 | Medium | Use core control files: `AGENTS.md`, `docs/INDEX.md`, SPEC, TODO, review findings, and implementation notes when SPEC gaps affect implementation. |
+| 9-18 | Medium | Use the compact core: one adapter, `sdad-state.yaml`, routing-only `docs/INDEX.md`, SPEC, TODO, findings, and implementation notes when SPEC gaps affect implementation. |
 | 19-25 | High | Use the full SDAD workflow with cross-review, source-of-truth rules, and documentation consistency checks. |
 | 26-34 | Very high | Use full SDAD plus ADRs, release gates, anti-pattern review, fit reassessment, product evidence templates when needed, and tool adapters. |
 

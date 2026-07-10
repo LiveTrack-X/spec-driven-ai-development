@@ -103,8 +103,15 @@ Mini SDAD creates one instruction file for the AI tool.
 Use the same content from:
 
 ```text
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/templates/mini-sdad/MINI-SDAD.md
 ```
+
+Expected SHA-256:
+`d922694f7568a5a9e8f5284d6101e99ce6a44bd78c66662589f4b8674cbc6c88`.
+
+That full 40-character commit SHA is the stable v2.1.0 baseline. Replace the
+revision with `main` only when you intentionally want changing, unpinned
+instructions.
 
 Save it as the right instruction file for your tool:
 
@@ -116,6 +123,18 @@ Save it as the right instruction file for your tool:
 | GitHub Copilot | `.github/copilot-instructions.md` |
 | Generic AI tool | `AI-SESSION-INSTRUCTIONS.md` |
 
+Cursor requires MDC frontmatter. When installing from a clone, copy
+`templates/mini-sdad/cursor-mini-sdad.mdc`. For a no-clone install, prepend
+this block to the canonical Mini SDAD body:
+
+```yaml
+---
+description: Mini SDAD rules for small, evidence-based Cursor work units.
+globs:
+alwaysApply: true
+---
+```
+
 ## Mini SDAD Prompt
 
 Paste this into your AI coding tool:
@@ -124,7 +143,8 @@ Paste this into your AI coding tool:
 Use Mini SDAD for this project.
 
 Fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/templates/mini-sdad/MINI-SDAD.md
+Expected SHA-256: d922694f7568a5a9e8f5284d6101e99ce6a44bd78c66662589f4b8674cbc6c88
 
 Before fetching, state that you are installing Mini SDAD and explain why this
 scale was chosen.
@@ -136,10 +156,13 @@ Save it as the correct instruction file for this tool:
 - Copilot Chat -> ./.github/copilot-instructions.md
 - Generic AI agent -> ./AI-SESSION-INSTRUCTIONS.md
 
+For Cursor, prepend the MDC frontmatter shown above before saving.
+
 Before saving:
 1. show me the source URL,
 2. show me the first 10 lines of the fetched file,
-3. confirm the target path.
+3. compute SHA-256 and require an exact match,
+4. confirm the target path.
 
 If you cannot fetch the template, stop and say so. Do not invent the template
 from memory. Offer deterministic fallback options: retry with network access,
@@ -170,10 +193,12 @@ Stay Mini by default.
 Escalate only when evidence shows the project needs more structure:
 
 - repeated context loss,
-- TODOs or review findings that need tracking,
+- three or more persistence/evidence signals, or durable TODOs/review findings
+  that no longer fit the one-file control surface,
 - multiple AI tools or sessions,
 - conflicting docs or old plans,
-- release, migration, user data, auth, money, or production risk.
+- release, production, migration, destructive action, real user data, auth,
+  money, security, rollback, or another owner-controlled gate.
 
 When escalating, move to [getting-started.md](getting-started.md) or
 [no-clone-quick-install.md](no-clone-quick-install.md).

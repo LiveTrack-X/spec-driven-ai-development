@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "label": "v2.1.0 stable baseline",
+  "revision": "b85ff447f216492aedb2ced9a6c3098d4d566ef5",
+  "capabilities": {
+    "progressive_control_plane": false
+  },
+  "sources": {
+    "mini": {
+      "path": "templates/mini-sdad/MINI-SDAD.md",
+      "sha256": "d922694f7568a5a9e8f5284d6101e99ce6a44bd78c66662589f4b8674cbc6c88"
+    },
+    "codex": {
+      "path": "adapters/codex/AGENTS.md",
+      "target": "AGENTS.md",
+      "sha256": "3835d1b94d99b6c14687634a527fc83ce5650e1b848ec391176b35ca7e7a54aa"
+    },
+    "claude-code": {
+      "path": "adapters/claude-code/CLAUDE.md",
+      "target": "CLAUDE.md",
+      "sha256": "2bf5fcc8a8b53889c6007c748acc21fa9c2c637a3464a6936d23a5dce6b65873"
+    },
+    "cursor": {
+      "path": "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
+      "target": ".cursor/rules/spec-driven-ai-development.mdc",
+      "sha256": "fef37a7c6ce445ed936d79e4283ef72c6bc49e2043361e59e02e23b27f1e5036"
+    },
+    "github-copilot": {
+      "path": "adapters/github-copilot/.github/copilot-instructions.md",
+      "target": ".github/copilot-instructions.md",
+      "sha256": "1b0023c2b3c490f71314be5b5133010f1a9de37991e59edf5a594ccc455eadcb"
+    },
+    "generic": {
+      "path": "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
+      "target": "AI-SESSION-INSTRUCTIONS.md",
+      "sha256": "12b5074d8dfed7c24dbc7ce7e8a6f3469077903ab81370c72f97e6be09b365a9"
+    }
+  }
+}

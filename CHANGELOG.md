@@ -2,7 +2,71 @@
 
 ## Unreleased
 
-Nothing yet.
+- Reworked Standard/Full startup into an agent-first progressive control plane:
+  a self-contained adapter, compact `sdad-state.yaml`, routing-only
+  `docs/INDEX.md`, current source/tests, and one on-demand policy or playbook
+  path instead of mandatory full-rulebook reads.
+- Added enforced line and character budgets for always-loaded agent surfaces,
+  active-state schema and route validation, one canonical README start path,
+  and focused regression tests for context-cost drift.
+- Hardened validation against malformed state enums/collection shapes, skipped
+  source/tests routing, empty or import-broken test modules, and unpinned
+  actions hidden in named workflow steps.
+- Reduced the project agent template from roughly 380 to 106 lines, the INDEX
+  template from 218 to 75 lines, and the bootstrap skill from roughly 790 to
+  251 lines while preserving scale, autonomy, sensitive-data, owner-gate,
+  evidence, and completion contracts.
+- Standardized the active-state intensity vocabulary on Low/Medium/High and
+  made the Standard/Full boundary explicit: inspecting, documenting, or testing
+  a Q5 area is Standard minimum; changing, accepting, or executing its gate is
+  Full with owner control.
+- Split procedural operating guidance into on-demand context/data, work-packet,
+  evidence/risk, documentation/handoff, and advanced-extension playbooks; kept
+  the repository rulebook policy-only.
+- Added `scripts/render_agent_surfaces.py` so five self-contained tool adapters
+  are rendered deterministically from one canonical runtime kernel and checked
+  for drift without changing the single-file installer contract.
+- Delegated raw install revision/path/hash details from the README to
+  `install-sources.json` and the no-clone guide, removing a large duplicated
+  bootstrap prompt surface while retaining fail-closed verification.
+- Added a security policy for reporting unsafe installer, adapter, raw fetch,
+  or security-boundary guidance issues.
+- Added known limitations and adoption notes covering validator
+  maintainability, installer smoke-test scope, commit-pinned raw URLs, public
+  collaboration signals, and example depth.
+- Added installer smoke tests for Bash and PowerShell adapter installers,
+  including all adapter routes, overwrite refusal, forced replacement,
+  linked-path escape, hard-link isolation, and Windows read-only targets.
+- Made Codex skill installation non-destructive by default and staged forced
+  replacements before swapping the existing installation.
+- Pinned no-clone downloads to an immutable commit, added SHA-256 verification,
+  rejected linked destination paths, and moved verified temporary downloads
+  into place atomically.
+- Added `install-sources.json` as the canonical revision/path/hash contract and
+  made validation check every entry against its pinned Git blob and
+  user-facing install surfaces.
+- Added a machine-checked no-clone runtime capability so the pinned v2.1.0
+  baseline cannot be mistaken for the Unreleased progressive control plane.
+- Added a Cursor-specific Mini SDAD template with always-applied MDC metadata.
+- Added CI coverage on Ubuntu and Windows with Python 3.10 and 3.12, pinned
+  action commits, read-only permissions, syntax checks, and Dependabot updates.
+- Added Markdown/MDC fragment validation, titled and balanced-parenthesis link
+  support, actual unittest discovery, structural Action pin validation, and a
+  local-only CSP contract to the repository validator.
+- Added a sensitive-data authorization boundary to installed adapters,
+  templates, kickoff/review/handoff prompts, and no-clone entry paths, separate
+  from context-size limits.
+- Added a scale/tool gate to the kickoff prompt so One-shot and Mini projects do
+  not receive the Standard/Full control-file set.
+- Documented `tests/` as the single repository test directory.
+- Replaced the version-bound README infographic with an editable, versionless
+  progressive-control-plane visual and aligned Mermaid and Archify diagrams to
+  the state -> INDEX -> source/tests -> one-routed-path contract.
+- Made project control templates tool-neutral, allowed every documented
+  autonomy level from 0 through 4 in active state, and corrected Mini
+  escalation so normal one- or two-signal Mini projects do not self-promote.
+- Tightened release contracts around manifest metadata, local-only CSP source
+  directives, active-packet state, and diagram source/render parity.
 
 ## 2.1.0 - 2026-07-09
 

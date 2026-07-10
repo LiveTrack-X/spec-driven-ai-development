@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024" role="img" aria-labelledby="title desc">
+  <title id="title">SPEC-Driven AI Development control loop</title>
+  <desc id="desc">A versionless overview of the progressive read route, workflow scales, evidence loop, and Level 4 release gate.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#020817"/>
+      <stop offset="1" stop-color="#071b2b"/>
+    </linearGradient>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#08233a"/>
+      <stop offset="1" stop-color="#0b1d34"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#38bdf8"/>
+    </marker>
+    <marker id="green-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#34d399"/>
+    </marker>
+    <style>
+      .title { font: 700 58px "Segoe UI", Arial, sans-serif; fill: #f8fafc; letter-spacing: -1px; }
+      .subtitle { font: 400 25px "Segoe UI", Arial, sans-serif; fill: #93c5fd; }
+      .panel-title { font: 700 24px "Segoe UI", Arial, sans-serif; fill: #e0f2fe; letter-spacing: .5px; }
+      .node-title { font: 700 20px "Segoe UI", Arial, sans-serif; fill: #f8fafc; }
+      .node-sub { font: 400 15px "Segoe UI", Arial, sans-serif; fill: #94a3b8; }
+      .small { font: 600 16px "Segoe UI", Arial, sans-serif; fill: #cbd5e1; }
+      .tiny { font: 400 14px "Segoe UI", Arial, sans-serif; fill: #94a3b8; }
+      .accent { fill: #38bdf8; }
+      .green { fill: #34d399; }
+      .rose { fill: #fb7185; }
+      .amber { fill: #fbbf24; }
+      .panel { fill: #071526; stroke: #1d4f70; stroke-width: 2; }
+      .node { fill: #0b2034; stroke: #38bdf8; stroke-width: 2; }
+      .node-green { fill: #09271f; stroke: #34d399; stroke-width: 2; }
+      .node-rose { fill: #2a111d; stroke: #fb7185; stroke-width: 2; }
+      .route { fill: none; stroke: #38bdf8; stroke-width: 3; marker-end: url(#arrow); }
+      .route-green { fill: none; stroke: #34d399; stroke-width: 3; marker-end: url(#green-arrow); }
+    </style>
+  </defs>
+
+  <rect width="1536" height="1024" fill="url(#bg)"/>
+  <path d="M0 160 H1536 M0 530 H1536 M512 530 V790 M1018 530 V790" stroke="#0f3855" stroke-width="1" opacity=".7"/>
+
+  <rect x="24" y="22" width="1488" height="126" rx="18" fill="url(#hero)" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="58" y="78" class="title">SPEC-Driven AI Development</text>
+  <text x="60" y="116" class="subtitle">A compact, owner-gated control layer for AI coding</text>
+  <text x="1472" y="65" text-anchor="end" class="small accent">CURRENT OVER HISTORICAL</text>
+  <text x="1472" y="99" text-anchor="end" class="small green">EVIDENCE OVER CONFIDENCE</text>
+  <text x="1472" y="131" text-anchor="end" class="small rose">OWNER DECISION OVER AI MOMENTUM</text>
+
+  <rect x="24" y="170" width="1488" height="334" rx="18" class="panel"/>
+  <text x="54" y="211" class="panel-title"><tspan class="accent">1</tspan>  FIXED READ ROUTE</text>
+  <text x="1482" y="211" text-anchor="end" class="tiny">Load the minimum context that can safely decide the next action.</text>
+
+  <g transform="translate(52 248)">
+    <rect width="230" height="118" rx="14" class="node"/>
+    <text x="115" y="48" text-anchor="middle" class="node-title">Tool adapter</text>
+    <text x="115" y="78" text-anchor="middle" class="node-sub">always-loaded kernel</text>
+  </g>
+  <path d="M282 307 H326" class="route"/>
+  <g transform="translate(328 248)">
+    <rect width="230" height="118" rx="14" class="node"/>
+    <text x="115" y="48" text-anchor="middle" class="node-title">sdad-state.yaml</text>
+    <text x="115" y="78" text-anchor="middle" class="node-sub">packet, gates, checks</text>
+  </g>
+  <path d="M558 307 H602" class="route"/>
+  <g transform="translate(604 248)">
+    <rect width="230" height="118" rx="14" class="node"/>
+    <text x="115" y="48" text-anchor="middle" class="node-title">docs/INDEX.md</text>
+    <text x="115" y="78" text-anchor="middle" class="node-sub">route only</text>
+  </g>
+  <path d="M834 307 H878" class="route"/>
+  <g transform="translate(880 248)">
+    <rect width="230" height="118" rx="14" class="node-green"/>
+    <text x="115" y="48" text-anchor="middle" class="node-title">Current source/tests</text>
+    <text x="115" y="78" text-anchor="middle" class="node-sub">repository truth</text>
+  </g>
+  <path d="M1110 307 H1154" class="route-green"/>
+  <g transform="translate(1156 248)">
+    <rect width="300" height="118" rx="14" class="node-green"/>
+    <text x="150" y="45" text-anchor="middle" class="node-title">One routed path</text>
+    <text x="150" y="75" text-anchor="middle" class="node-sub">policy, playbook, or current doc</text>
+  </g>
+  <rect x="52" y="397" width="1404" height="72" rx="12" fill="#06111f" stroke="#164e63"/>
+  <text x="78" y="427" class="small accent">Progressive disclosure</text>
+  <text x="78" y="454" class="tiny">Do not load the whole rulebook, archives, old handoffs, or optional evidence set by default.</text>
+  <text x="1428" y="441" text-anchor="end" class="small green">Small context. Current evidence. Explicit route.</text>
+
+  <rect x="24" y="530" width="472" height="252" rx="18" class="panel"/>
+  <text x="54" y="570" class="panel-title"><tspan class="accent">2</tspan>  CHOOSE THE SMALLEST SCALE</text>
+  <g transform="translate(52 596)">
+    <rect width="416" height="38" rx="8" fill="#081d30" stroke="#38bdf8"/>
+    <text x="18" y="25" class="small accent">One-shot</text><text x="394" y="25" text-anchor="end" class="tiny">disposable request</text>
+    <rect y="48" width="416" height="38" rx="8" fill="#081d30" stroke="#38bdf8"/>
+    <text x="18" y="73" class="small accent">Mini</text><text x="394" y="73" text-anchor="end" class="tiny">one small packet</text>
+    <rect y="96" width="416" height="38" rx="8" fill="#18152e" stroke="#a78bfa"/>
+    <text x="18" y="121" class="small" fill="#c4b5fd">Standard</text><text x="394" y="121" text-anchor="end" class="tiny">persistent or multi-tool work</text>
+    <rect y="144" width="416" height="54" rx="8" fill="#2a111d" stroke="#fb7185"/>
+    <text x="18" y="176" class="small rose">Full</text><text x="394" y="167" text-anchor="end" class="tiny">change, accept, or execute</text><text x="394" y="187" text-anchor="end" class="tiny">a release or risk gate</text>
+  </g>
+
+  <rect x="520" y="530" width="992" height="252" rx="18" class="panel"/>
+  <text x="550" y="570" class="panel-title"><tspan class="green">3</tspan>  EVIDENCE LOOP</text>
+  <g transform="translate(548 610)">
+    <g><rect width="116" height="76" rx="12" class="node"/><text x="58" y="33" text-anchor="middle" class="small">Need</text><text x="58" y="56" text-anchor="middle" class="tiny">or pain</text></g>
+    <path d="M116 38 H143" class="route"/>
+    <g transform="translate(145)"><rect width="116" height="76" rx="12" class="node"/><text x="58" y="45" text-anchor="middle" class="small">SPEC</text></g>
+    <path d="M261 38 H288" class="route"/>
+    <g transform="translate(290)"><rect width="116" height="76" rx="12" class="node"/><text x="58" y="33" text-anchor="middle" class="small">Work</text><text x="58" y="56" text-anchor="middle" class="tiny">packet</text></g>
+    <path d="M406 38 H433" class="route"/>
+    <g transform="translate(435)"><rect width="116" height="76" rx="12" class="node-green"/><text x="58" y="45" text-anchor="middle" class="small">Build</text></g>
+    <path d="M551 38 H578" class="route-green"/>
+    <g transform="translate(580)"><rect width="116" height="76" rx="12" class="node-green"/><text x="58" y="45" text-anchor="middle" class="small">Review</text></g>
+    <path d="M696 38 H723" class="route-green"/>
+    <g transform="translate(725)"><rect width="130" height="76" rx="12" class="node-rose"/><text x="65" y="33" text-anchor="middle" class="small">Evidence-</text><text x="65" y="56" text-anchor="middle" class="small">ready</text></g>
+    <path d="M855 38 H868" class="route"/>
+    <g transform="translate(870)"><rect width="100" height="76" rx="12" class="node-rose"/><text x="50" y="33" text-anchor="middle" class="small">Owner</text><text x="50" y="56" text-anchor="middle" class="tiny">checkpoint</text></g>
+  </g>
+  <text x="550" y="744" class="small green">AI-complete = evidence-ready</text>
+  <text x="1480" y="744" text-anchor="end" class="small rose">Done = verified + documented + owner-accepted</text>
+
+  <rect x="24" y="806" width="880" height="194" rx="18" class="panel"/>
+  <text x="54" y="846" class="panel-title"><tspan class="rose">4</tspan>  LEVEL 4 RELEASE GATE</text>
+  <rect x="52" y="870" width="260" height="92" rx="12" class="node"/>
+  <text x="182" y="905" text-anchor="middle" class="small">Inspect / document / test</text>
+  <text x="182" y="936" text-anchor="middle" class="node-sub">Standard minimum</text>
+  <rect x="334" y="870" width="260" height="92" rx="12" class="node-rose"/>
+  <text x="464" y="905" text-anchor="middle" class="small">Change / accept / execute</text>
+  <text x="464" y="936" text-anchor="middle" class="node-sub">Full + Level 4</text>
+  <path d="M594 916 H635" class="route"/>
+  <rect x="637" y="870" width="238" height="92" rx="12" class="node-green"/>
+  <text x="756" y="904" text-anchor="middle" class="small">Evidence-ready -> owner gate</text>
+  <text x="756" y="936" text-anchor="middle" class="node-sub">then push -> tag -> publish</text>
+
+  <rect x="928" y="806" width="584" height="194" rx="18" class="panel"/>
+  <text x="958" y="846" class="panel-title"><tspan class="amber">5</tspan>  CORE RULES</text>
+  <text x="958" y="886" class="small">01  Current beats historical</text>
+  <text x="958" y="918" class="small">02  Evidence beats confidence</text>
+  <text x="958" y="950" class="small">03  Active beats interesting</text>
+  <text x="1215" y="886" class="tiny">04  Owner decision beats AI momentum</text>
+  <text x="1215" y="918" class="tiny">05  Repeated pain becomes a rule</text>
+  <text x="1215" y="950" class="tiny accent">Compression first. Gates stay real.</text>
+</svg>

@@ -1,10 +1,21 @@
 # Minimal Example Agent Rules
 
-Read `docs/INDEX.md`, `docs/Repository-Operating-Rules.md`, `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, and `review-findings.md` before implementation work.
+Read progressively:
 
-Do not claim completion without code, tests, docs, and reproducible evidence.
-If a SPEC spans past-to-present history, current active sections override older sections.
-Do not rely on obvious-but-unwritten assumptions. Label partial, skipped, degraded, or unverified behavior.
-If the plan is fuzzy, inspect repository evidence first, then ask only the next blocking question with your recommended answer.
+1. `sdad-state.yaml` for the active packet, gates, checks, and routed docs.
+2. `docs/INDEX.md` for trigger-to-file routing.
+3. Current source/tests and only the routed files.
+4. The relevant heading in `docs/Repository-Operating-Rules.md` on demand.
 
-If this project grows stable/next versions or high-risk domains, define version lanes, bugfix sync rules, and domain-specific review checks before implementation expands.
+Evidence beats confidence. Current source/tests beat stale history. Owner
+decisions control scope, risk, irreversible actions, and acceptance. Keep
+evidence-ready separate from owner-accepted and label partial, skipped,
+degraded, or unverified behavior.
+
+Use metadata-only inspection by default for private or secret-bearing inputs.
+Do not read `.env` files, credentials, tokens, keys, or raw customer records
+without task need plus owner-policy and tool-policy authorization.
+
+Proceed inside the active packet until evidence-ready. Stop when scope or risk
+changes, an irreversible action or owner tradeoff is required, verification is
+blocked, or evidence conflicts with the plan.

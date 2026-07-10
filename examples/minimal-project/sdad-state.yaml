@@ -1,0 +1,17 @@
+version: 1
+updated: YYYY-MM-DD
+scale: standard
+intensity: low
+autonomy: 2
+active_spec: SPEC/SPEC-COMPLETE.md
+active_packet:
+  id: example
+  objective: Keep the minimal example internally consistent.
+  status: not_started
+owner_gates: []
+validation:
+  - command: Replace with a project check.
+    proves: Replace with the supported claim.
+routed_docs:
+  - docs/TODO-Open-Items.md
+  - review-findings.md

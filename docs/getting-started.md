@@ -9,8 +9,8 @@ If you are still deciding whether SDAD fits your situation, start with
 The short version:
 
 ```text
-Install one instruction file, define one low-intervention work packet, then
-require evidence before accepting completion.
+Install one instruction file, keep one compact active-state route, define one
+work packet, then require evidence before accepting completion.
 ```
 
 ## Choose Scale First
@@ -23,7 +23,8 @@ Ask five questions:
 2. Will you come back to this project later?
 3. Does "done" need evidence beyond "AI said so"?
 4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, user data, auth, money, or production risk?
+5. Is there release, migration, real user data, auth, money, security, rollback,
+   destructive action, or production risk?
 
 Override rules beat raw yes-counts.
 
@@ -32,19 +33,19 @@ Override rules beat raw yes-counts.
 | 0 yes | One-shot prompt |
 | 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | [Mini SDAD](mini-sdad.md) |
 | Q4=yes or 3 yes total | Standard SDAD |
-| Q5=yes | Standard SDAD minimum |
-| Q5=yes with production-facing, destructive, migration, real user data, auth, money, release, or rollback risk | Full SDAD |
+| Q5=yes, but the packet only inspects, documents, or tests the risk area | Standard SDAD minimum |
+| Q5=yes and the packet changes, accepts, or executes the gate | Full SDAD |
 | 4-5 yes | Full SDAD |
 
-When unsure, choose the smaller scale only if no Q5 risk exists, and escalate
-later when evidence shows the project needs it.
+When unsure, choose the smaller scale only if no Q5 gate is active, and
+escalate later when evidence shows the project needs it.
 
 ## Maintenance Cost
 
-Standard and Full SDAD create control files that must stay current. At the end
-of every loop, check and update `SPEC/SPEC-COMPLETE.md`,
-`docs/TODO-Open-Items.md`, `review-findings.md`, and any rules or ADRs affected
-by the work.
+Standard and Full SDAD create control files that must stay current. Keep
+`sdad-state.yaml` as the compact current route. At a packet or handoff boundary,
+check and update only the SPEC, TODO, findings, notes, rules, evidence, or ADRs
+whose state changed.
 
 Update `docs/implementation-notes.md` when implementation required a
 spec-unstated assumption, change, compromise, rejected alternative,
@@ -71,8 +72,9 @@ owner explicitly asks for historical reconstruction.
 If no file needs a content change, say which files were checked and why no
 update was needed.
 Before evidence-ready or handoff, run the Documentation Record Audit in
-[maintenance-cost.md](maintenance-cost.md): state the minimum update-set row,
-docs changed, docs checked with no update needed, stale docs, archive/evidence
+[maintenance-cost.md](maintenance-cost.md): state the change type and routed
+documentation surfaces, docs changed, docs checked with
+no update needed, stale docs, archive/evidence
 links, and validation commands.
 
 If you do not want that maintenance cost, choose One-shot Prompt or
@@ -80,18 +82,18 @@ If you do not want that maintenance cost, choose One-shot Prompt or
 
 ## First Packet Routine
 
-For Standard or Full SDAD, use `docs/INDEX.md` as the working router after SDAD
-control files are installed. In this source repository, that file is a template
-at `templates/project-control-files/docs/INDEX.md`:
+For Standard or Full SDAD, read `sdad-state.yaml`, then use `docs/INDEX.md` as
+the working router. In this source repository, the templates are under
+`templates/project-control-files/`:
 
 ```text
-Route current state -> Scale/compress -> PLAN -> Active SPEC -> optional ADR -> TODO/work packet -> JIT clarification -> Build/review/evidence -> Owner checkpoint/maintenance
+Adapter -> sdad-state.yaml -> docs/INDEX.md -> source/tests -> one routed path
 ```
 
-This order clarifies what to look at and when. It does not force every file into
-every packet: skip ADR, separate TODO, evidence matrix, claim registry,
-save-state, or handoff when their trigger does not exist, and say why in the
-evidence-ready summary.
+Do not load the full rulebook, archives, historical SPEC sections, old
+handoffs, or optional evidence files by default. Open only the policy heading or
+playbook selected by the current trigger. Skip ADR, evidence, save-state, and
+handoff surfaces when they have no active job.
 
 After Standard or Full SDAD is installed, choose an operating intensity for each
 packet: `Standard SDAD / High`, `Standard SDAD / Medium`, `Standard SDAD / Low`,
@@ -198,11 +200,14 @@ Start by asking for:
 
 If Standard or Full SDAD is selected, create the first project control files:
 - AGENTS.md or equivalent AI instruction file,
+- sdad-state.yaml,
 - docs/INDEX.md,
 - docs/Repository-Operating-Rules.md,
+- the on-demand files under docs/sdad/playbooks/,
 - SPEC/SPEC-COMPLETE.md,
 - docs/TODO-Open-Items.md,
-- review-findings.md.
+- review-findings.md,
+- docs/implementation-notes.md.
 
 If product, hardware, compatibility, packaging, remote tester, external lab, or
 release claims need evidence stronger than local software tests, also create
@@ -257,12 +262,17 @@ Bash:
 If your checkout lost executable bits, prefix the command with `bash`, for
 example `bash ./scripts/install-agent-adapter.sh codex /path/to/project`.
 
+Adapter installers preserve existing files unless `-Force` or `--force` is
+explicitly supplied. They refuse linked destination components so a project
+path cannot silently redirect the write elsewhere.
+
 Then start your AI tool inside the target project and say:
 
 ```text
 Read the installed SPEC-Driven AI Development instructions.
 Bootstrap this project into an owner-supervised, SPEC-driven workflow.
-Create the first active SPEC slice and the required control files.
+Create the compact state -> INDEX -> on-demand route, the first active SPEC
+slice, and only the control files this scale needs.
 Define the first work packet and the review-worthy development units inside it.
 ```
 
@@ -284,6 +294,11 @@ Bash:
 ```
 
 If your checkout lost executable bits, use `bash ./scripts/install-codex-skill.sh`.
+
+The skill installer also preserves an existing installation by default. Use
+`-Force` in PowerShell or `--force` in Bash only after reviewing local changes.
+Forced replacement is staged and verified before the previous installation is
+swapped out.
 
 Then start a new Codex session and say:
 
@@ -380,6 +395,7 @@ Use this when the AI seems unsure which SDAD document to check next:
 
 ```text
 Use docs/INDEX.md as the working router for this packet.
+Read sdad-state.yaml first and keep its routed_docs limited to this packet.
 Identify the current moment: starting/resuming, defining scope, choosing next
 task, investigating bug/risk, making a spec-unstated choice, making a claim,
 preparing owner checkpoint, ending/handoff, or turning repeated pain into a rule.

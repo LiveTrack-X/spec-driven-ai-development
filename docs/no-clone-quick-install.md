@@ -12,11 +12,11 @@ Pick the path that matches your comfort level:
 
 | Path | Best for | Requires |
 |---|---|---|
-| Give this to your AI agent | Complete beginners | An AI coding tool that can edit files |
-| One-paste PowerShell installer | Windows users comfortable with terminal | PowerShell and internet access |
-| One-paste Bash installer | macOS/Linux/WSL users comfortable with terminal | Bash, curl, and internet access |
-| Clone this repository | Developers who want the full package locally | Git |
-| Codex skill | Codex users only | Codex installed and configured |
+| [Give this to your AI agent](#option-1-give-this-to-your-ai-agent) | Complete beginners | An AI coding tool that can edit files |
+| [One-paste PowerShell installer](#option-2-one-paste-powershell-installer) | Windows users comfortable with terminal | PowerShell and internet access |
+| [One-paste Bash installer](#option-3-one-paste-bash-installer) | macOS/Linux/WSL users comfortable with terminal | Bash, curl, and internet access |
+| [Clone this repository](getting-started.md#get-this-repository) | Developers who want the full package locally | Git |
+| [Codex skill](../README.md#codex-skill) | Codex users only | Codex installed and configured |
 
 Run terminal commands from the root of the project you want to control.
 
@@ -35,7 +35,8 @@ Ask:
 2. Will you come back to this project later?
 3. Does "done" need evidence beyond "AI said so"?
 4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, user data, auth, money, or production risk?
+5. Is there release, migration, real user data, auth, money, security, rollback,
+   destructive action, or production risk?
 
 Override rules beat raw yes-counts:
 
@@ -44,20 +45,20 @@ Override rules beat raw yes-counts:
 | 0 yes | One-shot prompt | No project files |
 | 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | Mini SDAD | One instruction file from `templates/mini-sdad/MINI-SDAD.md` |
 | Q4=yes or 3 yes total | Standard SDAD | Adapter plus core control files |
-| Q5=yes | Standard SDAD minimum | Adapter, core control files, and explicit risk tracking |
-| Q5=yes with production-facing, destructive, migration, real user data, auth, money, release, or rollback risk | Full SDAD | Adapter, core files, review, ADRs, risk gates |
-| 4-5 yes | Full SDAD | Adapter, core files, review, ADRs, risk gates |
+| Q5=yes, but the packet only inspects, documents, or tests the risk area | Standard SDAD minimum | Adapter, core control files, and explicit risk tracking |
+| Q5=yes and the packet changes, accepts, or executes the gate | Full SDAD | Adapter, core files, review, conditional ADRs, risk gates |
+| 4-5 yes | Full SDAD | Adapter, core files, review, conditional ADRs, active risk gates |
 
-When unsure, choose the smaller scale only if no Q5 risk exists. Escalate later
-when repeated pain, context loss, risk, or multiple sessions appear.
+When unsure, choose the smaller scale only if no Q5 gate is active. Escalate
+later when repeated pain, context loss, risk, or multiple sessions appear.
 
 Product evidence flag: ask whether product, hardware, compatibility, packaging,
 remote tester, external lab, or release claims need evidence stronger than local
 software tests. A yes is not automatically Full SDAD, but it triggers the
 relevant product evidence templates. Use Standard SDAD minimum when those
-templates must persist across sessions. Q5 release, production, user data, auth,
-money, migration, destructive-action, or rollback risk still controls Full SDAD
-gates.
+templates must persist across sessions. Changing, accepting, or executing a Q5
+release, production, user-data, auth, money, migration, destructive-action, or
+rollback gate still requires Full SDAD.
 
 ## Maintenance Cost
 
@@ -80,7 +81,7 @@ check and update:
 Keep active live-state files short enough to read as current operating state.
 If state, TODO, review, or handoff files become long journals, preserve old
 material in archive/history files and use bounded reads for archives, logs,
-generated artifacts, private data, and broad search output.
+generated artifacts, authorized private data, and broad search output.
 As a default soft trigger, use bounded reads for files over 50 KB or 500 lines,
 run a context-stability check for files over 200 KB or 2,000 lines, and do not
 read files over 1 MB in full during startup unless the owner explicitly asks for
@@ -111,7 +112,8 @@ instruction files:
 
 - `AGENTS.md` for Codex,
 - `CLAUDE.md` for Claude Code,
-- `.cursor/rules/spec-driven-ai-development.mdc` for Cursor,
+- `.cursor/rules/mini-sdad.mdc` for Cursor Mini, or
+  `.cursor/rules/spec-driven-ai-development.mdc` for Cursor Standard/Full,
 - `.github/copilot-instructions.md` for GitHub Copilot,
 - `AI-SESSION-INSTRUCTIONS.md` for a generic AI tool.
 
@@ -124,8 +126,11 @@ such as `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`,
 For Mini SDAD, use this exact template:
 
 ```text
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/templates/mini-sdad/MINI-SDAD.md
 ```
+
+Expected SHA-256:
+`d922694f7568a5a9e8f5284d6101e99ce6a44bd78c66662589f4b8674cbc6c88`.
 
 Before fetching Mini SDAD, state that you are installing Mini SDAD and explain
 why this scale was chosen.
@@ -133,13 +138,35 @@ why this scale was chosen.
 For Standard or Full SDAD, do not ask an AI agent to guess adapter paths. Use
 these exact source URLs:
 
-| Tool | Source URL | Save as |
-|---|---|---|
-| Codex | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/codex/AGENTS.md` | `AGENTS.md` |
-| Claude Code | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/claude-code/CLAUDE.md` | `CLAUDE.md` |
-| Cursor | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc` | `.cursor/rules/spec-driven-ai-development.mdc` |
-| GitHub Copilot | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/github-copilot/.github/copilot-instructions.md` | `.github/copilot-instructions.md` |
-| Generic AI tool | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/generic/AI-SESSION-INSTRUCTIONS.md` | `AI-SESSION-INSTRUCTIONS.md` |
+| Tool | Source URL | Save as | SHA-256 |
+|---|---|---|---|
+| Codex | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/codex/AGENTS.md` | `AGENTS.md` | `3835d1b94d99b6c14687634a527fc83ce5650e1b848ec391176b35ca7e7a54aa` |
+| Claude Code | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/claude-code/CLAUDE.md` | `CLAUDE.md` | `2bf5fcc8a8b53889c6007c748acc21fa9c2c637a3464a6936d23a5dce6b65873` |
+| Cursor | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc` | `.cursor/rules/spec-driven-ai-development.mdc` | `fef37a7c6ce445ed936d79e4283ef72c6bc49e2043361e59e02e23b27f1e5036` |
+| GitHub Copilot | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/github-copilot/.github/copilot-instructions.md` | `.github/copilot-instructions.md` | `1b0023c2b3c490f71314be5b5133010f1a9de37991e59edf5a594ccc455eadcb` |
+| Generic AI tool | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/generic/AI-SESSION-INSTRUCTIONS.md` | `AI-SESSION-INSTRUCTIONS.md` | `12b5074d8dfed7c24dbc7ce7e8a6f3469077903ab81370c72f97e6be09b365a9` |
+
+## Latest Versus Pinned Sources
+
+The URLs above use the full 40-character commit SHA for the stable v2.1.0
+baseline. A commit ID is immutable. A readable release tag can move unless the
+repository makes it immutable, while `main` intentionally changes over time.
+
+Use `/main/` only when you explicitly want the latest, unpinned instructions.
+Record the chosen revision in setup notes or the project handoff. Do not mix
+`main` and a pinned revision in the same install unless the difference is
+intentional and documented.
+
+[`install-sources.json`](../install-sources.json) is the canonical
+revision/path/hash contract used by repository validation.
+
+The current stable manifest declares `progressive_control_plane=false`. Its
+v2.1.0 adapters predate the Unreleased `sdad-state.yaml -> docs/INDEX.md ->
+on-demand route`. Follow the installed baseline instructions and do not claim
+that the progressive control plane was installed. To use the current
+progressive templates deterministically, install from a local checkout; the
+no-clone capability becomes available only after a real release commit updates
+the manifest revision and hashes.
 
 ## Option 1: Give This To Your AI Agent
 
@@ -168,20 +195,22 @@ Ask me these five questions:
 2. Will I come back to this project later?
 3. Does "done" need evidence beyond "AI said so"?
 4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, user data, auth, money, or production risk?
+5. Is there release, migration, real user data, auth, money, security, rollback,
+   destructive action, or production risk?
 
 Choose:
 - 0 yes -> One-shot prompt. Do not create project files.
 - 1-2 yes from questions 1-3 only, with Q4=no and Q5=no -> Mini SDAD.
   Create only one instruction file.
 - Q4=yes or 3 yes total -> Standard SDAD. Create core control files.
-- Q5=yes -> Standard SDAD minimum, even if it is the only yes.
-- Q5=yes with production-facing, destructive, migration, real user data, auth,
-  money, release, or rollback risk -> Full SDAD.
-- 4-5 yes -> Full SDAD. Use full workflow, review, ADRs, and gates.
+- Q5=yes, but this packet only inspects, documents, or tests the risk area ->
+  Standard SDAD minimum, even if it is the only yes.
+- Q5=yes and this packet changes, accepts, or executes the gate -> Full SDAD.
+- 4-5 yes -> Full SDAD. Use full workflow, review, conditional ADRs, and
+  active gates.
 
 Override rules beat raw yes-counts. When unsure, choose the smaller scale only
-if no Q5 risk exists, and explain why.
+if no Q5 gate is active, and explain why.
 
 Step 0.1 - Check product evidence flag.
 
@@ -189,8 +218,9 @@ Ask whether product, hardware, compatibility, packaging, remote tester,
 external lab, or release claims need evidence stronger than local software
 tests. A yes is not automatically Full SDAD, but it triggers the relevant
 product evidence templates. Use Standard SDAD minimum when those templates must
-persist across sessions. Q5 release, production, user data, auth, money,
-migration, destructive-action, or rollback risk still controls Full SDAD gates.
+persist across sessions. Changing, accepting, or executing a Q5 release,
+production, user-data, auth, money, migration, destructive-action, or rollback
+gate still requires Full SDAD.
 
 Step 0.5 - Choose autonomy before implementation.
 
@@ -264,7 +294,8 @@ migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/templates/mini-sdad/MINI-SDAD.md
+Expected SHA-256: d922694f7568a5a9e8f5284d6101e99ce6a44bd78c66662589f4b8674cbc6c88
 
 Before fetching, state that you are installing Mini SDAD and explain why this
 scale was chosen.
@@ -276,6 +307,13 @@ Save it as the correct instruction file for this tool:
 - Copilot Chat -> ./.github/copilot-instructions.md
 - Generic AI agent -> ./AI-SESSION-INSTRUCTIONS.md
 
+For Cursor, prepend this MDC frontmatter before the fetched Mini SDAD body:
+---
+description: Mini SDAD rules for small, evidence-based Cursor work units.
+globs:
+alwaysApply: true
+---
+
 For Standard or Full SDAD, install the matching instruction file for this AI
 tool. Do not infer adapter paths. Use exactly one of these source URLs:
 
@@ -285,16 +323,17 @@ Codex / Claude Code / Cursor / Copilot Chat / Generic.
 Claude Code means the local/CLI coding tool with project filesystem access. It
 does not mean Claude.ai chat.
 
-- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/codex/AGENTS.md -> ./AGENTS.md
-- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md
-- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc
-- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md
-- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 3835d1b94d99b6c14687634a527fc83ce5650e1b848ec391176b35ca7e7a54aa
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 2bf5fcc8a8b53889c6007c748acc21fa9c2c637a3464a6936d23a5dce6b65873
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 fef37a7c6ce445ed936d79e4283ef72c6bc49e2043361e59e02e23b27f1e5036
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 1b0023c2b3c490f71314be5b5133010f1a9de37991e59edf5a594ccc455eadcb
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 12b5074d8dfed7c24dbc7ce7e8a6f3469077903ab81370c72f97e6be09b365a9
 
 Before saving the adapter:
 1. show me the source URL,
 2. show me the first 10 lines of the fetched file,
-3. confirm the target path.
+3. compute SHA-256 and require an exact match,
+4. confirm the target path.
 
 If you cannot fetch the file, stop and say so. Do not create a fake adapter from
 memory. Offer deterministic fallback options: retry with network access, ask me
@@ -304,19 +343,25 @@ clone/download the repository manually.
 For Standard or Full SDAD, after installing the instruction file, bootstrap this
 project:
 
-1. create or update docs/INDEX.md,
-2. create or update docs/Repository-Operating-Rules.md,
-3. create or update SPEC/SPEC-COMPLETE.md,
-4. create or update docs/TODO-Open-Items.md,
-5. create or update review-findings.md,
-6. create or update docs/implementation-notes.md,
-7. if the product evidence flag is yes, create only the needed maintained
+1. create or update sdad-state.yaml,
+2. create or update docs/INDEX.md as a routing-only file,
+3. create or update docs/Repository-Operating-Rules.md and the on-demand
+   docs/sdad/playbooks/ files,
+4. create or update SPEC/SPEC-COMPLETE.md,
+5. create or update docs/TODO-Open-Items.md,
+6. create or update review-findings.md,
+7. create or update docs/implementation-notes.md,
+8. if the product evidence flag is yes, create only the needed maintained
    product evidence templates: docs/evidence-matrix.md,
    docs/claim-registry.md, docs/artifact-contracts.md,
    docs/work-packet-state.md, and docs/remote-evidence-import.md,
-8. ask me for product pain, smallest useful version, non-goals, risks,
+9. ask me for product pain, smallest useful version, non-goals, risks,
    owner-controlled decisions, the first work packet, the review-worthy units
    inside it, and evidence required for completion.
+
+Keep the fixed read path compact: adapter -> sdad-state.yaml -> docs/INDEX.md ->
+current source/tests -> only the routed policy heading or playbook. Do not load
+the whole rulebook or optional evidence set by default.
 
 A review-worthy development unit may contain multiple related small tasks. It
 should be large enough that review has meaning, but small enough to verify in one
@@ -378,8 +423,15 @@ Reference existing SPECs, ADRs, TODOs, review findings, implementation notes,
 logs, or evidence files by path or URL instead of duplicating long content in
 the handoff.
 
-Before reading large state files, archives, logs, generated artifacts, private
-data, or broad search output, check size and use bounded reads: headings,
+Sensitive data is an authorization boundary, not a size threshold. Use
+metadata-only inspection by default. Do not read, copy, transmit, summarize, or
+paste `.env` files, credentials, private keys, tokens, cookies, raw customer
+records, or private corpora into AI context unless the task requires it and
+owner policy plus tool policy explicitly permit it. Prefer redacted samples;
+if authorization is unclear, stop before reading the content and ask.
+
+Before reading large state files, archives, logs, generated artifacts,
+authorized private data, or broad search output, check size and use bounded reads: headings,
 current sections, targeted matches, output limits, and explicit excludes. If
 chat stability degrades, suspect context growth before changing runtime code.
 Keep repo-packing, graphing, embedding, indexing, and context-building tool
@@ -400,22 +452,57 @@ Change `$adapter = "codex"` if you use another tool.
 ```powershell
 $ErrorActionPreference = "Stop"
 $adapter = "codex" # codex, claude-code, cursor, github-copilot, generic
-$base = "https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main"
+$revision = "b85ff447f216492aedb2ced9a6c3098d4d566ef5" # stable v2.1.0 baseline
+$base = "https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/$revision"
 $files = @{
-  "codex" = @("adapters/codex/AGENTS.md", "AGENTS.md")
-  "claude-code" = @("adapters/claude-code/CLAUDE.md", "CLAUDE.md")
-  "cursor" = @("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc", ".cursor/rules/spec-driven-ai-development.mdc")
-  "github-copilot" = @("adapters/github-copilot/.github/copilot-instructions.md", ".github/copilot-instructions.md")
-  "generic" = @("adapters/generic/AI-SESSION-INSTRUCTIONS.md", "AI-SESSION-INSTRUCTIONS.md")
+  "codex" = @("adapters/codex/AGENTS.md", "AGENTS.md", "3835d1b94d99b6c14687634a527fc83ce5650e1b848ec391176b35ca7e7a54aa")
+  "claude-code" = @("adapters/claude-code/CLAUDE.md", "CLAUDE.md", "2bf5fcc8a8b53889c6007c748acc21fa9c2c637a3464a6936d23a5dce6b65873")
+  "cursor" = @("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc", ".cursor/rules/spec-driven-ai-development.mdc", "fef37a7c6ce445ed936d79e4283ef72c6bc49e2043361e59e02e23b27f1e5036")
+  "github-copilot" = @("adapters/github-copilot/.github/copilot-instructions.md", ".github/copilot-instructions.md", "1b0023c2b3c490f71314be5b5133010f1a9de37991e59edf5a594ccc455eadcb")
+  "generic" = @("adapters/generic/AI-SESSION-INSTRUCTIONS.md", "AI-SESSION-INSTRUCTIONS.md", "12b5074d8dfed7c24dbc7ce7e8a6f3469077903ab81370c72f97e6be09b365a9")
 }
 if (-not $files.ContainsKey($adapter)) { throw "Unknown adapter: $adapter" }
-$source, $target = $files[$adapter]
-$targetDir = Split-Path -Parent $target
-if ($targetDir) { New-Item -ItemType Directory -Force -Path $targetDir | Out-Null }
-if (Test-Path -LiteralPath $target) { throw "Target already exists: $target" }
-Invoke-WebRequest -Uri "$base/$source" -OutFile $target
-Write-Host "Installed $adapter instructions to $target"
-Write-Host "Next prompt: Read $target and bootstrap this project into SPEC-Driven AI Development."
+$source, $target, $expectedSha256 = $files[$adapter]
+$targetRoot = (Get-Location).ProviderPath
+$targetParts = $target -split '[\\/]'
+$targetDir = $targetRoot
+for ($index = 0; $index -lt $targetParts.Length - 1; $index++) {
+  $targetDir = Join-Path $targetDir $targetParts[$index]
+  if (Test-Path -LiteralPath $targetDir) {
+    $item = Get-Item -Force -LiteralPath $targetDir
+    if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+      throw "Refusing to install through linked path: $targetDir"
+    }
+    if (-not $item.PSIsContainer) { throw "Target parent is not a directory: $targetDir" }
+  } else {
+    New-Item -ItemType Directory -Path $targetDir | Out-Null
+  }
+}
+$targetPath = Join-Path $targetRoot $target
+$targetItem = Get-Item -Force -LiteralPath $targetPath -ErrorAction SilentlyContinue
+if ($targetItem) {
+  if (($targetItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+    throw "Refusing to install through linked path: $targetPath"
+  }
+  throw "Target already exists: $targetPath"
+}
+$tempPath = Join-Path $targetDir (".sdad-download." + [guid]::NewGuid().ToString("N") + ".tmp")
+try {
+  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  Invoke-WebRequest -Uri "$base/$source" -OutFile $tempPath -MaximumRedirection 0
+  if (-not (Test-Path -LiteralPath $tempPath -PathType Leaf) -or (Get-Item $tempPath).Length -eq 0) {
+    throw "Downloaded adapter is empty: $base/$source"
+  }
+  $actualSha256 = (Get-FileHash -LiteralPath $tempPath -Algorithm SHA256).Hash.ToLowerInvariant()
+  if ($actualSha256 -ne $expectedSha256) {
+    throw "SHA-256 mismatch for $source. Expected $expectedSha256, got $actualSha256"
+  }
+  [IO.File]::Move($tempPath, $targetPath)
+} finally {
+  if (Test-Path -LiteralPath $tempPath) { Remove-Item -LiteralPath $tempPath -Force }
+}
+Write-Host "Installed $adapter instructions to $targetPath"
+Write-Host "Next prompt: Read $targetPath and bootstrap this project into SPEC-Driven AI Development."
 ```
 
 ## Option 3: One-Paste Bash Installer
@@ -428,50 +515,112 @@ Change `adapter="codex"` if you use another tool.
 ```bash
 set -euo pipefail
 adapter="codex" # codex, claude-code, cursor, github-copilot, generic
-base="https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/main"
+revision="b85ff447f216492aedb2ced9a6c3098d4d566ef5" # stable v2.1.0 baseline
+base="https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/$revision"
 case "$adapter" in
   codex)
     source="adapters/codex/AGENTS.md"
     target="AGENTS.md"
+    expected_sha256="3835d1b94d99b6c14687634a527fc83ce5650e1b848ec391176b35ca7e7a54aa"
     ;;
   claude-code)
     source="adapters/claude-code/CLAUDE.md"
     target="CLAUDE.md"
+    expected_sha256="2bf5fcc8a8b53889c6007c748acc21fa9c2c637a3464a6936d23a5dce6b65873"
     ;;
   cursor)
     source="adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc"
     target=".cursor/rules/spec-driven-ai-development.mdc"
+    expected_sha256="fef37a7c6ce445ed936d79e4283ef72c6bc49e2043361e59e02e23b27f1e5036"
     ;;
   github-copilot)
     source="adapters/github-copilot/.github/copilot-instructions.md"
     target=".github/copilot-instructions.md"
+    expected_sha256="1b0023c2b3c490f71314be5b5133010f1a9de37991e59edf5a594ccc455eadcb"
     ;;
   generic)
     source="adapters/generic/AI-SESSION-INSTRUCTIONS.md"
     target="AI-SESSION-INSTRUCTIONS.md"
+    expected_sha256="12b5074d8dfed7c24dbc7ce7e8a6f3469077903ab81370c72f97e6be09b365a9"
     ;;
   *)
     echo "Unknown adapter: $adapter" >&2
     exit 1
     ;;
 esac
-if [ -e "$target" ]; then
-  echo "Target already exists: $target" >&2
+target_root="$(pwd -P)"
+target_parent_rel="$(dirname "$target")"
+target_dir="$target_root"
+if [[ "$target_parent_rel" != "." ]]; then
+  IFS='/' read -r -a target_parts <<< "$target_parent_rel"
+  for part in "${target_parts[@]}"; do
+    next_dir="$target_dir/$part"
+    if [[ -L "$next_dir" ]]; then
+      echo "Refusing to install through linked path: $next_dir" >&2
+      exit 1
+    fi
+    if [[ -e "$next_dir" && ! -d "$next_dir" ]]; then
+      echo "Target parent is not a directory: $next_dir" >&2
+      exit 1
+    fi
+    if [[ ! -e "$next_dir" ]]; then mkdir -- "$next_dir"; fi
+    target_dir="$next_dir"
+  done
+fi
+target_path="$target_dir/$(basename "$target")"
+if [[ -e "$target_path" || -L "$target_path" ]]; then
+  echo "Target already exists: $target_path" >&2
   exit 1
 fi
-mkdir -p "$(dirname "$target")"
-curl -fsSL "$base/$source" -o "$target"
-echo "Installed $adapter instructions to $target"
-echo "Next prompt: Read $target and bootstrap this project into SPEC-Driven AI Development."
+temp_path="$(mktemp "$target_dir/.sdad-download.XXXXXX")"
+cleanup() { rm -f -- "$temp_path"; }
+trap cleanup EXIT
+curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location "$base/$source" --output "$temp_path"
+if [[ ! -s "$temp_path" ]]; then
+  echo "Downloaded adapter is empty: $base/$source" >&2
+  exit 1
+fi
+if command -v sha256sum >/dev/null 2>&1; then
+  actual_sha256="$(sha256sum "$temp_path" | awk '{print $1}')"
+elif command -v shasum >/dev/null 2>&1; then
+  actual_sha256="$(shasum -a 256 "$temp_path" | awk '{print $1}')"
+else
+  echo "A SHA-256 tool (sha256sum or shasum) is required." >&2
+  exit 1
+fi
+if [[ "$actual_sha256" != "$expected_sha256" ]]; then
+  echo "SHA-256 mismatch for $source. Expected $expected_sha256, got $actual_sha256" >&2
+  exit 1
+fi
+if ! ln -- "$temp_path" "$target_path"; then
+  echo "Target appeared during installation: $target_path. Nothing was overwritten." >&2
+  exit 1
+fi
+if [[ ! -f "$target_path" ]]; then
+  nested_temp="$target_path/$(basename "$temp_path")"
+  if [[ -f "$nested_temp" ]]; then rm -- "$nested_temp"; fi
+  echo "Publication did not create the exact target file: $target_path" >&2
+  exit 1
+fi
+rm -- "$temp_path"
+trap - EXIT
+echo "Installed $adapter instructions to $target_path"
+echo "Next prompt: Read $target_path and bootstrap this project into SPEC-Driven AI Development."
 ```
 
 ## After The Installer
+
+Check the capability disclosed above. The prompt below applies to a local
+checkout or a future pinned manifest with `progressive_control_plane=true`.
+With the current `false` baseline, ask the agent to follow the installed file
+and do not ask it to invent the Unreleased state, INDEX, or playbooks.
 
 Open your AI coding tool in the target project and say:
 
 ```text
 Read the installed SPEC-Driven AI Development instruction file.
-Bootstrap this project with the first active SPEC slice.
+Bootstrap the compact state -> INDEX -> on-demand route and the first active
+SPEC slice.
 Define the first low-intervention work packet and its review-worthy units.
 Ask me for product pain, smallest useful version, non-goals, risks,
 owner-controlled decisions, autonomy level, and evidence required for completion.
@@ -484,8 +633,10 @@ next blocking clarification question with your recommended answer.
 
 The first successful bootstrap should create or update:
 
+- `sdad-state.yaml`,
 - `docs/INDEX.md`,
 - `docs/Repository-Operating-Rules.md`,
+- the on-demand files under `docs/sdad/playbooks/`,
 - `SPEC/SPEC-COMPLETE.md`,
 - `docs/TODO-Open-Items.md`,
 - `review-findings.md`,

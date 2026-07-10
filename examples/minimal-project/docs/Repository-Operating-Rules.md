@@ -1,25 +1,28 @@
 # Repository Operating Rules
 
 Status: Active
-Scope: Mandatory rules for code, documentation, review, verification, and handoff
+Scope: durable policy loaded on demand
 
-## Mandatory Start Loop
+## Source Of Truth
 
-1. Read `docs/INDEX.md`.
-2. Read this file.
-3. Read `docs/TODO-Open-Items.md` and `review-findings.md` for implementation work.
-4. Read `SPEC/SPEC-COMPLETE.md`.
-5. Inspect current code and tests before implementing from a plan.
+Current code, tests, runtime state, and reproducible commands decide observed
+behavior. Active docs and SPEC decide controlled future work. Handoff and chat
+are continuity and hints, not authority.
 
-## Rules
+## Core Rules
 
 - Keep changes scoped to the active SPEC slice.
 - Do not treat AI confidence as completion evidence.
 - Keep active work, review findings, future ideas, and archives separate.
 - Update docs when behavior or implementation status changes.
-- State tests, docs checked, remaining risks, and owner decisions in handoff.
-- If a SPEC spans past-to-present history, current active sections override older sections.
-- Do not rely on obvious-but-unwritten assumptions.
+- Record spec-unstated durable choices before handoff.
 - Label partial, skipped, degraded, or unverified behavior.
 - Owner decision beats AI momentum.
-- If the plan is fuzzy, inspect repository evidence first, then ask only the next blocking owner question with a recommended answer.
+- Match claim strength to the evidence tier actually obtained.
+- Ask only the next blocking owner question after inspecting repository evidence.
+
+## Owner Gates
+
+Stop before release, migration, destructive action, real-data/auth/money/
+security decisions, rollback, production claims, or another irreversible
+owner-controlled action.

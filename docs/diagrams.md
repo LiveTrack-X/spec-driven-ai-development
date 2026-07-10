@@ -23,14 +23,17 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["Fresh AI session"] --> B["Read docs/INDEX.md route"]
-    B --> C["Check file size and scope"]
-    C --> D{"Large, stale, private, generated, or archived?"}
-    D -- "Yes" --> E["Bounded read\nheadings, current sections, targeted matches"]
-    D -- "No" --> F["Read active current file"]
-    E --> G["Active SPEC, work packet, evidence state"]
-    F --> G
-    G --> H["Plan before changes"]
+    A["Fresh AI session"] --> B["Tool adapter\nalways-loaded kernel"]
+    B --> C["sdad-state.yaml\ncurrent packet and gates"]
+    C --> D["docs/INDEX.md\nroute only"]
+    D --> E["Inspect current source/tests"]
+    E --> F["Select one routed policy, playbook, or current doc"]
+    F --> G{"Large, stale, private, generated, or archived?"}
+    G -- "Yes" --> H["Bounded read\nheadings, current sections, targeted matches"]
+    G -- "No" --> I["Read the routed current file"]
+    H --> J["Active SPEC, work packet, evidence state"]
+    I --> J
+    J --> K["Plan before changes"]
 ```
 
 Use this guard before mandatory start-loop routes. The start loop routes the
@@ -62,21 +65,25 @@ weak evidence into a stronger evidence tier.
 ```mermaid
 flowchart TD
     O["Owner intent / Pain"] --> X["Scale + Compression"]
-    X --> S["SPEC\nscope, non-goals, acceptance"]
+    X --> A["Tool adapter\nalways-loaded kernel"]
+    A --> Y["sdad-state.yaml\nactive packet and gates"]
+    Y --> I["docs/INDEX.md\nroute only"]
+    I --> C0["Current source/tests"]
+    C0 --> S["One routed current doc\nSPEC, TODO, finding, note, policy, or playbook"]
     S --> P["Work Packet\napproved autonomy boundary"]
     P --> T["TODO\nactive work"]
     P --> F["Review Findings\nbugs, risks, blockers"]
     P --> E["Evidence\nclaim tier and verification"]
     E --> C["Owner Checkpoint\nevidence-ready vs owner-accepted"]
     S --> N["Implementation Notes\nspec-unstated choices"]
-    S --> A["ADR\nhard-to-reverse tradeoff only"]
+    S --> ADR["ADR\nhard-to-reverse tradeoff only"]
     C --> R["Repository Rules\nrepeated pain becomes rule"]
     C --> H["Save-State / Handoff\ncontinuity for next session"]
     E --> L["Timestamped Log Split\nYYYY-MM-DD-HHMM-start-topic.md"]
 ```
 
 Use `docs/INDEX.md` as the working router while the packet is active. It tells
-the AI which current document to check at each moment and when to route long
+the AI which single current document to check after source/tests and when to route long
 logs, traces, or evidence records into timestamped split files instead of
 growing an active state file.
 
@@ -120,13 +127,30 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["AGENTS.md\nEntry rules"] --> I["docs/INDEX.md\nRouting table"]
-    I --> R["docs/Repository-Operating-Rules.md\nDurable rulebook"]
-    I --> S["SPEC/SPEC-COMPLETE.md\nCurrent baseline"]
-    I --> T["docs/TODO-Open-Items.md\nOpen implementation work"]
-    I --> F["review-findings.md\nActive defect/review backlog"]
-    I --> N["docs/implementation-notes.md\nSpec-unstated decisions"]
+    A["Tool adapter\nAlways-loaded kernel"] --> X["sdad-state.yaml\nCurrent packet and gates"]
+    X --> I["docs/INDEX.md\nRouting table"]
+    I --> C["Current source/tests"]
+    C --> Q{"One routed path"}
+    Q -. "active SPEC" .-> S["SPEC/SPEC-COMPLETE.md\nCurrent baseline"]
+    Q -. "active work" .-> T["docs/TODO-Open-Items.md\nOpen implementation work"]
+    Q -. "active finding" .-> F["review-findings.md\nActive defect/review backlog"]
+    Q -. "decision note" .-> N["docs/implementation-notes.md\nSpec-unstated decisions"]
+    Q -. "policy trigger" .-> R["Repository-Operating-Rules.md\nDurable policy"]
+    Q -. "procedure trigger" .-> P["docs/sdad/playbooks/\nOne on-demand playbook"]
     S --> D["SPEC/adr/\nDecision records"]
+```
+
+## Level 4 Release Gate
+
+```mermaid
+flowchart TD
+    A["Inspect, document, or test a risk area"] --> B["Standard minimum\ntrack the risk explicitly"]
+    C["Change, accept, or execute the gate"] --> D["Full SDAD + Level 4"]
+    D --> E["Build, review, and validate"]
+    E --> F["Evidence-ready"]
+    F --> G{"Owner release gate"}
+    G -- "Approve" --> H["Push -> tag -> publish"]
+    G -- "Revise, defer, or reject" --> I["Record outcome and stop"]
 ```
 
 ## Rendered Diagram Assets
@@ -135,6 +159,8 @@ Use these when a static or interactive visual is more useful than Mermaid:
 
 - `assets/spec-driven-ai-development-infographic.png`: public overview
   infographic used by the README.
+- `assets/spec-driven-ai-development-infographic.svg`: editable, versionless
+  source for the public overview infographic.
 - `assets/sdad-control-loop.archify.png`: rendered SDAD Control Loop diagram.
 - `assets/sdad-control-loop.archify.html`: interactive Archify export for the
   same control loop.

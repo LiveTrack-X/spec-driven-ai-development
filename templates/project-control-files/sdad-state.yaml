@@ -1,0 +1,28 @@
+version: 1
+updated: YYYY-MM-DD
+
+# one-shot | mini | standard | full
+scale: standard
+# low | medium | high
+intensity: medium
+# 0 = ask-first, 1 = unit, 2 = work packet, 3 = session, 4 = owner-gated risk
+autonomy: 2
+
+active_spec: SPEC/SPEC-COMPLETE.md
+active_packet:
+  id: bootstrap
+  objective: Replace with the current evidence-ready objective.
+  status: not_started
+
+# Keep only gates that can stop the current packet.
+owner_gates: []
+
+# Keep commands short and runnable from the repository root.
+validation:
+  - command: Replace with the project validation command.
+    proves: Replace with the claim this command supports.
+
+# List only documents needed by the current packet.
+routed_docs:
+  - docs/TODO-Open-Items.md
+  - review-findings.md

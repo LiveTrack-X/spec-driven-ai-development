@@ -10,11 +10,12 @@ collapsing into chat memory.
 
 ## What This Pattern Teaches
 
-### 1. Start From A Documentation Router
+### 1. Start From A Compact Control Plane
 
-This pattern requires every agent to start from `docs/INDEX.md` before touching
-code, SPECs, prompts, or documentation. The index is not a passive table of
-contents. It is the repository router:
+This pattern requires every agent to start from the installed tool adapter,
+then `sdad-state.yaml`, then `docs/INDEX.md` before touching code, SPECs,
+prompts, or documentation. The index is not a passive table of contents. It is
+the repository router:
 
 - which docs are active,
 - which docs are historical,
@@ -22,25 +23,28 @@ contents. It is the repository router:
 - which SPEC files are current,
 - which backlog and review files must be read.
 
-Reusable rule: every serious AI-driven project needs one current navigation
-document that answers "what should this agent read now?"
+Reusable rule: every serious AI-driven project needs a compact state plus one
+current navigation document that answers "what should this agent read now?"
 
-### 2. Keep A Mandatory Start Loop
+### 2. Keep A Mandatory Router, Not Mandatory Full Reads
 
 The recommended agent entry sequence is:
 
-1. read the documentation index,
-2. read repository operating rules,
-3. read active docs routed from the index,
-4. read open TODOs and review findings for implementation work,
-5. inspect source code and tests before implementing from a plan.
+1. load the installed tool adapter,
+2. read the compact active-state file,
+3. read the documentation index,
+4. inspect current source/tests,
+5. read one current path routed by the state and index,
+6. load policy, playbooks, archives, or evidence only on demand.
 
 Reusable rule: never let a fresh AI session begin from an old handoff, archived
 plan, or impressive SPEC without first checking the current route.
 
-Reusable context-stability rule: the start loop is a routing requirement, not a
-full-read requirement. Before reading large state files, old handoffs, logs,
-generated artifacts, private data, or archives, check size and use bounded reads.
+Reusable context-stability rule: the start route is a routing requirement, not
+a full-read requirement. Confirm authorization before reading private data;
+size limits do not grant access. Before reading large state files, old handoffs,
+logs, generated artifacts, authorized private data, or archives, check size and
+use bounded reads.
 Use local soft triggers such as 50 KB or 500 lines for bounded reads, 200 KB or
 2,000 lines for a context-stability check, and avoid full startup reads above
 1 MB unless the owner asks for historical reconstruction.
@@ -130,7 +134,7 @@ sessions:
 - A single `docs/INDEX.md` must route all active docs and archives.
 - `docs/Repository-Operating-Rules.md` must collect repeated rules that would
   otherwise stay in chat.
-- `AGENTS.md` must require the first-read chain.
+- The installed tool adapter must require the first-read chain.
 - The first-read chain must apply context-stability before loading routed files.
 - `docs/TODO-Open-Items.md` and `review-findings.md` must stay active and
   separate.

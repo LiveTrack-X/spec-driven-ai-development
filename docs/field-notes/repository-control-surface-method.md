@@ -96,9 +96,11 @@ layout that protects the current work:
 ```text
 project/
   AGENTS.md or CLAUDE.md or tool-specific adapter
+  sdad-state.yaml
   docs/
     INDEX.md
     Repository-Operating-Rules.md
+    sdad/playbooks/
     TODO-Open-Items.md
     implementation-notes.md
     sdad/handoffs/

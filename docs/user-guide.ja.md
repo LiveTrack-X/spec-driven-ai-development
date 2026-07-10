@@ -206,6 +206,8 @@ approval を維持します。
 
 ## 次に読む文書
 
+- [owners-guide.md](owners-guide.md): Owner 向けクイック導入ガイド（英語）
+- [ai-work-loop.md](ai-work-loop.md): Fast/Normal/Full 実行ループ（英語）
 - [getting-started.md](getting-started.md): setup path と最初の 10 分
 - [no-clone-quick-install.md](no-clone-quick-install.md): clone なしで始める
 - [mini-sdad.md](mini-sdad.md): 小さなプロジェクト向け one-file SDAD

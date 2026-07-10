@@ -38,8 +38,9 @@ Replace with: separate active SPEC, backlog, product notes, and archive routes.
 
 ## 4. Giant Master Plan Before Control Files
 
-Symptom: the agent creates a large roadmap before `AGENTS.md`, `docs/INDEX.md`,
-TODO, review findings, and source-of-truth rules exist.
+Symptom: the agent creates a large roadmap before the installed tool adapter,
+`sdad-state.yaml`, `docs/INDEX.md`, TODO, review findings, and source-of-truth
+rules exist.
 
 Why it fails: the plan has no durable operating surface.
 
@@ -234,15 +235,16 @@ a new packet.
 
 Symptom: every fresh AI session starts by reading full state files, old handoffs,
 large TODO journals, review ledgers, logs, generated reports, private data, or
-tool output into chat context.
+tool output into chat context without checking authorization and relevance.
 
 Why it fails: the AI chat becomes harder to audit, more expensive to resume, and
 more likely to collapse under stale or irrelevant context. The project can look
 broken even when runtime code is not involved.
 
 Replace with: keep active live-state files as short routing summaries, move old
-history to archive/history files, and use bounded reads for archives, logs,
-generated artifacts, private data, and search output.
+history to archive/history files, verify authorization before private-data
+access, and use bounded reads for archives, logs, generated artifacts,
+authorized private data, and search output.
 
 ## 19. Hidden Implementation Memory
 

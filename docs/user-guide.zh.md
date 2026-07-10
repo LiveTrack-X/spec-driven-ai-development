@@ -202,6 +202,8 @@ approval。
 
 ## 接下来阅读
 
+- [owners-guide.md](owners-guide.md): 面向 Owner 的快速采用指南（英文）
+- [ai-work-loop.md](ai-work-loop.md): Fast/Normal/Full 执行循环（英文）
 - [getting-started.md](getting-started.md): setup path 和最初 10 分钟
 - [no-clone-quick-install.md](no-clone-quick-install.md): 不 clone 仓库也能开始
 - [mini-sdad.md](mini-sdad.md): 小项目用 one-file SDAD

@@ -20,12 +20,12 @@ direction, risk, evidence, and final acceptance visible.
 
 | Audience | Send this | Why |
 |---|---|---|
-| New owner | `docs/owners-guide.md` | Fast adoption and owner checkpoints |
-| AI agent during active work | `docs/ai-work-loop.md` | Fast/Normal/Full execution loop |
-| New user who wants explanation | `docs/user-guide.md` | Situation-based FAQ |
-| User who wants to start immediately | README Copy-Paste Start Prompt | Works in AI coding tools |
-| No clone / chat-only user | `docs/no-clone-quick-install.md` | Starts without installing the repo |
-| Tool setup user | `docs/getting-started.md` | Adapter and skill install paths |
+| New owner | [Owner Guide](owners-guide.md) | Fast adoption and owner checkpoints |
+| AI agent during active work | [AI Work Loop](ai-work-loop.md) | Fast/Normal/Full execution loop |
+| New user who wants explanation | [User Guide](user-guide.md) | Situation-based FAQ |
+| User who wants to start immediately | [README Copy-Paste Start Prompt](../README.md#copy-paste-start-prompt) | Works in AI coding tools |
+| No clone / chat-only user | [No-Clone Quick Install](no-clone-quick-install.md) | Starts without installing the repo |
+| Tool setup user | [Getting Started](getting-started.md) | Adapter and skill install paths |
 
 Do not send the full pattern catalog as the first link. Use it when a specific
 pattern question appears.
@@ -61,6 +61,9 @@ First tell me:
 - owner gates.
 
 Then create or update only the files needed for this scale.
+For Standard or Full, keep the default path compact: adapter ->
+sdad-state.yaml -> docs/INDEX.md -> current source/tests -> one routed file or
+playbook. Do not load the full rulebook or optional evidence set by default.
 ```
 
 ## First Prompt For Actual Work

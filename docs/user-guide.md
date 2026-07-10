@@ -51,8 +51,9 @@ SDAD does not ask an AI to read everything. It gives the AI a context route.
 | Layer | What belongs there | How to use it |
 |---|---|---|
 | Always-loaded instructions | The tool adapter or instruction file: `AGENTS.md`, `CLAUDE.md`, Cursor rules, Copilot instructions, or generic session instructions | Keep this short enough to load at every session start. |
-| Active control files | Current SPEC, TODO, review findings, implementation notes, save-state, current handoff | Read the relevant current sections before changing files. |
-| On-demand references | Pattern catalog, anti-patterns, field notes, localized guides, setup docs | Open only when the current packet or owner question needs them. |
+| Active route | `sdad-state.yaml`, then `docs/INDEX.md` | Name the packet, gates, checks, and the smallest current path. |
+| Routed current state | Current SPEC, TODO, findings, implementation notes, save-state, current handoff | Read only when named by the active route. |
+| On-demand policy and references | Rulebook heading, one playbook, pattern catalog, field notes, setup docs | Open only when the packet trigger or owner question needs it. |
 | Archive and evidence | Old handoffs, large logs, generated reports, historical notes, private or local data | Use bounded reads and links. Do not paste whole archives into chat by default. |
 
 If the AI seems lost, do not fix it by loading more history first. Ask it to

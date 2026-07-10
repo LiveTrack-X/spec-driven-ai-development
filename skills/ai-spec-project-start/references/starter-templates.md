@@ -1,222 +1,167 @@
 # Starter Templates
 
-These templates are for `spec-driven-ai-development` style projects. Adapt them
-instead of copying blindly.
+Use this reference only for Standard/Full bootstrap or control-plane repair.
+Adapt project paths and commands; preserve existing owner decisions.
 
-## Public Repo Positioning
+## Scale Output
 
-Recommended repo name:
+- One-shot: no project files.
+- Mini: one tool-specific instruction file.
+- Standard: one full adapter plus the compact core below.
+- Full: Standard core plus only the risk/evidence files needed by active gates.
 
-```text
-spec-driven-ai-development
-```
+## Single-Responsibility Control Plane
 
-Display name:
+| Surface | Owns | Must not own |
+| --- | --- | --- |
+| Tool adapter | always-loaded safety, autonomy, stop, source/evidence kernel | long procedures or file catalog |
+| `sdad-state.yaml` | current packet, gates, commands, routed docs | history or prose policy |
+| `docs/INDEX.md` | trigger-to-file routing | workflow explanation |
+| Operating rules | durable policy | mandatory startup or live state |
+| Playbooks | on-demand procedures | current facts |
+| SPEC/TODO/findings/notes | authoritative current work state | copied chat transcripts |
+| Save-state/handoff | continuity | behavior authority |
+| Evidence/claim files | scoped proof and claim status | unrelated setup ceremony |
 
-```text
-SPEC-Driven AI Development
-```
-
-Short description:
-
-```text
-Owner-supervised, multi-agent, evidence-based software development with AI agents and living SPECs.
-```
-
-Korean description:
-
-```text
-인간 오너가 방향과 완료 기준을 감독하고, 여러 AI 에이전트가 기획, SPEC, 구현, 리뷰, 검증을 나눠 수행하는 개발 운영 패턴입니다.
-```
-
-Core distinction:
+## Minimum Standard Tree
 
 ```text
-This is not just AI writing code from a spec.
-It is a project-control loop where a human owner sets direction, AI agents draft specs and implementations, other models review the work, and completion is judged by evidence: code, tests, docs, and reproducible results.
+<tool adapter>
+sdad-state.yaml
+docs/
+  INDEX.md
+  Repository-Operating-Rules.md
+  TODO-Open-Items.md
+  implementation-notes.md
+  sdad/playbooks/
+    context-and-data.md
+    work-packets.md
+    evidence-and-risk-gates.md
+    documentation-and-handoff.md
+    advanced-extensions.md
+SPEC/
+  SPEC-COMPLETE.md
+  adr/ADR-0001-template.md
+review-findings.md
 ```
 
-Field-derived controls:
+`save-state.md`, handoffs, and evidence files are create-on-demand.
 
-```text
-Documentation-governance controls keep context, docs, SPECs, TODOs, review findings, and production-readiness status coherent across AI sessions.
-Release-governance controls keep version lanes, migrations, releases, risk domains, and pre-release review honest.
-Context-stability controls keep active state files short and prevent large logs, generated artifacts, old archives, or private data from flooding AI chat context.
-Implementation-notes controls keep spec-unstated implementation decisions visible without turning AI reasoning into a transcript.
-Clarification controls inspect repository evidence before asking the owner, then ask only the next blocking question with a recommended answer.
+When a source checkout is available, use the exact files under
+`templates/project-control-files/`. When only the installed skill is
+available, render the compact schemas below and the semantic clauses from
+`references/runtime-contract.md`.
+
+## Active State Schema
+
+```yaml
+version: 1
+updated: YYYY-MM-DD
+scale: standard
+intensity: medium
+# 0 = ask-first, 1 = unit, 2 = work packet, 3 = session, 4 = owner-gated risk
+autonomy: 2
+active_spec: SPEC/SPEC-COMPLETE.md
+active_packet:
+  id: bootstrap
+  objective: Replace with the evidence-ready objective.
+  status: not_started
+owner_gates: []
+validation:
+  - command: Replace with a runnable repository command.
+    proves: Replace with the supported claim.
+routed_docs:
+  - docs/TODO-Open-Items.md
+  - review-findings.md
 ```
 
-Implicit rules to include:
+Keep this file below 80 lines and 2,000 characters. List only current gates,
+commands, and routed docs.
 
-```text
-Core 5: Current beats historical. Evidence beats confidence. Active beats interesting.
-Owner decision beats AI momentum. Repeated pain becomes a rule.
+## INDEX Schema
 
-Extended rules cover repository-evidence-first clarification, stable domain
-language, docs drift, partial/degraded work, release readiness, environment
-limits, cross-review, risk gates, review-worthy units, and scope-specific
-progress.
-```
+Keep INDEX below 80 lines and 4,000 characters. Include:
 
-## AGENTS.md Template
+1. state -> INDEX -> current source/tests as the fixed read path;
+2. a Working Route table for implement, review, docs, Q5, claims, handoff, and
+   historical/reference triggers;
+3. an on-demand policy/playbook route;
+4. a write route for SPEC, TODO, findings, notes, ADR, evidence, and continuity;
+5. a compact source-of-truth order;
+6. an active catalog and maintenance budget.
 
-```markdown
-# Project Agent Start Rules
+The canonical template is
+`templates/project-control-files/docs/INDEX.md`. INDEX is routing-only.
 
-Status: Active
-Scope: Required starting point for AI agents and maintainers
+## Adapter Contract
 
-## Mandatory Start Loop
+Install exactly one adapter at the host tool's native path. Every full adapter
+must be self-contained and include:
 
-Context Stability applies before every item in this start loop. Inspect file
-size first and use bounded reads for large routed files.
+- progressive state -> INDEX -> on-demand rule routing;
+- Q5 scale/intensity re-evaluation;
+- Level 2 packet autonomy and Level 4 owner gates;
+- sensitive-data pre-read boundary;
+- source-of-truth and evidence/claim limits;
+- stop conditions;
+- compact finish and continuity triggers.
 
-Before code, SPEC, prompt, or documentation work, read:
+Do not add runtime includes unless the host tool is proven to load them. Keep
+the rendered adapter below 120 lines and 6,000 characters.
 
-1. `docs/INDEX.md`
-2. `docs/Repository-Operating-Rules.md`
-3. The active docs routed from `docs/INDEX.md`
-4. `docs/TODO-Open-Items.md` and `review-findings.md` for implementation, hardening, or bugfix work
-5. The relevant active SPEC before architecture, policy, or behavior changes
+## Core Rules And Playbooks
 
-## Context Stability Rule
+Use the canonical files under
+`templates/project-control-files/docs/Repository-Operating-Rules.md` and
+`templates/project-control-files/docs/sdad/playbooks/`.
 
-Mandatory first reads are routing requirements, not permission to dump large
-files into chat context. Before opening large state files, archives, logs,
-generated artifacts, private data, or broad search results, check size and use
-bounded reads: headings, current sections, targeted matches, output limits, and
-explicit excludes.
+The rulebook owns durable policy only. Playbooks own:
 
-Keep active live-state files short. Move old history to archive/history files
-and link it instead of keeping long journals in the startup path.
+- large/private context handling;
+- work packet, autonomy, intensity, and clarification procedure;
+- Q5, evidence, parity, and release gates;
+- documentation, control-file budget, save-state, and handoff procedure;
+- advanced harness/eval/memory-loop fit gates.
 
-Default soft triggers: bounded reads above 50 KB or 500 lines; a
-context-stability check above 200 KB or 2,000 lines; no full startup read above
-1 MB unless the owner explicitly asks for historical reconstruction.
+Do not duplicate the Mandatory Start or intent router in the rulebook.
 
-## Natural-Language Intent Routing
+## Current Work Files
 
-Do not require the owner to know SDAD terms, adapter names, or skill names.
-Infer intent from the user's wording, current repository state, active SPEC,
-TODOs, review findings, and risk gates.
+Create short current-state files:
 
-- "check", "review", "audit", or "find bugs" -> review/audit intent.
-- "implement", "build", "fix", or "match the spec" -> SPEC implementation intent.
-- "release", "publish", or "tag" -> release intent with Level 4 gates.
-- "document", "explain", "README", "FAQ", or "guide" -> documentation intent.
-- "handoff", "continue later", "next session", or "lost context" -> handoff/save-state intent.
-- "borrow from this repo", "reference this project", or "adopt this idea" -> reference-intake intent.
-- "asks too often" or "runs ahead" -> autonomy tuning intent.
+- `SPEC/SPEC-COMPLETE.md`: product baseline and active acceptance criteria;
+- `docs/TODO-Open-Items.md`: open work and next action only;
+- `review-findings.md`: unresolved defects, failed checks, and risk only;
+- `docs/implementation-notes.md`: durable spec-unstated choices only.
 
-Treat narrative modifiers as routing signals, not automatic scope expansion.
-"Carefully", "thoroughly", or "audit the whole flow" increases inspection depth
-inside the current scope; it does not authorize unrelated refactors. "Fully" or
-"end-to-end" means continue to evidence-ready for the approved scope and stop at
-owner gates; it does not mean owner-accepted. "Quickly", "lightly", or "minimal"
-selects compression, not weaker evidence. "Commit and wait" does not imply push,
-release, or deploy unless those are named.
+Use ADRs sparingly. Archive closed history rather than growing active journals.
 
-If multiple intents match, first decide whether they can be safely composed
-inside one approved packet. When one route remains dominant, state the
-interpreted intent, SDAD scale/intensity, autonomy level, and expected evidence,
-then proceed. If the combination changes scope, risk, claim level, owner gate,
-or durable-doc requirements, ask one blocking clarification question with a
-recommended default. Natural-language routing does not bypass owner gates.
+## Optional Evidence Files
 
-## Source Of Truth
+Create only when an active claim needs the boundary:
 
-When sources conflict, prefer:
+- `docs/evidence-matrix.md`;
+- `docs/claim-registry.md`;
+- `docs/artifact-contracts.md`;
+- `docs/work-packet-state.md`;
+- `docs/remote-evidence-import.md`.
 
-1. Source code, migrations, tests, reproducible commands
-2. Active runtime docs
-3. Canonical SPEC
-4. Active SPEC files
-5. current handoff/save-state files
-6. Product notes and external references
-7. Historical or archived records
-8. Chat memory or AI confidence
+A missing optional file is not a setup failure when no corresponding claim
+exists.
 
-Read order is routing, not authority. Owner decisions control scope, risk
-tolerance, and acceptance. They become durable source of truth only when recorded
-in active docs, SPEC, ADR, or claim registry. A current handoff may carry the
-decision for continuity until it is promoted; it does not turn weak evidence into
-stronger evidence.
+## Merge Safety
 
-If a SPEC spans past-to-present history, current active sections override older
-sections. Older SPEC material is rationale unless reaffirmed in the current
-active path.
+Before writing:
 
-## AI Development Rules
+1. inspect existing tool instructions and control files;
+2. show collisions and proposed changes;
+3. preserve project-specific commands, constraints, and owner decisions;
+4. do not overwrite without authorization;
+5. validate the installed adapter and routed files from outside the template
+   source when packaging is part of the claim.
 
-- Do not treat AI confidence as completion.
-- Do not rely on obvious-but-unwritten assumptions.
-- Keep active implementation separate from future ideas.
-- State SDAD scale and operating intensity.
-- Raise the current packet to `Full SDAD / High` only when it changes a Q5 gate.
-- Lower intensity when control surfaces reduce controllability.
-- Work in review-worthy development units inside the approved packet, not
-  micro-approval steps.
-- Continue autonomously inside the approved work packet until evidence is ready.
-- When the plan is fuzzy, inspect repository evidence first and ask only the
-  next blocking owner question with a recommended answer.
-- Surface assumptions, prefer simple designs, make surgical changes, and verify
-  goals.
-- Record spec-unstated implementation decisions in `docs/implementation-notes.md`
-  without storing raw internal reasoning or mechanical edit logs.
-- Record blockers in `review-findings.md`.
-- Record open implementation work in `docs/TODO-Open-Items.md`.
-- Update docs when behavior changes.
-- Do not implement from archived docs or product notes unless promoted into active SPEC.
-- Label partial, degraded, scaffolded, skipped, or unverified behavior.
-- If the project has stable/next versions, define version lanes and bugfix sync rules.
-- If the project has high-risk domains, define domain-specific review checks.
+## Bootstrap Handoff
 
-## Handoff Rule
-
-Long AI coding sessions are execution traces, not permanent memory. Specs are
-authority, handoffs are continuity, archives are history, and fresh sessions are
-for reliable execution.
-
-Before closing, archiving, replacing, or restarting a long AI session, create a
-session handoff under `docs/sdad/handoffs/YYYY-MM-DD-topic.md`.
-
-Before handoff, state:
-
-- project or repository name,
-- branch or working context,
-- current objective,
-- SDAD scale / intensity used,
-- changed files,
-- autonomy level used,
-- work packet completed,
-- evidence-ready units,
-- decisions made and why,
-- implementation notes for spec-unstated decisions,
-- tests or commands run,
-- docs checked or updated,
-- remaining risks,
-- constraints, owner preferences, and do-not-touch areas,
-- what is not complete,
-- owner decision needed, if any,
-- next concrete steps,
-- reactivation prompt for a fresh AI session.
-
-Update `save-state.md` when work pauses, handoff to another AI/tool/person is
-expected, owner direction or acceptance criteria changed, blocked/partial or
-unverified state remains, or context would be expensive to reconstruct.
-
-Fresh sessions should use bounded reads for large archives, logs, generated
-artifacts, private data, and old handoffs instead of loading them in full.
-```
-
-## ADR Folder
-
-```text
-SPEC/adr/
-  ADR-0001-template.md
-```
-
-Use ADRs for durable decisions that future AI sessions should not re-litigate
-without new evidence or owner approval. A decision normally deserves an ADR only
-when it is hard to reverse, would surprise a future maintainer without context,
-and represents a real tradeoff.
+Report the chosen scale/tool, created or merged files, active packet, validation
+commands, optional files intentionally omitted, remaining owner gates, and the
+first concrete next step.

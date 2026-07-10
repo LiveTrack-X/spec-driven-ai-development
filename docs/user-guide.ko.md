@@ -206,6 +206,8 @@ approval을 유지하세요.
 
 ## 다음으로 볼 문서
 
+- [owners-guide.md](owners-guide.md): 오너용 빠른 도입 가이드 (영문)
+- [ai-work-loop.md](ai-work-loop.md): Fast/Normal/Full 실행 루프 (영문)
 - [getting-started.md](getting-started.md): 설치 경로와 첫 10분
 - [no-clone-quick-install.md](no-clone-quick-install.md): clone 없이 시작
 - [mini-sdad.md](mini-sdad.md): 작은 프로젝트용 one-file SDAD

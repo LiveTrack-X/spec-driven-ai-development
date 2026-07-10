@@ -75,7 +75,7 @@ record raw internal reasoning or mechanical edit logs.
 | | | |
 
 ## 11. Documentation Record Audit
-- Minimum update-set row used from `docs/INDEX.md`:
+- Change type and routed documentation surfaces:
 - Docs changed:
 - Docs checked with no update needed and why:
 - Stale docs found or confirmed absent:
@@ -111,13 +111,16 @@ Paste this into a fresh AI session:
 ```text
 You are continuing an SDAD-guided project from a handoff document.
 
-First, read this current handoff fully enough to identify the active route,
-objective, constraints, and referenced current files.
-Then inspect `AGENTS.md`, `docs/INDEX.md`, and the current repository state before making changes.
+First, load the installed tool adapter for the current AI tool,
+`sdad-state.yaml`, and `docs/INDEX.md`.
+Then read this current handoff only as deeply as needed to recover the objective,
+constraints, and referenced current files. Inspect current source/tests before
+making changes.
 Do not assume the previous chat context is available.
 Treat the project specification as the source of authority.
 Treat handoff-only decisions as continuity hints until promoted into active SPEC, ADR, claim registry, TODO, or review ledger.
 Confirm the current objective, constraints, files touched, test status, and next steps.
-Use bounded reads for referenced archives, old handoffs, large state files, logs, generated artifacts, and private data.
+Use bounded reads for referenced archives, old handoffs, large state files,
+logs, generated artifacts, and authorized private data.
 Before modifying files, produce a short implementation plan.
 ```

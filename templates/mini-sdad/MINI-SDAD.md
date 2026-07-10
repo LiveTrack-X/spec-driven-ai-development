@@ -13,11 +13,24 @@ grows beyond this file.
 
 Escalate to Standard or Full SDAD only when:
 
-- the work spans multiple AI sessions,
-- the owner will return to the project later,
-- review findings need to survive across sessions,
+- three or more persistence/evidence signals now apply across future sessions,
+  owner return, and evidence beyond AI confidence,
+- durable TODOs or review findings no longer fit this one-file control surface,
 - multiple AI tools or reviewers become involved,
-- release, migration, user data, auth, money, or production risk appears.
+- a release, production, migration, destructive action, real user data, auth,
+  money, security, rollback, or another owner-controlled gate appears.
+
+## Sensitive Data Boundary
+
+Context size and data authorization are separate checks. Use metadata-only
+inspection by default for secret-bearing or private inputs. Do not read, copy,
+transmit, summarize, or paste `.env` files, credentials, private keys, tokens,
+cookies, raw customer records, or private corpora into an AI context unless the
+task requires it and owner policy plus tool policy explicitly permit it.
+
+Prefer redacted samples, schemas, counts, filenames, and hashes. Keep sensitive
+material out of prompts, logs, TODOs, findings, handoffs, and generated
+artifacts. If authorization is unclear, stop before reading the content and ask.
 
 ## Natural-Language Intent Routing
 
