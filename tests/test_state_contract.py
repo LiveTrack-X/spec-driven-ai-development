@@ -330,6 +330,31 @@ class StateContractTests(unittest.TestCase):
                 self.assertEqual(packet_issues[0].id, "state.packet.blank-field")
                 self.assertEqual(packet_issues[0].legacy_message, expected_legacy)
 
+    def test_quoted_empty_packet_status_emits_one_blank_issue(self) -> None:
+        legacy = "unsupported active_packet status: "
+        for quoted_empty in ("''", '\"\"'):
+            with self.subTest(value=quoted_empty):
+                text = valid_state().replace(
+                    "  status: not_started",
+                    f"  status: {quoted_empty}",
+                )
+                result = inspect_state(text)
+                status_issues = [
+                    issue
+                    for issue in result.issues
+                    if issue.line == 15
+                    and issue.id
+                    in {
+                        "state.packet.blank-field",
+                        "state.schema.unsupported-value",
+                    }
+                ]
+
+                self.assertEqual(len(status_issues), 1)
+                self.assertEqual(status_issues[0].id, "state.packet.blank-field")
+                self.assertEqual(status_issues[0].legacy_message, legacy)
+                self.assertEqual(collect_template_state_violations(text), [legacy])
+
     def test_blank_top_level_value_keeps_the_key_source_line(self) -> None:
         result = inspect_state("scale:\n")
 

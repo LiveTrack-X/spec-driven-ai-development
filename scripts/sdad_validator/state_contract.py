@@ -550,9 +550,25 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
                         legacy,
                     )
                 )
+            elif node.kind == "scalar" and not node.scalar:
+                legacy = (
+                    "unsupported active_packet status: "
+                    if key == "status"
+                    else None
+                )
+                issues.append(
+                    _issue(
+                        "state.packet.blank-field",
+                        "error",
+                        f"active_packet {key} must not be blank",
+                        key,
+                        node.line,
+                        legacy,
+                    )
+                )
         status_node = packet_nodes.get("status")
         status = _compatibility_scalar(status_node) if status_node is not None else None
-        if status is not None and status not in ACTIVE_PACKET_STATUSES:
+        if status not in {None, ""} and status not in ACTIVE_PACKET_STATUSES:
             legacy = f"unsupported active_packet status: {status}"
             issues.append(
                 _issue(
@@ -658,16 +674,6 @@ def _schema_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
                         "error",
                         f"active_packet {key} must be a scalar",
                         node.kind,
-                        node.line,
-                    )
-                )
-            elif not node.scalar:
-                issues.append(
-                    _issue(
-                        "state.packet.blank-field",
-                        "error",
-                        f"active_packet {key} must not be blank",
-                        key,
                         node.line,
                     )
                 )
