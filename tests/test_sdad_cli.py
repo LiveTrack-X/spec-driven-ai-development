@@ -367,6 +367,26 @@ class DoctorCliSubprocessTests(unittest.TestCase):
             1,
         )
 
+    def test_malformed_json_flag_before_root_uses_current_directory(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+
+            result = _run("doctor", "--json=false", str(project))
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["root"], ROOT.resolve().as_posix())
+        self.assertFalse(payload["strict"])
+        self.assertEqual(
+            payload["diagnostic_error"]["kind"],
+            "invalid_invocation",
+        )
+        self.assertEqual(result.stderr, "")
+        self.assertEqual(
+            result.stdout.count("\n{") + result.stdout.startswith("{"),
+            1,
+        )
+
     def test_malformed_strict_flag_after_root_preserves_root_and_explicit_flag(
         self,
     ) -> None:
@@ -389,7 +409,86 @@ class DoctorCliSubprocessTests(unittest.TestCase):
             "invalid_invocation",
         )
         self.assertEqual(result.stderr, "")
-        self.assertEqual(result.stdout.count("\n{") + result.stdout.startswith("{"), 1)
+        self.assertEqual(
+            result.stdout.count("\n{") + result.stdout.startswith("{"),
+            1,
+        )
+
+    def test_malformed_strict_flag_before_root_uses_cwd_and_stays_explicit(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+
+            result = _run(
+                "doctor",
+                "--strict=false",
+                str(project),
+                "--json",
+            )
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["root"], ROOT.resolve().as_posix())
+        self.assertTrue(payload["strict"])
+        self.assertEqual(
+            payload["diagnostic_error"]["kind"],
+            "invalid_invocation",
+        )
+        self.assertEqual(result.stderr, "")
+        self.assertEqual(
+            result.stdout.count("\n{") + result.stdout.startswith("{"),
+            1,
+        )
+
+    def test_double_dash_json_like_root_does_not_select_json_error_output(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            cwd = Path(tmp)
+
+            result = _run(
+                "doctor",
+                "--",
+                "--json=false",
+                "extra",
+                cwd=cwd,
+            )
+
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.stdout, "")
+        self.assertRegex(
+            result.stderr,
+            r"^Doctor error \[invalid_invocation\]: .+\n$",
+        )
+
+    def test_double_dash_strict_like_root_is_not_an_explicit_strict_flag(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            cwd = Path(tmp)
+
+            result = _run(
+                "doctor",
+                "--json",
+                "--",
+                "--strict=false",
+                "extra",
+                cwd=cwd,
+            )
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(
+            payload["root"],
+            (cwd / "--strict=false").resolve().as_posix(),
+        )
+        self.assertFalse(payload["strict"])
+        self.assertEqual(
+            payload["diagnostic_error"]["kind"],
+            "invalid_invocation",
+        )
+        self.assertEqual(result.stderr, "")
 
     def test_invalid_human_invocation_uses_only_one_fatal_stderr_line(self) -> None:
         result = _run("doctor", "--unknown")

@@ -105,25 +105,29 @@ def _parser(stdout: TextIO) -> _ArgumentParser:
 
 
 def _explicit_flag(arguments: Sequence[str], flag: str) -> bool:
-    return any(value == flag or value.startswith(flag + "=") for value in arguments)
+    for value in arguments:
+        if value == "--":
+            break
+        if value == flag or value.startswith(flag + "="):
+            return True
+    return False
 
 
 def _probe_project_root(arguments: Sequence[str]) -> str | None:
-    normalized: list[str] = []
+    prefix: list[str] = []
     options_enabled = True
     for value in arguments:
-        if value == "--":
-            options_enabled = False
         if options_enabled and (
             value.startswith("--json=")
             or value.startswith("--strict=")
         ):
-            normalized.append(value.split("=", 1)[0])
-        else:
-            normalized.append(value)
+            break
+        prefix.append(value)
+        if value == "--":
+            options_enabled = False
 
     try:
-        namespace, _unknown = _parser(io.StringIO()).parse_known_args(normalized)
+        namespace, _unknown = _parser(io.StringIO()).parse_known_args(prefix)
     except (_HelpRequested, _InvalidInvocation):
         return None
     return namespace.project_root
