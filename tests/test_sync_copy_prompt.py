@@ -53,6 +53,25 @@ class CopyPromptSyncTests(unittest.TestCase):
                 "## Copy-Paste Start Prompt",
             )
 
+    def test_repository_prompt_is_exact_expanded_gemini_mirror(self) -> None:
+        no_clone = (ROOT / "docs/no-clone-quick-install.md").read_text(
+            encoding="utf-8"
+        )
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        canonical = SYNC_COPY_PROMPT.prompt_content(
+            no_clone,
+            "## Option 1: Give This To Your AI Agent",
+        )
+        mirrored = SYNC_COPY_PROMPT.prompt_content(
+            readme,
+            "## Copy-Paste Start Prompt",
+        )
+        self.assertEqual(mirrored, canonical)
+        self.assertIn("Gemini CLI -> ./GEMINI.md", canonical)
+        self.assertIn("adapters/gemini-cli/GEMINI.md", canonical)
+        self.assertNotIn("<details", readme)
+        self.assertNotIn("<summary", readme)
+
 
 if __name__ == "__main__":
     unittest.main()

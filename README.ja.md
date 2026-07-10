@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-ステータス: `3.0.0` 安定ドキュメント/パッケージリリース。
+ステータス: `3.1.0` 安定ドキュメント/パッケージリリース。
 
 有効性は project fit、Owner の運用規律、evidence quality に依存します。
 

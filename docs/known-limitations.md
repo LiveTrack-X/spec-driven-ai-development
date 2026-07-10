@@ -11,6 +11,10 @@ themselves. Non-negotiable behavior still belongs in CI, required tests, hooks,
 permissions, deny rules, branch protection, release gates, or deployment
 controls.
 
+Tool-provider policies, sandboxes, permissions, and trusted-folder controls may
+add useful boundaries, but provider guidance is not enforcement of SDAD's
+completion, evidence, or owner-gate contract.
+
 The repository validator protects important documentation, template, adapter,
 and link contracts. It is not a substitute for downstream product tests,
 security review, or owner acceptance.
@@ -75,6 +79,11 @@ on Bash and PowerShell. CI runs the suite on Ubuntu and Windows. The tests still
 do not prove every shell, policy, concurrent filesystem change, path, or
 permission edge case.
 
+The v3.1.0 local verification run reported three Windows privilege-dependent skips.
+They cover permission or link scenarios that this environment could not create.
+Those skips are environment limits, not passing evidence for the skipped cases;
+the remaining platform matrix belongs to CI and appropriately privileged hosts.
+
 Automated repository tests live under `tests/`; do not create a separate
 `test/` tree.
 
@@ -85,10 +94,11 @@ specific access controls.
 
 ## Raw URL Reproducibility
 
-The executable no-clone instructions pin the stable v3.0.0 baseline with a full
-40-character commit SHA and verify each downloaded adapter with SHA-256. A
-commit ID is immutable; a readable tag can move unless repository policy makes
-it immutable. The one-paste installers download to a temporary file, verify it,
+The executable no-clone instructions pin the stable v3.1.0 baseline at the full
+40-character commit SHA `1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa`. Each
+downloaded adapter is verified with SHA-256. A commit ID is immutable; a readable
+tag can move unless repository policy makes it immutable. The one-paste installers
+download to a temporary file, verify it,
 and only then publish it without clobbering a target that appeared concurrently.
 
 That pinned baseline declares `progressive_control_plane=true` and includes the

@@ -103,13 +103,13 @@ Mini SDAD creates one instruction file for the AI tool.
 Use the same content from:
 
 ```text
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/templates/mini-sdad/MINI-SDAD.md
 ```
 
 Expected SHA-256:
 `f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669`.
 
-That full 40-character commit SHA is the stable v3.0.0 baseline. Replace the
+That full 40-character commit SHA is the stable v3.1.0 baseline. Replace the
 revision with `main` only when you intentionally want changing, unpinned
 instructions.
 
@@ -119,6 +119,7 @@ Save it as the right instruction file for your tool:
 |---|---|
 | Codex | `AGENTS.md` |
 | Claude Code | `CLAUDE.md` |
+| Gemini CLI | `GEMINI.md` |
 | Cursor | `.cursor/rules/mini-sdad.mdc` |
 | GitHub Copilot | `.github/copilot-instructions.md` |
 | Generic AI tool | `AI-SESSION-INSTRUCTIONS.md` |
@@ -143,7 +144,7 @@ Paste this into your AI coding tool:
 Use Mini SDAD for this project.
 
 Fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/templates/mini-sdad/MINI-SDAD.md
 Expected SHA-256: f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669
 
 Before fetching, state that you are installing Mini SDAD and explain why this

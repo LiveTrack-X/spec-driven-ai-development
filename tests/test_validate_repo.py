@@ -524,6 +524,79 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
         )
 
 
+class StableReleaseContractTests(unittest.TestCase):
+    EXPECTED_SOURCES = {
+        "mini": {
+            "path": "templates/mini-sdad/MINI-SDAD.md",
+            "sha256": "f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669",
+        },
+        "codex": {
+            "path": "adapters/codex/AGENTS.md",
+            "target": "AGENTS.md",
+            "sha256": "fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba",
+        },
+        "claude-code": {
+            "path": "adapters/claude-code/CLAUDE.md",
+            "target": "CLAUDE.md",
+            "sha256": "dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5",
+        },
+        "gemini-cli": {
+            "path": "adapters/gemini-cli/GEMINI.md",
+            "target": "GEMINI.md",
+            "sha256": "a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23",
+        },
+        "cursor": {
+            "path": "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
+            "target": ".cursor/rules/spec-driven-ai-development.mdc",
+            "sha256": "371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68",
+        },
+        "github-copilot": {
+            "path": "adapters/github-copilot/.github/copilot-instructions.md",
+            "target": ".github/copilot-instructions.md",
+            "sha256": "335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4",
+        },
+        "generic": {
+            "path": "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
+            "target": "AI-SESSION-INSTRUCTIONS.md",
+            "sha256": "9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75",
+        },
+    }
+
+    def test_manifest_has_exact_v3_1_0_identity_and_baseline_sources(self) -> None:
+        manifest = json.loads((ROOT / "install-sources.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["label"], "v3.1.0 stable baseline")
+        self.assertEqual(
+            manifest["revision"],
+            "1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa",
+        )
+        self.assertEqual(
+            manifest["capabilities"],
+            {"progressive_control_plane": True},
+        )
+        self.assertEqual(manifest["sources"], self.EXPECTED_SOURCES)
+        self.assertEqual(VALIDATE_REPO.STABLE_RELEASE_SOURCES, self.EXPECTED_SOURCES)
+
+    def test_current_stable_release_surfaces_satisfy_contract(self) -> None:
+        manifest = json.loads((ROOT / "install-sources.json").read_text(encoding="utf-8"))
+        VALIDATE_REPO.validate_stable_release_contract(manifest)
+
+    def test_option_one_and_readme_prompt_include_gemini_and_stay_expanded(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        no_clone = (ROOT / "docs/no-clone-quick-install.md").read_text(
+            encoding="utf-8"
+        )
+        canonical = VALIDATE_REPO.prompt_content(
+            no_clone,
+            VALIDATE_REPO.CANONICAL_HEADING,
+        )
+        mirrored = VALIDATE_REPO.prompt_content(readme, VALIDATE_REPO.README_HEADING)
+        self.assertEqual(mirrored, canonical)
+        self.assertIn("Gemini CLI -> ./GEMINI.md", canonical)
+        self.assertIn("adapters/gemini-cli/GEMINI.md", canonical)
+        self.assertNotIn("<details", readme)
+        self.assertNotIn("<summary", readme)
+
+
 class WorkflowActionPinContractTests(unittest.TestCase):
     def validate(self, root: Path) -> None:
         with mock.patch.object(VALIDATE_REPO, "ROOT", root):

@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `3.0.0` stable documentation/package release.
+Status: `3.1.0` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -77,7 +77,7 @@ First determine whether you can edit files in this project.
 If this is a chat-only environment such as Claude.ai, ChatGPT web, or another
 browser chat with no project filesystem, do not install adapters or claim files
 were saved. Use this repository for planning only, then tell me to open the
-project in Codex, Claude Code, Cursor, Copilot Chat, or another file-editing AI
+project in Codex, Claude Code, Gemini CLI, Cursor, Copilot Chat, or another file-editing AI
 coding tool.
 
 Step 0 - Choose scale before creating files.
@@ -186,7 +186,7 @@ migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/templates/mini-sdad/MINI-SDAD.md
 Expected SHA-256: f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669
 
 Before fetching, state that you are installing Mini SDAD and explain why this
@@ -195,6 +195,7 @@ scale was chosen.
 Save it as the correct instruction file for this tool:
 - Codex -> ./AGENTS.md
 - Claude Code -> ./CLAUDE.md
+- Gemini CLI -> ./GEMINI.md
 - Cursor -> ./.cursor/rules/mini-sdad.mdc
 - Copilot Chat -> ./.github/copilot-instructions.md
 - Generic AI agent -> ./AI-SESSION-INSTRUCTIONS.md
@@ -211,15 +212,16 @@ tool. Do not infer adapter paths. Use exactly one of these source URLs:
 
 Before fetching, state which adapter you are installing and why.
 If you cannot determine the current tool, ask me to specify one of:
-Codex / Claude Code / Cursor / Copilot Chat / Generic.
+Codex / Claude Code / Gemini CLI / Cursor / Copilot Chat / Generic.
 Claude Code means the local/CLI coding tool with project filesystem access. It
 does not mean Claude.ai chat.
 
-- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 98ee8d74da8e0005ec95819986774def6fc5a94a016c864f97185aa908b68f6f
-- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 b59a9e2379eafad0579d3d35aa24c6a4646026da6db9ec6b4c8bf9b006e34c9c
-- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 8ebc4862a6cf8ff03c59181d5de03b5620b433223c1f5a160f9c7c7caaed66d9
-- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 ff60918688cdcfe701b6740c56cf71220251c35537956eb6c91596b053bc32d5
-- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 1813ab380910973035a1d9ecbf6484c503c223a1352357d266ac47be3db29393
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5
+- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75
 
 Before saving the adapter:
 1. show me the source URL,
@@ -344,6 +346,8 @@ makes it immutable. Use `/main/` only when you explicitly want the latest,
 unpinned instructions, and record the chosen revision in setup notes. See
 [install-sources.json](install-sources.json) for the canonical revision/path/hash
 contract and [docs/known-limitations.md](docs/known-limitations.md) for its limits.
+See [the v3.1.0 release notes](docs/releases/v3.1.0.md) for the bounded change,
+compatibility, and verification record.
 
 ## Diagnose Stateful Projects
 
@@ -872,7 +876,7 @@ This workflow turns problems into rules.
 
 Use the single copy-paste prompt in [Start Here](#start-here). A local checkout
 contains the compact state -> INDEX -> on-demand templates. The current pinned
-v3.0.0 no-clone manifest declares `progressive_control_plane=true` and pins the
+v3.1.0 no-clone manifest declares `progressive_control_plane=true` and pins the
 compact state -> INDEX -> on-demand runtime to an immutable commit with verified
 adapter hashes.
 
@@ -1026,6 +1030,7 @@ See [docs/implicit-rules.md](docs/implicit-rules.md).
 - [docs/field-notes/release-governance-method.md](docs/field-notes/release-governance-method.md): release-governance field pattern
 - [docs/field-notes/meta-harness-method.md](docs/field-notes/meta-harness-method.md): harness optimization fit gate and evidence boundary pattern
 - [docs/known-limitations.md](docs/known-limitations.md): adoption limits, raw URL pinning, validator scope, and installer smoke-test boundaries
+- [docs/releases/v3.1.0.md](docs/releases/v3.1.0.md): v3.1.0 features, compatibility, claim boundaries, and verification
 - [SECURITY.md](SECURITY.md): security reporting path and security-boundary policy
 
 ## Validate

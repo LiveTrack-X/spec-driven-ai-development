@@ -4,6 +4,32 @@
 
 Nothing yet.
 
+## 3.1.0 - 2026-07-10
+
+- Added the checkout-only, read-only `sdad doctor` diagnostic for stateful
+  Standard and Full projects, with deterministic checks, human and versioned
+  JSON output, strict warning policy, and explicit exit `0`/`1`/`2` semantics.
+- Added a self-contained Gemini CLI adapter, local installer routes, Mini and
+  no-clone target mapping to repository-root `GEMINI.md`, and parity coverage
+  across all seven pinned instruction sources.
+- Hardened state parsing, path confinement, packet/review coherence, owner-gate
+  diagnosis, shared bounded reads, diagnostic identities, and runtime severity
+  contracts without making Doctor execute declared validation commands.
+- Added cross-model guidance for treating embedded instructions in external
+  content and tool output as untrusted evidence, requiring observed results and
+  task-specific semantic validation rather than accepting syntactic success.
+- Added progressive-context, bounded-feedback, fresh-context review, and
+  evaluation guidance with an explicit research matrix of 25 official or
+  primary sources and no claim that those sources establish SDAD effectiveness.
+- Pinned the v3.1.0 no-clone baseline to
+  `1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa`, refreshed SHA-256 values from
+  immutable Git blobs, and kept README Copy-Paste Start Prompt exactly expanded
+  and synchronized with no-clone Option 1.
+- Documented compatibility, migration, local verification, three
+  Windows privilege-dependent skips, provider-guidance limits, and the boundary
+  that a clean Doctor report does not prove correctness, effectiveness, release
+  approval, or owner acceptance.
+
 ## 3.0.0 - 2026-07-10
 
 - Reworked Standard/Full startup into an agent-first progressive control plane:

@@ -69,6 +69,7 @@ REQUIRED_FILES = [
     "docs/session-handoff.md",
     "docs/implicit-rules.md",
     "docs/tool-adapters.md",
+    "docs/releases/v3.1.0.md",
     "docs/field-notes/repository-control-surface-method.md",
     "docs/field-notes/cost-aware-agent-routing-method.md",
     "docs/field-notes/documentation-governance-method.md",
@@ -164,6 +165,7 @@ INSTALL_SOURCE_KEYS = {
     "mini",
     "codex",
     "claude-code",
+    "gemini-cli",
     "cursor",
     "github-copilot",
     "generic",
@@ -171,6 +173,47 @@ INSTALL_SOURCE_KEYS = {
 INSTALL_SOURCE_SURFACES = {
     "docs/no-clone-quick-install.md": INSTALL_SOURCE_KEYS,
     "docs/mini-sdad.md": {"mini"},
+}
+STABLE_RELEASE_VERSION = "3.1.0"
+STABLE_RELEASE_TAG = "v3.1.0"
+STABLE_RELEASE_TITLE = "SDAD v3.1.0"
+STABLE_RELEASE_DATE = "2026-07-10"
+STABLE_RELEASE_REVISION = "1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa"
+STABLE_RELEASE_SOURCES = {
+    "mini": {
+        "path": "templates/mini-sdad/MINI-SDAD.md",
+        "sha256": "f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669",
+    },
+    "codex": {
+        "path": "adapters/codex/AGENTS.md",
+        "target": "AGENTS.md",
+        "sha256": "fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba",
+    },
+    "claude-code": {
+        "path": "adapters/claude-code/CLAUDE.md",
+        "target": "CLAUDE.md",
+        "sha256": "dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5",
+    },
+    "gemini-cli": {
+        "path": "adapters/gemini-cli/GEMINI.md",
+        "target": "GEMINI.md",
+        "sha256": "a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23",
+    },
+    "cursor": {
+        "path": "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
+        "target": ".cursor/rules/spec-driven-ai-development.mdc",
+        "sha256": "371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68",
+    },
+    "github-copilot": {
+        "path": "adapters/github-copilot/.github/copilot-instructions.md",
+        "target": ".github/copilot-instructions.md",
+        "sha256": "335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4",
+    },
+    "generic": {
+        "path": "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
+        "target": "AI-SESSION-INSTRUCTIONS.md",
+        "sha256": "9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75",
+    },
 }
 SENSITIVE_DATA_SURFACES = [
     "README.md",
@@ -704,6 +747,83 @@ def install_manifest_release_version(manifest: dict[str, object]) -> str:
     return match.group("version")
 
 
+def validate_stable_release_contract(manifest: dict[str, object]) -> None:
+    expected_identity = {
+        "label": f"{STABLE_RELEASE_TAG} stable baseline",
+        "revision": STABLE_RELEASE_REVISION,
+    }
+    for key, expected in expected_identity.items():
+        if manifest.get(key) != expected:
+            fail(f"Stable release {key} must equal {expected}")
+    capabilities = manifest.get("capabilities")
+    if capabilities != {"progressive_control_plane": True}:
+        fail("Stable release capabilities must declare progressive_control_plane=true")
+    if manifest.get("sources") != STABLE_RELEASE_SOURCES:
+        fail("Stable release source paths, targets, or hashes do not match v3.1.0")
+
+    release_path = f"docs/releases/v{STABLE_RELEASE_VERSION}.md"
+    require_phrases(
+        release_path,
+        "Stable release notes",
+        [
+            f"# {STABLE_RELEASE_TITLE}",
+            f"Release date: {STABLE_RELEASE_DATE}",
+            f"Tag: `{STABLE_RELEASE_TAG}`",
+            "## SDAD Doctor",
+            "checkout-only",
+            "read-only",
+            "Exit `0`",
+            "Exit `1`",
+            "Exit `2`",
+            "does not prove correctness, effectiveness, or owner acceptance",
+            "## Gemini CLI Adapter",
+            "`GEMINI.md`",
+            "## Cross-Model Guidance",
+            "embedded instructions",
+            "semantic validation",
+            "fresh-context review",
+            "## Research And Evaluation Boundary",
+            "25 official or primary sources",
+            "do not establish SDAD effectiveness",
+            "## Compatibility And Migration",
+            "## Verification",
+            "three Windows privilege-dependent skips",
+            "provider guidance is not enforcement",
+        ],
+    )
+
+    changelog = read("CHANGELOG.md")
+    expected_changelog_prefix = (
+        "# Changelog\n\n## Unreleased\n\nNothing yet.\n\n"
+        f"## {STABLE_RELEASE_VERSION} - {STABLE_RELEASE_DATE}\n"
+    )
+    if not changelog.startswith(expected_changelog_prefix):
+        fail("CHANGELOG must place the v3.1.0 entry directly after Unreleased")
+
+    localized_statuses = {
+        "README.md": f"Status: `{STABLE_RELEASE_VERSION}`",
+        "README.ko.md": f"상태: `{STABLE_RELEASE_VERSION}`",
+        "README.ja.md": f"ステータス: `{STABLE_RELEASE_VERSION}`",
+        "README.zh.md": f"状态：`{STABLE_RELEASE_VERSION}`",
+    }
+    for path, marker in localized_statuses.items():
+        if marker not in read(path):
+            fail(f"{path} does not show the stable v3.1.0 status")
+    if f"docs/releases/v{STABLE_RELEASE_VERSION}.md" not in read("README.md"):
+        fail("README must link the v3.1.0 release notes")
+
+    require_phrases(
+        "docs/known-limitations.md",
+        "Known limitations release boundary",
+        [
+            "stable v3.1.0 baseline",
+            STABLE_RELEASE_REVISION,
+            "three Windows privilege-dependent skips",
+            "provider guidance is not enforcement",
+        ],
+    )
+
+
 def require_local_only_csp(path: str) -> None:
     html = read(path)
     meta = re.search(
@@ -1095,6 +1215,7 @@ def validate_templates() -> None:
     validate_doctor_checkout_contract()
     validate_doctor_gemini_documentation_contract()
     manifest = validate_install_source_manifest()
+    validate_stable_release_contract(manifest)
     release_version = install_manifest_release_version(manifest)
     for path in SENSITIVE_DATA_SURFACES:
         require_phrases(
@@ -1889,7 +2010,7 @@ def validate_templates() -> None:
         "Exact Adapter Sources",
         "Give This To Your AI Agent",
         "Before fetching",
-        "Codex / Claude Code / Cursor / Copilot Chat / Generic",
+        "Codex / Claude Code / Gemini CLI / Cursor / Copilot Chat / Generic",
         "Do not infer adapter",
         "If you cannot fetch the file",
         "One-Paste PowerShell Installer",

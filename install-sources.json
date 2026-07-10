@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "label": "v3.0.0 stable baseline",
-  "revision": "80c481eebb0852bd06d3341a191207e94f017b3c",
+  "label": "v3.1.0 stable baseline",
+  "revision": "1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa",
   "capabilities": {
     "progressive_control_plane": true
   },
@@ -13,27 +13,32 @@
     "codex": {
       "path": "adapters/codex/AGENTS.md",
       "target": "AGENTS.md",
-      "sha256": "98ee8d74da8e0005ec95819986774def6fc5a94a016c864f97185aa908b68f6f"
+      "sha256": "fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba"
     },
     "claude-code": {
       "path": "adapters/claude-code/CLAUDE.md",
       "target": "CLAUDE.md",
-      "sha256": "b59a9e2379eafad0579d3d35aa24c6a4646026da6db9ec6b4c8bf9b006e34c9c"
+      "sha256": "dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5"
+    },
+    "gemini-cli": {
+      "path": "adapters/gemini-cli/GEMINI.md",
+      "target": "GEMINI.md",
+      "sha256": "a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23"
     },
     "cursor": {
       "path": "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
       "target": ".cursor/rules/spec-driven-ai-development.mdc",
-      "sha256": "8ebc4862a6cf8ff03c59181d5de03b5620b433223c1f5a160f9c7c7caaed66d9"
+      "sha256": "371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68"
     },
     "github-copilot": {
       "path": "adapters/github-copilot/.github/copilot-instructions.md",
       "target": ".github/copilot-instructions.md",
-      "sha256": "ff60918688cdcfe701b6740c56cf71220251c35537956eb6c91596b053bc32d5"
+      "sha256": "335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4"
     },
     "generic": {
       "path": "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
       "target": "AI-SESSION-INSTRUCTIONS.md",
-      "sha256": "1813ab380910973035a1d9ecbf6484c503c223a1352357d266ac47be3db29393"
+      "sha256": "9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75"
     }
   }
 }
