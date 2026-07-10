@@ -13,6 +13,33 @@ from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
+RESEARCH_SOURCE_URLS = (
+    "https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6",
+    "https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/",
+    "https://www.anthropic.com/engineering/building-effective-agents",
+    "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "https://www.anthropic.com/research/trustworthy-agents",
+    "https://code.claude.com/docs/en/best-practices",
+    "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "https://geminicli.com/docs/cli/gemini-md/",
+    "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+    "https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions",
+    "https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations",
+    "https://cursor.com/docs/rules",
+    "https://cursor.com/blog/agent-best-practices",
+    "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/",
+    "https://openreview.net/forum?id=VTF8yNQM66",
+    "https://papers.nips.cc/paper_files/paper/2024/hash/5a7c947568c1b1328ccc5230172e1e7c-Abstract-Conference.html",
+    "https://arxiv.org/abs/2210.03629",
+    "https://papers.neurips.cc/paper_files/paper/2023/hash/1b44b878bb782e6954cd888628510e90-Abstract-Conference.html",
+    "https://arxiv.org/abs/2407.01489",
+    "https://arxiv.org/abs/2307.03172",
+    "https://arxiv.org/abs/2507.09089",
+    "https://pubsonline.informs.org/doi/abs/10.1287/mnsc.2025.00535",
+    "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5713646",
+    "https://arxiv.org/abs/2505.23419",
+    "https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/",
+)
 SPEC = importlib.util.spec_from_file_location(
     "validate_repo_under_test",
     ROOT / "scripts" / "validate_repo.py",
@@ -21,6 +48,94 @@ if SPEC is None or SPEC.loader is None:
     raise RuntimeError("Could not load scripts/validate_repo.py")
 VALIDATE_REPO = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(VALIDATE_REPO)
+
+
+class ResearchFoundationsContractTests(unittest.TestCase):
+    HEADER = (
+        "| Primary source | Last verified | Paraphrased principle | "
+        "Adopted SDAD decision | Limitation or non-transferable detail | "
+        "Control type |"
+    )
+
+    def write_fixture(
+        self,
+        root: Path,
+        *,
+        urls: tuple[str, ...] = RESEARCH_SOURCE_URLS,
+        verified: str = "2026-07-10",
+        control_type: str = "Guidance",
+        linked: bool = True,
+    ) -> None:
+        docs = root / "docs"
+        docs.mkdir()
+        rows = [
+            self.HEADER,
+            "| --- | --- | --- | --- | --- | --- |",
+        ]
+        rows.extend(
+            f"| [Source {index}]({url}) | {verified} | Principle {index} | "
+            f"Decision {index} | Limitation {index} | {control_type} |"
+            for index, url in enumerate(urls, start=1)
+        )
+        boundaries = (
+            "Sources inform bounded design decisions; they do not establish SDAD "
+            "effectiveness. Mixed productivity results are not consensus. No reported "
+            "percentage or benchmark score is an SDAD effectiveness claim.\n\n"
+        )
+        (docs / "research-foundations.md").write_text(
+            "# Research Foundations\n\n" + boundaries + "\n".join(rows) + "\n",
+            encoding="utf-8",
+        )
+        (docs / "tool-adapters.md").write_text(
+            "See [research](research-foundations.md).\n" if linked else "# Adapters\n",
+            encoding="utf-8",
+        )
+
+    def validate(self, root: Path) -> None:
+        validator = getattr(VALIDATE_REPO, "validate_research_foundations", None)
+        self.assertIsNotNone(validator, "research-foundations validator is missing")
+        with mock.patch.object(VALIDATE_REPO, "ROOT", root):
+            validator()
+
+    def test_accepts_exact_source_set_and_matrix_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_fixture(root)
+            self.validate(root)
+
+    def test_rejects_missing_or_unapproved_source(self) -> None:
+        cases = (
+            RESEARCH_SOURCE_URLS[:-1],
+            RESEARCH_SOURCE_URLS[:-1] + ("https://example.com/not-approved",),
+        )
+        for urls in cases:
+            with self.subTest(urls=urls[-1]), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.write_fixture(root, urls=urls)
+                with contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit):
+                        self.validate(root)
+
+    def test_rejects_wrong_verification_date_or_control_type(self) -> None:
+        cases = (
+            {"verified": "2026-07-11"},
+            {"control_type": "Marketing claim"},
+        )
+        for overrides in cases:
+            with self.subTest(overrides=overrides), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.write_fixture(root, **overrides)
+                with contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit):
+                        self.validate(root)
+
+    def test_rejects_unrouted_research_document(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_fixture(root, linked=False)
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    self.validate(root)
 
 
 class MarkdownLinkValidationTests(unittest.TestCase):

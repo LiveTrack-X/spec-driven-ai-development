@@ -102,6 +102,18 @@ Prefer:
 Do not split every import, formatter change, or tiny test name into a separate
 owner checkpoint.
 
+## Bounded Feedback Loop
+
+For non-trivial units, repeat `inspect -> act -> observe -> update -> retry or
+stop` within a stated attempt budget. Feed each observable result back into the
+plan; do not repeat a failed action without new evidence or a changed
+hypothesis. Stop or escalate when the packet threshold or owner gate is reached.
+
+A valid command, tool call, JSON object, or program exit proves only structural
+success. Verify the environment change and task-specific meaning before marking
+the unit evidence-ready. The Fast Loop may compress these steps for tiny work,
+but it does not remove observation or validation.
+
 ## Docs Sync Rule
 
 Document impact is a check, not an automatic rewrite.

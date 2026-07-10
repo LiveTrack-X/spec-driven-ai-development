@@ -6,15 +6,20 @@ retrieval/memory tuning, scheduled loop, or model-routing experiment
 
 Do not add an advanced control surface because it is interesting. Require:
 
-- a repeated, stable task unit;
-- a measurable metric and baseline;
-- fixed model/tool and allowed-change surfaces;
-- separate search and held-out evaluation sets;
-- explicit evidence and owner-acceptance criteria;
-- evaluation leakage and private-data review;
-- concrete time, token, compute, and retry budgets;
-- rollback and stop rules;
-- an owner adoption gate.
+- a representative task and environment plus a measurable baseline;
+- deterministic outcome checks where possible and a fixed model/tool setup;
+- separate regression and capability evaluation;
+- held-out or fresh tasks for public comparative claims;
+- repeated runs for nondeterministic workflows;
+- human-calibrated semantic graders when deterministic checks are insufficient;
+- final-answer completeness in addition to tool-trace correctness;
+- separate evidence-ready and owner acceptance criteria;
+- evaluation leakage and private-data controls;
+- rollback and stop rules plus an owner adoption gate.
+
+Apply a quality-first budget: meet the quality and evidence bar before comparing
+time, tokens, latency, retries, review burden, compute, or cost. Record those
+budgets, the rollback trigger, and the owner-controlled stop condition.
 
 Mark missing fields as unknown or blocking. Keep advisor approval, worker
 completion, evaluator pass, and owner acceptance as separate states. A passing

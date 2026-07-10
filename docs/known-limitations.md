@@ -15,6 +15,20 @@ The repository validator protects important documentation, template, adapter,
 and link contracts. It is not a substitute for downstream product tests,
 security review, or owner acceptance.
 
+## Regression Evidence And Method Claims
+
+Repository regression tests do not establish SDAD effectiveness or comparative
+gains in productivity, quality, safety, cost, or completion rate. They establish
+only the package behaviors and contracts they exercise. Across studies, mixed productivity results are not consensus:
+task shape, tool generation, experience, repository, and chosen metric can
+change the observed outcome.
+
+The primary sources in [Research Foundations](research-foundations.md) inform
+bounded design decisions; they do not validate SDAD as a method. Public claims
+need representative tasks, held-out or fresh evaluation, repeated trials when
+nondeterminism matters, semantic review, and explicit limitations. A benchmark,
+vendor guide, subjective speed report, or copied percentage is not sufficient.
+
 ## Validator Maintainability
 
 `scripts/validate_repo.py` is intentionally strict and currently acts as the

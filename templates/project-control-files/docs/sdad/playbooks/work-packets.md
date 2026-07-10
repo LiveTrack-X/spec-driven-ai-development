@@ -21,10 +21,18 @@ Do not escalate because a document exists; do not compress away a live gate.
 
 ## Work Packet And Unit
 
-A work packet is the owner-approved objective, boundaries, non-goals, evidence
-expectations, and stop conditions. A review-worthy unit is an internal slice
-large enough to review and small enough to verify at one checkpoint. Multiple
-related TODOs may belong to one unit.
+A work packet records:
+
+- the problem or desired outcome;
+- acceptance criteria and the acceptance boundary;
+- allowed scope and non-goals;
+- expected evidence and validation commands;
+- owner gates and stop conditions;
+- likely files or components, marked as candidates until verified.
+
+A review-worthy unit is an internal slice large enough to review and small
+enough to verify at one checkpoint. Multiple related TODOs may belong to one
+unit. One-shot and Mini work may keep the same packet contract in compact prose.
 
 Default Standard work to Level 2 Work Packet Autonomy. Mini uses Level 1 for
 its single bounded unit. Full normally uses Level 2 implementation with Level 4
@@ -60,6 +68,16 @@ owner-relevant tradeoff, follow-up, and verification impact in
 `docs/implementation-notes.md`. Do not record raw internal reasoning,
 mechanical edits, or large logs. Create an ADR only when the decision is hard to
 reverse, surprising without context, and represents a real tradeoff.
+
+## Bounded Feedback Loop
+
+For non-trivial work, use `inspect -> act -> observe -> update -> retry or stop`.
+Update the plan and state from observable results rather than confidence. Set
+bounded attempts, and do not repeat a failed action without new evidence, a
+changed hypothesis, or an explicit remaining retry budget. Stop or escalate
+when attempts add no evidence, the packet threshold fires, or an owner-controlled
+boundary is reached. Tiny work may keep the same behavior inside the Fast Loop
+without a separate planning artifact.
 
 ## Stop Conditions
 

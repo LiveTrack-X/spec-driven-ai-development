@@ -17,6 +17,15 @@ Level 4 means implementation may proceed inside the approved packet, but the
 AI must stop before the gated action or owner acceptance. Commit does not imply
 push; push does not imply release; release does not imply deploy.
 
+## Fresh-Context Review
+
+For a Q5 change, release candidate, migration, destructive action, security
+boundary, or public effectiveness claim, request an implementation-independent
+review from fresh context when another reviewer or isolated pass is available.
+Review the final diff, acceptance criteria, validation evidence, open findings,
+and residual risk. This is review evidence, not owner acceptance, and it is not
+required for tiny low-risk work.
+
 ## Evidence Tiers
 
 Match claims to the strongest evidence actually obtained:

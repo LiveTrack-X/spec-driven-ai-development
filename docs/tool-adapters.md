@@ -73,6 +73,10 @@ Each adapter keeps only the high-signal operating rules:
 
 Longer explanations stay in this repository's docs and templates.
 
+The cross-model decisions and their non-transferable limits are recorded in
+`docs/research-foundations.md`: [Research Foundations](research-foundations.md),
+outside the startup context.
+
 `templates/project-control-files/AGENTS.md` is the canonical runtime kernel.
 Regenerate all self-contained adapters with:
 
@@ -100,6 +104,23 @@ guidance, an on-demand procedure, isolated exploration, an enforced guarantee,
 or reviewed project memory.
 
 ## Tool Notes
+
+### Provider Runtime Boundaries
+
+Provider rules remain guidance unless the provider or repository enforces them.
+Sandbox, policy, permission, and trusted-folder controls can constrain actions;
+they do not prove completion, product correctness, or owner approval. Likewise,
+valid syntax proves structure, while observed results and task-specific semantic
+validation establish the evidence claim.
+
+Gemini CLI reads repository `GEMINI.md` as project context.
+`GEMINI_SYSTEM_MD` replaces its system prompt and is not an SDAD installation
+surface. Gemini headless Plan Mode, like provider plan modes generally, is not
+owner acceptance and cannot bypass Q5 controls. Nested or path-specific Claude,
+Cursor, Copilot, or Gemini instructions should be added only after an observed
+domain-specific failure justifies the extra always-loaded context.
+
+### Provider References
 
 - Claude Code uses project `CLAUDE.md` memory files. See Anthropic's memory docs:
   <https://code.claude.com/docs/en/memory>

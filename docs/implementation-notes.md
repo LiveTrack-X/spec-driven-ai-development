@@ -93,6 +93,24 @@ history.
 
 Use bounded reads for archived implementation notes.
 
+## 2026-07-10 - Cross-model guidance translation
+
+- SPEC gap: vendor guidance and agent research use different runtime terms and
+  do not directly define an SDAD control contract.
+- Decision: keep one compact external-content and semantic-validation boundary
+  in the rendered kernel; route localization, packet, review, feedback, and
+  evaluation detail to on-demand playbooks; keep the source matrix outside
+  startup context.
+- Why: the shared boundary is broadly applicable, while detailed provider and
+  evaluation guidance would exceed startup needs and can change independently.
+- Alternatives rejected: provider-specific kernel forks, copied benchmark
+  percentages, a default model, mandatory multi-agent review, and treating
+  repository regression tests as evidence of SDAD effectiveness.
+- Verification impact: renderer parity, line/character budgets, semantic docs
+  contracts, the exact primary-source set, and local links must pass together.
+- Follow-up: refresh source dates and limitations when a cited decision changes;
+  do not rewrite stable guidance merely because a provider page changes layout.
+
 ## 2026-05-20 - Clarification checkpoint adoption
 
 - SPEC gap: SDAD did not yet define how to absorb external "grill the plan"
