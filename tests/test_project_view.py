@@ -5,7 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, fields
 from datetime import date
 from pathlib import Path, PurePosixPath
 from unittest.mock import patch
@@ -62,9 +62,56 @@ class DiagnosticRecordTests(unittest.TestCase):
 
         self.assertEqual(Severity.ERROR.value, "error")
         self.assertEqual(Severity.WARNING.value, "warning")
+        self.assertEqual(tuple(Severity), (Severity.ERROR, Severity.WARNING))
         self.assertEqual(finding.path, "SPEC/current.md")
         with self.assertRaises(FrozenInstanceError):
             finding.message = "changed"  # type: ignore[misc]
+
+    def test_diagnostic_record_field_names_are_exact_and_ordered(self) -> None:
+        expected_fields = (
+            (
+                Finding,
+                (
+                    "id",
+                    "severity",
+                    "message",
+                    "path",
+                    "line",
+                    "evidence",
+                    "remediation",
+                ),
+            ),
+            (
+                DoctorPolicy,
+                (
+                    "today",
+                    "stale_after_days",
+                    "max_state_bytes",
+                    "max_control_document_bytes",
+                    "q5_keywords",
+                ),
+            ),
+            (
+                DoctorReport,
+                (
+                    "root",
+                    "findings",
+                    "checks_run",
+                    "checks_skipped",
+                    "error_count",
+                    "warning_count",
+                ),
+            ),
+            (PathInspection, ("status", "resolved_path")),
+            (ReadResult, ("status", "data")),
+        )
+
+        for record_type, expected in expected_fields:
+            with self.subTest(record_type=record_type.__name__):
+                self.assertEqual(
+                    tuple(field.name for field in fields(record_type)),
+                    expected,
+                )
 
     def test_policy_has_exact_defaults_and_stores_injected_values(self) -> None:
         policy = DoctorPolicy(today=date(2026, 7, 10))
@@ -74,6 +121,8 @@ class DiagnosticRecordTests(unittest.TestCase):
         self.assertEqual(policy.max_state_bytes, 65_536)
         self.assertEqual(policy.max_control_document_bytes, 1_048_576)
         self.assertEqual(policy.q5_keywords, EXPECTED_Q5_KEYWORDS)
+        with self.assertRaises(FrozenInstanceError):
+            policy.stale_after_days = 31  # type: ignore[misc]
 
         injected = DoctorPolicy(
             today=date(2030, 1, 2),
