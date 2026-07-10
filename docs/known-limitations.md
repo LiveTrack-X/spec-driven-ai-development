@@ -56,17 +56,16 @@ specific access controls.
 
 ## Raw URL Reproducibility
 
-The executable no-clone instructions pin the stable v2.1.0 baseline with a full
+The executable no-clone instructions pin the stable v3.0.0 baseline with a full
 40-character commit SHA and verify each downloaded adapter with SHA-256. A
 commit ID is immutable; a readable tag can move unless repository policy makes
 it immutable. The one-paste installers download to a temporary file, verify it,
 and only then publish it without clobbering a target that appeared concurrently.
 
-That pinned baseline declares `progressive_control_plane=false` because it
-predates the Unreleased compact state -> INDEX -> on-demand runtime. No-clone
-users must follow the installed baseline until a real release commit refreshes
-the manifest revision, adapter hashes, and capability. The current working tree
-must not be used as an integrity pin.
+That pinned baseline declares `progressive_control_plane=true` and includes the
+compact state -> INDEX -> on-demand runtime. No-clone users should still follow
+the installed baseline rather than combine it with changing `main` content. The
+current working tree must not be used as an integrity pin.
 
 `install-sources.json` is the single revision/path/hash contract. Repository
 validation recomputes every listed hash from the pinned Git object and checks

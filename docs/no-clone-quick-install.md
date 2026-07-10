@@ -126,11 +126,11 @@ such as `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`,
 For Mini SDAD, use this exact template:
 
 ```text
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/templates/mini-sdad/MINI-SDAD.md
 ```
 
 Expected SHA-256:
-`d922694f7568a5a9e8f5284d6101e99ce6a44bd78c66662589f4b8674cbc6c88`.
+`f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669`.
 
 Before fetching Mini SDAD, state that you are installing Mini SDAD and explain
 why this scale was chosen.
@@ -140,15 +140,15 @@ these exact source URLs:
 
 | Tool | Source URL | Save as | SHA-256 |
 |---|---|---|---|
-| Codex | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/codex/AGENTS.md` | `AGENTS.md` | `3835d1b94d99b6c14687634a527fc83ce5650e1b848ec391176b35ca7e7a54aa` |
-| Claude Code | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/claude-code/CLAUDE.md` | `CLAUDE.md` | `2bf5fcc8a8b53889c6007c748acc21fa9c2c637a3464a6936d23a5dce6b65873` |
-| Cursor | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc` | `.cursor/rules/spec-driven-ai-development.mdc` | `fef37a7c6ce445ed936d79e4283ef72c6bc49e2043361e59e02e23b27f1e5036` |
-| GitHub Copilot | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/github-copilot/.github/copilot-instructions.md` | `.github/copilot-instructions.md` | `1b0023c2b3c490f71314be5b5133010f1a9de37991e59edf5a594ccc455eadcb` |
-| Generic AI tool | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/generic/AI-SESSION-INSTRUCTIONS.md` | `AI-SESSION-INSTRUCTIONS.md` | `12b5074d8dfed7c24dbc7ce7e8a6f3469077903ab81370c72f97e6be09b365a9` |
+| Codex | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/codex/AGENTS.md` | `AGENTS.md` | `98ee8d74da8e0005ec95819986774def6fc5a94a016c864f97185aa908b68f6f` |
+| Claude Code | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/claude-code/CLAUDE.md` | `CLAUDE.md` | `b59a9e2379eafad0579d3d35aa24c6a4646026da6db9ec6b4c8bf9b006e34c9c` |
+| Cursor | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc` | `.cursor/rules/spec-driven-ai-development.mdc` | `8ebc4862a6cf8ff03c59181d5de03b5620b433223c1f5a160f9c7c7caaed66d9` |
+| GitHub Copilot | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/github-copilot/.github/copilot-instructions.md` | `.github/copilot-instructions.md` | `ff60918688cdcfe701b6740c56cf71220251c35537956eb6c91596b053bc32d5` |
+| Generic AI tool | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/generic/AI-SESSION-INSTRUCTIONS.md` | `AI-SESSION-INSTRUCTIONS.md` | `1813ab380910973035a1d9ecbf6484c503c223a1352357d266ac47be3db29393` |
 
 ## Latest Versus Pinned Sources
 
-The URLs above use the full 40-character commit SHA for the stable v2.1.0
+The URLs above use the full 40-character commit SHA for the stable v3.0.0
 baseline. A commit ID is immutable. A readable release tag can move unless the
 repository makes it immutable, while `main` intentionally changes over time.
 
@@ -160,13 +160,11 @@ intentional and documented.
 [`install-sources.json`](../install-sources.json) is the canonical
 revision/path/hash contract used by repository validation.
 
-The current stable manifest declares `progressive_control_plane=false`. Its
-v2.1.0 adapters predate the Unreleased `sdad-state.yaml -> docs/INDEX.md ->
-on-demand route`. Follow the installed baseline instructions and do not claim
-that the progressive control plane was installed. To use the current
-progressive templates deterministically, install from a local checkout; the
-no-clone capability becomes available only after a real release commit updates
-the manifest revision and hashes.
+The current stable manifest declares `progressive_control_plane=true`. Its
+v3.0.0 adapters include the `sdad-state.yaml -> docs/INDEX.md -> on-demand
+route`. Follow the installed baseline instructions and keep its pinned revision
+and hashes together; use `/main/` only when intentionally testing changing,
+unpinned content.
 
 ## Option 1: Give This To Your AI Agent
 
@@ -294,8 +292,8 @@ migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/templates/mini-sdad/MINI-SDAD.md
-Expected SHA-256: d922694f7568a5a9e8f5284d6101e99ce6a44bd78c66662589f4b8674cbc6c88
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/templates/mini-sdad/MINI-SDAD.md
+Expected SHA-256: f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669
 
 Before fetching, state that you are installing Mini SDAD and explain why this
 scale was chosen.
@@ -323,11 +321,11 @@ Codex / Claude Code / Cursor / Copilot Chat / Generic.
 Claude Code means the local/CLI coding tool with project filesystem access. It
 does not mean Claude.ai chat.
 
-- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 3835d1b94d99b6c14687634a527fc83ce5650e1b848ec391176b35ca7e7a54aa
-- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 2bf5fcc8a8b53889c6007c748acc21fa9c2c637a3464a6936d23a5dce6b65873
-- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 fef37a7c6ce445ed936d79e4283ef72c6bc49e2043361e59e02e23b27f1e5036
-- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 1b0023c2b3c490f71314be5b5133010f1a9de37991e59edf5a594ccc455eadcb
-- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b85ff447f216492aedb2ced9a6c3098d4d566ef5/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 12b5074d8dfed7c24dbc7ce7e8a6f3469077903ab81370c72f97e6be09b365a9
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 98ee8d74da8e0005ec95819986774def6fc5a94a016c864f97185aa908b68f6f
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 b59a9e2379eafad0579d3d35aa24c6a4646026da6db9ec6b4c8bf9b006e34c9c
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 8ebc4862a6cf8ff03c59181d5de03b5620b433223c1f5a160f9c7c7caaed66d9
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 ff60918688cdcfe701b6740c56cf71220251c35537956eb6c91596b053bc32d5
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/80c481eebb0852bd06d3341a191207e94f017b3c/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 1813ab380910973035a1d9ecbf6484c503c223a1352357d266ac47be3db29393
 
 Before saving the adapter:
 1. show me the source URL,
@@ -452,14 +450,14 @@ Change `$adapter = "codex"` if you use another tool.
 ```powershell
 $ErrorActionPreference = "Stop"
 $adapter = "codex" # codex, claude-code, cursor, github-copilot, generic
-$revision = "b85ff447f216492aedb2ced9a6c3098d4d566ef5" # stable v2.1.0 baseline
+$revision = "80c481eebb0852bd06d3341a191207e94f017b3c" # stable v3.0.0 baseline
 $base = "https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/$revision"
 $files = @{
-  "codex" = @("adapters/codex/AGENTS.md", "AGENTS.md", "3835d1b94d99b6c14687634a527fc83ce5650e1b848ec391176b35ca7e7a54aa")
-  "claude-code" = @("adapters/claude-code/CLAUDE.md", "CLAUDE.md", "2bf5fcc8a8b53889c6007c748acc21fa9c2c637a3464a6936d23a5dce6b65873")
-  "cursor" = @("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc", ".cursor/rules/spec-driven-ai-development.mdc", "fef37a7c6ce445ed936d79e4283ef72c6bc49e2043361e59e02e23b27f1e5036")
-  "github-copilot" = @("adapters/github-copilot/.github/copilot-instructions.md", ".github/copilot-instructions.md", "1b0023c2b3c490f71314be5b5133010f1a9de37991e59edf5a594ccc455eadcb")
-  "generic" = @("adapters/generic/AI-SESSION-INSTRUCTIONS.md", "AI-SESSION-INSTRUCTIONS.md", "12b5074d8dfed7c24dbc7ce7e8a6f3469077903ab81370c72f97e6be09b365a9")
+  "codex" = @("adapters/codex/AGENTS.md", "AGENTS.md", "98ee8d74da8e0005ec95819986774def6fc5a94a016c864f97185aa908b68f6f")
+  "claude-code" = @("adapters/claude-code/CLAUDE.md", "CLAUDE.md", "b59a9e2379eafad0579d3d35aa24c6a4646026da6db9ec6b4c8bf9b006e34c9c")
+  "cursor" = @("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc", ".cursor/rules/spec-driven-ai-development.mdc", "8ebc4862a6cf8ff03c59181d5de03b5620b433223c1f5a160f9c7c7caaed66d9")
+  "github-copilot" = @("adapters/github-copilot/.github/copilot-instructions.md", ".github/copilot-instructions.md", "ff60918688cdcfe701b6740c56cf71220251c35537956eb6c91596b053bc32d5")
+  "generic" = @("adapters/generic/AI-SESSION-INSTRUCTIONS.md", "AI-SESSION-INSTRUCTIONS.md", "1813ab380910973035a1d9ecbf6484c503c223a1352357d266ac47be3db29393")
 }
 if (-not $files.ContainsKey($adapter)) { throw "Unknown adapter: $adapter" }
 $source, $target, $expectedSha256 = $files[$adapter]
@@ -515,33 +513,33 @@ Change `adapter="codex"` if you use another tool.
 ```bash
 set -euo pipefail
 adapter="codex" # codex, claude-code, cursor, github-copilot, generic
-revision="b85ff447f216492aedb2ced9a6c3098d4d566ef5" # stable v2.1.0 baseline
+revision="80c481eebb0852bd06d3341a191207e94f017b3c" # stable v3.0.0 baseline
 base="https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/$revision"
 case "$adapter" in
   codex)
     source="adapters/codex/AGENTS.md"
     target="AGENTS.md"
-    expected_sha256="3835d1b94d99b6c14687634a527fc83ce5650e1b848ec391176b35ca7e7a54aa"
+    expected_sha256="98ee8d74da8e0005ec95819986774def6fc5a94a016c864f97185aa908b68f6f"
     ;;
   claude-code)
     source="adapters/claude-code/CLAUDE.md"
     target="CLAUDE.md"
-    expected_sha256="2bf5fcc8a8b53889c6007c748acc21fa9c2c637a3464a6936d23a5dce6b65873"
+    expected_sha256="b59a9e2379eafad0579d3d35aa24c6a4646026da6db9ec6b4c8bf9b006e34c9c"
     ;;
   cursor)
     source="adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc"
     target=".cursor/rules/spec-driven-ai-development.mdc"
-    expected_sha256="fef37a7c6ce445ed936d79e4283ef72c6bc49e2043361e59e02e23b27f1e5036"
+    expected_sha256="8ebc4862a6cf8ff03c59181d5de03b5620b433223c1f5a160f9c7c7caaed66d9"
     ;;
   github-copilot)
     source="adapters/github-copilot/.github/copilot-instructions.md"
     target=".github/copilot-instructions.md"
-    expected_sha256="1b0023c2b3c490f71314be5b5133010f1a9de37991e59edf5a594ccc455eadcb"
+    expected_sha256="ff60918688cdcfe701b6740c56cf71220251c35537956eb6c91596b053bc32d5"
     ;;
   generic)
     source="adapters/generic/AI-SESSION-INSTRUCTIONS.md"
     target="AI-SESSION-INSTRUCTIONS.md"
-    expected_sha256="12b5074d8dfed7c24dbc7ce7e8a6f3469077903ab81370c72f97e6be09b365a9"
+    expected_sha256="1813ab380910973035a1d9ecbf6484c503c223a1352357d266ac47be3db29393"
     ;;
   *)
     echo "Unknown adapter: $adapter" >&2
@@ -610,10 +608,10 @@ echo "Next prompt: Read $target_path and bootstrap this project into SPEC-Driven
 
 ## After The Installer
 
-Check the capability disclosed above. The prompt below applies to a local
-checkout or a future pinned manifest with `progressive_control_plane=true`.
-With the current `false` baseline, ask the agent to follow the installed file
-and do not ask it to invent the Unreleased state, INDEX, or playbooks.
+Check the capability disclosed above. The stable v3.0.0 manifest declares
+`progressive_control_plane=true`, so the prompt below applies to both a local
+v3.0.0 checkout and its pinned no-clone sources. Keep the revision, source path,
+and checksum from one manifest together.
 
 Open your AI coding tool in the target project and say:
 

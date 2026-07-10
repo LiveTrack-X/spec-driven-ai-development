@@ -3,7 +3,7 @@
 A control layer for AI coding: turn specs, agents, and outputs into a governed
 development loop.
 
-Status: `2.1.0` stable documentation/package release.
+Status: `3.0.0` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -667,9 +667,9 @@ This workflow turns problems into rules.
 
 Use the single copy-paste prompt in [Start Here](#start-here). A local checkout
 contains the compact state -> INDEX -> on-demand templates. The current pinned
-v2.1.0 no-clone manifest declares `progressive_control_plane=false`; follow its
-installed baseline rather than claiming that Unreleased route is present. A
-future release pin can enable it after the adapters and hashes are committed.
+v3.0.0 no-clone manifest declares `progressive_control_plane=true` and pins the
+compact state -> INDEX -> on-demand runtime to an immutable commit with verified
+adapter hashes.
 
 For step-by-step setup, use [docs/getting-started.md](docs/getting-started.md).
 For no-clone setup, use [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md).

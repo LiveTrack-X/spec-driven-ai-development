@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Nothing yet.
+
+## 3.0.0 - 2026-07-10
+
 - Reworked Standard/Full startup into an agent-first progressive control plane:
   a self-contained adapter, compact `sdad-state.yaml`, routing-only
   `docs/INDEX.md`, current source/tests, and one on-demand policy or playbook
@@ -45,8 +49,8 @@
 - Added `install-sources.json` as the canonical revision/path/hash contract and
   made validation check every entry against its pinned Git blob and
   user-facing install surfaces.
-- Added a machine-checked no-clone runtime capability so the pinned v2.1.0
-  baseline cannot be mistaken for the Unreleased progressive control plane.
+- Added a machine-checked no-clone runtime capability; the v3.0.0 manifest
+  declares `progressive_control_plane=true` and pins its runtime sources.
 - Added a Cursor-specific Mini SDAD template with always-applied MDC metadata.
 - Added CI coverage on Ubuntu and Windows with Python 3.10 and 3.12, pinned
   action commits, read-only permissions, syntax checks, and Dependabot updates.
