@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Protocol
 
 from .diagnostics import (
@@ -10,8 +11,13 @@ from .diagnostics import (
     Finding,
     Severity,
 )
-from .project_view import ProjectView
-from .state_contract import StateContractResult, StateIssue, inspect_state
+from .project_view import PathInspection, ProjectView, ReadResult
+from .state_contract import (
+    ACTIVE_PACKET_STATUSES,
+    StateContractResult,
+    StateIssue,
+    inspect_state,
+)
 
 
 STATE_PATH = "sdad-state.yaml"
@@ -86,6 +92,33 @@ CONDITIONAL_SEVERITY_IDS = frozenset(
     }
 )
 
+VALIDATION_CONDITIONAL_IDS = frozenset(
+    finding_id
+    for finding_id in CONDITIONAL_SEVERITY_IDS
+    if finding_id.startswith("validation.")
+)
+VALIDATION_REQUIRED_STATUSES = frozenset(
+    {
+        "software_verified",
+        "tester_ready",
+        "hardware_evidence_received",
+        "hardware_verified",
+        "owner_accepted",
+        "release_candidate",
+        "production_ready",
+    }
+)
+COHERENCE_SENSITIVE_STATUSES = frozenset(
+    {
+        "software_verified",
+        "tester_ready",
+        "hardware_evidence_received",
+        "hardware_verified",
+        "release_candidate",
+    }
+)
+TERMINAL_STATUSES = frozenset({"owner_accepted", "production_ready"})
+
 WARNING_ONLY_FINDING_IDS = frozenset(
     {
         "state.schema.unknown-key",
@@ -127,6 +160,50 @@ class DiagnosticCheck(Protocol):
     name: str
 
     def run(self, context: DoctorContext) -> tuple[Finding, ...]: ...
+
+
+class _CachedProjectView:
+    def __init__(self, view: ProjectView) -> None:
+        self._view = view
+        self._inspections: dict[str, PathInspection] = {}
+        self._reads: dict[str, tuple[int, ReadResult]] = {}
+
+    @property
+    def root(self) -> Path:
+        return self._view.root
+
+    def inspect(self, relative_path: str) -> PathInspection:
+        if relative_path not in self._inspections:
+            try:
+                inspection = self._view.inspect(relative_path)
+            except OSError:
+                inspection = PathInspection("unreadable", None)
+            self._inspections[relative_path] = inspection
+        return self._inspections[relative_path]
+
+    def read_bytes(self, relative_path: str, max_bytes: int) -> ReadResult:
+        if max_bytes < 0:
+            raise ValueError("max_bytes must be non-negative")
+        cached = self._reads.get(relative_path)
+        if cached is not None:
+            cached_limit, cached_result = cached
+            if cached_limit != max_bytes:
+                raise DiagnosticError(
+                    "internal_error",
+                    "A control document was requested with inconsistent read limits.",
+                )
+            return cached_result
+
+        inspection = self.inspect(relative_path)
+        if inspection.status != "ok":
+            result = ReadResult(inspection.status, None)
+        else:
+            try:
+                result = self._view.read_bytes(relative_path, max_bytes)
+            except OSError:
+                result = ReadResult("unreadable", None)
+        self._reads[relative_path] = (max_bytes, result)
+        return result
 
 
 def _state_input_result(
@@ -195,10 +272,50 @@ def _root_text(view: ProjectView) -> str:
     return str(view.root).replace("\\", "/")
 
 
+def _usable_packet_status(state_result: StateContractResult) -> str | None:
+    snapshot = state_result.snapshot
+    if snapshot is None:
+        return None
+    located_status = snapshot.active_packet.get("status")
+    if located_status is None or located_status.value not in ACTIVE_PACKET_STATUSES:
+        return None
+    return located_status.value
+
+
+def _conditional_severity(
+    finding_id: str,
+    status: str | None,
+) -> Severity | None:
+    if status is None:
+        return None
+    if finding_id in VALIDATION_CONDITIONAL_IDS:
+        return (
+            Severity.ERROR
+            if status in VALIDATION_REQUIRED_STATUSES
+            else Severity.WARNING
+        )
+    if finding_id == "gate.pending-after-acceptance":
+        if status == "owner_accepted":
+            return Severity.WARNING
+        if status == "production_ready":
+            return Severity.ERROR
+        return None
+    if finding_id in {"packet.open-finding", "packet.open-todo"}:
+        if status in COHERENCE_SENSITIVE_STATUSES:
+            return Severity.WARNING
+        if status in TERMINAL_STATUSES:
+            return Severity.ERROR
+    return None
+
+
 class DiagnosticEngine:
     def diagnose(self, view: ProjectView, policy: DoctorPolicy) -> DoctorReport:
         state_result = _read_state(view, policy)
-        context = DoctorContext(view=view, policy=policy, state_result=state_result)
+        context = DoctorContext(
+            view=_CachedProjectView(view),
+            policy=policy,
+            state_result=state_result,
+        )
 
         from .checks import BUILT_IN_CHECKS
 
@@ -242,6 +359,38 @@ class DiagnosticEngine:
                 "internal_error",
                 "A diagnostic check emitted unsupported finding IDs: "
                 + ", ".join(unexpected_ids),
+            )
+
+        non_enum_severities = sorted(
+            {
+                finding.id
+                for _, finding in findings_with_order
+                if finding.severity is not Severity.ERROR
+                and finding.severity is not Severity.WARNING
+            }
+        )
+        if non_enum_severities:
+            raise DiagnosticError(
+                "internal_error",
+                "A diagnostic check emitted non-enum severities for: "
+                + ", ".join(non_enum_severities),
+            )
+
+        packet_status = _usable_packet_status(state_result)
+        conditional_breaches = sorted(
+            {
+                finding.id
+                for _, finding in findings_with_order
+                if finding.id in CONDITIONAL_SEVERITY_IDS
+                and finding.severity
+                is not _conditional_severity(finding.id, packet_status)
+            }
+        )
+        if conditional_breaches:
+            raise DiagnosticError(
+                "internal_error",
+                "A diagnostic check emitted invalid conditional severities for: "
+                + ", ".join(conditional_breaches),
             )
 
         severity_breaches = sorted(

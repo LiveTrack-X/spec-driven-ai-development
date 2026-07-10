@@ -582,7 +582,7 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
                 self.assertEqual(view.read_counts[path], 1)
 
     def test_optional_read_os_error_is_a_path_finding_not_internal_failure(self) -> None:
-        report = diagnose(
+        view = make_view(
             valid_state(),
             files={
                 "review-findings.md": (
@@ -594,11 +594,88 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
                 "review-findings.md": PermissionError("denied")
             },
         )
+        report = DiagnosticEngine().diagnose(
+            view,
+            DoctorPolicy(today=date(2026, 7, 10)),
+        )
 
         self.assertFinding(report, "path.unreadable", Severity.ERROR)
         self.assertNotFinding(report, "review.structure.missing-section")
         self.assertEqual(report.checks_run, FIXED_CHECKS)
         self.assertEqual(report.checks_skipped, ())
+        self.assertEqual(view.read_counts["review-findings.md"], 1)
+
+    def test_control_documents_use_one_cached_bounded_snapshot(self) -> None:
+        review_versions = (
+            (
+                "## Active Findings\n"
+                "- [High] [packet:WP-001] First review snapshot\n"
+                "## Recently Closed\n"
+            ).encode("utf-8"),
+            (
+                "## Active Findings\n"
+                "None currently tracked.\n"
+                "## Recently Closed\n"
+            ).encode("utf-8"),
+        )
+        todo_versions = (
+            (
+                "## Active Work\n"
+                "- [ ] [packet:WP-001] First TODO snapshot\n"
+                "## Release / Production Readiness\n"
+                "None currently tracked.\n"
+            ).encode("utf-8"),
+            (
+                "## Active Work\n"
+                "None currently tracked.\n"
+                "## Release / Production Readiness\n"
+                "None currently tracked.\n"
+            ).encode("utf-8"),
+        )
+
+        class FlappingProjectView(InMemoryProjectView):
+            def __init__(self) -> None:
+                state = valid_state(
+                    status="owner_accepted",
+                    routed_docs=(
+                        "review-findings.md",
+                        "docs/TODO-Open-Items.md",
+                    ),
+                )
+                super().__init__(
+                    {
+                        "sdad-state.yaml": state.encode("utf-8"),
+                        "SPEC/current.md": b"# Current spec\n",
+                        "review-findings.md": review_versions[0],
+                        "docs/TODO-Open-Items.md": todo_versions[0],
+                    }
+                )
+                self._versions = {
+                    "review-findings.md": review_versions,
+                    "docs/TODO-Open-Items.md": todo_versions,
+                }
+
+            def read_bytes(self, relative_path: str, max_bytes: int) -> ReadResult:
+                versions = self._versions.get(relative_path)
+                if versions is None:
+                    return super().read_bytes(relative_path, max_bytes)
+                self.read_counts[relative_path] += 1
+                read_index = min(self.read_counts[relative_path] - 1, len(versions) - 1)
+                data = versions[read_index]
+                if len(data) > max_bytes:
+                    return ReadResult("too_large", None)
+                return ReadResult("ok", data)
+
+        view = FlappingProjectView()
+        report = DiagnosticEngine().diagnose(
+            view,
+            DoctorPolicy(today=date(2026, 7, 10)),
+        )
+
+        self.assertFinding(report, "packet.open-finding", Severity.ERROR)
+        self.assertFinding(report, "packet.open-todo", Severity.ERROR)
+        self.assertEqual(view.read_counts["review-findings.md"], 1)
+        self.assertEqual(view.read_counts["docs/TODO-Open-Items.md"], 1)
 
     def test_findings_have_stable_check_path_line_id_order_and_exact_counts(self) -> None:
         state = valid_state(updated="2026-06-09", routed_docs=("docs/missing.md",))
@@ -729,6 +806,88 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
             with self.assertRaises(DiagnosticError) as caught:
                 diagnose(valid_state())
         self.assertEqual(caught.exception.kind, "internal_error")
+
+    def test_engine_rejects_invalid_conditional_severity_contracts(self) -> None:
+        from sdad_validator import checks
+
+        validation_ids = (
+            "validation.empty",
+            "validation.missing-command",
+            "validation.blank-command",
+            "validation.missing-proves",
+            "validation.blank-proves",
+            "validation.placeholder",
+        )
+        check_slots = {
+            "validation": (2, "packet_coherence"),
+            "gate": (3, "owner_gates"),
+            "packet": (4, "review_state"),
+        }
+
+        def assert_rejected(
+            finding_id: str,
+            severity: object,
+            status: str,
+        ) -> None:
+            domain = finding_id.split(".", 1)[0]
+            slot, check_name = check_slots[domain]
+
+            class FakeCheck:
+                name = check_name
+
+                def run(self, context: object) -> tuple[Finding, ...]:
+                    return (
+                        Finding(
+                            id=finding_id,
+                            severity=severity,  # type: ignore[arg-type]
+                            message="fake conditional finding",
+                            path="sdad-state.yaml",
+                            line=10,
+                            evidence=f"status: {status}",
+                            remediation="reject invalid runtime contract",
+                        ),
+                    )
+
+            built_ins = list(checks.BUILT_IN_CHECKS)
+            built_ins[slot] = FakeCheck()
+            with patch.object(checks, "BUILT_IN_CHECKS", tuple(built_ins)):
+                with self.assertRaises(DiagnosticError) as caught:
+                    diagnose(valid_state(status=status))
+            self.assertEqual(caught.exception.kind, "internal_error")
+
+        assert_rejected("validation.empty", "warning", "in_progress")
+        for finding_id in validation_ids:
+            with self.subTest(finding_id=finding_id, status="software_verified"):
+                assert_rejected(finding_id, Severity.WARNING, "software_verified")
+            with self.subTest(finding_id=finding_id, status="in_progress"):
+                assert_rejected(finding_id, Severity.ERROR, "in_progress")
+            with self.subTest(finding_id=finding_id, status="invented"):
+                assert_rejected(finding_id, Severity.WARNING, "invented")
+
+        gate_cases = (
+            (Severity.ERROR, "owner_accepted"),
+            (Severity.WARNING, "production_ready"),
+            (Severity.WARNING, "in_progress"),
+            (Severity.WARNING, "invented"),
+        )
+        for severity, status in gate_cases:
+            with self.subTest(finding_id="gate.pending-after-acceptance", status=status):
+                assert_rejected(
+                    "gate.pending-after-acceptance",
+                    severity,
+                    status,
+                )
+
+        for finding_id in ("packet.open-finding", "packet.open-todo"):
+            packet_cases = (
+                (Severity.ERROR, "software_verified"),
+                (Severity.WARNING, "owner_accepted"),
+                (Severity.WARNING, "in_progress"),
+                (Severity.WARNING, "invented"),
+            )
+            for severity, status in packet_cases:
+                with self.subTest(finding_id=finding_id, status=status):
+                    assert_rejected(finding_id, severity, status)
 
 
 class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):
@@ -1025,6 +1184,20 @@ class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):
             ),
         )
         self.assertFinding(injected_match, "gate.q5-review", Severity.WARNING)
+
+    def test_q5_phrase_rejects_unapproved_punctuation_separators(self) -> None:
+        for separator in ("/", ".", "+"):
+            with self.subTest(separator=separator):
+                report = diagnose(
+                    valid_state(
+                        objective=f"Perform a destructive{separator}action safely."
+                    ),
+                    policy=DoctorPolicy(
+                        today=date(2026, 7, 10),
+                        q5_keywords=frozenset({"destructive action"}),
+                    ),
+                )
+                self.assertNotFinding(report, "gate.q5-review")
 
     def test_malformed_owner_gate_collection_does_not_create_gate_cascades(self) -> None:
         state = valid_state(autonomy="4", status="in_progress").replace(

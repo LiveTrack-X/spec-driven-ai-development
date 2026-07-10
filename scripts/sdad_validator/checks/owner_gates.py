@@ -24,31 +24,36 @@ AUTONOMY_FOUR_GATE_STATUSES = frozenset(
     }
 )
 
-_TOKEN_PATTERN = re.compile(r"[^\W_]+", re.UNICODE)
+_APPROVED_SEPARATOR_PATTERN = re.compile(r"[ _-]+")
+_APPROVED_SEPARATOR_REGEX = r"[ _-]+"
+_TOKEN_BOUNDARY = r"[^\W_]"
 
 
-def _tokens(value: str) -> tuple[str, ...]:
-    normalized = re.sub(r"[\s_-]+", " ", value.casefold())
-    return tuple(_TOKEN_PATTERN.findall(normalized))
-
-
-def _contains_tokens(haystack: tuple[str, ...], needle: tuple[str, ...]) -> bool:
-    if not needle or len(needle) > len(haystack):
-        return False
-    return any(
-        haystack[index : index + len(needle)] == needle
-        for index in range(len(haystack) - len(needle) + 1)
+def _keyword_pattern(keyword: str) -> re.Pattern[str] | None:
+    terms = tuple(
+        term
+        for term in _APPROVED_SEPARATOR_PATTERN.split(keyword.casefold().strip())
+        if term
+    )
+    if not terms:
+        return None
+    if terms == ("real", "user", "data"):
+        phrase = (
+            rf"real(?:{_APPROVED_SEPARATOR_REGEX}user)?"
+            rf"{_APPROVED_SEPARATOR_REGEX}data"
+        )
+    else:
+        phrase = _APPROVED_SEPARATOR_REGEX.join(re.escape(term) for term in terms)
+    return re.compile(
+        rf"(?<!{_TOKEN_BOUNDARY}){phrase}(?!{_TOKEN_BOUNDARY})"
     )
 
 
 def _matches_q5(objective: str, q5_keywords: frozenset[str]) -> str | None:
-    objective_tokens = _tokens(objective)
+    normalized_objective = objective.casefold()
     for keyword in sorted(q5_keywords):
-        keyword_tokens = _tokens(keyword)
-        alternatives = (keyword_tokens,)
-        if keyword_tokens == ("real", "user", "data"):
-            alternatives = (keyword_tokens, ("real", "data"))
-        if any(_contains_tokens(objective_tokens, term) for term in alternatives):
+        pattern = _keyword_pattern(keyword)
+        if pattern is not None and pattern.search(normalized_objective):
             return keyword
     return None
 
