@@ -507,6 +507,40 @@ class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
                 output = self.assert_mutation_rejected(path, mutate)
                 self.assertIn(expected, output)
 
+    def test_starter_fenced_block_content_preserves_inline_html_comments(self) -> None:
+        path = "skills/ai-spec-project-start/references/starter-templates.md"
+        cases = (
+            (
+                "state-v2 identity",
+                lambda text: text.replace(
+                    "version: 2\n",
+                    "<!--decoy-->version: 2\n",
+                    1,
+                ),
+            ),
+            (
+                "open-finding wire forms",
+                lambda text: text.replace(
+                    "- [High] [packet:bootstrap] Replace with a classified finding.\n",
+                    "<!--decoy-->- [High] [packet:bootstrap] "
+                    "Replace with a classified finding.\n",
+                    1,
+                ),
+            ),
+            (
+                "Optional Current Handoff",
+                lambda text: text.replace(
+                    "- Active packet: [packet:bootstrap]\n",
+                    "<!--decoy-->- Active packet: [packet:bootstrap]\n",
+                    1,
+                ),
+            ),
+        )
+        for expected, mutate in cases:
+            with self.subTest(expected=expected):
+                output = self.assert_mutation_rejected(path, mutate)
+                self.assertIn(expected, output)
+
     def test_handoff_rejects_comment_fence_and_wrong_section_decoys(self) -> None:
         path = "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
         identity = (

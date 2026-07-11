@@ -1221,20 +1221,36 @@ def _starter_section_blocks(
     text: str,
     heading: str,
 ) -> list[tuple[str, str]] | None:
-    visible = re.sub(
-        r"<!--.*?-->",
-        lambda match: "\n" * match.group(0).count("\n"),
-        text,
-        flags=re.DOTALL,
-    )
-    lines = visible.splitlines()
     found_section = False
     blocks: list[tuple[str, str]] = []
     fence: str | None = None
     fence_length = 0
     fence_info = ""
     block_lines: list[str] = []
-    for line in lines:
+    in_html_comment = False
+    for raw_line in text.splitlines():
+        line = raw_line
+        if fence is None:
+            visible_parts: list[str] = []
+            cursor = 0
+            while cursor < len(raw_line):
+                if in_html_comment:
+                    comment_end = raw_line.find("-->", cursor)
+                    if comment_end < 0:
+                        cursor = len(raw_line)
+                    else:
+                        in_html_comment = False
+                        cursor = comment_end + 3
+                    continue
+                comment_start = raw_line.find("<!--", cursor)
+                if comment_start < 0:
+                    visible_parts.append(raw_line[cursor:])
+                    break
+                visible_parts.append(raw_line[cursor:comment_start])
+                in_html_comment = True
+                cursor = comment_start + 4
+            line = "".join(visible_parts)
+
         delimiter = _STARTER_MARKDOWN_FENCE.match(line)
         if fence is None:
             if not found_section:
