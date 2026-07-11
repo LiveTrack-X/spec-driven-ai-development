@@ -541,6 +541,31 @@ class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
                 output = self.assert_mutation_rejected(path, mutate)
                 self.assertIn(expected, output)
 
+    def test_starter_fence_lines_preserve_inline_html_comments(self) -> None:
+        path = "skills/ai-spec-project-start/references/starter-templates.md"
+        cases = (
+            (
+                "Active State Schema",
+                lambda text: text.replace(
+                    "```yaml\nversion: 2\n",
+                    "```yaml<!--decoy-->\nversion: 2\n",
+                    1,
+                ),
+            ),
+            (
+                "state-v2 identity",
+                lambda text: text.replace(
+                    "  - review-findings.md\n```\n",
+                    "  - review-findings.md\n```<!--decoy-->\n",
+                    1,
+                ),
+            ),
+        )
+        for expected, mutate in cases:
+            with self.subTest(expected=expected):
+                output = self.assert_mutation_rejected(path, mutate)
+                self.assertIn(expected, output)
+
     def test_handoff_rejects_comment_fence_and_wrong_section_decoys(self) -> None:
         path = "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
         identity = (

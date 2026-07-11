@@ -1230,7 +1230,12 @@ def _starter_section_blocks(
     in_html_comment = False
     for raw_line in text.splitlines():
         line = raw_line
-        if fence is None:
+        delimiter = (
+            _STARTER_MARKDOWN_FENCE.match(raw_line)
+            if fence is not None or not in_html_comment
+            else None
+        )
+        if fence is None and delimiter is None:
             visible_parts: list[str] = []
             cursor = 0
             while cursor < len(raw_line):
@@ -1251,7 +1256,6 @@ def _starter_section_blocks(
                 cursor = comment_start + 4
             line = "".join(visible_parts)
 
-        delimiter = _STARTER_MARKDOWN_FENCE.match(line)
         if fence is None:
             if not found_section:
                 if line == heading:
