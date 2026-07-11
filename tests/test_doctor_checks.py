@@ -131,9 +131,28 @@ V2_ONLY_FINDING_IDS = frozenset(
         "handoff.structure.invalid-marker",
         "handoff.structure.missing-marker",
         "index.current-handoff-source",
+        "ledger.closed-review-in-active-section",
+        "ledger.closed-todo-in-active-section",
+        "ledger.open-item-invalid-marker",
+        "ledger.open-item-malformed-record",
+        "ledger.open-item-missing-marker",
+        "ledger.open-item-packet-mismatch",
         "validation.packet-mismatch",
     }
 )
+
+V2_LEDGER_FINDING_IDS = frozenset(
+    {
+        "ledger.closed-review-in-active-section",
+        "ledger.closed-todo-in-active-section",
+        "ledger.open-item-invalid-marker",
+        "ledger.open-item-malformed-record",
+        "ledger.open-item-missing-marker",
+        "ledger.open-item-packet-mismatch",
+    }
+)
+
+TERMINAL_STATUSES = frozenset({"owner_accepted", "production_ready"})
 
 
 def _scalar_list(key: str, values: tuple[str, ...]) -> list[str]:
@@ -2088,6 +2107,499 @@ class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):
             )
         )
         self.assertEqual(emitted & PACKET_GATE_FINDING_IDS, PACKET_GATE_FINDING_IDS)
+
+
+class DoctorV2LedgerTests(DoctorAssertions, unittest.TestCase):
+    def test_open_record_classification_order_is_exact(self) -> None:
+        cases = (
+            ("- prose without marker", "ledger.open-item-missing-marker"),
+            (
+                "- [packet:bad id] description",
+                "ledger.open-item-invalid-marker",
+            ),
+            (
+                "- [packet=WP-001] description",
+                "ledger.open-item-invalid-marker",
+            ),
+            (
+                "- [Urgent] [packet:WP-001] description",
+                "ledger.open-item-malformed-record",
+            ),
+            (
+                "- [High] description [packet:WP-001]",
+                "ledger.open-item-malformed-record",
+            ),
+            (
+                "- [High]  [packet:WP-001] description",
+                "ledger.open-item-malformed-record",
+            ),
+            ("- [packet:WP-001]", "ledger.open-item-malformed-record"),
+            (
+                "- [packet:WP-OLD] description",
+                "ledger.open-item-packet-mismatch",
+            ),
+        )
+        for line, expected in cases:
+            with self.subTest(line=line):
+                report = diagnose(
+                    valid_v2_state(),
+                    files={
+                        "review-findings.md": (
+                            f"## Active Findings\n\n{line}\n"
+                        )
+                    },
+                )
+                matching = [
+                    finding.id
+                    for finding in report.findings
+                    if finding.path == "review-findings.md"
+                ]
+                self.assertEqual(matching, [expected])
+
+    def test_exact_open_grammars_preserve_current_packet_checks(self) -> None:
+        review_lines = (
+            "- [Critical] [packet:WP.1_2-3] Critical description",
+            "- [High] [packet:WP.1_2-3] High description",
+            "- [Medium] [packet:WP.1_2-3] Medium description",
+            "- [Low] [packet:WP.1_2-3] Low description",
+            "- [packet:WP.1_2-3] Unclassified description",
+        )
+        report = diagnose(
+            valid_v2_state(
+                packet_id="WP.1_2-3",
+                status="software_verified",
+            ),
+            files={
+                "review-findings.md": (
+                    "## Active Findings\n"
+                    + "\n".join(review_lines)
+                    + "\n"
+                ),
+                "docs/TODO-Open-Items.md": (
+                    "## Active Work\n"
+                    "- [ ] [packet:WP.1_2-3] Exact TODO description\n"
+                    "## Release / Production Readiness\n"
+                    "None currently tracked.\n"
+                ),
+            },
+        )
+
+        review_findings = [
+            finding
+            for finding in report.findings
+            if finding.id == "packet.open-finding"
+        ]
+        self.assertEqual(len(review_findings), len(review_lines))
+        self.assertEqual(
+            {finding.severity for finding in review_findings},
+            {Severity.WARNING},
+        )
+        self.assertFinding(report, "packet.open-todo", Severity.WARNING)
+        self.assertFalse(
+            V2_LEDGER_FINDING_IDS & {finding.id for finding in report.findings},
+            report.findings,
+        )
+
+    def test_exact_closed_review_and_todo_forms_are_classified_once(self) -> None:
+        review_lines = (
+            "- [x] [Critical] [packet:WP-001] Closed Critical",
+            "- [X] [High] [packet:WP-001] Closed High",
+            "- [x] [Medium] [packet:WP-001] Closed Medium",
+            "- [X] [Low] [packet:WP-001] Closed Low",
+            "- [x] [packet:WP-001] Closed unclassified lower",
+            "- [X] [packet:WP-001] Closed unclassified upper",
+        )
+        report = diagnose(
+            valid_v2_state(status="ai_complete"),
+            files={
+                "review-findings.md": (
+                    "## Active Findings\n"
+                    + "\n".join(review_lines)
+                    + "\n"
+                ),
+                "docs/TODO-Open-Items.md": (
+                    "## Active Work\n"
+                    "- [x] [packet:WP-001] Closed TODO lower\n"
+                    "- [X] [packet:WP-001] Closed TODO upper\n"
+                    "## Release / Production Readiness\n"
+                    "None currently tracked.\n"
+                ),
+            },
+        )
+
+        closed_review = [
+            finding
+            for finding in report.findings
+            if finding.id == "ledger.closed-review-in-active-section"
+        ]
+        closed_todo = [
+            finding
+            for finding in report.findings
+            if finding.id == "ledger.closed-todo-in-active-section"
+        ]
+        self.assertEqual(len(closed_review), len(review_lines))
+        self.assertEqual(len(closed_todo), 2)
+        self.assertEqual(
+            {finding.severity for finding in (*closed_review, *closed_todo)},
+            {Severity.WARNING},
+        )
+        self.assertFalse(
+            {
+                "ledger.open-item-missing-marker",
+                "ledger.open-item-invalid-marker",
+                "ledger.open-item-malformed-record",
+                "ledger.open-item-packet-mismatch",
+            }
+            & {finding.id for finding in report.findings},
+            report.findings,
+        )
+
+    def test_closed_review_and_todo_status_matrix_is_exact(self) -> None:
+        non_terminal = (
+            "not_started",
+            "in_progress",
+            "ai_complete",
+            "software_verified",
+            "tester_ready",
+            "hardware_evidence_received",
+            "hardware_verified",
+            "release_candidate",
+            "blocked",
+            "deferred",
+        )
+        for status in (*non_terminal, "owner_accepted", "production_ready"):
+            with self.subTest(kind="review", status=status):
+                report = diagnose(
+                    valid_v2_state(status=status),
+                    files={
+                        "review-findings.md": (
+                            "## Active Findings\n\n"
+                            "- [x] [High] [packet:WP-001] fixed\n"
+                        )
+                    },
+                )
+                expected = (
+                    Severity.ERROR
+                    if status in TERMINAL_STATUSES
+                    else Severity.WARNING
+                )
+                self.assertFinding(
+                    report,
+                    "ledger.closed-review-in-active-section",
+                    expected,
+                )
+
+            with self.subTest(kind="todo", status=status):
+                report = diagnose(
+                    valid_v2_state(status=status),
+                    files={
+                        "docs/TODO-Open-Items.md": (
+                            "## Active Work\n\n"
+                            "- [x] [packet:WP-001] done\n\n"
+                            "## Release / Production Readiness\n\n"
+                            "None currently tracked.\n"
+                        )
+                    },
+                )
+                if status == "in_progress":
+                    self.assertNotFinding(
+                        report,
+                        "ledger.closed-todo-in-active-section",
+                    )
+                else:
+                    expected = (
+                        Severity.ERROR
+                        if status in TERMINAL_STATUSES
+                        else Severity.WARNING
+                    )
+                    self.assertFinding(
+                        report,
+                        "ledger.closed-todo-in-active-section",
+                        expected,
+                    )
+
+    def test_malformed_closed_todos_are_not_quiet_during_in_progress(self) -> None:
+        cases = (
+            "- [x] done without marker",
+            "- [X] [packet:bad id] invalid ID",
+            "- [x] [packet:WP-001]",
+            "- [x]  [packet:WP-001] extra structural spacing",
+            "- [X] [packet:WP-OLD] another packet",
+        )
+        for line in cases:
+            with self.subTest(line=line):
+                report = diagnose(
+                    valid_v2_state(status="in_progress"),
+                    files={
+                        "docs/TODO-Open-Items.md": (
+                            f"## Active Work\n\n{line}\n\n"
+                            "## Release / Production Readiness\n\n"
+                            "None currently tracked.\n"
+                        )
+                    },
+                )
+                matching = [
+                    finding
+                    for finding in report.findings
+                    if finding.path == "docs/TODO-Open-Items.md"
+                ]
+                self.assertEqual(
+                    [finding.id for finding in matching],
+                    ["ledger.closed-todo-in-active-section"],
+                )
+                self.assertIs(matching[0].severity, Severity.WARNING)
+
+    def test_non_active_sections_archives_sentinels_and_prose_are_ignored(self) -> None:
+        archive_path = "docs/archive/review-findings-2026.md"
+        report = diagnose(
+            valid_v2_state(routed_docs=(archive_path,)),
+            files={
+                "review-findings.md": (
+                    "## Active Findings\n\n"
+                    "None currently tracked.\n"
+                    "Explanatory prose is not a record.\n"
+                    "```text\n"
+                    "- [High] [packet:WP-OLD] fenced example\n"
+                    "```\n\n"
+                    "## Recently Closed\n\n"
+                    "- [x] [High] [packet:WP-OLD] old history\n\n"
+                    "## Archive\n\n"
+                    "- [High] [packet:WP-OLD] archived history\n"
+                ),
+                "docs/TODO-Open-Items.md": (
+                    "## Active Work\n\n"
+                    "None currently tracked.\n"
+                    "Non-bullet active-section prose.\n\n"
+                    "## Future / Deferred\n\n"
+                    "- [ ] [packet:WP-OLD] future work\n\n"
+                    "## Release / Production Readiness\n\n"
+                    "None currently tracked.\n\n"
+                    "## Recently Closed\n\n"
+                    "- [X] [packet:WP-OLD] closed history\n"
+                ),
+                archive_path: (
+                    "## Active Findings\n"
+                    "- [High] [packet:WP-OLD] archived document\n"
+                ),
+            },
+        )
+
+        ignored_ids = V2_LEDGER_FINDING_IDS | {
+            "packet.open-finding",
+            "packet.open-critical-finding",
+            "packet.open-todo",
+        }
+        self.assertFalse(
+            ignored_ids & {finding.id for finding in report.findings},
+            report.findings,
+        )
+
+    def test_current_packet_open_records_keep_every_status_checkpoint(self) -> None:
+        statuses = (
+            "not_started",
+            "in_progress",
+            "ai_complete",
+            "software_verified",
+            "tester_ready",
+            "hardware_evidence_received",
+            "hardware_verified",
+            "owner_accepted",
+            "release_candidate",
+            "production_ready",
+            "blocked",
+            "deferred",
+        )
+        sensitive = {
+            "software_verified",
+            "tester_ready",
+            "hardware_evidence_received",
+            "hardware_verified",
+        }
+        for status in statuses:
+            with self.subTest(status=status):
+                report = diagnose(
+                    valid_v2_state(status=status),
+                    files={
+                        "review-findings.md": (
+                            "## Active Findings\n"
+                            "- [High] [packet:WP-001] Open review\n"
+                            "- [Critical] [packet:WP-001] Critical review\n"
+                        ),
+                        "docs/TODO-Open-Items.md": (
+                            "## Active Work\n"
+                            "- [ ] [packet:WP-001] Open TODO\n"
+                            "## Release / Production Readiness\n"
+                            "None currently tracked.\n"
+                        ),
+                    },
+                )
+                by_id = {
+                    finding_id: [
+                        finding
+                        for finding in report.findings
+                        if finding.id == finding_id
+                    ]
+                    for finding_id in (
+                        "packet.open-finding",
+                        "packet.open-critical-finding",
+                        "packet.open-todo",
+                    )
+                }
+                if status in sensitive:
+                    self.assertEqual(len(by_id["packet.open-finding"]), 2)
+                    self.assertEqual(len(by_id["packet.open-todo"]), 1)
+                    self.assertEqual(by_id["packet.open-critical-finding"], [])
+                    self.assertEqual(
+                        {
+                            finding.severity
+                            for matches in by_id.values()
+                            for finding in matches
+                        },
+                        {Severity.WARNING},
+                    )
+                elif status == "release_candidate":
+                    self.assertEqual(len(by_id["packet.open-finding"]), 1)
+                    self.assertEqual(
+                        len(by_id["packet.open-critical-finding"]),
+                        1,
+                    )
+                    self.assertEqual(len(by_id["packet.open-todo"]), 1)
+                    self.assertIs(
+                        by_id["packet.open-critical-finding"][0].severity,
+                        Severity.ERROR,
+                    )
+                    self.assertEqual(
+                        {
+                            by_id["packet.open-finding"][0].severity,
+                            by_id["packet.open-todo"][0].severity,
+                        },
+                        {Severity.WARNING},
+                    )
+                elif status in TERMINAL_STATUSES:
+                    self.assertEqual(len(by_id["packet.open-finding"]), 2)
+                    self.assertEqual(len(by_id["packet.open-todo"]), 1)
+                    self.assertEqual(by_id["packet.open-critical-finding"], [])
+                    self.assertEqual(
+                        {
+                            finding.severity
+                            for matches in by_id.values()
+                            for finding in matches
+                        },
+                        {Severity.ERROR},
+                    )
+                else:
+                    self.assertTrue(
+                        all(not matches for matches in by_id.values()),
+                        report.findings,
+                    )
+                self.assertFalse(
+                    V2_LEDGER_FINDING_IDS
+                    & {finding.id for finding in report.findings},
+                    report.findings,
+                )
+
+    def test_invalid_packet_identity_or_status_suppresses_ledger_cascades(
+        self,
+    ) -> None:
+        documents = {
+            "review-findings.md": (
+                "## Active Findings\n"
+                "- prose without marker\n"
+                "- [packet:bad id] invalid marker\n"
+                "- [Urgent] [packet:WP-001] malformed grammar\n"
+                "- [packet:WP-OLD] another packet\n"
+                "- [x] [High] [packet:WP-001] closed review\n"
+            ),
+            "docs/TODO-Open-Items.md": (
+                "## Active Work\n"
+                "- [x] [packet:WP-001] closed TODO\n"
+                "## Release / Production Readiness\n"
+                "None currently tracked.\n"
+            ),
+        }
+        states = (
+            valid_v2_state(packet_id="bad id", status="software_verified"),
+            valid_v2_state(status="invented"),
+        )
+        dependent_ids = V2_LEDGER_FINDING_IDS | {
+            "packet.open-finding",
+            "packet.open-critical-finding",
+            "packet.open-todo",
+        }
+        for state in states:
+            with self.subTest(state=state):
+                report = diagnose(state, files=documents)
+                self.assertFinding(
+                    report,
+                    "state.schema.unsupported-value",
+                    Severity.ERROR,
+                )
+                self.assertFalse(
+                    dependent_ids & {finding.id for finding in report.findings},
+                    report.findings,
+                )
+
+    def test_v2_ledger_finding_policy_is_total_and_non_overlapping(self) -> None:
+        conditional_ids = getattr(
+            doctor_module,
+            "V2_LEDGER_CONDITIONAL_IDS",
+            frozenset(),
+        )
+        self.assertEqual(conditional_ids, V2_LEDGER_FINDING_IDS)
+
+        for finding_id in V2_LEDGER_FINDING_IDS:
+            with self.subTest(finding_id=finding_id):
+                version_sources = (
+                    finding_id in doctor_module.STATE_V1_FINDING_IDS,
+                    finding_id in doctor_module.STATE_V2_ONLY_FINDING_IDS,
+                )
+                self.assertEqual(sum(version_sources), 1)
+                self.assertNotIn(
+                    finding_id,
+                    doctor_module.ALLOWED_FINDING_IDS_BY_STATE_VERSION[1],
+                )
+                self.assertIn(
+                    finding_id,
+                    doctor_module.ALLOWED_FINDING_IDS_BY_STATE_VERSION[2],
+                )
+
+                severity_sources = (
+                    finding_id in doctor_module.CONDITIONAL_SEVERITY_IDS,
+                    finding_id in doctor_module.FIXED_FINDING_SEVERITIES,
+                )
+                self.assertEqual(sum(severity_sources), 1)
+                self.assertIn(finding_id, conditional_ids)
+                self.assertNotIn(
+                    finding_id,
+                    doctor_module.FIXED_FINDING_SEVERITIES,
+                )
+
+                for status in (
+                    "not_started",
+                    "in_progress",
+                    "ai_complete",
+                    "software_verified",
+                    "tester_ready",
+                    "hardware_evidence_received",
+                    "hardware_verified",
+                    "owner_accepted",
+                    "release_candidate",
+                    "production_ready",
+                    "blocked",
+                    "deferred",
+                ):
+                    expected = (
+                        Severity.ERROR
+                        if status in TERMINAL_STATUSES
+                        else Severity.WARNING
+                    )
+                    self.assertIs(
+                        doctor_module._conditional_severity(
+                            finding_id,
+                            status,
+                        ),
+                        expected,
+                    )
 
 
 class DoctorReviewStateTests(DoctorAssertions, unittest.TestCase):

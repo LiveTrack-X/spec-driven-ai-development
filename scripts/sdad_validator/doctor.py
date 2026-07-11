@@ -77,6 +77,16 @@ STATE_V1_FINDING_IDS = frozenset(
         "packet.marker.unrepresentable",
     }
 )
+V2_LEDGER_CONDITIONAL_IDS = frozenset(
+    {
+        "ledger.closed-review-in-active-section",
+        "ledger.closed-todo-in-active-section",
+        "ledger.open-item-invalid-marker",
+        "ledger.open-item-malformed-record",
+        "ledger.open-item-missing-marker",
+        "ledger.open-item-packet-mismatch",
+    }
+)
 STATE_V2_ONLY_FINDING_IDS = frozenset(
     {
         "handoff.packet-mismatch",
@@ -87,7 +97,7 @@ STATE_V2_ONLY_FINDING_IDS = frozenset(
         "index.current-handoff-source",
         "validation.packet-mismatch",
     }
-)
+) | V2_LEDGER_CONDITIONAL_IDS
 ALLOWED_FINDING_IDS_BY_STATE_VERSION = {
     1: STATE_V1_FINDING_IDS,
     2: STATE_V1_FINDING_IDS | STATE_V2_ONLY_FINDING_IDS,
@@ -114,7 +124,7 @@ CONDITIONAL_SEVERITY_IDS = frozenset(
         "packet.open-finding",
         "packet.open-todo",
     }
-)
+) | V2_LEDGER_CONDITIONAL_IDS
 
 VALIDATION_CONDITIONAL_IDS = frozenset(
     finding_id
@@ -322,6 +332,12 @@ def _conditional_severity(
 ) -> Severity | None:
     if status is None:
         return None
+    if finding_id in V2_LEDGER_CONDITIONAL_IDS:
+        return (
+            Severity.ERROR
+            if status in TERMINAL_STATUSES
+            else Severity.WARNING
+        )
     if finding_id in VALIDATION_CONDITIONAL_IDS:
         return (
             Severity.ERROR

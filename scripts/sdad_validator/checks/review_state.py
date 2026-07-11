@@ -50,6 +50,29 @@ _UNCLASSIFIED_REVIEW = re.compile(r"^- \[packet:([^\]]+)\] .+$")
 _LINKED_TODO = re.compile(r"^- \[ \] \[packet:([^\]]+)\] .+$")
 _HANDOFF_MARKER = re.compile(r"^- Active packet: \[packet:([^\]]+)\]$")
 _MARKDOWN_FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
+_V2_PACKET_MARKER = re.compile(r"\[packet:([^\]]*)\]")
+_V2_PACKET_LIKE = re.compile(
+    r"(?:\[[^\]\r\n]*packet[^\]\r\n]*(?:\]|$)|\bpacket\s*[:=])",
+    re.IGNORECASE,
+)
+_V2_REVIEW_OPEN_RECORD = re.compile(
+    r"^- (?:\[(?P<severity>Critical|High|Medium|Low)\] )?"
+    r"\[packet:(?P<packet>[^\]]+)\] "
+    r"(?P<description>\S(?:.*\S)?)$"
+)
+_V2_REVIEW_CLOSED_RECORD = re.compile(
+    r"^- \[[xX]\] (?:\[(?P<severity>Critical|High|Medium|Low)\] )?"
+    r"\[packet:(?P<packet>[^\]]+)\] "
+    r"(?P<description>\S(?:.*\S)?)$"
+)
+_V2_TODO_OPEN_RECORD = re.compile(
+    r"^- \[ \] \[packet:(?P<packet>[^\]]+)\] "
+    r"(?P<description>\S(?:.*\S)?)$"
+)
+_V2_TODO_CLOSED_RECORD = re.compile(
+    r"^- \[[xX]\] \[packet:(?P<packet>[^\]]+)\] "
+    r"(?P<description>\S(?:.*\S)?)$"
+)
 
 
 @dataclass(frozen=True)
@@ -57,6 +80,16 @@ class _ActiveItem:
     line: int
     linked: bool
     critical: bool = False
+
+
+@dataclass(frozen=True)
+class _LedgerRecord:
+    line: int
+    closed: bool
+    critical: bool
+    marker_state: str
+    packet_id: str | None
+    grammar_valid: bool
 
 
 def _read_control_document(context: DoctorContext, path: str) -> str | None:
@@ -214,6 +247,88 @@ def _todo_items(text: str, packet_id: str | None) -> list[_ActiveItem] | None:
     return items
 
 
+def _parse_v2_record(
+    line_number: int,
+    line: str,
+    *,
+    open_pattern: re.Pattern[str],
+    closed_pattern: re.Pattern[str],
+) -> _LedgerRecord:
+    closed = line.startswith(("- [x]", "- [X]"))
+    grammar = (
+        closed_pattern.fullmatch(line)
+        if closed
+        else open_pattern.fullmatch(line)
+    )
+
+    marker = _V2_PACKET_MARKER.search(line)
+    packet_id = marker.group(1) if marker is not None else None
+    if packet_id is not None and is_valid_v2_packet_id(packet_id):
+        marker_state = "valid"
+    elif marker is not None or _V2_PACKET_LIKE.search(line) is not None:
+        marker_state = "invalid"
+        packet_id = None
+    else:
+        marker_state = "missing"
+
+    grammar_packet = grammar.group("packet") if grammar is not None else None
+    grammar_valid = (
+        grammar is not None
+        and grammar_packet is not None
+        and is_valid_v2_packet_id(grammar_packet)
+    )
+    severity = (
+        grammar.groupdict().get("severity")
+        if grammar_valid and grammar is not None
+        else None
+    )
+    return _LedgerRecord(
+        line=line_number,
+        closed=closed,
+        critical=severity == "Critical",
+        marker_state=marker_state,
+        packet_id=packet_id,
+        grammar_valid=grammar_valid,
+    )
+
+
+def _parse_v2_review_records(text: str) -> list[_LedgerRecord] | None:
+    section = _v2_section_lines(text.splitlines(), REVIEW_HEADING)
+    if section is None:
+        return None
+    return [
+        _parse_v2_record(
+            line_number,
+            line,
+            open_pattern=_V2_REVIEW_OPEN_RECORD,
+            closed_pattern=_V2_REVIEW_CLOSED_RECORD,
+        )
+        for line_number, line in section
+        if line.startswith("- ")
+    ]
+
+
+def _parse_v2_todo_records(text: str) -> list[_LedgerRecord] | None:
+    lines = text.splitlines()
+    sections = [_v2_section_lines(lines, heading) for heading in TODO_HEADINGS]
+    if any(section is None for section in sections):
+        return None
+    records: list[_LedgerRecord] = []
+    for section in sections:
+        assert section is not None
+        records.extend(
+            _parse_v2_record(
+                line_number,
+                line,
+                open_pattern=_V2_TODO_OPEN_RECORD,
+                closed_pattern=_V2_TODO_CLOSED_RECORD,
+            )
+            for line_number, line in section
+            if line.startswith("- ")
+        )
+    return records
+
+
 def _finding(
     finding_id: str,
     severity: Severity,
@@ -245,6 +360,24 @@ def _finding(
         "packet.open-todo": "An unchecked TODO remains for the current packet.",
         "packet.unlinked-open-work": "Terminal packet state coexists with active unlinked work.",
         "packet.marker.unrepresentable": "The active packet ID cannot be represented by the marker grammar.",
+        "ledger.open-item-missing-marker": (
+            "An open active-ledger record is missing its packet marker."
+        ),
+        "ledger.open-item-invalid-marker": (
+            "An open active-ledger record has an invalid packet marker."
+        ),
+        "ledger.open-item-malformed-record": (
+            "An open active-ledger record violates the exact v2 grammar."
+        ),
+        "ledger.open-item-packet-mismatch": (
+            "An open active-ledger record names another packet."
+        ),
+        "ledger.closed-review-in-active-section": (
+            "A closed review finding remains in the active section."
+        ),
+        "ledger.closed-todo-in-active-section": (
+            "A closed TODO remains in an active section."
+        ),
     }
     remediations = {
         "handoff.structure.missing-marker": (
@@ -273,6 +406,24 @@ def _finding(
         "packet.open-todo": "Complete, defer, or reconcile the linked TODO with packet status.",
         "packet.unlinked-open-work": "Link relevant work explicitly or reconcile the terminal packet status.",
         "packet.marker.unrepresentable": "Choose an active packet ID that does not contain a closing bracket.",
+        "ledger.open-item-missing-marker": (
+            "Add the exact [packet:ID] marker for the active packet."
+        ),
+        "ledger.open-item-invalid-marker": (
+            "Use exact packet delimiters and a valid v2 packet ID."
+        ),
+        "ledger.open-item-malformed-record": (
+            "Rewrite the line using the exact v2 active-ledger grammar."
+        ),
+        "ledger.open-item-packet-mismatch": (
+            "Relink active work to the current packet or move it out of the active section."
+        ),
+        "ledger.closed-review-in-active-section": (
+            "Move the closed finding to Recently Closed or an archive."
+        ),
+        "ledger.closed-todo-in-active-section": (
+            "Move the closed TODO to Recently Closed or an archive."
+        ),
     }
     return Finding(
         id=finding_id,
@@ -466,6 +617,209 @@ def _coherence_findings(
     return findings
 
 
+def _v2_ledger_severity(status: str) -> Severity:
+    return (
+        Severity.ERROR
+        if status in TERMINAL_STATUSES
+        else Severity.WARNING
+    )
+
+
+def _v2_open_identity(
+    record: _LedgerRecord,
+    packet_id: str,
+) -> tuple[str, str] | None:
+    if record.marker_state == "missing":
+        return (
+            "ledger.open-item-missing-marker",
+            "open record has no packet-looking marker",
+        )
+    if record.marker_state == "invalid":
+        return (
+            "ledger.open-item-invalid-marker",
+            "open record has invalid packet delimiters or ID",
+        )
+    if not record.grammar_valid:
+        return (
+            "ledger.open-item-malformed-record",
+            "open record violates exact token order or spacing",
+        )
+    if record.packet_id != packet_id:
+        return (
+            "ledger.open-item-packet-mismatch",
+            f"record packet {record.packet_id}; active packet {packet_id}",
+        )
+    return None
+
+
+def _v2_current_open_finding(
+    record: _LedgerRecord,
+    *,
+    path: str,
+    status: str,
+    todo: bool,
+) -> Finding | None:
+    if (
+        not todo
+        and record.critical
+        and status == "release_candidate"
+    ):
+        return _finding(
+            "packet.open-critical-finding",
+            Severity.ERROR,
+            path=path,
+            line=record.line,
+            evidence="linked Critical finding remains active",
+        )
+    if status not in COHERENCE_SENSITIVE_STATUSES | TERMINAL_STATUSES:
+        return None
+    return _finding(
+        "packet.open-todo" if todo else "packet.open-finding",
+        (
+            Severity.ERROR
+            if status in TERMINAL_STATUSES
+            else Severity.WARNING
+        ),
+        path=path,
+        line=record.line,
+        evidence=f"linked active work remains at status {status}",
+    )
+
+
+def _v2_closed_record_finding(
+    record: _LedgerRecord,
+    *,
+    path: str,
+    packet_id: str,
+    status: str,
+    todo: bool,
+) -> Finding | None:
+    if (
+        todo
+        and status == "in_progress"
+        and record.grammar_valid
+        and record.marker_state == "valid"
+        and record.packet_id == packet_id
+    ):
+        return None
+    return _finding(
+        (
+            "ledger.closed-todo-in-active-section"
+            if todo
+            else "ledger.closed-review-in-active-section"
+        ),
+        _v2_ledger_severity(status),
+        path=path,
+        line=record.line,
+        evidence="closed record remains in an active section",
+    )
+
+
+def _v2_record_findings(
+    records: list[_LedgerRecord],
+    *,
+    path: str,
+    packet_id: str | None,
+    status: str | None,
+    todo: bool,
+) -> list[Finding]:
+    if (
+        packet_id is None
+        or not is_valid_v2_packet_id(packet_id)
+        or status not in ACTIVE_PACKET_STATUSES
+    ):
+        return []
+
+    findings: list[Finding] = []
+    for record in records:
+        if record.closed:
+            finding = _v2_closed_record_finding(
+                record,
+                path=path,
+                packet_id=packet_id,
+                status=status,
+                todo=todo,
+            )
+        else:
+            identity = _v2_open_identity(record, packet_id)
+            if identity is None:
+                finding = _v2_current_open_finding(
+                    record,
+                    path=path,
+                    status=status,
+                    todo=todo,
+                )
+            else:
+                finding_id, evidence = identity
+                finding = _finding(
+                    finding_id,
+                    _v2_ledger_severity(status),
+                    path=path,
+                    line=record.line,
+                    evidence=evidence,
+                )
+        if finding is not None:
+            findings.append(finding)
+    return findings
+
+
+def _v2_ledger_findings(
+    context: DoctorContext,
+    packet_id: str | None,
+    status: str | None,
+) -> list[Finding]:
+    findings: list[Finding] = []
+    review_text = _read_optional_document(context, REVIEW_PATH)
+    todo_text = _read_optional_document(context, TODO_PATH)
+
+    if review_text is not None:
+        review_records = _parse_v2_review_records(review_text)
+        if review_records is None:
+            findings.append(
+                _finding(
+                    "review.structure.missing-section",
+                    Severity.WARNING,
+                    path=REVIEW_PATH,
+                    line=None,
+                    evidence=f"missing exact section: {REVIEW_HEADING}",
+                )
+            )
+        else:
+            findings.extend(
+                _v2_record_findings(
+                    review_records,
+                    path=REVIEW_PATH,
+                    packet_id=packet_id,
+                    status=status,
+                    todo=False,
+                )
+            )
+
+    if todo_text is not None:
+        todo_records = _parse_v2_todo_records(todo_text)
+        if todo_records is None:
+            findings.append(
+                _finding(
+                    "todo.structure.missing-section",
+                    Severity.WARNING,
+                    path=TODO_PATH,
+                    line=None,
+                    evidence="missing one or more exact active TODO sections",
+                )
+            )
+        else:
+            findings.extend(
+                _v2_record_findings(
+                    todo_records,
+                    path=TODO_PATH,
+                    packet_id=packet_id,
+                    status=status,
+                    todo=True,
+                )
+            )
+    return findings
+
+
 class ReviewStateCheck:
     name = "review_state"
 
@@ -501,6 +855,16 @@ class ReviewStateCheck:
 
         findings.extend(_index_source_findings(context))
         findings.extend(_handoff_findings(context, packet_id))
+
+        if context.state_result.state_version == 2:
+            findings.extend(
+                _v2_ledger_findings(
+                    context,
+                    packet_id,
+                    status,
+                )
+            )
+            return tuple(findings)
 
         review_text = _read_optional_document(context, REVIEW_PATH)
         todo_text = _read_optional_document(context, TODO_PATH)
