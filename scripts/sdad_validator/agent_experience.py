@@ -63,6 +63,7 @@ FORBIDDEN_KERNEL_WORDING = (
     "@sdad-state.yaml",
     "@docs/INDEX.md",
     "@README.md",
+    "Read every routed document in full.",
     "Q5",
     "operating intensity",
     "autonomy",

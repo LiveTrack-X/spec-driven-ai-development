@@ -989,26 +989,22 @@ class AgentExperienceValidatorTests(unittest.TestCase):
                 ["adapters/codex/AGENTS.md missing ordered route: current source"],
             )
 
-    def test_targeted_route_rejects_a_read_everything_instruction_once(self) -> None:
+    def test_targeted_route_rejects_an_appended_full_read_instruction_once(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self.build_valid_tree(root)
             path = root / "adapters/codex/AGENTS.md"
             path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    "current intent selects the routed path, heading, active section, "
-                    "or targeted match; list membership does not mean read the whole file",
-                    "Read every routed document in full.",
-                ),
+                path.read_text(encoding="utf-8")
+                + "Read every routed document in full.\n",
                 encoding="utf-8",
             )
 
             self.assertEqual(
                 self.collect(root),
                 [
-                    "adapters/codex/AGENTS.md must route current intent to one "
-                    "targeted path, heading, active section, or match; routed "
-                    "membership cannot require a full-file read"
+                    "adapters/codex/AGENTS.md contains forbidden always-loaded "
+                    "kernel wording: Read every routed document in full."
                 ],
             )
 

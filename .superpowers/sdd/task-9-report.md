@@ -1,7 +1,8 @@
 # Task 9 Report: Compact SDAD Protocol Agent Kernel
 
-Status: implementation, self-review, and verification complete. Commit subject:
-`Target routed agent context precisely` (the commit containing this report).
+Status: implementation, independent review follow-up, and verification complete.
+The original commit subject is `Target routed agent context precisely`; the
+review fix is recorded in a separate follow-up commit containing this update.
 
 ## Delivered
 
@@ -59,6 +60,25 @@ Status: implementation, self-review, and verification complete. Commit subject:
 - Budgets: canonical 114 lines / 5,479 characters; non-Cursor adapters 114
   lines / 5,426-5,436 characters; Cursor 120 lines / 5,537 characters; fixed
   adapter + state + INDEX startup 10,323 characters.
+
+## Independent Review Follow-Up
+
+- Review found that the original full-read mutation replaced the positive
+  targeted-route sentence. Its one violation therefore proved only that the
+  required positive tokens were missing, not that conflicting full-read
+  wording was rejected independently.
+- The regression now appends `Read every routed document in full.` to an
+  otherwise valid adapter fixture, leaving every positive route token intact.
+- RED: the 44-test agent-experience run produced one expected failure because
+  the validator returned an empty violation list for that appended sentence.
+- The validator now rejects the exact full-read instruction through the
+  independent forbidden-wording check and reports one actionable violation.
+- GREEN: agent-experience 44/44 and render 3/3 passed.
+- Full suite, run once after the behavior fix: 353 tests passed with 3 existing
+  environment-gated skips and no failures or errors.
+- Repository validation, render parity, changed-Python compilation, and
+  `git diff --check` passed. The kernel and fixed-startup budgets remain the
+  exact values recorded above; no canonical or rendered surface changed.
 
 ## Files
 
