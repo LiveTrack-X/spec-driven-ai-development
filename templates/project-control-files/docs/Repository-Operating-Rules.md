@@ -59,7 +59,7 @@ Owner acceptance cannot upgrade weak evidence. A passing evaluator cannot
 approve scope. A successful commit cannot authorize push, release, deploy,
 migration, destructive action, or risk acceptance.
 
-The AI may continue autonomously inside an approved packet. It must stop when
+Work may continue inside an approved packet. It must stop when
 scope expands, a protected-action or claim gate changes, an irreversible action is
 required, an owner-controlled tradeoff remains unresolved, verification is
 blocked, or evidence conflicts with the requested plan.

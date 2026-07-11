@@ -225,6 +225,43 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         self.assertIn("never", project_readme.lower())
         self.assertIn("full-file", project_readme.lower())
 
+    def test_task8_uses_one_loop_vocabulary_and_current_clarification_boundary(
+        self,
+    ) -> None:
+        packets = read(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md"
+        )
+        rules = read(
+            "templates/project-control-files/docs/Repository-Operating-Rules.md"
+        )
+
+        self.assertEqual(
+            packets.count("Plan -> Route -> Implement -> Verify -> Report"),
+            1,
+        )
+        self.assertNotIn("Bounded Feedback Loop", packets)
+        self.assertNotIn("Fast Loop", packets)
+        self.assertIn("## Implement And Verify", packets)
+        self.assertIn("### Bounded Iteration", packets)
+        self.assertIn(
+            "one blocking question only when the answer changes scale, execution "
+            "scope, a claim boundary, or an owner gate",
+            packets,
+        )
+        self.assertNotIn("autonomously", rules)
+
+    def test_starter_fallback_shows_both_open_finding_wire_forms(self) -> None:
+        starter = read("skills/ai-spec-project-start/references/starter-templates.md")
+
+        self.assertIn(
+            "- [High] [packet:bootstrap] Replace with a classified finding.",
+            starter,
+        )
+        self.assertIn(
+            "- [packet:bootstrap] Replace with an unclassified finding.",
+            starter,
+        )
+
     def test_always_loaded_control_plane_stays_small(self) -> None:
         agents = read("templates/project-control-files/AGENTS.md")
         index = read("templates/project-control-files/docs/INDEX.md")
@@ -398,11 +435,11 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
             "scope and non-goals",
             "expected evidence",
             "owner gates and stop conditions",
-            "## Bounded Feedback Loop",
+            "## Implement And Verify",
+            "### Bounded Iteration",
             "inspect -> act -> observe -> update",
             "bounded attempts",
             "new evidence",
-            "Fast Loop",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, packets)
@@ -881,6 +918,86 @@ class AgentExperienceValidatorTests(unittest.TestCase):
                 "one canonical current-handoff source line",
                 self.collect(root),
             )
+
+    def test_canonical_state_identity_uses_exact_parsed_values(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.build_valid_tree(root)
+            path = root / "templates/project-control-files/sdad-state.yaml"
+            path.write_text(
+                path.read_text(encoding="utf-8")
+                .replace("  id: bootstrap", "  id: bootstrap-old", 1)
+                .replace("validation_for: bootstrap", "validation_for: bootstrap-old", 1),
+                encoding="utf-8",
+            )
+
+            self.assertIn(
+                "canonical state active_packet.id must equal bootstrap",
+                self.collect(root),
+            )
+
+    def test_handoff_identity_ignores_comment_fence_and_later_section_decoys(
+        self,
+    ) -> None:
+        identity = (
+            "## 1. Session Identity\n\n"
+            "- Active packet: [packet:bootstrap]\n"
+        )
+        cases = (
+            f"```markdown\n{identity}```\n",
+            f"<!--\n{identity}-->\n",
+            (
+                "## 1. Session Identity\n\nNo marker.\n\n"
+                "## 2. Notes\n\n- Active packet: [packet:bootstrap]\n\n"
+                f"```markdown\n{identity}```\n"
+            ),
+        )
+        for handoff in cases:
+            with self.subTest(handoff=handoff), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.build_valid_tree(root)
+                path = (
+                    root
+                    / "templates/project-control-files/docs/sdad/handoffs/"
+                    "YYYY-MM-DD-topic.md"
+                )
+                path.write_text(handoff, encoding="utf-8")
+
+                self.assertIn(
+                    "canonical handoff first Session Identity section must contain "
+                    "exactly one bootstrap marker",
+                    self.collect(root),
+                )
+
+    def test_active_ledgers_reject_missing_or_malformed_records_with_sentinel(
+        self,
+    ) -> None:
+        cases = (
+            (
+                "templates/project-control-files/review-findings.md",
+                "None currently tracked.\n",
+                "None currently tracked.\n- [High] Finding without marker\n",
+            ),
+            (
+                "templates/project-control-files/docs/TODO-Open-Items.md",
+                "- [ ] [packet:bootstrap] Active work.",
+                "- [ ] [packet:bootstrap]",
+            ),
+        )
+        for relative_path, old, new in cases:
+            with self.subTest(path=relative_path), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.build_valid_tree(root)
+                path = root / relative_path
+                path.write_text(
+                    path.read_text(encoding="utf-8").replace(old, new, 1),
+                    encoding="utf-8",
+                )
+
+                self.assertIn(
+                    f"{relative_path} has a malformed active record",
+                    self.collect(root),
+                )
 
     def test_index_requires_each_on_demand_playbook_route(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

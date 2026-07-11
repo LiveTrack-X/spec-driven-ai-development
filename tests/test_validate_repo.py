@@ -384,6 +384,121 @@ class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
             error_output.getvalue(),
         )
 
+    def assert_mutation_rejected(self, path: str, mutate) -> str:
+        validator = self.validator()
+        original_read = VALIDATE_REPO.read
+
+        def read_with_mutation(candidate: str) -> str:
+            content = original_read(candidate)
+            return mutate(content) if candidate == path else content
+
+        error_output = io.StringIO()
+        with mock.patch.object(VALIDATE_REPO, "read", side_effect=read_with_mutation):
+            with contextlib.redirect_stderr(error_output):
+                with self.assertRaises(SystemExit):
+                    validator()
+        return error_output.getvalue()
+
+    def test_state_templates_reject_prefix_and_comment_identity_decoys(self) -> None:
+        cases = (
+            (
+                "templates/project-control-files/sdad-state.yaml",
+                lambda text: text.replace("bootstrap", "bootstrap-old"),
+            ),
+            (
+                "skills/ai-spec-project-start/references/starter-templates.md",
+                lambda text: text.replace("  id: bootstrap", "  id: bootstrap-old", 1)
+                .replace("validation_for: bootstrap", "validation_for: bootstrap-old", 1),
+            ),
+            (
+                "skills/ai-spec-project-start/references/starter-templates.md",
+                lambda text: text.replace("  id: bootstrap", "#   id: bootstrap", 1),
+            ),
+        )
+        for path, mutate in cases:
+            with self.subTest(path=path, mutate=mutate):
+                self.assertIn("state-v2 identity", self.assert_mutation_rejected(path, mutate))
+
+    def test_handoff_rejects_comment_fence_and_wrong_section_decoys(self) -> None:
+        path = "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
+        identity = (
+            "## 1. Session Identity\n\n"
+            "- Active packet: [packet:bootstrap]\n"
+        )
+        replacements = (
+            f"```markdown\n{identity}```\n",
+            f"<!--\n{identity}-->\n",
+            (
+                "## 1. Session Identity\n\nNo marker.\n\n"
+                "## 2. Notes\n\n- Active packet: [packet:bootstrap]\n\n"
+                f"```markdown\n{identity}```\n"
+            ),
+        )
+        for replacement in replacements:
+            with self.subTest(replacement=replacement):
+                output = self.assert_mutation_rejected(
+                    path,
+                    lambda text, replacement=replacement: replacement,
+                )
+                self.assertIn("first Session Identity section", output)
+
+    def test_starter_handoff_requires_the_optional_subsection_block(self) -> None:
+        path = "skills/ai-spec-project-start/references/starter-templates.md"
+        identity = (
+            "## 1. Session Identity\n\n"
+            "- Active packet: [packet:bootstrap]\n"
+        )
+        block = f"```markdown\n{identity}```"
+        mutations = (
+            lambda text: text.replace(block, "```markdown\nNo marker.\n```", 1)
+            + f"\n<!--\n{identity}-->\n",
+            lambda text: text.replace(block, "No current handoff example.", 1)
+            + f"\n## Decoy Example\n\n{block}\n",
+        )
+        for mutate in mutations:
+            with self.subTest(mutate=mutate):
+                output = self.assert_mutation_rejected(path, mutate)
+                self.assertIn("Optional Current Handoff", output)
+
+    def test_starter_requires_both_open_finding_forms(self) -> None:
+        path = "skills/ai-spec-project-start/references/starter-templates.md"
+        output = self.assert_mutation_rejected(
+            path,
+            lambda text: text.replace(
+                "- [High] [packet:bootstrap] Replace with a classified finding.\n",
+                "",
+                1,
+            ),
+        )
+        self.assertIn("open-finding wire forms", output)
+
+    def test_packet_switch_validation_is_scoped_and_numbered(self) -> None:
+        path = "templates/project-control-files/docs/sdad/playbooks/work-packets.md"
+        ordered_decoy = (
+            "```text\nselect next leaf\nclassify\nreview validation\nupdate state\n"
+            "remove or replace\ndoctor strict\nproject checks\nadvance\nrerun doctor\n```\n\n"
+        )
+        mutations = (
+            lambda text: text.replace(
+                "7. Run project checks separately and record their bounded evidence.\n",
+                "Project checks remain relevant.\n",
+                1,
+            ),
+            lambda text: text.replace(
+                "7. Run project checks separately and record their bounded evidence.\n"
+                "8. Advance status only after the required evidence exists.\n",
+                "8. Run project checks separately and record their bounded evidence.\n"
+                "7. Advance status only after the required evidence exists.\n",
+                1,
+            ),
+            lambda text: ordered_decoy
+            + text.replace("## Packet Switch Transaction", "## Packet Transition Notes", 1),
+        )
+        for mutate in mutations:
+            with self.subTest(mutate=mutate):
+                output = self.assert_mutation_rejected(path, mutate)
+                self.assertIn("Packet Switch Transaction", output)
+
 
 class DoctorGeminiDocumentationContractTests(unittest.TestCase):
     CONTRACT_PATHS = {

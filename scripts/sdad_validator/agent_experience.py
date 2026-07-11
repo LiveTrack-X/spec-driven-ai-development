@@ -5,12 +5,20 @@ import sys
 from pathlib import Path
 
 if __package__:
-    from .state_contract import collect_template_state_violations
+    from .checks.review_state import _V2_REVIEW_OPEN_RECORD, _V2_TODO_OPEN_RECORD
+    from .state_contract import collect_template_state_violations, inspect_state
 else:
     validator_root = str(Path(__file__).resolve().parents[1])
     if validator_root not in sys.path:
         sys.path.insert(0, validator_root)
-    from sdad_validator.state_contract import collect_template_state_violations
+    from sdad_validator.checks.review_state import (
+        _V2_REVIEW_OPEN_RECORD,
+        _V2_TODO_OPEN_RECORD,
+    )
+    from sdad_validator.state_contract import (
+        collect_template_state_violations,
+        inspect_state,
+    )
 
 
 SURFACE_BUDGETS = {
@@ -62,10 +70,6 @@ CURRENT_HANDOFF_SOURCE = (
     "- Current handoff: use "
     "`../sdad-state.yaml#current_handoff` when declared."
 )
-HANDOFF_IDENTITY = (
-    "## 1. Session Identity\n\n"
-    "- Active packet: [packet:bootstrap]"
-)
 
 TASK8_REQUIRED_PHRASES = {
     "templates/project-control-files/docs/TODO-Open-Items.md": (
@@ -79,10 +83,9 @@ TASK8_REQUIRED_PHRASES = {
         "None currently tracked.",
         "## Recently Closed",
     ),
-    "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md": (
-        HANDOFF_IDENTITY,
-    ),
 }
+
+_MARKDOWN_FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 
 
 def _read(root: Path, relative_path: str, violations: list[str]) -> str:
@@ -123,6 +126,103 @@ def _require_phrases(
             violations.append(f"{relative_path} missing canonical phrase: {phrase}")
 
 
+def _visible_markdown_lines(text: str) -> list[str]:
+    text = re.sub(
+        r"<!--.*?-->",
+        lambda match: "\n" * match.group(0).count("\n"),
+        text,
+        flags=re.DOTALL,
+    )
+    visible: list[str] = []
+    fence_character: str | None = None
+    fence_length = 0
+    for line in text.splitlines():
+        fence = _MARKDOWN_FENCE.match(line)
+        if fence_character is None:
+            if fence is not None:
+                delimiter, info = fence.groups()
+                if delimiter[0] != "`" or "`" not in info:
+                    fence_character = delimiter[0]
+                    fence_length = len(delimiter)
+                    continue
+            visible.append(line)
+            continue
+        if fence is not None:
+            delimiter, trailing = fence.groups()
+            if (
+                delimiter[0] == fence_character
+                and len(delimiter) >= fence_length
+                and not trailing.strip()
+            ):
+                fence_character = None
+                fence_length = 0
+    return visible
+
+
+def _first_visible_section(text: str, heading: str) -> list[str] | None:
+    lines = _visible_markdown_lines(text)
+    try:
+        start = lines.index(heading) + 1
+    except ValueError:
+        return None
+    end = next(
+        (index for index in range(start, len(lines)) if lines[index].startswith("## ")),
+        len(lines),
+    )
+    return lines[start:end]
+
+
+def _canonical_handoff_identity_is_valid(text: str) -> bool:
+    section = _first_visible_section(text, "## 1. Session Identity")
+    if section is None:
+        return False
+    candidates = [line for line in section if line.startswith("- Active packet:")]
+    return candidates == ["- Active packet: [packet:bootstrap]"]
+
+
+def _active_ledger_records_are_valid(
+    text: str,
+    heading: str,
+    kind: str,
+    packet_id: str,
+    *,
+    require_record: bool,
+) -> bool:
+    section = _first_visible_section(text, heading)
+    if section is None:
+        return False
+    records = [line for line in section if line.startswith("- ")]
+    if require_record and not records:
+        return False
+    pattern = _V2_REVIEW_OPEN_RECORD if kind == "review" else _V2_TODO_OPEN_RECORD
+    for record in records:
+        match = pattern.fullmatch(record)
+        if match is None or match.group("packet") != packet_id:
+            return False
+    return True
+
+
+def _canonical_state_identity_is_valid(text: str, packet_id: str) -> bool:
+    result = inspect_state(text)
+    snapshot = result.snapshot
+    if result.state_version != 2 or snapshot is None:
+        return False
+    scale = snapshot.scalar("scale")
+    scope = snapshot.scalar("execution_scope")
+    validation_for = snapshot.scalar("validation_for")
+    active_packet_id = snapshot.active_packet.get("id")
+    return (
+        scale is not None
+        and scale.value == "standard"
+        and scope is not None
+        and scope.value == "packet"
+        and active_packet_id is not None
+        and active_packet_id.value == packet_id
+        and validation_for is not None
+        and validation_for.value == packet_id
+    )
+
+
 def _validate_task8_templates(
     root: Path,
     canonical_state: str,
@@ -144,11 +244,61 @@ def _validate_task8_templates(
             ),
             violations,
         )
+        if (
+            not collect_template_state_violations(canonical_state)
+            and not _canonical_state_identity_is_valid(canonical_state, "bootstrap")
+        ):
+            violations.append(
+                "canonical state active_packet.id must equal bootstrap"
+            )
 
     for relative_path, phrases in TASK8_REQUIRED_PHRASES.items():
         text = _read(root, relative_path, violations)
         if text:
             _require_phrases(relative_path, text, phrases, violations)
+
+    ledger_contracts = (
+        (
+            "templates/project-control-files/review-findings.md",
+            "## Active Findings",
+            "review",
+            False,
+        ),
+        (
+            "templates/project-control-files/docs/TODO-Open-Items.md",
+            "## Active Work",
+            "todo",
+            True,
+        ),
+        (
+            "templates/project-control-files/docs/TODO-Open-Items.md",
+            "## Release / Production Readiness",
+            "todo",
+            True,
+        ),
+    )
+    for relative_path, heading, kind, require_record in ledger_contracts:
+        text = _read(root, relative_path, violations)
+        if text and not _active_ledger_records_are_valid(
+            text,
+            heading,
+            kind,
+            "bootstrap",
+            require_record=require_record,
+        ):
+            message = f"{relative_path} has a malformed active record"
+            if message not in violations:
+                violations.append(message)
+
+    handoff_path = (
+        "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
+    )
+    handoff = _read(root, handoff_path, violations)
+    if handoff and not _canonical_handoff_identity_is_valid(handoff):
+        violations.append(
+            "canonical handoff first Session Identity section must contain "
+            "exactly one bootstrap marker"
+        )
 
     index_path = "templates/project-control-files/docs/INDEX.md"
     if index and index.count(CURRENT_HANDOFF_SOURCE) != 1:

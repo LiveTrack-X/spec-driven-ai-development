@@ -153,6 +153,13 @@ checkbox carries the packet marker:
 Review keeps `## Active Findings` with prose `None currently tracked.` when
 empty, plus `## Recently Closed` outside the active section.
 
+Both legal open-finding forms are shown here outside the active ledger section:
+
+```markdown
+- [High] [packet:bootstrap] Replace with a classified finding.
+- [packet:bootstrap] Replace with an unclassified finding.
+```
+
 ## Optional Current Handoff
 
 Create a compact recovery checkpoint only when work pauses, changes hands,

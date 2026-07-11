@@ -13,7 +13,13 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import unquote
 
 try:
-    from sdad_validator.agent_experience import collect_agent_experience_violations
+    from sdad_validator.agent_experience import (
+        _active_ledger_records_are_valid,
+        _canonical_handoff_identity_is_valid,
+        _canonical_state_identity_is_valid,
+        _first_visible_section,
+        collect_agent_experience_violations,
+    )
     from render_agent_surfaces import collect_surface_drift
     from sync_copy_prompt import (
         CANONICAL_HEADING,
@@ -22,7 +28,13 @@ try:
     )
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from sdad_validator.agent_experience import collect_agent_experience_violations
+    from sdad_validator.agent_experience import (
+        _active_ledger_records_are_valid,
+        _canonical_handoff_identity_is_valid,
+        _canonical_state_identity_is_valid,
+        _first_visible_section,
+        collect_agent_experience_violations,
+    )
     from render_agent_surfaces import collect_surface_drift
     from sync_copy_prompt import (
         CANONICAL_HEADING,
@@ -475,9 +487,9 @@ def validate_cross_model_guidance_contract() -> None:
             "scope and non-goals",
             "expected evidence",
             "owner gates and stop conditions",
-            "## Bounded Feedback Loop",
+            "## Implement And Verify",
+            "### Bounded Iteration",
             "bounded attempts",
-            "Fast Loop",
         ],
         "templates/project-control-files/docs/sdad/playbooks/evidence-and-risk-gates.md": [
             "## Fresh-Context Review",
@@ -1202,14 +1214,57 @@ def validate_local_markdown_links() -> None:
                     )
 
 
+def _starter_optional_handoff_is_valid(text: str) -> bool:
+    visible = re.sub(
+        r"<!--.*?-->",
+        lambda match: "\n" * match.group(0).count("\n"),
+        text,
+        flags=re.DOTALL,
+    )
+    lines = visible.splitlines()
+    try:
+        start = lines.index("## Optional Current Handoff") + 1
+    except ValueError:
+        return False
+
+    section: list[str] = []
+    fence: str | None = None
+    fence_length = 0
+    for line in lines[start:]:
+        delimiter = re.match(r"^[ \t]*(`{3,}|~{3,})(.*)$", line)
+        if fence is None:
+            if line.startswith("## "):
+                break
+            section.append(line)
+            if delimiter is not None:
+                fence = delimiter.group(1)[0]
+                fence_length = len(delimiter.group(1))
+            continue
+        section.append(line)
+        if (
+            delimiter is not None
+            and delimiter.group(1)[0] == fence
+            and len(delimiter.group(1)) >= fence_length
+            and not delimiter.group(2).strip()
+        ):
+            fence = None
+            fence_length = 0
+
+    blocks = re.findall(
+        r"(?ms)^```markdown[ \t]*\n(.*?)^```[ \t]*$",
+        "\n".join(section),
+    )
+    expected = (
+        "## 1. Session Identity\n\n"
+        "- Active packet: [packet:bootstrap]\n"
+    )
+    return blocks == [expected]
+
+
 def validate_canonical_template_contract() -> None:
     source_line = (
         "- Current handoff: use "
         "`../sdad-state.yaml#current_handoff` when declared."
-    )
-    identity = (
-        "## 1. Session Identity\n\n"
-        "- Active packet: [packet:bootstrap]"
     )
 
     canonical_state = require_phrases(
@@ -1235,10 +1290,12 @@ def validate_canonical_template_contract() -> None:
             "validation_for: example",
         ],
     )
-    for label, state in (
-        ("Canonical state-v2 template", canonical_state),
-        ("Minimal state-v2 example", minimal_state),
+    for label, state, packet_id in (
+        ("Canonical state-v2 template", canonical_state, "bootstrap"),
+        ("Minimal state-v2 example", minimal_state, "example"),
     ):
+        if not _canonical_state_identity_is_valid(state, packet_id):
+            fail(f"{label} state-v2 identity is not exact or coherent")
         for forbidden in ("intensity", "autonomy", "current_handoff"):
             if re.search(rf"(?m)^{forbidden}:", state):
                 fail(f"{label} must omit live or legacy key: {forbidden}")
@@ -1254,18 +1311,27 @@ def validate_canonical_template_contract() -> None:
             "validation_for: bootstrap",
             "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
             "## Optional Current Handoff",
-            identity,
         ],
     )
+    open_finding_forms = (
+        "- [High] [packet:bootstrap] Replace with a classified finding.",
+        "- [packet:bootstrap] Replace with an unclassified finding.",
+    )
+    if any(form not in starter for form in open_finding_forms):
+        fail("Installed-skill fallback open-finding wire forms are incomplete")
     state_match = re.search(
         r"(?ms)^## Active State Schema\s+.*?^```yaml\s*\n(.*?)^```$",
         starter,
     )
     if state_match is None:
         fail("Installed-skill fallback is missing its canonical state-v2 block")
+    if not _canonical_state_identity_is_valid(state_match.group(1), "bootstrap"):
+        fail("Installed-skill fallback state-v2 identity is not exact or coherent")
     for forbidden in ("intensity", "autonomy", "current_handoff"):
         if re.search(rf"(?m)^{forbidden}:", state_match.group(1)):
             fail(f"Installed-skill fallback must omit live or legacy key: {forbidden}")
+    if not _starter_optional_handoff_is_valid(starter):
+        fail("Installed-skill fallback Optional Current Handoff block is invalid")
 
     for label, path in (
         ("Canonical INDEX", "templates/project-control-files/docs/INDEX.md"),
@@ -1297,28 +1363,41 @@ def validate_canonical_template_contract() -> None:
             ],
         )
         for heading in ("## Active Work", "## Release / Production Readiness"):
-            section = _markdown_section(todo, heading, 2)
-            records = re.findall(r"(?m)^- \[ \] .+$", section)
-            if not records or any(
-                f"[packet:{packet_id}]" not in record for record in records
+            if not _active_ledger_records_are_valid(
+                todo,
+                heading,
+                "todo",
+                packet_id,
+                require_record=True,
             ):
-                fail(f"{label} active records must use [packet:{packet_id}]")
+                fail(f"{label} active records must use exact [packet:{packet_id}] grammar")
 
     for label, path in (
         ("Canonical review", "templates/project-control-files/review-findings.md"),
         ("Minimal review", "examples/minimal-project/review-findings.md"),
     ):
-        require_phrases(
+        review = require_phrases(
             path,
             label,
             ["## Active Findings", "None currently tracked.", "## Recently Closed"],
         )
+        if not _active_ledger_records_are_valid(
+            review,
+            "## Active Findings",
+            "review",
+            "bootstrap" if label == "Canonical review" else "example",
+            require_record=False,
+        ):
+            fail(f"{label} has a malformed active record")
 
     handoff = read(
         "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
     )
-    if handoff.count(identity) != 1:
-        fail("Canonical handoff must contain exactly one Session Identity marker")
+    if not _canonical_handoff_identity_is_valid(handoff):
+        fail(
+            "Canonical handoff first Session Identity section must contain "
+            "exactly one bootstrap marker"
+        )
 
     save_state = read("templates/project-control-files/save-state.md").lower()
     for phrase in (
@@ -1371,6 +1450,7 @@ def validate_canonical_template_contract() -> None:
         r"\bQ5\b",
         r"operating intensity",
         r"\bautonomy\b",
+        r"\bautonomously\b",
         r"recovery mode",
         r"owner checkpoint",
         r"AI-complete",
@@ -1384,10 +1464,39 @@ def validate_canonical_template_contract() -> None:
             if re.search(pattern, content, re.IGNORECASE):
                 fail(f"Current state-v2 surface uses legacy terminology: {path}")
 
-    packets = read(
+    packets_text = read(
         "templates/project-control-files/docs/sdad/playbooks/work-packets.md"
-    ).lower()
-    transition = (
+    )
+    loop = "Plan -> Route -> Implement -> Verify -> Report"
+    if packets_text.count(loop) != 1:
+        fail("Work-packets playbook must contain the one work loop exactly once")
+    for forbidden in ("Bounded Feedback Loop", "Fast Loop"):
+        if forbidden in packets_text:
+            fail(f"Work-packets playbook uses forbidden second-loop term: {forbidden}")
+    for phrase in (
+        "## Implement And Verify",
+        "### Bounded Iteration",
+        "one blocking question only when the answer changes scale, execution scope, "
+        "a claim boundary, or an owner gate",
+    ):
+        if phrase not in packets_text:
+            fail(f"Work-packets playbook missing current contract: {phrase}")
+
+    transition = _first_visible_section(
+        packets_text,
+        "## Packet Switch Transaction",
+    )
+    if transition is None:
+        fail("Work-packets playbook missing exact ## Packet Switch Transaction section")
+    numbered_steps: list[tuple[int, str]] = []
+    for line in transition:
+        match = re.match(r"^(\d+)\.\s+(.+)$", line)
+        if match is not None:
+            numbered_steps.append((int(match.group(1)), match.group(2)))
+        elif numbered_steps and line.strip():
+            number, text = numbered_steps[-1]
+            numbered_steps[-1] = (number, f"{text} {line.strip()}")
+    concepts = (
         "select next leaf",
         "classify",
         "review validation",
@@ -1395,12 +1504,14 @@ def validate_canonical_template_contract() -> None:
         "remove or replace",
         "doctor strict",
         "project checks",
-        "advance",
+        "advance status",
         "rerun doctor",
     )
-    positions = [packets.find(token) for token in transition]
-    if any(position < 0 for position in positions) or positions != sorted(positions):
-        fail("Work-packet transition procedure is incomplete or out of order")
+    if [number for number, _ in numbered_steps] != list(range(1, 10)) or any(
+        concept not in numbered_steps[index][1].lower()
+        for index, concept in enumerate(concepts)
+    ):
+        fail("## Packet Switch Transaction must contain numbered steps 1-9 in order")
 
 
 def validate_skill() -> None:

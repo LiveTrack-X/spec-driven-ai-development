@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-import sys
+import shlex
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 from collections import Counter
@@ -370,20 +372,45 @@ class Task8MinimalExampleTests(DoctorAssertions, unittest.TestCase):
             shutil.copytree(ROOT / "examples" / "minimal-project", project)
             state_path = project / "sdad-state.yaml"
             original = state_path.read_text(encoding="utf-8")
+            command = (
+                "python -c \"from pathlib import Path; "
+                "assert Path('SPEC/SPEC-COMPLETE.md').is_file()\""
+            )
             runnable = (
                 original.replace("updated: YYYY-MM-DD", "updated: 2026-07-11", 1)
                 .replace(
                     "command: Replace with a project check.",
-                    "command: python -m unittest discover -s tests",
+                    f"command: {command}",
                     1,
                 )
                 .replace(
                     "proves: Replace with the supported claim.",
-                    "proves: The minimal project unit tests pass.",
+                    "proves: The minimal example SPEC file is present.",
                     1,
                 )
             )
             state_path.write_text(runnable, encoding="utf-8")
+
+            declared_command = next(
+                line.split("command:", 1)[1].strip()
+                for line in runnable.splitlines()
+                if line.strip().startswith("- command:")
+            )
+            self.assertEqual(declared_command, command)
+            command_args = shlex.split(declared_command)
+            command_args[0] = sys.executable
+            validation_result = subprocess.run(
+                command_args,
+                cwd=project,
+                text=True,
+                capture_output=True,
+                timeout=10,
+            )
+            self.assertEqual(
+                validation_result.returncode,
+                0,
+                validation_result.stdout + validation_result.stderr,
+            )
 
             report = DiagnosticEngine().diagnose(
                 FilesystemProjectView(project),
@@ -393,6 +420,26 @@ class Task8MinimalExampleTests(DoctorAssertions, unittest.TestCase):
             self.assertEqual(report.findings, ())
             self.assertEqual(report.checks_run, FIXED_CHECKS)
             self.assertEqual(report.state_version, 2)
+
+            strict_result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "sdad.py"),
+                    "doctor",
+                    str(project),
+                    "--strict",
+                    "--require-version=3.2.0",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                timeout=10,
+            )
+            self.assertEqual(
+                strict_result.returncode,
+                0,
+                strict_result.stdout + strict_result.stderr,
+            )
 
 
 class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):

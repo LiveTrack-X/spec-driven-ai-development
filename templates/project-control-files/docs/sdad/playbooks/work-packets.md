@@ -27,8 +27,8 @@ money, security, rollback, or equivalent owner-controlled boundary.
 State v2 execution scope is `unit` or `packet`. It controls the current work
 boundary, not risk acceptance. Multi-packet execution requires an explicitly
 approved packet plan or list. Infer scale and gates from the request and
-repository first; ask at most one unresolved question when its answer changes
-scale or an owner gate.
+repository first.
+Ask at most one blocking question only when the answer changes scale, execution scope, a claim boundary, or an owner gate.
 
 ## Packet And Delegation Envelope
 
@@ -72,12 +72,14 @@ Record a small spec-unstated implementation decision in
 surprising architectural tradeoff. Put unresolved work in TODO or findings,
 not in the handoff.
 
-## Bounded Feedback Loop
+## Implement And Verify
+
+### Bounded Iteration
 
 For non-trivial work, use `inspect -> act -> observe -> update -> retry or stop`.
 Set bounded attempts and do not repeat a failed action without new evidence, a
-changed hypothesis, or an explicit remaining retry budget. Tiny work may keep
-the same behavior inside the Fast Loop without a separate planning artifact.
+changed hypothesis, or an explicit remaining retry budget. Keep this iteration
+inside the Implement and Verify phases of the one work loop.
 
 ## Stop Conditions
 
