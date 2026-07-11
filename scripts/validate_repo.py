@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 import re
@@ -577,19 +578,79 @@ def validate_doctor_gemini_documentation_contract() -> None:
                 fail(f"{path} must contain the exact Gemini install command once: {command}")
 
 
+def _assigned_names(target: ast.expr) -> set[str]:
+    if isinstance(target, ast.Name):
+        return {target.id}
+    if isinstance(target, (ast.List, ast.Tuple)):
+        return {
+            name
+            for element in target.elts
+            for name in _assigned_names(element)
+        }
+    return set()
+
+
+def _validate_doctor_source_versions(doctor_source: str) -> None:
+    expected = {
+        "DOCTOR_VERSION": "3.2.0",
+        "LEGACY_REPORT_SCHEMA_VERSION": 1,
+        "REPORT_SCHEMA_VERSION": 2,
+    }
+    try:
+        module = ast.parse(doctor_source)
+    except SyntaxError:
+        fail("SDAD doctor CLI must contain valid Python source")
+
+    module_level_nodes = {id(node) for node in module.body}
+    assignments: dict[str, list[tuple[ast.stmt, ast.expr | None, bool]]] = {
+        name: [] for name in (*expected, "SCHEMA_VERSION")
+    }
+    for node in ast.walk(module):
+        if isinstance(node, ast.Assign):
+            names = {
+                name
+                for target in node.targets
+                for name in _assigned_names(target)
+            }
+            simple = len(node.targets) == 1 and isinstance(node.targets[0], ast.Name)
+        elif isinstance(node, ast.AnnAssign):
+            names = _assigned_names(node.target)
+            simple = isinstance(node.target, ast.Name)
+        elif isinstance(node, ast.AugAssign):
+            names = _assigned_names(node.target)
+            simple = False
+        else:
+            continue
+        for name in names & assignments.keys():
+            assignments[name].append((node, node.value, simple))
+
+    if assignments["SCHEMA_VERSION"]:
+        fail("SDAD doctor CLI must not assign generic SCHEMA_VERSION")
+
+    for name, expected_value in expected.items():
+        declarations = assignments[name]
+        if len(declarations) != 1:
+            fail(f"SDAD doctor CLI must assign {name} exactly once")
+        node, value, simple = declarations[0]
+        if (
+            id(node) not in module_level_nodes
+            or not simple
+            or not isinstance(value, ast.Constant)
+            or type(value.value) is not type(expected_value)
+            or value.value != expected_value
+        ):
+            fail(
+                f"SDAD doctor CLI must assign {name} its exact literal value"
+            )
+
+
 def validate_doctor_checkout_contract() -> None:
     doctor_source = require_phrases(
         "scripts/sdad.py",
         "SDAD doctor CLI",
-        [
-            "Checkout-only, read-only",
-            'DOCTOR_VERSION = "3.2.0"',
-            "LEGACY_REPORT_SCHEMA_VERSION = 1",
-            "REPORT_SCHEMA_VERSION = 2",
-        ],
+        ["Checkout-only, read-only"],
     )
-    if re.search(r"(?m)^SCHEMA_VERSION\s*=", doctor_source):
-        fail("SDAD doctor CLI must keep version domains explicitly named")
+    _validate_doctor_source_versions(doctor_source)
     for path in (
         "scripts/install-agent-adapter.ps1",
         "scripts/install-agent-adapter.sh",

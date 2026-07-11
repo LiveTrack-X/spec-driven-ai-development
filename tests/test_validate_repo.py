@@ -525,6 +525,29 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
 
 
 class DoctorSourceVersionContractTests(unittest.TestCase):
+    def validate_source(self, source: str) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "scripts").mkdir()
+            (root / "docs").mkdir()
+            (root / "scripts" / "sdad.py").write_text(source, encoding="utf-8")
+            for relative_path in (
+                "scripts/install-agent-adapter.ps1",
+                "scripts/install-agent-adapter.sh",
+                "docs/no-clone-quick-install.md",
+            ):
+                (root / relative_path).write_text(
+                    "Adapter-only installation surface.\n",
+                    encoding="utf-8",
+                )
+            with mock.patch.object(VALIDATE_REPO, "ROOT", root):
+                VALIDATE_REPO.validate_doctor_checkout_contract()
+
+    def assert_source_rejected(self, source: str) -> None:
+        with contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit):
+                self.validate_source(source)
+
     def test_doctor_source_uses_three_exact_named_version_domains(self) -> None:
         source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
         self.assertRegex(source, r'(?m)^DOCTOR_VERSION = "3\.2\.0"$')
@@ -539,6 +562,46 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
 
     def test_current_doctor_source_satisfies_checkout_contract(self) -> None:
         VALIDATE_REPO.validate_doctor_checkout_contract()
+
+    def test_rejects_computed_doctor_version_hidden_by_literal_decoy(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        mutated = source.replace(
+            'DOCTOR_VERSION = "3.2.0"',
+            '# DOCTOR_VERSION = "3.2.0"\nDOCTOR_VERSION = "3." + "2.0"',
+            1,
+        )
+        self.assertNotEqual(mutated, source)
+        self.assert_source_rejected(mutated)
+
+    def test_rejects_version_reassignment_after_correct_literal(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        mutated = source.replace(
+            'DOCTOR_VERSION = "3.2.0"',
+            'DOCTOR_VERSION = "3.2.0"\nDOCTOR_VERSION = "3.2.1"',
+            1,
+        )
+        self.assertNotEqual(mutated, source)
+        self.assert_source_rejected(mutated)
+
+    def test_rejects_augmented_version_reassignment(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        mutated = source.replace(
+            'DOCTOR_VERSION = "3.2.0"',
+            'DOCTOR_VERSION = "3.2.0"\nDOCTOR_VERSION += ".1"',
+            1,
+        )
+        self.assertNotEqual(mutated, source)
+        self.assert_source_rejected(mutated)
+
+    def test_rejects_annotated_generic_schema_version(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        mutated = source.replace(
+            "REPORT_SCHEMA_VERSION = 2",
+            "REPORT_SCHEMA_VERSION = 2\nSCHEMA_VERSION: int = 1",
+            1,
+        )
+        self.assertNotEqual(mutated, source)
+        self.assert_source_rejected(mutated)
 
 
 class StableReleaseContractTests(unittest.TestCase):
