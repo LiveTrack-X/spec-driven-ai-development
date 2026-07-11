@@ -51,8 +51,18 @@ on v1. New Standard/Full bootstrap writes v2 only. Multi-packet execution needs
 an explicitly owner-approved packet list; it is never session scope.
 
 The operating loop is Plan -> Route -> Implement -> Verify -> Report, with owner
-gate and handoff branches only when triggered. Guidance, deterministic
-validation, technical enforcement, and owner decision are separate layers.
+gate and handoff branches only when triggered.
+
+## Authority And Enforcement Boundaries
+
+Keep guidance, deterministic validation, technical enforcement, and owner
+decision as separate layers. Markdown records authority and guidance; it does
+not technically block tools or actions. Technical enforcement comes from the
+host, tool, runtime, or environment rather than from prose alone.
+
+Tool-native session, checkpoint, and Doctor features are convenience
+diagnostics. They are not SDAD state, handoff, or Doctor authority and do not
+replace the repository control plane.
 
 ## Execution Scope And Stop Contract
 
@@ -70,6 +80,9 @@ required, an owner-controlled tradeoff remains unresolved, verification is
 blocked, or evidence conflicts with the requested plan.
 
 ## Progressive Control Plane
+
+The bootstrap, install, or upgrade prompt is one-time, not a per-session prompt.
+Ordinary sessions begin with:
 
 For Standard or Full, read in this order:
 

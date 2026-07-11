@@ -46,6 +46,41 @@ def substantive_lines(text: str) -> set[str]:
     }
 
 
+def markdown_section(text: str, heading: str) -> str:
+    level = len(heading) - len(heading.lstrip("#"))
+    start = text.find(heading)
+    if start < 0:
+        raise AssertionError(f"Missing Markdown section: {heading}")
+    match = re.search(rf"(?m)^#{{1,{level}}}\s+", text[start + len(heading) :])
+    end = start + len(heading) + match.start() if match else len(text)
+    return text[start:end]
+
+
+def require_ordered_concepts(
+    text: str,
+    concepts: tuple[tuple[str, ...], ...],
+) -> None:
+    lowered = " ".join(text.lower().split())
+    cursor = 0
+    for alternatives in concepts:
+        matches = [lowered.find(option.lower(), cursor) for option in alternatives]
+        matches = [position for position in matches if position >= 0]
+        if not matches:
+            raise AssertionError(f"Missing concept alternatives: {alternatives}")
+        cursor = min(matches) + 1
+
+
+def require_concept_groups(
+    text: str,
+    groups: tuple[tuple[str, ...], ...],
+) -> None:
+    lowered = " ".join(text.lower().split())
+    for group in groups:
+        missing = [concept for concept in group if concept.lower() not in lowered]
+        if missing:
+            raise AssertionError(f"Missing concepts: {missing}")
+
+
 class AgentExperienceSurfaceTests(unittest.TestCase):
     def test_task8_canonical_and_fallback_states_use_v2_identity(self) -> None:
         canonical = read("templates/project-control-files/sdad-state.yaml")
@@ -266,15 +301,15 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         skill = read("skills/ai-spec-project-start/SKILL.md")
         frontmatter = skill.split("---", 2)[1]
 
-        for phrase in (
-            "Install or upgrade SDAD",
-            "migrate an existing SDAD project",
-            "recover or repair `sdad-state.yaml`, INDEX, ledger, or handoff consistency",
-            "run or interpret SDAD Doctor",
-            "diagnose the SDAD control plane",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, frontmatter)
+        require_concept_groups(
+            frontmatter,
+            (
+                ("install", "upgrade", "sdad"),
+                ("migrate", "existing sdad project"),
+                ("repair", "sdad-state.yaml", "index", "ledger", "handoff"),
+                ("sdad doctor", "diagnose", "sdad control plane"),
+            ),
+        )
 
         for broad_trigger in (
             "review this repo",
@@ -284,18 +319,37 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         ):
             with self.subTest(broad_trigger=broad_trigger):
                 self.assertNotIn(broad_trigger, frontmatter)
-        self.assertIn(
-            "ordinary work follows the repository adapter",
-            skill,
+        inspect = markdown_section(skill, "### 1. Inspect Capability And Existing State")
+        for concept in ("ordinary", "repository adapter"):
+            self.assertIn(concept, inspect.lower())
+
+    def test_task10_bootstrap_is_one_time_and_sessions_follow_the_control_plane(
+        self,
+    ) -> None:
+        skill = read("skills/ai-spec-project-start/SKILL.md")
+        inspect = markdown_section(skill, "### 1. Inspect Capability And Existing State")
+        require_ordered_concepts(
+            inspect,
+            (
+                ("one-time",),
+                ("bootstrap",),
+                ("not a per-session", "not per-session"),
+                ("ordinary sessions",),
+                ("installed repository adapter",),
+                ("`sdad-state.yaml`",),
+                ("`docs/index.md`",),
+            ),
         )
+        require_concept_groups(inspect, (("install", "upgrade"),))
 
     def test_task10_infers_before_asking_one_material_question(self) -> None:
         skill = read("skills/ai-spec-project-start/SKILL.md")
-        inference = skill.find("Inspect the request and repository first")
-        question = skill.find("Ask at most one unresolved blocking question")
-        self.assertGreaterEqual(inference, 0)
-        self.assertGreaterEqual(question, 0)
-        self.assertLess(inference, question)
+        interpretation = markdown_section(skill, "### 2. Interpret The Request")
+        require_ordered_concepts(
+            interpretation,
+            (("inspect",), ("infer", "derive"), ("blocking question",)),
+        )
+        require_concept_groups(interpretation, (("request", "repository"),))
 
         report = (
             "Interpreted goal:\n"
@@ -307,17 +361,29 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
             "Reason:\n"
             "Unresolved question: none"
         )
-        self.assertIn(report, skill)
-        for phrase in (
-            "not another approval step",
-            "One-shot -> current request only",
-            "Mini -> unit",
-            "Standard -> packet",
-            "Full -> packet plus named owner gates",
-            "scale, execution scope, protected action or owner gate, claim boundary, or authority",
+        self.assertIn(report, interpretation)
+        for concept in (
+            "approval",
+            "owner may override",
+            "scale",
+            "execution scope",
+            "protected action",
+            "owner gate",
+            "claim boundary",
+            "authority",
         ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, skill)
+            with self.subTest(concept=concept):
+                self.assertIn(concept, interpretation.lower())
+
+        scale = markdown_section(skill, "### 3. Select Scale")
+        require_ordered_concepts(
+            scale,
+            (("one-shot",), ("mini",), ("standard",), ("full",)),
+        )
+        require_concept_groups(
+            scale,
+            (("current request", "unit", "packet", "owner gates"),),
+        )
 
     def test_task10_normalizes_packets_and_delegation_context(self) -> None:
         skill = read("skills/ai-spec-project-start/SKILL.md")
@@ -334,14 +400,24 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         positions = [packet.find(field) for field in packet_fields]
         self.assertTrue(all(position >= 0 for position in positions))
         self.assertEqual(positions, sorted(positions))
-        for phrase in (
-            "parent context is not assumed",
-            "packet ID, objective, allowed scope, routes/files, validation, gates, stop condition, and required report",
-        ):
-            self.assertIn(phrase, skill)
+        require_concept_groups(
+            packet,
+            (
+                (
+                    "delegated worker", "packet id", "objective", "allowed scope",
+                    "routes/files", "validation", "gates", "stop condition",
+                    "required report", "parent context",
+                ),
+            ),
+        )
+        self.assertTrue("not assumed" in packet or "cannot be assumed" in packet)
 
     def test_task10_existing_project_preview_precedes_writes(self) -> None:
         skill = read("skills/ai-spec-project-start/SKILL.md")
+        preview_section = markdown_section(
+            skill,
+            "### 4. Existing-Project Read-Only Migration Preview",
+        )
         preview = skill.find("read-only migration preview")
         writes = skill.find("apply the proposed control-file changes")
         self.assertGreaterEqual(preview, 0)
@@ -365,42 +441,89 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         positions = [skill.find(item, preview) for item in preview_items]
         self.assertTrue(all(position >= 0 for position in positions))
         self.assertEqual(positions, sorted(positions))
-        for phrase in (
-            "dirty or untracked owner material",
-            "One-shot or stateless Mini",
-            "deliberately stateful Mini remains on v1",
-            "validation_for",
-            "Doctor strict",
-            "project validation separately",
-        ):
-            self.assertIn(phrase, skill)
+        require_concept_groups(
+            preview_section,
+            (
+                ("dirty", "owner material"),
+                ("one-shot", "stateless mini", "stateful mini", "v1"),
+                ("validation_for",),
+                ("doctor", "project validation", "separately"),
+            ),
+        )
 
     def test_task10_preview_maps_legacy_authority_and_changes_version_last(self) -> None:
         skill = read("skills/ai-spec-project-start/SKILL.md")
-        for phrase in (
-            "v1 intensity, autonomy, save-state, and work-packet-state",
-            "Level 0 -> no execution authorization",
-            "Level 1 -> unit",
-            "Level 2 -> packet",
-            "Level 3 -> explicit owner-approved packet list, not session scope",
-            "Level 4 -> scope selected separately plus named owner gates",
+        preview = markdown_section(
+            skill,
+            "### 4. Existing-Project Read-Only Migration Preview",
+        )
+        for wire_term in (
             "execution_scope: unit | packet",
-            "v2 has no intensity or autonomy keys",
-            "packet, action, conditions, expiry, evidence, and source remain unchanged",
-            "without automatic deletion",
             "docs/work-packet-state.md",
             "Delivery Readiness Model",
+            "version: 2",
         ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, skill)
+            with self.subTest(wire_term=wire_term):
+                self.assertIn(wire_term, preview)
 
-        coherence = skill.find(
-            "INDEX, ledger, validation, routes, and handoff are coherent"
+        require_concept_groups(
+            preview,
+            (
+                ("v1", "intensity", "autonomy", "save-state", "work-packet-state"),
+                ("level 0", "no execution authorization", "level 1", "unit"),
+                ("level 2", "packet", "level 3", "owner-approved packet list"),
+                ("not session scope", "level 4", "named owner gates"),
+                (
+                    "conditional owner authorization", "conditions", "expiry",
+                    "evidence", "source", "without automatic deletion",
+                ),
+            ),
         )
-        version = skill.find("change state `version: 2` last", max(coherence, 0))
-        self.assertGreaterEqual(coherence, 0)
-        self.assertGreaterEqual(version, 0)
-        self.assertLess(coherence, version)
+        require_ordered_concepts(
+            preview,
+            (
+                ("index",), ("ledger",), ("validation",), ("routes",),
+                ("handoff",), ("version: 2",), ("last",),
+            ),
+        )
+
+    def test_task10_runtime_separates_recorded_authority_from_enforcement(
+        self,
+    ) -> None:
+        runtime = read("skills/ai-spec-project-start/references/runtime-contract.md")
+        boundaries = markdown_section(runtime, "## Authority And Enforcement Boundaries")
+        require_ordered_concepts(
+            boundaries,
+            (
+                ("guidance",), ("deterministic validation",),
+                ("technical enforcement",), ("owner decision",),
+            ),
+        )
+        require_concept_groups(
+            boundaries,
+            (
+                ("markdown", "records authority", "technically block tools"),
+                (
+                    "tool-native", "session", "checkpoint", "doctor",
+                    "convenience", "diagnostics", "not sdad", "state",
+                    "handoff", "doctor authority",
+                ),
+            ),
+        )
+
+    def test_task10_runtime_marks_bootstrap_as_one_time(self) -> None:
+        runtime = read("skills/ai-spec-project-start/references/runtime-contract.md")
+        progressive = markdown_section(runtime, "## Progressive Control Plane")
+        require_ordered_concepts(
+            progressive,
+            (
+                ("bootstrap",), ("one-time",),
+                ("not a per-session", "not per-session"),
+                ("ordinary sessions",), ("installed tool adapter",),
+                ("`sdad-state.yaml`",), ("`docs/index.md`",),
+            ),
+        )
+        require_concept_groups(progressive, (("install", "upgrade"),))
 
     def test_always_loaded_control_plane_stays_small(self) -> None:
         agents = read("templates/project-control-files/AGENTS.md")

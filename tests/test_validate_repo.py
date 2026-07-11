@@ -361,6 +361,25 @@ class SkillMigrationRepositoryContractTests(unittest.TestCase):
                     VALIDATE_REPO.validate_skill()
         return error_output.getvalue()
 
+    def assert_skill_mutation_accepted(self, mutate) -> None:
+        original_read = VALIDATE_REPO.read
+        skill_path = "skills/ai-spec-project-start/SKILL.md"
+
+        def read_with_mutation(candidate: str) -> str:
+            content = original_read(candidate)
+            return mutate(content) if candidate == skill_path else content
+
+        error_output = io.StringIO()
+        with mock.patch.object(VALIDATE_REPO, "read", side_effect=read_with_mutation):
+            with contextlib.redirect_stderr(error_output):
+                try:
+                    VALIDATE_REPO.validate_skill()
+                except SystemExit as exc:
+                    self.fail(
+                        "Narrative-only rewording was rejected: "
+                        f"{error_output.getvalue().strip()} ({exc})"
+                    )
+
     def test_rejects_preview_that_no_longer_precedes_writes(self) -> None:
         output = self.assert_skill_mutation_rejected(
             lambda text: text.replace(
@@ -372,14 +391,35 @@ class SkillMigrationRepositoryContractTests(unittest.TestCase):
         self.assertIn("migration preview", output)
 
     def test_rejects_a_broad_generic_trigger(self) -> None:
+        old_generic_trigger = (
+            "  Start, adopt, review, implement, reorganize, release, or hand off "
+            "a project.\n"
+        )
         output = self.assert_skill_mutation_rejected(
             lambda text: text.replace(
-                "ordinary work follows the repository adapter",
-                "ordinary work invokes this skill",
+                "description: >-\n",
+                "description: >-\n" + old_generic_trigger,
                 1,
             )
         )
-        self.assertIn("narrow SDAD trigger", output)
+        self.assertIn(
+            "Skill frontmatter has broad generic trigger: ordinary project workflow",
+            output,
+        )
+
+    def test_accepts_narrative_rewording_when_section_concepts_remain(self) -> None:
+        def reword(text: str) -> str:
+            return text.replace(
+                "Inspect the request and repository first.",
+                "Begin by inspecting repository evidence and the request.",
+                1,
+            ).replace(
+                "because parent context is not assumed.",
+                "because parent context cannot be assumed.",
+                1,
+            )
+
+        self.assert_skill_mutation_accepted(reword)
 
 
 class CanonicalTemplateRepositoryContractTests(unittest.TestCase):

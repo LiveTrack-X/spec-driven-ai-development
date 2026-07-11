@@ -111,6 +111,51 @@ Status: implementation and verification complete. The planned commit subject is
   generalized workflow formats, and state-v3 abstractions; Task 10 has no
   concrete defect requiring them.
 
+## Corrective Review Follow-Up
+
+An independent review identified four bounded Task 10 gaps. This follow-up:
+
+- marks bootstrap/install/upgrade as a one-time entry point rather than a
+  per-session prompt and routes ordinary sessions through installed adapter ->
+  `sdad-state.yaml` -> `docs/INDEX.md`;
+- states that Markdown records authority but cannot technically block tools,
+  and separates tool-native session/checkpoint/Doctor diagnostics from SDAD
+  state, handoff, and Doctor authority;
+- replaces the body-text trigger mutation with a valid folded-YAML frontmatter
+  mutation and requires the specific ordinary-project-workflow error; and
+- converts Task 10 explanatory guidance checks to section-scoped concept/order
+  contracts while retaining exact headings, interpretation/packet fields,
+  `execution_scope: unit | packet`, `validation_for`, paths, and all twelve
+  preview items.
+
+Corrective TDD evidence:
+
+- RED agent contracts: 51 tests ran with two expected assertion failures and no
+  errors for the missing one-time boundary and missing authority/enforcement
+  section. A separate focused runtime test failed because the progressive
+  control-plane section lacked the one-time bootstrap route.
+- RED validator contracts: three focused tests ran with two expected failures
+  and no errors because the valid YAML generic-workflow trigger was accepted
+  and concept-preserving narrative rewording was rejected.
+- GREEN: agent-experience 52/52, validator 76/76, and temporary `CODEX_HOME`
+  installer 4/4 passed.
+- Full suite, run once after the final corrective behavior change: 364 tests
+  passed, 3 existing environment-gated tests skipped, 0 failures/errors.
+- Repository validation, changed-Python compilation, and `git diff --check`
+  passed. Corrective budgets are skill 303 lines / 13,410 characters and runtime
+  reference 178 lines / 8,231 characters.
+
+Smallest-change audit:
+
+- Production guidance changed by 25 added and 5 removed lines across only the
+  skill and runtime reference.
+- The larger test/validator diff replaces the prior exact-sentence locks with
+  two compact helpers for section-scoped grouped and ordered concepts; it does
+  not add a general documentation framework or affect non-Task-10 behavior.
+- Starter templates, field patterns, kickoff prompt, public docs, adapters,
+  release metadata, image, Doctor implementation, and the global skill remain
+  unchanged in this corrective commit.
+
 ## Concerns
 
 - None blocking.

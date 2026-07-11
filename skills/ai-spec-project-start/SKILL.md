@@ -37,6 +37,12 @@ Do not load every reference by default.
 
 Determine whether the environment can edit the project filesystem.
 
+Use this skill as a one-time bootstrap, install, upgrade, migration, repair, or
+diagnosis entry point, not a per-session prompt. After setup, ordinary sessions
+start with the installed repository adapter, then `sdad-state.yaml`, then
+`docs/INDEX.md`; they invoke this skill again only for an SDAD-specific
+operation named by the frontmatter trigger.
+
 - In chat-only environments, plan and explain only. Do not install files or
   claim they were saved.
 - In file-editing environments, inspect repository instructions, current files,
@@ -52,8 +58,7 @@ If the repository already has SDAD, start from its current adapter,
 from scratch.
 
 This skill is not the default route for ordinary bug fixes, reviews, refactors,
-documentation, implementation, generic release work, or handoff creation. When
-SDAD is already installed, ordinary work follows the repository adapter.
+documentation, implementation, generic release work, or handoff creation.
 
 ### 2. Interpret The Request
 
@@ -122,7 +127,9 @@ Standard/Full migration use v2. Inventory v1 intensity, autonomy, save-state, an
 - Level 4 -> scope selected separately plus named owner gates.
 
 V2 uses `execution_scope: unit | packet`; v2 has no intensity or autonomy keys.
-Preserve valid conditional owner authorization and reuse it only while packet, action, conditions, expiry, evidence, and source remain unchanged. Re-approval
+Set `validation_for` to the active packet before changing the version. Preserve
+valid conditional owner authorization and reuse it only while packet, action,
+conditions, expiry, evidence, and source remain unchanged. Re-approval
 is required when any of those terms changes or the authorization expires.
 
 Link or move legacy save-state content into a current handoff or an archive

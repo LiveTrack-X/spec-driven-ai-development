@@ -539,6 +539,33 @@ def _markdown_section(content: str, heading: str, level: int) -> str:
     return content[match.start() : end]
 
 
+def _require_ordered_concepts(
+    content: str,
+    label: str,
+    concepts: list[tuple[str, ...]],
+) -> None:
+    lowered = " ".join(content.lower().split())
+    cursor = 0
+    for alternatives in concepts:
+        positions = [lowered.find(option.lower(), cursor) for option in alternatives]
+        positions = [position for position in positions if position >= 0]
+        if not positions:
+            fail(f"{label} missing ordered concept: {' / '.join(alternatives)}")
+        cursor = min(positions) + 1
+
+
+def _require_concept_groups(
+    content: str,
+    label: str,
+    groups: list[tuple[str, ...]],
+) -> None:
+    lowered = " ".join(content.lower().split())
+    for group in groups:
+        missing = [concept for concept in group if concept.lower() not in lowered]
+        if missing:
+            fail(f"{label} missing concepts: {', '.join(missing)}")
+
+
 def validate_doctor_gemini_documentation_contract() -> None:
     contents = {
         path: require_phrases(path, f"Doctor/Gemini documentation {path}", phrases)
@@ -1556,15 +1583,33 @@ def validate_skill() -> None:
         fail(f"Skill frontmatter must contain only name and description: {top_level_keys}")
     if "name: ai-spec-project-start" not in frontmatter:
         fail("Skill frontmatter must include name: ai-spec-project-start")
-    for phrase in [
-        "Install or upgrade SDAD",
-        "migrate an existing SDAD project",
-        "recover or repair `sdad-state.yaml`, INDEX, ledger, or handoff consistency",
-        "run or interpret SDAD Doctor",
-        "diagnose the SDAD control plane",
-    ]:
-        if phrase not in frontmatter:
-            fail(f"Skill frontmatter missing narrow SDAD trigger: {phrase}")
+    _require_ordered_concepts(
+        frontmatter,
+        "Skill frontmatter narrow SDAD trigger",
+        [
+            ("install",), ("migrate",), ("recover", "repair"),
+            ("sdad doctor",), ("diagnose",),
+        ],
+    )
+    _require_concept_groups(
+        frontmatter,
+        "Skill frontmatter narrow SDAD trigger",
+        [
+            ("upgrade", "existing sdad project"),
+            ("sdad-state.yaml", "index", "ledger", "handoff"),
+            ("sdad control plane",),
+        ],
+    )
+    generic_workflow_concepts = (
+        "start",
+        "review",
+        "implement",
+        "release",
+        "hand off",
+        "a project",
+    )
+    if all(concept in frontmatter.lower() for concept in generic_workflow_concepts):
+        fail("Skill frontmatter has broad generic trigger: ordinary project workflow")
     for broad_trigger in [
         "review this repo",
         "implement the spec",
@@ -1595,7 +1640,6 @@ def validate_skill() -> None:
         "sdad-state.yaml",
         "docs/INDEX.md",
         "execution_scope: unit | packet",
-        "Full -> packet plus named owner gates",
         "evidence-ready",
         "owner-accepted",
         "## Existing-Project Rules",
@@ -1607,13 +1651,39 @@ def validate_skill() -> None:
         if phrase not in body:
             fail(f"Skill body missing expected contract: {phrase}")
 
-    if "ordinary work follows the repository adapter" not in body:
-        fail("Skill body missing narrow SDAD trigger boundary")
+    inspect_section = _markdown_section(
+        body,
+        "### 1. Inspect Capability And Existing State",
+        3,
+    )
+    _require_ordered_concepts(
+        inspect_section,
+        "Skill one-time bootstrap boundary",
+        [
+            ("one-time",), ("bootstrap",),
+            ("not a per-session", "not per-session"),
+            ("ordinary sessions",), ("installed repository adapter",),
+            ("sdad-state.yaml",), ("docs/index.md",),
+        ],
+    )
+    _require_concept_groups(
+        inspect_section,
+        "Skill one-time bootstrap boundary",
+        [("install", "upgrade")],
+    )
 
-    inference = body.find("Inspect the request and repository first")
-    question = body.find("Ask at most one unresolved blocking question")
-    if inference < 0 or question < 0 or inference >= question:
-        fail("Skill must infer from repository evidence before one material question")
+    interpretation = _markdown_section(body, "### 2. Interpret The Request", 3)
+    interpretation_body = interpretation.partition("\n")[2]
+    _require_ordered_concepts(
+        interpretation_body,
+        "Skill infer-first boundary",
+        [("inspect",), ("infer", "derive"), ("at most one",), ("blocking question",)],
+    )
+    _require_concept_groups(
+        interpretation,
+        "Skill material-question boundary",
+        [("scale", "execution scope", "protected action", "owner gate", "claim boundary", "authority")],
+    )
 
     interpretation_fields = [
         "Interpreted goal:",
@@ -1625,16 +1695,14 @@ def validate_skill() -> None:
         "Reason:",
         "Unresolved question: none",
     ]
-    interpretation_positions = [body.find(field, inference) for field in interpretation_fields]
+    interpretation_positions = [interpretation.find(field) for field in interpretation_fields]
     if any(position < 0 for position in interpretation_positions) or (
         interpretation_positions != sorted(interpretation_positions)
     ):
         fail("Skill interpretation report fields must be complete and ordered")
 
-    preview = body.find("read-only migration preview")
-    writes = body.find("apply the proposed control-file changes")
-    if preview < 0 or writes < 0 or preview >= writes:
-        fail("Skill migration preview must precede proposed control-file writes")
+    preview_heading = "### 4. Existing-Project Read-Only Migration Preview"
+    preview_section = _markdown_section(body, preview_heading, 3)
     preview_items = [
         "worktree status, owner changes, control files, sizes, and authority",
         "pre-change Doctor result or read-only structural baseline",
@@ -1649,24 +1717,55 @@ def validate_skill() -> None:
         "proposed state, INDEX, ledger, and handoff writes without applying them",
         "post-change Doctor strict and separate project-validation comparison plan",
     ]
-    preview_positions = [body.find(item, preview, writes) for item in preview_items]
+    preview_positions = [preview_section.find(item) for item in preview_items]
     if any(position < 0 for position in preview_positions) or (
         preview_positions != sorted(preview_positions)
     ):
         fail("Skill migration preview must contain twelve ordered report items")
+    preview_tail = preview_section[
+        preview_positions[-1] + len(preview_items[-1]) :
+    ]
+    _require_concept_groups(
+        preview_tail,
+        "Skill migration preview",
+        [
+            ("v1", "intensity", "autonomy", "save-state", "work-packet-state"),
+            ("level 0", "no execution authorization", "level 1", "unit"),
+            ("level 2", "packet", "level 3", "owner-approved packet list"),
+            ("not session scope", "level 4", "named owner gates"),
+            ("execution_scope: unit | packet", "validation_for"),
+            (
+                "conditional owner authorization", "conditions", "expiry",
+                "evidence", "source", "without automatic deletion",
+            ),
+            ("docs/work-packet-state.md", "delivery readiness model"),
+        ],
+    )
+    _require_ordered_concepts(
+        preview_tail,
+        "Skill migration preview write order",
+        [
+            ("index",), ("ledger",), ("validation",), ("routes",),
+            ("handoff",), ("version: 2",), ("last",), ("doctor",),
+            ("project validation",), ("separately",), ("apply",),
+            ("control-file changes",),
+        ],
+    )
 
-    for phrase in [
-        "v1 intensity, autonomy, save-state, and work-packet-state",
-        "Level 0 -> no execution authorization",
-        "Level 3 -> explicit owner-approved packet list, not session scope",
-        "v2 has no intensity or autonomy keys",
-        "packet, action, conditions, expiry, evidence, and source remain unchanged",
-        "change state `version: 2` last",
-        "project validation separately",
-        "parent context is not assumed",
-    ]:
-        if phrase not in body:
-            fail(f"Skill migration preview missing contract: {phrase}")
+    packet_section = _markdown_section(body, "### 7. Normalize And Bind The Work Packet", 3)
+    _require_concept_groups(
+        packet_section,
+        "Skill delegation envelope",
+        [
+            (
+                "delegated worker", "packet id", "objective", "allowed scope",
+                "routes/files", "validation", "gates", "stop condition",
+                "required report", "parent context",
+            ),
+        ],
+    )
+    if not any(term in packet_section for term in ("not assumed", "cannot be assumed")):
+        fail("Skill delegation envelope must not assume parent context")
 
     runtime_contract = require_phrases(
         "skills/ai-spec-project-start/references/runtime-contract.md",
@@ -1675,6 +1774,7 @@ def validate_skill() -> None:
             "## Scale Truth Table",
             "## Intent Route",
             "## Steady-State V2 Invariants",
+            "## Authority And Enforcement Boundaries",
             "## Execution Scope And Stop Contract",
             "## Progressive Control Plane",
             "## Sensitive Data Boundary",
@@ -1688,15 +1788,74 @@ def validate_skill() -> None:
     if len(runtime_contract.splitlines()) > 220:
         fail("Skill runtime contract is too large")
 
-    require_phrases(
+    progressive = _markdown_section(
+        runtime_contract,
+        "## Progressive Control Plane",
+        2,
+    )
+    _require_ordered_concepts(
+        progressive,
+        "Skill runtime one-time bootstrap boundary",
+        [
+            ("bootstrap",), ("one-time",),
+            ("not a per-session", "not per-session"),
+            ("ordinary sessions",), ("installed tool adapter",),
+            ("sdad-state.yaml",), ("docs/index.md",),
+        ],
+    )
+    _require_concept_groups(
+        progressive,
+        "Skill runtime one-time bootstrap boundary",
+        [("install", "upgrade")],
+    )
+    enforcement = _markdown_section(
+        runtime_contract,
+        "## Authority And Enforcement Boundaries",
+        2,
+    )
+    _require_ordered_concepts(
+        enforcement,
+        "Skill runtime authority boundary",
+        [
+            ("guidance",), ("deterministic validation",),
+            ("technical enforcement",), ("owner decision",),
+        ],
+    )
+    _require_concept_groups(
+        enforcement,
+        "Skill runtime authority boundary",
+        [
+            ("markdown", "records authority", "technically block tools"),
+            (
+                "tool-native", "session", "checkpoint", "doctor",
+                "convenience", "diagnostics", "not sdad", "state",
+                "handoff", "doctor authority",
+            ),
+        ],
+    )
+
+    field_patterns = require_phrases(
         "skills/ai-spec-project-start/references/field-patterns.md",
         "Skill field patterns",
         [
             "## Mature-Project Migration Evidence",
             "Existing-Project Read-Only Migration Preview",
-            "dirty or untracked owner material",
-            "Doctor strict for SDAD structural consistency",
-            "project validation separately",
+        ],
+    )
+    mature_evidence = _markdown_section(
+        field_patterns,
+        "## Mature-Project Migration Evidence",
+        2,
+    )
+    _require_concept_groups(
+        mature_evidence,
+        "Skill mature-project evidence",
+        [
+            ("inventory", "dirty", "owner material", "preserve history"),
+            (
+                "pre-change", "doctor", "post-change",
+                "structural consistency", "project validation",
+            ),
         ],
     )
 
@@ -2859,12 +3018,24 @@ def validate_templates() -> None:
         "implementation notes",
         "micro-approval steps",
         "Existing-Project Preview Gate",
-        "show proposed writes without applying them",
-        "changing state `version: 2` last",
-        "Doctor strict structural evidence and project validation separately",
     ]:
         if phrase not in kickoff:
             fail(f"Kickoff prompt missing review-worthy unit guidance: {phrase}")
+    kickoff_preview = _markdown_section(
+        kickoff,
+        "## Existing-Project Preview Gate",
+        2,
+    )
+    _require_ordered_concepts(
+        kickoff_preview,
+        "Kickoff existing-project preview",
+        [
+            ("proposed writes",), ("without applying",), ("index",),
+            ("active ledgers",), ("validation identity",), ("routes",),
+            ("handoff",), ("version: 2",), ("last",), ("doctor",),
+            ("project validation",), ("separately",),
+        ],
+    )
     review_prompt = read("prompts/review-prompt.md")
     for phrase in [
         "Context Stability applies before review inputs",
