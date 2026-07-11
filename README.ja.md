@@ -84,8 +84,9 @@ Expires when:
 Evidence required before action:
 ```
 
-承認は指定された packet と条件内でのみ再利用します。承認後に source が変わった場合、
-条件が崩れた場合、または期限条件を満たした場合は、再び Owner の判断が必要です。
+承認は `Authorized action`、`Packet`、`Conditions`、`Evidence required before action` が
+変わらず、承認後に source が変更されず、`Expires when` に到達していない場合に限り
+再利用します。いずれかが変われば、再び Owner の判断が必要です。
 
 ## Evidence と完了の主張
 

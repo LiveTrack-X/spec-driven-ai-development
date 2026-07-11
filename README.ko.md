@@ -84,8 +84,9 @@ Expires when:
 Evidence required before action:
 ```
 
-승인은 지정한 packet과 조건에서만 재사용합니다. source가 승인 후 변경되거나,
-조건이 깨지거나, 만료 조건이 충족되면 다시 오너 결정을 받아야 합니다.
+승인은 `Authorized action`, `Packet`, `Conditions`, `Evidence required before action`이
+그대로이고, 승인 후 source가 변경되지 않았으며, `Expires when`에 도달하지 않은 동안만
+재사용합니다. 이 중 하나라도 달라지면 다시 오너 결정을 받아야 합니다.
 
 ## Evidence와 완료 주장
 

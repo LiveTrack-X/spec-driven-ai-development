@@ -55,7 +55,7 @@ Unresolved question: none
 | "release 전에 멈춰" | release owner gate가 있는 packet |
 | "다음 세션이 이어서 하게 해줘" | handoff intent |
 | "이 repo에서 채택할 만한 것을 찾아줘" | reference-intake intent |
-| "승인 요청이 너무 많아" | autonomy tuning intent, 실행 경계 점검 |
+| "승인 요청이 너무 많아" | `execution_scope` 및 owner-gate 승인·만료 조정 intent |
 | "commit and wait" | commit에서 멈춤; push/release/deploy 권한은 아님 |
 
 "carefully", "fully", "quickly" 같은 수식어는 검토 깊이나 압축 정도를 바꿀 뿐
@@ -113,8 +113,9 @@ Expires when:
 Evidence required before action:
 ```
 
-지정 packet, 조건, evidence가 그대로면 같은 승인을 다시 묻지 않습니다. 승인 뒤 source가
-변경되거나 조건/기한이 달라지면 승인은 만료되고 Owner의 새 결정이 필요합니다.
+`Authorized action`, `Packet`, `Conditions`, `Evidence required before action`이 그대로이고,
+승인 뒤 source가 변경되지 않았으며, `Expires when`에 도달하지 않았다면 같은 승인을 다시
+묻지 않습니다. 이 중 하나라도 달라지면 승인은 만료되고 Owner의 새 결정이 필요합니다.
 
 ## 한 사실은 한 곳에만 기록
 

@@ -54,7 +54,7 @@ Unresolved question: none
 | “在 release 前停下” | 带 release owner gate 的 packet |
 | “让下一会话可以继续” | handoff intent |
 | “找出这个 repo 中值得采用的内容” | reference-intake intent |
-| “它请求批准太频繁” | autonomy tuning intent，检查执行边界 |
+| “它请求批准太频繁” | `execution_scope` 与 owner-gate 授权/到期调整 intent |
 | “commit and wait” | 在 commit 停止；不表示有 push/release/deploy 权限 |
 
 “carefully”“fully”“quickly”等修饰词只改变评审深度或压缩程度，不会扩大 scope。
@@ -112,8 +112,9 @@ Expires when:
 Evidence required before action:
 ```
 
-当指定 packet、conditions、evidence 都未变化时，不要重复请求同一批准。批准后 source 改变、
-条件失效或达到到期条件时，授权过期，必须取得新的 Owner 决定。
+当 `Authorized action`、`Packet`、`Conditions`、`Evidence required before action` 均未变化、
+批准后 source 未改变且尚未达到 `Expires when` 时，不要重复请求同一批准。其中任何一项
+发生变化，授权即过期，必须取得新的 Owner 决定。
 
 ## 一个事实只记录在一个位置
 

@@ -79,8 +79,9 @@ Expires when:
 Evidence required before action:
 ```
 
-授权只能在指定 packet 和条件内复用。批准后 source 发生变化、条件不再成立或达到
-到期条件时，必须重新取得 Owner 决定。
+只有 `Authorized action`、`Packet`、`Conditions`、`Evidence required before action`
+保持不变、批准后 source 未改变且尚未达到 `Expires when` 时，才能复用授权。
+其中任何一项发生变化，都必须重新取得 Owner 决定。
 
 ## Evidence 与完成声明
 

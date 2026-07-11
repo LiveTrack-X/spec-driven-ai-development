@@ -55,7 +55,7 @@ Unresolved question: none
 | 「release の前で止まって」 | release owner gate を持つ packet |
 | 「次のセッションが続けられるようにして」 | handoff intent |
 | 「この repo から採用できるものを探して」 | reference-intake intent |
-| 「承認要求が多すぎる」 | autonomy tuning intent、実行境界の点検 |
+| 「承認要求が多すぎる」 | `execution_scope` と owner-gate の承認・失効調整 intent |
 | 「commit and wait」 | commit で停止。push/release/deploy の権限ではない |
 
 "carefully"、"fully"、"quickly" などの修飾語は review depth や圧縮度を変えるだけで、
@@ -113,9 +113,9 @@ Expires when:
 Evidence required before action:
 ```
 
-指定された packet、conditions、evidence が変わらなければ、同じ承認を再度求めません。
-承認後に source が変わる、条件が崩れる、または期限条件を満たすと承認は失効し、
-Owner の新しい判断が必要です。
+`Authorized action`、`Packet`、`Conditions`、`Evidence required before action` が変わらず、
+承認後に source が変更されず、`Expires when` に到達していなければ、同じ承認を再度
+求めません。いずれかが変わると承認は失効し、Owner の新しい判断が必要です。
 
 ## 1 つの事実は 1 か所に記録する
 
