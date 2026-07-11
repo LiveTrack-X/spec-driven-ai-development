@@ -372,12 +372,17 @@ class Task8MinimalExampleTests(DoctorAssertions, unittest.TestCase):
             shutil.copytree(ROOT / "examples" / "minimal-project", project)
             state_path = project / "sdad-state.yaml"
             original = state_path.read_text(encoding="utf-8")
+            today = date.today()
             command = (
                 "python -c \"from pathlib import Path; "
                 "assert Path('SPEC/SPEC-COMPLETE.md').is_file()\""
             )
             runnable = (
-                original.replace("updated: YYYY-MM-DD", "updated: 2026-07-11", 1)
+                original.replace(
+                    "updated: YYYY-MM-DD",
+                    f"updated: {today.isoformat()}",
+                    1,
+                )
                 .replace(
                     "command: Replace with a project check.",
                     f"command: {command}",
@@ -414,7 +419,7 @@ class Task8MinimalExampleTests(DoctorAssertions, unittest.TestCase):
 
             report = DiagnosticEngine().diagnose(
                 FilesystemProjectView(project),
-                DoctorPolicy(today=date(2026, 7, 11)),
+                DoctorPolicy(today=today),
             )
 
             self.assertEqual(report.findings, ())

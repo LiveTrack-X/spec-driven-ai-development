@@ -212,7 +212,8 @@ def _canonical_state_identity_is_valid(text: str, packet_id: str) -> bool:
     validation_for = snapshot.scalar("validation_for")
     active_packet_id = snapshot.active_packet.get("id")
     return (
-        scale is not None
+        not result.issues
+        and scale is not None
         and scale.value == "standard"
         and scope is not None
         and scope.value == "packet"

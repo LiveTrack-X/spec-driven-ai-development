@@ -1214,7 +1214,13 @@ def validate_local_markdown_links() -> None:
                     )
 
 
-def _starter_optional_handoff_is_valid(text: str) -> bool:
+_STARTER_MARKDOWN_FENCE = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})(.*)$")
+
+
+def _starter_section_blocks(
+    text: str,
+    heading: str,
+) -> list[tuple[str, str]] | None:
     visible = re.sub(
         r"<!--.*?-->",
         lambda match: "\n" * match.group(0).count("\n"),
@@ -1222,43 +1228,44 @@ def _starter_optional_handoff_is_valid(text: str) -> bool:
         flags=re.DOTALL,
     )
     lines = visible.splitlines()
-    try:
-        start = lines.index("## Optional Current Handoff") + 1
-    except ValueError:
-        return False
-
-    section: list[str] = []
+    found_section = False
+    blocks: list[tuple[str, str]] = []
     fence: str | None = None
     fence_length = 0
-    for line in lines[start:]:
-        delimiter = re.match(r"^[ \t]*(`{3,}|~{3,})(.*)$", line)
+    fence_info = ""
+    block_lines: list[str] = []
+    for line in lines:
+        delimiter = _STARTER_MARKDOWN_FENCE.match(line)
         if fence is None:
-            if line.startswith("## "):
-                break
-            section.append(line)
+            if not found_section:
+                if line == heading:
+                    found_section = True
+                    continue
+            elif line.startswith("## "):
+                return blocks
             if delimiter is not None:
                 fence = delimiter.group(1)[0]
                 fence_length = len(delimiter.group(1))
+                fence_info = delimiter.group(2).strip()
+                block_lines = []
             continue
-        section.append(line)
         if (
             delimiter is not None
             and delimiter.group(1)[0] == fence
             and len(delimiter.group(1)) >= fence_length
             and not delimiter.group(2).strip()
         ):
+            if found_section:
+                blocks.append((fence_info, "\n".join(block_lines)))
             fence = None
             fence_length = 0
-
-    blocks = re.findall(
-        r"(?ms)^```markdown[ \t]*\n(.*?)^```[ \t]*$",
-        "\n".join(section),
-    )
-    expected = (
-        "## 1. Session Identity\n\n"
-        "- Active packet: [packet:bootstrap]\n"
-    )
-    return blocks == [expected]
+            fence_info = ""
+            block_lines = []
+        elif found_section:
+            block_lines.append(line)
+    if not found_section or fence is not None:
+        return None
+    return blocks
 
 
 def validate_canonical_template_contract() -> None:
@@ -1306,31 +1313,33 @@ def validate_canonical_template_contract() -> None:
         "skills/ai-spec-project-start/references/starter-templates.md",
         "Installed-skill fallback templates",
         [
-            "version: 2",
-            "execution_scope: packet",
-            "validation_for: bootstrap",
             "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
-            "## Optional Current Handoff",
         ],
     )
     open_finding_forms = (
         "- [High] [packet:bootstrap] Replace with a classified finding.",
         "- [packet:bootstrap] Replace with an unclassified finding.",
     )
-    if any(form not in starter for form in open_finding_forms):
+    current_work_blocks = _starter_section_blocks(starter, "## Current Work Files")
+    open_finding_block = ("markdown", "\n".join(open_finding_forms))
+    if current_work_blocks is None or current_work_blocks.count(open_finding_block) != 1:
         fail("Installed-skill fallback open-finding wire forms are incomplete")
-    state_match = re.search(
-        r"(?ms)^## Active State Schema\s+.*?^```yaml\s*\n(.*?)^```$",
-        starter,
-    )
-    if state_match is None:
-        fail("Installed-skill fallback is missing its canonical state-v2 block")
-    if not _canonical_state_identity_is_valid(state_match.group(1), "bootstrap"):
+    state_blocks = _starter_section_blocks(starter, "## Active State Schema")
+    if state_blocks is None or len(state_blocks) != 1 or state_blocks[0][0] != "yaml":
+        fail("Installed-skill fallback Active State Schema YAML block is invalid")
+    starter_state = state_blocks[0][1]
+    if not _canonical_state_identity_is_valid(starter_state, "bootstrap"):
         fail("Installed-skill fallback state-v2 identity is not exact or coherent")
     for forbidden in ("intensity", "autonomy", "current_handoff"):
-        if re.search(rf"(?m)^{forbidden}:", state_match.group(1)):
+        if re.search(rf"(?m)^{forbidden}:", starter_state):
             fail(f"Installed-skill fallback must omit live or legacy key: {forbidden}")
-    if not _starter_optional_handoff_is_valid(starter):
+    handoff_blocks = _starter_section_blocks(starter, "## Optional Current Handoff")
+    expected_handoff = (
+        "markdown",
+        "## 1. Session Identity\n\n"
+        "- Active packet: [packet:bootstrap]",
+    )
+    if handoff_blocks != [expected_handoff]:
         fail("Installed-skill fallback Optional Current Handoff block is invalid")
 
     for label, path in (

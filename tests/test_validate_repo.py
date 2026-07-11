@@ -419,6 +419,94 @@ class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
             with self.subTest(path=path, mutate=mutate):
                 self.assertIn("state-v2 identity", self.assert_mutation_rejected(path, mutate))
 
+    def test_state_identity_rejects_structural_parser_issues(self) -> None:
+        cases = (
+            (
+                "examples/minimal-project/sdad-state.yaml",
+                lambda text: text.replace(
+                    "scale: standard",
+                    "scale: standard\nscale: standard",
+                    1,
+                ),
+            ),
+            (
+                "skills/ai-spec-project-start/references/starter-templates.md",
+                lambda text: text.replace("owner_gates: []\n", "", 1),
+            ),
+        )
+        for path, mutate in cases:
+            with self.subTest(path=path):
+                output = self.assert_mutation_rejected(path, mutate)
+                self.assertIn("state-v2 identity", output)
+
+    def test_starter_blocks_must_be_visible_in_their_sections(self) -> None:
+        path = "skills/ai-spec-project-start/references/starter-templates.md"
+
+        def hide_state_section(text: str, opener: str, closer: str) -> str:
+            start = text.index("## Active State Schema")
+            end = text.index("## INDEX Schema", start)
+            section = text[start:end]
+            return text[:start] + f"{opener}\n{section}{closer}\n" + text[end:]
+
+        finding_block = (
+            "```markdown\n"
+            "- [High] [packet:bootstrap] Replace with a classified finding.\n"
+            "- [packet:bootstrap] Replace with an unclassified finding.\n"
+            "```"
+        )
+        handoff_block = (
+            "```markdown\n"
+            "## 1. Session Identity\n\n"
+            "- Active packet: [packet:bootstrap]\n"
+            "```"
+        )
+        cases = (
+            (
+                "Active State Schema",
+                lambda text: hide_state_section(text, "~~~~markdown", "~~~~"),
+            ),
+            (
+                "Active State Schema",
+                lambda text: hide_state_section(text, "<!--", "-->"),
+            ),
+            (
+                "open-finding wire forms",
+                lambda text: text.replace(
+                    finding_block,
+                    f"~~~~markdown\n{finding_block}\n~~~~",
+                    1,
+                ),
+            ),
+            (
+                "open-finding wire forms",
+                lambda text: text.replace(
+                    finding_block,
+                    f"<!--\n{finding_block}\n-->",
+                    1,
+                ),
+            ),
+            (
+                "Optional Current Handoff",
+                lambda text: text.replace(
+                    handoff_block,
+                    f"~~~~markdown\n{handoff_block}\n~~~~",
+                    1,
+                ),
+            ),
+            (
+                "Optional Current Handoff",
+                lambda text: text.replace(
+                    handoff_block,
+                    f"<!--\n{handoff_block}\n-->",
+                    1,
+                ),
+            ),
+        )
+        for expected, mutate in cases:
+            with self.subTest(expected=expected, mutate=mutate):
+                output = self.assert_mutation_rejected(path, mutate)
+                self.assertIn(expected, output)
+
     def test_handoff_rejects_comment_fence_and_wrong_section_decoys(self) -> None:
         path = "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
         identity = (
