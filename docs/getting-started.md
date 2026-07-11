@@ -11,16 +11,18 @@ Scale determines which persistent control surface is installed. Execution
 scope determines how far the AI may work now. Owner gates determine which
 protected actions still require the owner.
 
-| Scale | Use when | Default execution boundary |
-|---|---|---|
-| One-shot | Current disposable request | Current request |
-| Mini | One small evidence-bearing change | `unit` |
-| Standard | Durable state, multiple sessions, or reviewers | `packet` |
-| Full | Risk-bearing work needs additional controls | `packet` plus named gates |
+| Scale | Use when | Default execution boundary | Owner gates |
+|---|---|---|---|
+| One-shot | Current disposable request | Current request | As applicable |
+| Mini | One small evidence-bearing change | `unit` | As applicable |
+| Standard | Durable state, multiple sessions, or reviewers | `packet` | Named as applicable |
+| Full | Risk-bearing work needs additional controls | `packet` | Named for applicable risks |
 
-The AI should infer these controls from the request and repository, report its
-reason, and ask at most one question only if the answer materially changes
-scale, execution scope, a claim, or an owner gate. The owner may override it.
+The AI should infer scale, execution scope, claim boundary, and owner gates from
+the request and repository, then report them with explicit assumptions. It asks
+at most one question only when the unresolved fact would change the scale or an
+owner gate; otherwise it proceeds with the stated assumptions. The owner may
+override the inference.
 
 ## Install Once
 

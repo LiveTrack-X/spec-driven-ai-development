@@ -10,23 +10,27 @@ still require the owner.
 
 ## Quick Choice
 
-| Situation | Scale | Default boundary |
-|---|---|---|
-| One disposable answer or change | One-shot | Current request |
-| Small change that needs evidence | Mini | `unit` |
-| Multi-session work, durable state, or reviewers | Standard | `packet` |
-| Risk-bearing work needing more controls | Full | `packet` plus named gates |
+| Situation | Scale | Default boundary | Owner gates |
+|---|---|---|---|
+| One disposable answer or change | One-shot | Current request | As applicable |
+| Small change that needs evidence | Mini | `unit` | As applicable |
+| Multi-session work, durable state, or reviewers | Standard | `packet` | Named as applicable |
+| Risk-bearing work needing more controls | Full | `packet` | Named for applicable risks |
 
 Full does not mean permission to release, migrate, deploy, read sensitive data,
 or accept risk. Those remain owner gates. The AI should inspect the request and
-repository first, report its inference, and ask at most one question only when
-the answer materially changes scale, execution scope, a claim, or an owner gate.
+repository first, infer and report scale, execution scope, claim boundary, owner
+gates, and explicit assumptions. It asks at most one question only when an
+unresolved fact would change the scale or an owner gate; otherwise it proceeds
+with the stated assumptions.
 
 ```text
 Scale: Standard
 Reason: multi-session state and review findings already exist.
 Execution scope: packet
+Claim boundary: structural and task validation only
 Owner gates: release only
+Assumptions: no production action before the release gate
 Unresolved question: none
 ```
 

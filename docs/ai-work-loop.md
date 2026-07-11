@@ -22,9 +22,11 @@ Normalize the request into one executable boundary:
 - owner gates and stop conditions,
 - report format.
 
-Infer these from the request and repository first. Ask at most one blocking
-question only when the answer materially changes scale, `execution_scope`, a
-claim, or an owner gate. Recommend a default with the question.
+Infer and report scale, execution scope, claim boundary, owner gates, and the
+assumptions behind them from the request and repository first. Ask at most one
+blocking question only when an unresolved fact would change the scale or an
+owner gate. Recommend a default with the question; otherwise proceed with the
+explicit assumptions.
 
 ## Route
 

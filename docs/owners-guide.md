@@ -7,7 +7,8 @@ outcome, keeps protected decisions explicit, and accepts or rejects evidence.
 
 1. Send the [Copy-Paste Start Prompt](../README.md#copy-paste-start-prompt).
 2. Let the AI inspect the request and repository before asking questions.
-3. Review its proposed scale, execution scope, owner gates, and claim boundary.
+3. Review its proposed scale, execution scope, claim boundary, owner gates, and
+   explicit assumptions.
 4. Approve the first `unit` or `packet`, not every micro-task.
 5. At the checkpoint, require evidence and limits before acceptance.
 
@@ -24,8 +25,9 @@ adapter, `sdad-state.yaml`, and `docs/INDEX.md`.
 | Validation contract | What will be checked, and what will it prove? |
 | Acceptance | Is the evidence sufficient for me to accept the result? |
 
-Defaults are One-shot for the current request, Mini for a `unit`, Standard for
-a `packet`, and Full for a `packet` plus applicable named gates.
+Defaults are One-shot for the current request, Mini for a `unit`, and Standard
+or Full for a `packet`. Owner gates are declared separately and named for the
+applicable protected actions.
 
 ## Owner Decisions That Must Stay Explicit
 
@@ -39,10 +41,11 @@ not mean owner-accepted.
 ## First Prompt For Actual Work
 
 ```text
-Inspect the repository and propose the smallest SDAD scale, a unit or packet
-boundary, validation evidence, and applicable owner gates. Ask one question only
-if an unresolved fact materially changes those controls. Then work to
-evidence-ready within the approved boundary and stop before any unapproved gate.
+Inspect the repository and report the smallest SDAD scale, a unit or packet
+boundary, claim boundary, applicable owner gates, and the explicit assumptions
+behind the inference. Ask one question only if an unresolved fact would change
+the scale or an owner gate; otherwise proceed with the stated assumptions. Work
+to evidence-ready within the approved boundary and stop before an unapproved gate.
 ```
 
 ## Conditional Authorization

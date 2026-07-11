@@ -86,12 +86,16 @@ Step 0 - Infer the controls before creating files.
 
 Do not make me answer a fixed questionnaire. Inspect my request and the
 repository first. Infer scale, execution scope, validation claim boundary, and
-owner gates. Ask at most one blocking question, with a recommended answer, only
-when the unresolved fact would materially change one of those controls. Report:
+owner gates, and make the assumptions behind the inference explicit. Ask at
+most one blocking question, with a recommended answer, only when the unresolved
+fact would materially change the scale or an owner gate. Otherwise proceed with
+the explicit assumptions. Report:
 
 - Scale and reason
 - Execution scope
+- Claim boundary
 - Owner gates
+- Assumptions
 - Unresolved question, or `none`
 
 I may override the inference. Keep these three axes separate:
@@ -142,9 +146,10 @@ and "commit and wait" does not imply push, release, or deploy unless named.
 If multiple intents match, first decide whether they can be safely composed
 inside one approved packet. If one route remains dominant, proceed and briefly
 state the interpreted intent, scale, execution scope, expected evidence, and
-owner gates. If the combination materially changes one of those controls, ask
-one blocking clarification question with your recommended default. Do not use
-natural-language routing to bypass release,
+owner gates. Ask one blocking clarification question with your recommended
+default only when an unresolved fact would change the scale or an owner gate;
+otherwise state the assumptions and proceed. Do not use natural-language
+routing to bypass release,
 migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
@@ -412,12 +417,15 @@ owner-accepted.
 | Execution scope | Current `unit` or `packet` boundary | Risk acceptance |
 | Owner gate | Permission for a protected action | Implementation quality |
 
-Defaults are One-shot for the current request, Mini for a `unit`, Standard for
-a `packet`, and Full for a `packet` plus applicable named gates.
+Defaults are One-shot for the current request, Mini for a `unit`, and Standard
+or Full for a `packet`. Owner gates are declared separately for applicable
+protected actions.
 
-The AI infers these controls from the request and repository first. It asks at
-most one blocking question only when the answer materially changes scale,
-execution scope, a claim, or an owner gate. The owner can override the inference.
+The AI infers and reports scale, execution scope, claim boundary, owner gates,
+and explicit assumptions from the request and repository first. It asks at most
+one blocking question only when an unresolved fact would change the scale or an
+owner gate; otherwise it proceeds with the stated assumptions. The owner can
+override the inference.
 
 ## How SDAD Organizes Context
 

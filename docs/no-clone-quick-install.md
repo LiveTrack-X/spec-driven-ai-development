@@ -10,15 +10,17 @@ Chat-only tools can plan with SDAD, but cannot install project files. Use Codex,
 Claude Code, Gemini CLI, Cursor, Copilot Chat, or another tool with project
 filesystem access.
 
-The AI should infer the controls from your request and repository before asking
-questions:
+The AI should infer and report scale, execution scope, claim boundary, owner
+gates, and explicit assumptions from your request and repository before asking
+questions. It asks at most one question only when an unresolved fact would
+change the scale or an owner gate:
 
-| Scale | Default boundary | Persistent setup |
-|---|---|---|
-| One-shot | Current request | None |
-| Mini | `unit` | One instruction file |
-| Standard | `packet` | Compact state and routing controls |
-| Full | `packet` plus named gates | Additional risk controls as needed |
+| Scale | Default boundary | Owner gates | Persistent setup |
+|---|---|---|---|
+| One-shot | Current request | As applicable | None |
+| Mini | `unit` | As applicable | One instruction file |
+| Standard | `packet` | Named as applicable | Compact state and routing controls |
+| Full | `packet` | Named for applicable risks | Additional risk controls as needed |
 
 Scale, execution scope, and owner gates are separate. Full scale never grants a
 release, migration, deployment, destructive action, sensitive-data access, auth,
@@ -79,12 +81,16 @@ Step 0 - Infer the controls before creating files.
 
 Do not make me answer a fixed questionnaire. Inspect my request and the
 repository first. Infer scale, execution scope, validation claim boundary, and
-owner gates. Ask at most one blocking question, with a recommended answer, only
-when the unresolved fact would materially change one of those controls. Report:
+owner gates, and make the assumptions behind the inference explicit. Ask at
+most one blocking question, with a recommended answer, only when the unresolved
+fact would materially change the scale or an owner gate. Otherwise proceed with
+the explicit assumptions. Report:
 
 - Scale and reason
 - Execution scope
+- Claim boundary
 - Owner gates
+- Assumptions
 - Unresolved question, or `none`
 
 I may override the inference. Keep these three axes separate:
@@ -135,9 +141,10 @@ and "commit and wait" does not imply push, release, or deploy unless named.
 If multiple intents match, first decide whether they can be safely composed
 inside one approved packet. If one route remains dominant, proceed and briefly
 state the interpreted intent, scale, execution scope, expected evidence, and
-owner gates. If the combination materially changes one of those controls, ask
-one blocking clarification question with your recommended default. Do not use
-natural-language routing to bypass release,
+owner gates. Ask one blocking clarification question with your recommended
+default only when an unresolved fact would change the scale or an owner gate;
+otherwise state the assumptions and proceed. Do not use natural-language
+routing to bypass release,
 migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
@@ -531,9 +538,10 @@ Open your AI coding tool in the target project and say:
 ```text
 Read the installed SDAD Protocol instruction file. Infer the smallest scale,
 `unit` or `packet` execution scope, validation claim boundary, and applicable
-owner gates from my request and this repository. Report the inference and ask
-at most one blocking question only if an unresolved fact materially changes a
-control. For Standard or Full, bootstrap state version 2 with one executable
+owner gates from my request and this repository. Report the inference and its
+explicit assumptions. Ask at most one blocking question only if an unresolved
+fact would change the scale or an owner gate; otherwise proceed with the stated
+assumptions. For Standard or Full, bootstrap state version 2 with one executable
 active packet, packet-owned validation, and the compact state -> INDEX ->
 intent-selected route. Work through Plan -> Route -> Implement -> Verify ->
 Report until evidence-ready, but stop before any unapproved owner gate.
