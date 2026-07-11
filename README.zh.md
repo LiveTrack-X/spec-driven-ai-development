@@ -1,186 +1,153 @@
-# SPEC-Driven AI Development
+# SDAD Protocol
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-状态：`3.1.0` 稳定文档/包版本。
+状态：`3.1.0` 稳定文档/软件包版本。
 
-实际效果取决于 project fit、Owner 执行纪律和 evidence quality。
+实际效果取决于 project fit、Owner 的执行纪律与 evidence quality。
 
-本文是中文导览版 README。本仓库的规范文档以英文为准，包括
-[README.md](README.md)、`docs/`、`templates/` 和 `scripts/`。如果本导览与英文文档不一致，请以英文规范文档为准。
+本文是中文导览版 README。英文 [README.md](README.md) 以及英文版 `docs/`、
+`templates/`、`scripts/` 是规范来源。如有差异，以英文规范文档为准。
 
 ## 这是什么
 
-SPEC-Driven AI Development 是一种面向 AI 编程代理的项目治理方法。它不是
-“让 AI 按规格写代码”这么简单，而是把 AI 分成规划、SPEC 编写、实现、评审、QA
-和文档维护等角色，同时由人类 Owner 保留方向、风险和最终验收权。
+SDAD Protocol（SPEC-Driven AI Development）是一套 repository-local 工作协议，
+用于防止多个 AI 工具和会话之间的 state、scope、evidence、Owner 权限、decision 与
+handoff 发生偏移。Markdown 记录权限与预期，但不会在技术上阻止工具操作；真正的
+强制执行由 permissions、hooks、sandbox、branch protection 等运行环境负责。
 
-核心思想：
+核心区别如下：
 
-- 人类 Owner 决定方向、优先级、风险容忍度和最终验收。
-- AI 协助规划、SPEC、实现、评审、验证和文档维护。
-- SPEC 定义工作目标，但完成证据必须来自代码、测试、文档和可复现结果。
-- 重要变更需要其他 AI、模型、会话或人工进行交叉评审。
-- 重复出现的问题应转化为规则、清单、测试或模板。
+- Scale 决定需要长期维护哪些 control surface。
+- `execution_scope` 决定 AI 现在可以执行到哪里。
+- owner gate 决定哪些受保护操作必须停下等待 Owner。
+- validation contract 决定每项检查能证明什么、不能证明什么。
+- `evidence-ready` 是可评审的 AI 结果，`owner-accepted` 是 Owner 的最终验收。
 
-## 什么时候使用
+## 快速选择
 
-当项目出现以下情况时，本方法特别适合：
+AI 应先检查 repository 和请求，推断最小且安全的 Scale、`execution_scope` 与 owner gate。
+只有在不确定项会实质改变判断时，才提出一个带推荐答案的问题。用户始终可以覆盖推断结果。
 
-- 多个 AI 会话、模型或工具会持续参与同一项目。
-- Owner 不一定直接写代码，但需要监督方向和质量。
-- SPEC、历史文档、产品笔记和 handoff 文件开始变多。
-- AI 声称完成，但缺少可验证证据。
-- 项目存在发布、迁移、安全、数据丢失或回滚风险。
+| Scale | 默认执行边界 | 默认控制 |
+|---|---|---|
+| One-shot | 当前请求 | 不创建持久 SDAD files |
+| Mini | `unit` | 小任务所需的最小 instruction 与 evidence |
+| Standard | `packet` | 持久 state、SPEC、TODO、review、validation |
+| Full | `packet` | Standard + release/security/data 等具名 owner gates |
 
-可使用 [docs/fit-assessment.md](docs/fit-assessment.md) 进行适配度评估。
+Scale 与风险权限相互独立。小任务的危险操作仍需 gate；选择 Full 也不会自动批准
+受保护操作。
 
-## 场景指南
+## 一个工作循环
 
-详细 FAQ 和场景说明见 [docs/user-guide.zh.md](docs/user-guide.zh.md)。快速判断如下：
+所有 Scale 都使用同一个五步循环：
 
-| 场景 | 建议起点 |
-|---|---|
-| 一次性请求，不需要后续上下文 | One-shot prompt |
-| 小任务，但需要 evidence 或简短 handoff | Mini SDAD |
-| 多会话、评审、TODO 或 review findings 会持续存在 | Standard SDAD |
-| 存在 release、migration、production、user data、auth、money、security 或 rollback 风险 | Full SDAD，或带明确 gate 的 Standard 以上 |
-| Claude.ai、ChatGPT web 等无法编辑 project files 的 chat-only 环境 | 只做规划，不声称已安装 adapter |
-| AI 声称 "done" | 检查变更文件、检查证据、docs checked、限制和 Owner acceptance |
-| 不知道正确的 SDAD command 或 skill 名称 | 用自然语言请求，AI 应 route review、implementation、release、docs、handoff 或 autonomy tuning intent |
-| 出现 SPEC 未说明的实现判断 | 在 `docs/implementation-notes.md` 记录 assumption、compromise、tradeoff 和 follow-up |
+1. Plan — 定义 goal、scope、acceptance 与所需 evidence。
+2. Route — 从 state 和 `docs/INDEX.md` 中只选择当前所需信息。
+3. Implement — 以小而可评审的单元完成修改。
+4. Verify — 运行 validation，收集结果与限制。
+5. Report — 报告 evidence-ready 结果、risk 与未验证项。
 
-## 问题排查 FAQ
+Owner Gate 和 Handoff 不是永久追加的步骤，而是条件式 checkpoint。只有存在受保护
+操作时才在 gate 停下；只有需要交给下一会话时才创建 handoff。
 
-- Q. 我不知道正确的 SDAD 命令或 skill 名称。
-  A. 用自然语言请求。例如："看看有没有问题"、"按 SPEC 实现"、"准备 release"、
-  "让 README 更容易懂"、"创建 handoff"。AI 应先说明 interpreted intent、
-  SDAD scale/intensity、autonomy level、evidence 和 owner gate。
-- Q. AI 太频繁请求批准，或者推进得太远。
-  A. 同时调整 autonomy level 和 packet 边界。
-  - Level 0 Ask-first：新的、模糊的或有风险的 setup 中，每个重要步骤前都确认。
-  - Level 1 Unit Autonomy：只完成一个 review-worthy unit，然后带着证据停止。
-  - Level 2 Work Packet Autonomy：在已批准 packet 内连续完成相关 unit。
-  - Level 3 Session Autonomy：推进到低风险 session goal、time box 或 stop condition。
-  - Level 4 Release-gated Autonomy：release、migration、destructive action、
-    user data、auth、money、security、rollback、production claim 仍保留 Owner gate。
-- Q. AI 只说 "done"。
-  A. 不要接受 final done，先要求 evidence-ready status。检查变更文件、
-  checks、docs checked、限制或未验证内容、review findings 和 Owner decision
-  needed。
-- Q. SDAD 文档太多。
-  A. 使用 One-shot 或 Mini SDAD，或者降低 Standard/Full 的 operating intensity。
-  不要创建无法维护的 control files。
-- Q. 下一次会话总是丢失上下文。
-  A. 更新 `save-state.md`，或在关闭长会话前创建
-  `docs/sdad/handoffs/YYYY-MM-DD-topic.md`。
+## Context 与连续性
+
+Standard/Full 的启动路径是 tool adapter -> `sdad-state.yaml` -> `docs/INDEX.md`。
+`routed_docs` 是当前 packet 可选择的文档集合，不是启动时全部读取的列表。Agent 只读取
+当前 intent 所需的文档，并报告实际读取的路径。
+
+在 state v2 中，`current_handoff` 是唯一可选的当前连续性指针。`save-state.md` 仅作为
+v3.1 项目迁移时的 legacy migration input，不是当前 state 的第二个 source of truth。
+
+大型 Copy-Paste/bootstrap prompt 只在安装或升级时使用一次。安装完成后的普通工作不应
+每个会话重复粘贴它，而应遵循 adapter、state、INDEX。工具原生的
+session/checkpoint/doctor 功能只是便利功能或 tool diagnostics，不能取代 SDAD state、
+handoff 或 Doctor 的权威。
+
+## Owner gate 与预先授权
+
+为避免反复询问同一批准，可记录有条件的预先授权：
+
+```text
+Decision:
+Authorized action:
+Packet:
+Conditions:
+Expires when:
+Evidence required before action:
+```
+
+授权只能在指定 packet 和条件内复用。批准后 source 发生变化、条件不再成立或达到
+到期条件时，必须重新取得 Owner 决定。
+
+## Evidence 与完成声明
+
+- Doctor green：只确认结构和声明彼此一致。
+- task benchmark 成功：证明指定 task 已成功。
+- controlled comparison 成功：才可支持“实际优于旧方法”的声明。
+
+不能只凭 Doctor 或 unit test 声称生产率提高、结果正确或已获 Owner 验收。AI 应提交
+包含 changed files、checks、docs checked、limits、unverified items、open findings 的
+`evidence-ready` report。最终完成需要 Owner 标记为 `owner-accepted`。
 
 ## 快速开始
 
-在 Standard/Full 中，始终加载适配器，然后只读取 `sdad-state.yaml` ->
-`docs/INDEX.md` -> 当前源码/测试 -> 当前工作包所路由的文档。默认不加载
-完整规则手册或可选证据文件。
+首次使用请阅读 [docs/getting-started.md](docs/getting-started.md)。无需 clone 即可开始时，
+使用 [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md)；小型 project 使用
+[docs/mini-sdad.md](docs/mini-sdad.md)。
 
-第一次使用时，请先阅读 [docs/getting-started.md](docs/getting-started.md)。
-它分别说明 prompt-only 启动、工具适配器安装和 Codex skill 安装路径。
+详细中文说明和问题排查见 [docs/user-guide.zh.md](docs/user-guide.zh.md)，project fit 见
+[docs/fit-assessment.md](docs/fit-assessment.md)，维护成本见
+[docs/maintenance-cost.md](docs/maintenance-cost.md)。
 
-如果不想先 clone 仓库，请使用
-[docs/no-clone-quick-install.md](docs/no-clone-quick-install.md)。
-它提供可直接交给 AI 代理的提示词，以及可复制粘贴的一步安装命令。
-最简单的路径不需要终端、Git 或 Python。
-小项目请先使用 [docs/mini-sdad.md](docs/mini-sdad.md)。
-当项目出现多会话、后续维护、评审、发布或数据风险时，再升级到 full SDAD。
-风险优先于简单的 yes 数量。如果 Q5 中的 production、migration、user data、auth、
-money、release 或 rollback 风险为 yes，即使只有这一项，也应至少考虑 Standard。
-选择 Standard/Full SDAD 后，每次循环结束都必须更新 SPEC、TODO 和 review findings。
-维护成本说明见 [docs/maintenance-cost.md](docs/maintenance-cost.md)。
-在 Standard/Full SDAD 中，除了 project scale，还要为每个 packet 选择
-operating intensity：`Standard SDAD / High`, `Standard SDAD / Medium`,
-`Standard SDAD / Low`, `Full SDAD / High`, `Full SDAD / Medium`,
-`Full SDAD / Low`。Q5 project 并不意味着每个 packet 都是 High。
-只有当 packet 改变 Q5 gate 的行为、策略、边界、证据声明或风险接受时，
-才提升为 `Full SDAD / High`。usable baseline 出现后，应降到 Medium 或 Low，
-压缩 evidence 和 owner review。详见
-[docs/operating-intensity.md](docs/operating-intensity.md)。
-Harness optimization、self-improving loop、retrieval/memory tuning 和重复评估
-自动化等 advanced extension 不是默认 SDAD loop。只有在存在重复 task unit、
-可测量 metric、固定 model/tool surface、leakage risk、具体 budget 和 owner
-adoption gate 时才使用。
-如果项目使用 `save-state.md`，当会话结束或暂停、需要 handoff、Owner 改变方向、
-存在部分或未验证状态，或者下一次会话很难重建上下文时，也必须更新它。
-Mini SDAD 也有完成门槛：必须列出变更文件、检查证据、限制或未验证内容，并获得 Owner 验收，才能称为 done。
-但这并不意味着每个小任务都要停下来等待批准。应先定义一个有评审意义的开发单元，
-让 AI 在该边界内连续完成相关小任务，然后带着证据 handoff。
-在 Claude.ai 或 ChatGPT web 这类没有项目文件系统的 chat-only 环境中，不要声称已经安装 adapter。
-这类环境只能用于规划；实际安装应在能编辑项目文件的 AI coding tool 中进行。
-
-在任意 AI 编程环境中使用：
-
-```text
-Use the SPEC-driven AI development workflow from this repository.
-Start by clarifying the product pain, owner control model, active SPEC, non-goals, risks, and evidence required for completion.
-```
-
-完整启动提示见 [prompts/kickoff-prompt.md](prompts/kickoff-prompt.md)。
-
-## 工具适配器
-
-本仓库提供多种 AI 编程工具适配器：
+各工具 adapter：
 
 - Codex: `AGENTS.md` + `ai-spec-project-start` skill
 - Claude Code: `CLAUDE.md`
 - Cursor: `.cursor/rules/spec-driven-ai-development.mdc`
 - GitHub Copilot: `.github/copilot-instructions.md`
-- 通用 AI 工具: `AI-SESSION-INSTRUCTIONS.md`
+- Generic AI tool: `AI-SESSION-INSTRUCTIONS.md`
 
-说明见 [docs/tool-adapters.md](docs/tool-adapters.md)。
+在 Claude.ai、ChatGPT web 等不能编辑 project filesystem 的 chat-only 环境中，只能进行
+planning，不能声称已安装 adapter。
 
-示例：
+## 问题排查 FAQ
 
-```powershell
-.\scripts\install-agent-adapter.ps1 -Adapter claude-code -TargetPath C:\path\to\project
-```
-
-## 核心规则
-
-Core 5:
-
-- 当前状态优先于历史内容。
-- 证据优先于 AI 自信。
-- 活跃范围优先于有趣的未来想法。
-- Owner 决策优先于 AI 的推进惯性。
-- 重复出现的问题应变成规则、清单、测试或模板。
-- 计划含糊时，先检查仓库证据，只把剩余的 blocking 问题连同推荐答案
-  交给 Owner。
-
-完整规则见 [docs/implicit-rules.md](docs/implicit-rules.md)。
+- 不知道正确的 SDAD 命令或 skill 名称时，用自然语言请求。AI 应简短说明
+  interpreted intent、Scale、`execution_scope`、evidence 和 owner gate。
+- 批准请求过多时，检查是否为 `execution_scope: packet`。release 等受保护操作仍保留独立 gate。
+- AI 只说 done 时，要求区分 `evidence-ready` report 与 Owner 验收。
+- 下个会话丢失 context 时，检查 `current_handoff` 与 packet marker 是否一致。
+- blocking 问题必须在先检查 repository evidence 后，限制为影响决策的一个问题。
+- 在一个 packet 内连续处理有评审意义的开发单元，然后带 evidence 停下。
 
 ## 主要文档
 
-- [docs/owners-guide.md](docs/owners-guide.md): 面向 Owner 的快速采用指南（英文）
-- [docs/ai-work-loop.md](docs/ai-work-loop.md): Fast/Normal/Full 执行循环（英文）
-- [docs/pattern-catalog.md](docs/pattern-catalog.md): 模式目录
-- [docs/user-guide.zh.md](docs/user-guide.zh.md): 场景式用户指南和 FAQ
-- [docs/anti-patterns.md](docs/anti-patterns.md): 反模式
-- [docs/fit-assessment.md](docs/fit-assessment.md): 适配度评估
-- [docs/maintenance-cost.md](docs/maintenance-cost.md): 控制文件维护成本
-- [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full 运行强度
-- [docs/session-handoff.md](docs/session-handoff.md): 长会话 handoff 与上下文连续性
-- [docs/implementation-notes.md](docs/implementation-notes.md): 记录 SPEC 未说明的实现决策
-- [docs/field-notes/repository-control-surface-method.md](docs/field-notes/repository-control-surface-method.md): guidance、enforcement、隔离、reviewed memory 控制面
-- [docs/field-notes/cost-aware-agent-routing-method.md](docs/field-notes/cost-aware-agent-routing-method.md): advisor、worker、loop、成本、证据路由
-- [docs/diagrams.md](docs/diagrams.md): Mermaid 图示
-- [templates/project-control-files](templates/project-control-files): 项目控制文件模板
+- [docs/owners-guide.md](docs/owners-guide.md): Owner 快速采用指南
+- [docs/ai-work-loop.md](docs/ai-work-loop.md): 单一执行循环
+- [docs/session-handoff.md](docs/session-handoff.md): 条件式 handoff 与连续性
+- [docs/implementation-notes.md](docs/implementation-notes.md): SPEC 之外的实现判断
+- [docs/pattern-catalog.md](docs/pattern-catalog.md): pattern catalog
 
 ## 验证
-
-请使用 Python 3.10 或更高版本运行完整的本地门禁。
 
 ```bash
 python scripts/validate_repo.py
 python -m unittest discover -s tests -v
 git diff --check
 ```
+
+## 从 v3.1 迁移
+
+v3.1 的 Level 0 Ask-first、Level 1 Unit Autonomy、Level 2 Work Packet Autonomy、
+Level 3 Session Autonomy、Level 4 Release-gated Autonomy 不是新的 state field。
+请把执行边界映射为 `unit | packet`，把受保护权限映射为 owner gates。Q5 只是旧版的
+风险推断表达，不是必问仪式。operating intensity 也已从 state v2 删除。
+现有 `save-state.md`、[docs/operating-intensity.md](docs/operating-intensity.md)、
+[docs/autonomy-levels.md](docs/autonomy-levels.md) 仅供 migration/history 参考。
+不要把 Full SDAD / High 或 advanced extension 这类旧表达复制到新项目的执行合同中。
 
 ## 许可证
 

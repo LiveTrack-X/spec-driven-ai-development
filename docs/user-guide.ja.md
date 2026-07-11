@@ -2,216 +2,190 @@
 
 [English](user-guide.md) | [한국어](user-guide.ko.md) | [中文](user-guide.zh.md) | [日本語](user-guide.ja.md)
 
-この文書は日本語の案内用 user guide です。正本は英語の
-[user-guide.md](user-guide.md)、`docs/`、`templates/`、`scripts` です。
-内容が食い違う場合は英語の正本文書を優先してください。
+この文書は日本語の案内用です。英語の [user-guide.md](user-guide.md)、`docs/`、
+`templates/`、`scripts/` が英語の正本文書です。内容が異なる場合は英語の正本を優先します。
 
-SDAD は AI-assisted development のための制御方法です。AI の出力を自動的に
-正しくするものではありませんが、scope、evidence、review、handoff、owner
-acceptance を失いにくくします。
+SDAD Protocol は AI の正しさを保証しません。代わりに、現在の scope、source of truth、
+validation、Owner control、handoff を明示し、誤りや過大な完了主張を見つけやすくします。
+
+## 最初に区別する 3 つの軸
+
+> Scale は維持する control files、`execution_scope` は AI が今どこまで進めるか、
+> owner gate はどの操作で必ず停止するかを決めます。
+
+| 軸 | 管理するもの | 管理しないもの |
+|---|---|---|
+| Scale | 維持する control surface | 作業の許可範囲 |
+| `execution_scope` | `unit` または `packet` の実行境界 | risk acceptance |
+| owner gate | 保護対象アクションの権限 | 実装品質 |
+| validation contract | 検査と証明の範囲 | owner acceptance |
+| handoff | セッション間の復元ポインタ | 現在の source of truth |
 
 ## 早見表
 
-| 状況 | 使うもの | 期待すること |
+| 状況 | Scale | 既定値 |
 |---|---|---|
-| 一度きりの依頼 | One-shot prompt | SDAD files は作らない |
-| 小さな作業だが done の証拠が必要 | Mini SDAD | AI instruction file 1 つ |
-| 複数セッション、レビュー、TODO が続く | Standard SDAD | SPEC、TODO、review、docs control files |
-| release、migration、production、user data、auth、money、security、destructive action、rollback リスクがある | Full SDAD または明示的 gate を持つ Standard 以上 | review、evidence、必要な ADR、owner gate |
-| Claude.ai や ChatGPT web などの chat-only 環境 | planning only | adapter をインストールしたと主張しない |
+| 現在の依頼だけを処理し、永続ファイルが不要 | One-shot | 現在の依頼、SDAD file なし |
+| 小さな feature または bug fix | Mini | `execution_scope: unit` |
+| 複数セッション、review、TODO、継続 state が必要 | Standard | `execution_scope: packet` |
+| release、migration、security、data、production risk がある | Full | `execution_scope: packet` + 必要な owner gates |
 
-プロジェクトを守れる最小の scale を選びます。risk は単純な yes 数より優先されます。
+通常、ユーザーは goal だけを伝えれば十分です。AI は repository と依頼を根拠に先に推論し、
+不明点が Scale や owner gate を実質的に変える場合だけ、推奨案を添えた blocking question を
+1 つ行います。
 
-## SDAD が追加するもの
+推奨される解釈レポート:
 
-- 古いメモが active work を上書きしないよう、現在の SPEC を基準にする。
-- work packet により、すべての micro-task で停止しない。
-- review-worthy unit により、evidence をレビュー可能な単位にまとめる。
-- AI の "done" と owner-accepted を分ける。
-- SPEC にない実装判断を `docs/implementation-notes.md` に残す。
-- `save-state.md` と handoff により、次のセッションが repo state から続けられる。
-- 大きな logs、archives、generated files、private data が AI context に入るのを防ぐ。
-- context layer により、今読むもの、必要時に読むもの、bounded evidence として参照するものを分ける。
-- before/after change guard により、autonomy の結果を監査可能にする。
-
-## SDAD が context を分ける方法
-
-| layer | 例 | 使い方 |
-|---|---|---|
-| always-loaded instructions | `AGENTS.md`, `CLAUDE.md`, Cursor/Copilot rules | 毎回読めるよう短く、現在有効な状態にします。 |
-| active control files | 現在の SPEC、TODO、review findings、implementation notes、save-state | 現在の packet に必要な部分を読みます。 |
-| on-demand references | pattern catalog、anti-patterns、field notes、localized guides | 現在の問いに必要なときだけ開きます。 |
-| archive and evidence | 古い handoff、logs、generated reports、historical notes | path または bounded read で参照し、chat に丸ごと貼りません。 |
-
-AI が迷った場合、まず active packet、source of truth、足りない evidence を
-説明させ、履歴を大量に読ませることから始めないでください。
+```text
+Scale: Standard
+Execution scope: packet
+Reason: multi-session state and review findings already exist.
+Owner gates: release only
+Unresolved question: none
+```
 
 ## 自然言語リクエスト
 
-ユーザーは SDAD 用語、adapter 名、skill 名を覚える必要はありません。普通の
-言葉で依頼してください。AI は intent を推測し、scope、evidence、owner gate
-を守る最小の SDAD route を選び、どう解釈したかを短く説明します。
+正しい SDAD command や skill 名を覚える必要はありません。
 
-| このように言った場合 | AI の解釈 |
+| このように依頼する | AI が解釈する intent |
 |---|---|
-| "全体を見て", "問題がないか確認して", "bug を探して" | review または audit intent |
-| "実装して", "修正して", "SPEC に合わせて" | SPEC implementation intent |
-| "release して", "publish して", "tag を切って" | Level 4 owner gate 付き release intent |
-| "docs が分かりにくい", "guide を書いて", "FAQ を追加して" | documentation intent |
-| "あとで続けられるように", "handoff して" | handoff または save-state intent |
-| "この repo から借りられるものはある?" | reference-intake intent |
-| "approval request が多すぎる", "先に進みすぎる" | autonomy tuning intent |
+| 「全体を確認して問題を探して」 | review/audit intent |
+| 「現在の SPEC に従って実装して」 | implementation intent |
+| 「release の前で止まって」 | release owner gate を持つ packet |
+| 「次のセッションが続けられるようにして」 | handoff intent |
+| 「この repo から採用できるものを探して」 | reference-intake intent |
+| 「承認要求が多すぎる」 | autonomy tuning intent、実行境界の点検 |
+| 「commit and wait」 | commit で停止。push/release/deploy の権限ではない |
 
-intent が明確なら AI は進めて構いません。複数の intent が衝突して scope や
-risk が変わる場合だけ、推奨デフォルト付きで blocking question を 1 つだけ
-聞きます。
+"carefully"、"fully"、"quickly" などの修飾語は review depth や圧縮度を変えるだけで、
+scope を拡張しません。`evidence-ready` も Owner が受け入れるまでは最終完了ではありません。
+
+## 1 つの作業ループ
+
+1. Plan — goal、scope、acceptance、evidence、gate を定義します。
+2. Route — adapter、state、INDEX に従い、必要な文書だけを選びます。
+3. Implement — 小さく review 可能な unit で変更します。
+4. Verify — validation を実行し、結果と限界を集めます。
+5. Report — evidence-ready report を提出します。
+
+Owner Gate は保護対象アクションがある場合、Handoff はセッション継続が必要な場合だけ使う
+条件付き checkpoint です。毎 packet の必須追加ステップにはしません。
+
+## Context を読む順序
+
+Standard/Full の開始時は次の順序を使います。
+
+```text
+tool adapter -> sdad-state.yaml -> docs/INDEX.md -> current source/tests -> selected routed docs
+```
+
+`routed_docs` は現在の packet で選択可能な文書の集合であり、startup 時にすべて読む命令では
+ありません。現在の intent に必要な文書だけを開き、final report には実際に読んだ path だけを
+記録します。archive、大きな log、generated report、private data は既定 context に入れません。
+
+大きな Copy-Paste/bootstrap prompt は、インストールまたはアップグレード時に一度だけ使います。
+導入後は毎回読み直したり貼り直したりせず、adapter -> state -> INDEX に従います。
+
+ツール固有の native session、checkpoint、doctor 機能は convenience または tool diagnostics です。
+SDAD の `sdad-state.yaml`、`current_handoff`、Doctor report を置き換えません。
+
+## State と handoff
+
+state v2 では `current_handoff` が唯一の任意の現在継続性ポインタです。値がある場合、文書の
+packet marker は active packet と一致する必要があります。長い内容を handoff に複製せず、
+SPEC、TODO、findings、ADR、evidence の path と次の action を結びます。
+
+`save-state.md` は v3.1 migration 時だけ読む legacy input です。v2 への移行後、第 2 の現在 state
+として更新し続けません。新しい handoff は必要な場合だけ
+`docs/sdad/handoffs/YYYY-MM-DD-topic.md` に作成します。
+
+## Owner gate の承認を再利用する
+
+条件付き承認は次の exact field で記録できます。
+
+```text
+Decision:
+Authorized action:
+Packet:
+Conditions:
+Expires when:
+Evidence required before action:
+```
+
+指定された packet、conditions、evidence が変わらなければ、同じ承認を再度求めません。
+承認後に source が変わる、条件が崩れる、または期限条件を満たすと承認は失効し、
+Owner の新しい判断が必要です。
+
+## 1 つの事実は 1 か所に記録する
+
+| 内容 | 正本の場所 |
+|---|---|
+| requirements と acceptance の変更 | SPEC |
+| 小さな SPEC 外の実装判断 | `docs/implementation-notes.md` |
+| 戻しにくい構造判断 | ADR |
+| 未解決の作業 | TODO または finding |
+| 次セッションの復元情報 | handoff |
+| 現在の実行 state | `sdad-state.yaml` |
+
+handoff は上記文書の内容を複製せず、path と重要な結果だけを結びます。
+
+## Evidence と主張の限界
+
+| evidence | 言えること | 言えないこと |
+|---|---|---|
+| Doctor green | 宣言された構造が整合している | 機能の正確性、効果、Owner acceptance |
+| task benchmark 成功 | 特定 task が成功した | 全体として以前より優れている |
+| controlled comparison 成功 | 比較条件で改善した | 他の条件にも自動で当てはまる |
+
+AI が done とだけ言う場合、changed files、checks、docs checked、limits、
+partial/degraded/unverified behavior、open findings、必要な Owner decision を含む
+`evidence-ready` report を求めてください。`owner-accepted` は別の状態です。
 
 ## トラブルシューティング FAQ
 
-### Q. 正しい SDAD command や skill 名が分かりません。
+### AI が repository を確認する前に質問する
 
-A. 自然言語で依頼し、AI に intent を route させてください。
+まず code、tests、active docs、SPEC、TODO、findings、ADR を確認させます。その後も Scale や
+gate を変える不明点がある場合だけ、推奨案を添えた質問を 1 つ許可します。
 
-例:
+### 承認要求が多すぎる、または AI が進みすぎる
 
-- "この repo で問題になりそうな箇所を確認して。"
-- "現在の SPEC に従って実装し、SPEC にない判断は implementation notes に残して。"
-- "approval request が多すぎる。この packet の autonomy level を調整して。"
-- "release 準備をして。ただし release と rollback decision は owner gate にして。"
-- "初めてのユーザーに分かりやすい README にして。"
-- "次の session が続けられるように handoff を作って。"
+`execution_scope` が `unit | packet` のどちらかを確認してください。micro-task をまとめて処理する
+場合は `packet` を使います。複数 packet の連続実行には、Owner が packet list を持つ plan を
+明示的に承認する必要があります。時間境界の session は実行範囲の値ではありません。
 
-AI は interpreted intent、SDAD scale/intensity、autonomy level、必要な
-evidence、owner gate を最初に短く述べます。その解釈が risk や scope を
-変える場合は、続行前に clarification question を 1 つだけ聞きます。
+### SDAD file が多すぎる
 
-動詞は作業ルート(route)を選び、修飾語はそのルートを調整します。たとえば "review" や
-"fix" は作業種別を選び、"carefully"、"fully"、"quickly"、"minimal"、
-"commit and wait" は inspection depth、compression、stop point を調整する
-だけで、scope を広げません。"Fully" でも owner が受け入れるまでは
-evidence-ready で止まります。"Commit and wait" は push、release、deploy を
-意味しません。
+継続性が不要なら One-shot、小さな作業なら Mini を選びます。Standard/Full でも
+`routed_docs` をすべて読まず、現在の intent に必要なものだけを選びます。
 
-### Q. AI が頻繁に承認を求める、または先に進みすぎる。
+### formal test がない
 
-A. autonomy level、packet boundary、operating intensity を一緒に調整します。
+利用可能な最も強い practical evidence を使い、限界を明示します。build/lint/typecheck、
+targeted script、smoke test、API response、log、screenshot、manual reproduction、docs diff などです。
 
-| 症状 | 試すこと | 意味 |
-|---|---|---|
-| 小さなステップごとに聞く | Level 2 Work Packet Autonomy | packet 境界を承認し、その中の micro-task は AI が続けて処理します。 |
-| 1 unit だけ終えて止まればよい | Level 1 Unit Autonomy | 1 つの review-worthy unit が承認済み packet です。 |
-| setup が新しい、曖昧、または危険 | Level 0 Ask-first | 境界が明確になるまで意味のある各ステップで確認します。 |
-| 低リスクの session goal が明確 | Level 3 Session Autonomy | session goal、time box、stop condition まで進めます。 |
-| release、migration、destructive action、user data、auth、money、security、rollback、production claim がある | Level 4 Release-gated Autonomy | AI は準備できますが、risk acceptance と release decision は owner gate を維持します。 |
+### chat-only tool がインストール済みだと言う
 
-### Q. AI が repository を確認する前に質問する。
-
-A. clarification checkpoint を要求します。
-
-```text
-Inspect repository evidence first: code, tests, active docs, SPEC, TODOs, review
-findings, and ADRs. Ask only the next blocking question, include your
-recommended answer, and explain what changes if I choose differently.
-```
-
-### Q. AI が "done" とだけ言い、何が変わったかわからない。
-
-A. final completion ではなく evidence-ready status を求めます。
-
-確認するもの:
-
-- changed files,
-- tests/build/lint/manual check または実行できなかった理由,
-- docs checked または updated,
-- 必要な implementation notes,
-- review findings の処理または追跡,
-- limitations、partial/degraded/unverified behavior,
-- まだ必要な owner decision.
-
-### Q. SDAD のファイルが多すぎる。
-
-A. より小さい scale、または低い intensity を使います。
-
-一度きりの作業は One-shot prompt、証拠が必要な小さな作業は Mini SDAD を使います。
-Standard/Full は control file を維持できる場合だけ使ってください。
-
-### Q. タスクの大きさがわからない。
-
-A. 予想コード行数だけでなく continuity と risk で分類します。
-
-| サイン | 使うもの |
-|---|---|
-| 一度きりの回答、文言修正、将来の文脈が不要な小変更 | One-shot prompt |
-| 小変更だが done の証拠が必要 | Mini SDAD または Level 1 Unit Autonomy |
-| 関連する docs、prompt、template、code 更新 | Standard SDAD + Level 2 Work Packet Autonomy |
-| 複数ファイル behavior change、反復 bug、review findings、context loss | Standard SDAD / Medium または High |
-| release、migration、destructive action、production claim、real user data、auth、money、security、rollback | Full SDAD または Level 4 gate 付き Standard 以上 |
-
-### Q. ファイル変更の前後に何を確認する？
-
-A. 軽い before/after change guard を使います。
-
-変更前に active SPEC、work packet、autonomy level、allowed scope、non-goals、
-owner gate、stop condition を確認します。
-
-変更後に changed files、checks run、docs checked/updated、implementation notes
-の要否、limitations、unverified behavior、owner decision を報告させます。
-
-### Q. formal test がない場合、どの evidence で足りる？
-
-A. その時点で可能な最も強い practical evidence を使い、限界を明示します。
-
-例: build/lint/typecheck output、targeted script、smoke test steps、curl/API
-response、application logs、screenshot、manual reproduction note、docs diff、
-unverified behavior の一覧。
-
-### Q. 次のセッションで文脈を失いやすい。
-
-A. セッション終了前に `save-state.md` を更新するか handoff を作成します。
-
-長いセッションを閉じる、または新しいセッションへ渡す前に
-`docs/sdad/handoffs/YYYY-MM-DD-topic.md` を作成し、長い内容は複製せず、
-SPEC、TODO、ADR、review findings、implementation notes、evidence path をリンクします。
-
-### Q. SPEC にない実装判断が必要。
-
-A. 判断を見える場所に残します。
-
-通常の実装判断は `docs/implementation-notes.md` に assumption、compromise、
-rejected alternative、tradeoff、follow-up、verification impact として記録します。
-戻しにくく、将来の保守者が驚く real tradeoff だけを ADR にします。
-
-### Q. review で bug が見つかった。
-
-A. evidence-ready は reviewable であり、owner-accepted ではありません。
-
-同じ packet で直せるなら直します。そうでなければ `review-findings.md` または
-`docs/TODO-Open-Items.md` に移し、次の packet を定義します。
-
-### Q. chat-only tool が SDAD をインストールしたと言う。
-
-A. project filesystem を編集できなければ、インストール済みではありません。
-
-Claude.ai や ChatGPT web は planning には使えますが、adapter file を保存したと
-主張してはいけません。実際の導入は Codex、Claude Code、Cursor、Copilot Chat など
-project folder を編集できる AI coding tool で行います。
-
-### Q. release、data、auth、money、security、destructive work に触れる。
-
-A. autonomy を上げるだけで解決しないでください。
-
-Standard または Full SDAD で明示的 gate を置き、risk acceptance、rollback posture、
-production claim、migration、destructive action、real user data handling は owner
-approval を維持します。
+project filesystem を編集できなければインストール済みではありません。Claude.ai や
+ChatGPT web では planning だけを行い、実際の adapter 導入は coding tool で実施します。
 
 ## 次に読む文書
 
-- [owners-guide.md](owners-guide.md): Owner 向けクイック導入ガイド（英語）
-- [ai-work-loop.md](ai-work-loop.md): Fast/Normal/Full 実行ループ（英語）
-- [getting-started.md](getting-started.md): setup path と最初の 10 分
-- [no-clone-quick-install.md](no-clone-quick-install.md): clone なしで始める
-- [mini-sdad.md](mini-sdad.md): 小さなプロジェクト向け one-file SDAD
-- [context-stability.md](context-stability.md): context layer と bounded read
-- [autonomy-levels.md](autonomy-levels.md): autonomy level と work packet
-- [implementation-notes.md](implementation-notes.md): 実装判断の記録ルール
-- [session-handoff.md](session-handoff.md): 長いセッションの handoff
+- [getting-started.md](getting-started.md): インストールと最初の実行
+- [no-clone-quick-install.md](no-clone-quick-install.md): clone なしの one-time bootstrap
+- [mini-sdad.md](mini-sdad.md): 小規模 project
+- [owners-guide.md](owners-guide.md): Owner 運用
+- [ai-work-loop.md](ai-work-loop.md): 作業ループ
+- [session-handoff.md](session-handoff.md): handoff contract
+- [implementation-notes.md](implementation-notes.md): 実装判断の記録
+
+## v3.1 の用語を使っていた場合
+
+この節は migration/history 専用です。Level 0 Ask-first は未承認状態、Level 1 Unit Autonomy は
+`unit`、Level 2 Work Packet Autonomy は `packet` と解釈できます。Level 3 Session Autonomy は
+session を scope にせず、承認済み packet list で表現します。Level 4 Release-gated Autonomy は
+execution scope ではなく owner gates へ移します。Q5 は必須質問ではなく、operating intensity も
+state v2 field ではありません。過去の mapping は [autonomy-levels.md](autonomy-levels.md) と
+[operating-intensity.md](operating-intensity.md) を参照できますが、新しい state に legacy 用語を
+記録しないでください。

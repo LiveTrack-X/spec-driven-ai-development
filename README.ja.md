@@ -1,4 +1,4 @@
-# SPEC-Driven AI Development
+# SDAD Protocol
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
@@ -6,180 +6,138 @@
 
 有効性は project fit、Owner の運用規律、evidence quality に依存します。
 
-この文書は日本語の案内用 README です。このリポジトリの正本は英語の
-[README.md](README.md)、`docs/`、`templates/`、`scripts/` です。内容が食い違う場合は英語の正本文書を優先してください。
+この文書は日本語の案内用 README です。英語の [README.md](README.md)、
+`docs/`、`templates/`、`scripts/` が正本です。内容が食い違う場合は英語の
+正本文書を優先してください。
 
 ## これは何か
 
-SPEC-Driven AI Development は、AI コーディングエージェントを単なる実装ツールではなく、
-計画、SPEC 作成、実装、レビュー、QA、ドキュメント保守の役割に分けて使うための
-プロジェクト運営手法です。人間の Owner は方向性、リスク、優先順位、最終受け入れを管理します。
+SDAD Protocol（SPEC-Driven AI Development）は、複数の AI ツールやセッションが
+リポジトリで作業するときに、state、scope、evidence、Owner 権限、decision、handoff の
+ずれを防ぐ repository-local な作業プロトコルです。Markdown は権限と期待を記録しますが、
+ツール利用を技術的に遮断するものではありません。実際の強制は permissions、hooks、
+sandbox、branch protection などの実行環境が担います。
 
-中心となる考え方：
+基本となる考え方は次のとおりです。
 
-- 人間の Owner が方向、優先順位、リスク許容度、最終判断を持つ。
-- AI は計画、SPEC、実装、レビュー、検証、ドキュメント保守を支援する。
-- SPEC は作業基準だが、完了の証拠はコード、テスト、文書、再現可能な結果で示す。
-- 重要な変更は別の AI、モデル、セッション、または人間によるクロスレビューを受ける。
-- 繰り返される問題は、ルール、チェックリスト、テスト、テンプレートに変換する。
+- Scale は、維持する control surface を決めます。
+- `execution_scope` は、AI が今どこまで実行できるかを決めます。
+- owner gate は、どの保護対象アクションで必ず停止するかを決めます。
+- validation contract は、各検査が何を証明し、何を証明しないかを決めます。
+- `evidence-ready` はレビュー可能な AI の結果、`owner-accepted` は Owner の最終受け入れです。
 
-## いつ使うか
+## 早見表
 
-次のようなプロジェクトに向いています。
+AI はまずリポジトリと依頼を調べ、最小で安全な Scale、`execution_scope`、owner gate を
+推論します。判断を実質的に変える不明点が残る場合だけ、推奨案を添えて質問を 1 つ行います。
+ユーザーは推論結果をいつでも上書きできます。
 
-- 複数の AI セッション、モデル、ツールが同じプロジェクトに関わる。
-- Owner が直接コードを書かなくても、方向と品質を監督する必要がある。
-- SPEC、過去文書、プロダクトメモ、handoff が増えている。
-- AI の「完了」宣言を証拠で確認する必要がある。
-- リリース、移行、セキュリティ、データ損失、ロールバックのリスクがある。
+| Scale | 既定の実行境界 | 既定の制御 |
+|---|---|---|
+| One-shot | 現在の依頼 | 永続的な SDAD file なし |
+| Mini | `unit` | 小さな作業向けの最小 instruction と evidence |
+| Standard | `packet` | 継続 state、SPEC、TODO、review、validation |
+| Full | `packet` | Standard + release/security/data など名前を明示した owner gates |
 
-適合度は [docs/fit-assessment.md](docs/fit-assessment.md) で確認できます。
+Scale とリスク権限は別です。小さな作業にも危険な操作には gate が必要で、
+Full を選んでも保護対象アクションが自動承認されることはありません。
 
-## 状況別ガイド
+## 1 つの作業ループ
 
-詳しい FAQ と状況別の説明は [docs/user-guide.ja.md](docs/user-guide.ja.md) を参照してください。
-短い判断基準は次のとおりです。
+すべての Scale は、同じ 5 ステップのループを使います。
 
-| 状況 | 推奨される開始点 |
-|---|---|
-| 一度きりの依頼で、後から継続しない | One-shot prompt |
-| 小さな作業だが、evidence や短い handoff が必要 | Mini SDAD |
-| 複数セッション、レビュー、TODO、review findings が必要 | Standard SDAD |
-| release、migration、production、user data、auth、money、security、rollback リスクがある | Full SDAD または明示的 gate を持つ Standard 以上 |
-| Claude.ai や ChatGPT web のように project files を編集できない chat-only 環境 | 計画だけを行い、adapter をインストールしたと主張しない |
-| AI が "done" と言った | 変更ファイル、確認証拠、docs checked、制限、Owner acceptance を確認する |
-| 正しい SDAD command や skill 名が分からない | 自然言語で依頼し、AI が review、implementation、release、docs、handoff、autonomy tuning intent に route する |
-| SPEC にない実装判断が発生した | `docs/implementation-notes.md` に assumption、compromise、tradeoff、follow-up を記録する |
+1. Plan — goal、scope、acceptance、必要な evidence を定義します。
+2. Route — state と `docs/INDEX.md` から今必要な情報だけを選びます。
+3. Implement — 小さくレビュー可能な単位で変更します。
+4. Verify — validation を実行し、結果と限界を収集します。
+5. Report — evidence-ready な結果、risk、未検証項目を報告します。
 
-## トラブルシューティング FAQ
+Owner Gate と Handoff は常設ステップではなく、条件付き checkpoint です。
+保護対象アクションがあるときは gate で停止し、次のセッションへ渡す必要があるときだけ
+handoff を作成します。
 
-- Q. 正しい SDAD command や skill 名が分かりません。
-  A. 自然言語で依頼してください。例: "問題がないか見て"、"SPEC に従って実装して"、
-  "release 準備をして"、"README を分かりやすくして"、"handoff を作って"。
-  AI は interpreted intent、SDAD scale/intensity、autonomy level、evidence、
-  owner gate を最初に短く述べます。
-- Q. AI が頻繁に承認を求める、または先に進みすぎる。
-  A. autonomy level と packet 境界を一緒に調整します。
-  - Level 0 Ask-first: 新しい、曖昧、またはリスクのある setup で各段階を確認します。
-  - Level 1 Unit Autonomy: 1 つの review-worthy unit だけを完了し、証拠とともに停止します。
-  - Level 2 Work Packet Autonomy: 承認済み packet 内の関連 unit を続けて進めます。
-  - Level 3 Session Autonomy: 低リスクの session goal、time box、stop condition まで進めます。
-  - Level 4 Release-gated Autonomy: release、migration、destructive action、
-    user data、auth、money、security、rollback、production claim では Owner gate を維持します。
-- Q. AI が "done" とだけ言う。
-  A. final done ではなく evidence-ready status を求めます。変更ファイル、
-  checks、docs checked、制限や未検証項目、review findings、Owner decision
-  needed を確認します。
-- Q. SDAD の文書が多すぎる。
-  A. One-shot または Mini SDAD を使うか、Standard/Full の operating intensity
-  を下げます。維持できない control file は作らない方が安全です。
-- Q. 次のセッションで文脈を失いやすい。
-  A. `save-state.md` を更新するか、長いセッションを閉じる前に
-  `docs/sdad/handoffs/YYYY-MM-DD-topic.md` を作成します。
+## Context と継続性
+
+Standard/Full の開始経路は tool adapter -> `sdad-state.yaml` -> `docs/INDEX.md` です。
+`routed_docs` は開始時に全件読むリストではなく、現在の packet で選択できる文書の集合です。
+エージェントは intent に必要な文書だけを読み、実際に読んだ path を報告します。
+
+state v2 では、`current_handoff` が唯一の任意の現在継続性ポインタです。
+`save-state.md` は v3.1 プロジェクトの移行時だけ使う legacy migration input であり、
+現在 state の第 2 の source of truth ではありません。
+
+大きな Copy-Paste/bootstrap prompt は、インストールまたはアップグレード時に一度だけ使います。
+導入後の通常作業では毎セッション貼り直さず、adapter、state、INDEX に従います。
+ツール固有の session/checkpoint/doctor 機能は convenience または tool diagnostics であり、
+SDAD state、handoff、Doctor の権威を置き換えません。
+
+## Owner gate と事前承認
+
+同じ承認を繰り返し求めないよう、条件付きの事前承認を記録できます。
+
+```text
+Decision:
+Authorized action:
+Packet:
+Conditions:
+Expires when:
+Evidence required before action:
+```
+
+承認は指定された packet と条件内でのみ再利用します。承認後に source が変わった場合、
+条件が崩れた場合、または期限条件を満たした場合は、再び Owner の判断が必要です。
+
+## Evidence と完了の主張
+
+- Doctor green: 構造と宣言の整合性だけを確認します。
+- task benchmark 成功: 指定した task の成功を示す evidence です。
+- controlled comparison 成功: 以前の方法より実際に優れていると主張するための evidence です。
+
+Doctor や unit test だけで、生産性向上、正確性、Owner acceptance を主張しません。
+AI は changed files、checks、docs checked、limits、unverified items、open findings を含む
+`evidence-ready` report を提出します。最終完了には Owner の `owner-accepted` が必要です。
 
 ## クイックスタート
 
-Standard/Full では、常時読み込まれるアダプターの後に
-`sdad-state.yaml` -> `docs/INDEX.md` -> 現在のソース/テスト ->
-現在のパケットにルーティングされた文書だけを読みます。ルールブック
-全体や任意の証拠ファイルは既定では読み込みません。
+最初に [docs/getting-started.md](docs/getting-started.md) を読んでください。clone せずに
+始める場合は [docs/no-clone-quick-install.md](docs/no-clone-quick-install.md)、小規模な
+project では [docs/mini-sdad.md](docs/mini-sdad.md) を使います。
 
-初めて使う場合は、まず [docs/getting-started.md](docs/getting-started.md) を読んでください。
-prompt-only の開始方法、ツールアダプターの導入、Codex skill の導入手順を分けて説明しています。
+詳しい日本語の説明とトラブルシューティングは [docs/user-guide.ja.md](docs/user-guide.ja.md)、
+適合度は [docs/fit-assessment.md](docs/fit-assessment.md)、維持コストは
+[docs/maintenance-cost.md](docs/maintenance-cost.md) を参照してください。
 
-リポジトリを clone せずに始めたい場合は
-[docs/no-clone-quick-install.md](docs/no-clone-quick-install.md) を使ってください。
-AI エージェントへそのまま渡せるプロンプトと、コピー＆ペースト用のインストールコマンドがあります。
-もっとも簡単な方法では、ターミナル、Git、Python は不要です。
-小さなプロジェクトでは、まず [docs/mini-sdad.md](docs/mini-sdad.md) を使ってください。
-複数セッション、再訪、レビュー、リリースやデータリスクが出たら full SDAD に拡張します。
-単純な yes 数よりリスクを優先します。Q5 の production、migration、user data、auth、
-money、release、rollback リスクが 1 つでもある場合は、少なくとも Standard を検討してください。
-Standard/Full SDAD を選ぶ場合は、各ループの最後に SPEC、TODO、review findings を最新化する必要があります。
-維持コストについては [docs/maintenance-cost.md](docs/maintenance-cost.md) を参照してください。
-Standard/Full SDAD では、project scale とは別に operating intensity を選びます:
-`Standard SDAD / High`, `Standard SDAD / Medium`, `Standard SDAD / Low`,
-`Full SDAD / High`, `Full SDAD / Medium`, `Full SDAD / Low`。
-Q5 project だからといって、すべての packet が High になるわけではありません。
-Q5 gate の挙動、ポリシー、境界、証拠上の主張、リスク受け入れを変える
-packet だけを `Full SDAD / High` に上げます。usable baseline ができた後は
-Medium または Low に下げ、evidence と owner review を圧縮します。詳しくは
-[docs/operating-intensity.md](docs/operating-intensity.md) を参照してください。
-Harness optimization、self-improving loop、retrieval/memory tuning、反復評価の
-自動化のような advanced extension は、標準ループではありません。反復する
-task unit、測定可能な metric、固定された model/tool surface、leakage risk、
-具体的な budget、owner adoption gate がある場合だけ使用してください。
-`save-state.md` を使うプロジェクトでは、セッション終了や中断、handoff、Owner の方向変更、
-部分的または未検証の状態、次のセッションで文脈の再構築が難しい場合にも更新してください。
-Mini SDAD にも完了ゲートがあります。変更ファイル、確認証拠、制限や未検証項目、
-Owner の受け入れが示されるまでは done と見なしません。
-ただし、すべての小さな作業ごとに停止する必要はありません。レビューする意味のある
-開発単位を定義し、その範囲内の関連する小タスクは AI が続けて進め、証拠とともに handoff します。
-Claude.ai や ChatGPT web のようなプロジェクトファイルシステムを持たない chat-only 環境では、
-adapter をインストールしたと主張してはいけません。計画だけを行い、実際の導入は
-プロジェクトファイルを編集できる AI coding tool で行ってください。
-
-任意の AI コーディング環境で次のプロンプトから始められます。
-
-```text
-Use the SPEC-driven AI development workflow from this repository.
-Start by clarifying the product pain, owner control model, active SPEC, non-goals, risks, and evidence required for completion.
-```
-
-詳細な kickoff プロンプトは [prompts/kickoff-prompt.md](prompts/kickoff-prompt.md) を参照してください。
-
-## ツールアダプター
-
-複数の AI コーディングツール向けにアダプターを用意しています。
+ツール別 adapter:
 
 - Codex: `AGENTS.md` + `ai-spec-project-start` skill
 - Claude Code: `CLAUDE.md`
 - Cursor: `.cursor/rules/spec-driven-ai-development.mdc`
 - GitHub Copilot: `.github/copilot-instructions.md`
-- 汎用 AI ツール: `AI-SESSION-INSTRUCTIONS.md`
+- Generic AI tool: `AI-SESSION-INSTRUCTIONS.md`
 
-詳しくは [docs/tool-adapters.md](docs/tool-adapters.md) を参照してください。
+Claude.ai や ChatGPT web のように project filesystem を編集できない chat-only 環境では
+planning のみが可能で、adapter をインストールしたと主張してはいけません。
 
-例：
+## トラブルシューティング FAQ
 
-```powershell
-.\scripts\install-agent-adapter.ps1 -Adapter claude-code -TargetPath C:\path\to\project
-```
+- 正しい SDAD command や skill 名が分からない場合は自然言語で依頼してください。AI は
+  interpreted intent、Scale、`execution_scope`、evidence、owner gate を短く示します。
+- 承認要求が多い場合は `execution_scope: packet` か確認します。release などの保護対象操作は
+  別の gate として残します。
+- AI が done とだけ言う場合は `evidence-ready` report と Owner の受け入れを区別させます。
+- 次のセッションで context を失う場合は `current_handoff` と packet marker を確認します。
+- blocking question は repository evidence を先に調べ、判断に必要な 1 問に限定します。
+- 1 packet 内ではレビューする意味のある unit を続けて処理し、evidence とともに停止します。
 
-## 中核ルール
+## 主な文書
 
-Core 5:
-
-- 現在の状態は過去の履歴より優先される。
-- 証拠は AI の自信より優先される。
-- アクティブな範囲は面白い将来アイデアより優先される。
-- Owner の判断は AI の勢いより優先される。
-- 繰り返される痛みはルール、チェックリスト、テスト、テンプレートになる。
-- 計画が曖昧な場合は、まずリポジトリ上の証拠を確認し、残った
-  blocking question だけを推奨回答つきで Owner に尋ねる。
-
-全体のルールは [docs/implicit-rules.md](docs/implicit-rules.md) を参照してください。
-
-## 主要ドキュメント
-
-- [docs/owners-guide.md](docs/owners-guide.md): Owner 向けクイック導入ガイド（英語）
-- [docs/ai-work-loop.md](docs/ai-work-loop.md): Fast/Normal/Full 実行ループ（英語）
-- [docs/pattern-catalog.md](docs/pattern-catalog.md): パターンカタログ
-- [docs/user-guide.ja.md](docs/user-guide.ja.md): 状況別ユーザーガイドと FAQ
-- [docs/anti-patterns.md](docs/anti-patterns.md): アンチパターン
-- [docs/fit-assessment.md](docs/fit-assessment.md): 適合度評価
-- [docs/maintenance-cost.md](docs/maintenance-cost.md): 制御ファイルの維持コスト
-- [docs/operating-intensity.md](docs/operating-intensity.md): Standard/Full の operating intensity
-- [docs/session-handoff.md](docs/session-handoff.md): 長いセッションの handoff と文脈継続
-- [docs/implementation-notes.md](docs/implementation-notes.md): SPEC に書かれていない実装判断の記録
-- [docs/field-notes/repository-control-surface-method.md](docs/field-notes/repository-control-surface-method.md): guidance、enforcement、隔離、reviewed memory の制御面
-- [docs/field-notes/cost-aware-agent-routing-method.md](docs/field-notes/cost-aware-agent-routing-method.md): advisor、worker、loop、コスト、証拠のルーティング
-- [docs/diagrams.md](docs/diagrams.md): Mermaid 図
-- [templates/project-control-files](templates/project-control-files): プロジェクト制御ファイルのテンプレート
+- [docs/owners-guide.md](docs/owners-guide.md): Owner 向けクイック導入ガイド
+- [docs/ai-work-loop.md](docs/ai-work-loop.md): 単一の実行ループ
+- [docs/session-handoff.md](docs/session-handoff.md): 条件付き handoff と継続性
+- [docs/implementation-notes.md](docs/implementation-notes.md): SPEC 外の実装判断
+- [docs/pattern-catalog.md](docs/pattern-catalog.md): pattern catalog
 
 ## 検証
-
-Python 3.10 以降でローカルゲートをすべて実行してください。
 
 ```bash
 python scripts/validate_repo.py
@@ -187,6 +145,16 @@ python -m unittest discover -s tests -v
 git diff --check
 ```
 
+## v3.1 から移行する場合
+
+v3.1 の Level 0 Ask-first、Level 1 Unit Autonomy、Level 2 Work Packet Autonomy、
+Level 3 Session Autonomy、Level 4 Release-gated Autonomy は新しい state field ではありません。
+実行境界は `unit | packet`、保護権限は owner gates に分けてください。Q5 は必須質問ではなく、
+リスク推論に使われた旧表現です。operating intensity も state v2 から削除されました。
+既存の `save-state.md`、[docs/operating-intensity.md](docs/operating-intensity.md)、
+[docs/autonomy-levels.md](docs/autonomy-levels.md) は migration/history 参照用です。
+Full SDAD / High や advanced extension の表現を新規 project の実行契約へコピーしないでください。
+
 ## ライセンス
 
-MIT。詳しくは [LICENSE](LICENSE) を参照してください。
+MIT。詳細は [LICENSE](LICENSE) を参照してください。
