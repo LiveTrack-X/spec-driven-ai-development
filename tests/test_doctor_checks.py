@@ -123,7 +123,9 @@ V2_INDEX_TEXT = """# Project Documentation Router
 - Current handoff: use `../sdad-state.yaml#current_handoff` when declared.
 """
 
-V2_ONLY_FINDING_IDS = frozenset({"validation.packet-mismatch"})
+V2_ONLY_FINDING_IDS = frozenset(
+    {"handoff.path.too-large", "validation.packet-mismatch"}
+)
 
 
 def _scalar_list(key: str, values: tuple[str, ...]) -> list[str]:
@@ -967,6 +969,10 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
             doctor_module.FIXED_FINDING_SEVERITIES["validation.packet-mismatch"],
             Severity.ERROR,
         )
+        self.assertEqual(
+            doctor_module.FIXED_FINDING_SEVERITIES["handoff.path.too-large"],
+            Severity.ERROR,
+        )
 
     def test_engine_rejects_reordered_checks_and_fixed_severity_breaches(self) -> None:
         from sdad_validator import checks
@@ -1080,6 +1086,189 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
             for severity, status in packet_cases:
                 with self.subTest(finding_id=finding_id, status=status):
                     assert_rejected(finding_id, severity, status)
+
+
+class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
+    def assertPathFinding(
+        self,
+        report: DoctorReport,
+        finding_id: str,
+        path: str,
+        severity: Severity,
+    ) -> None:
+        matches = [
+            finding
+            for finding in report.findings
+            if finding.id == finding_id and finding.path == path
+        ]
+        self.assertTrue(
+            matches,
+            f"missing {finding_id} for {path}: {report.findings}",
+        )
+        self.assertTrue(
+            any(finding.severity is severity for finding in matches),
+            f"{finding_id} for {path} did not have severity {severity}: {matches}",
+        )
+
+    def test_v2_index_missing_is_an_error(self) -> None:
+        report = diagnose(
+            valid_v2_state(),
+            statuses={"docs/INDEX.md": "missing"},
+        )
+
+        self.assertPathFinding(
+            report,
+            "path.missing",
+            "docs/INDEX.md",
+            Severity.ERROR,
+        )
+
+    def test_v2_index_not_file_is_an_error(self) -> None:
+        report = diagnose(
+            valid_v2_state(),
+            statuses={"docs/INDEX.md": "not_file"},
+        )
+
+        self.assertPathFinding(
+            report,
+            "path.not-file",
+            "docs/INDEX.md",
+            Severity.ERROR,
+        )
+
+    def test_v2_index_outside_root_is_an_error(self) -> None:
+        report = diagnose(
+            valid_v2_state(),
+            statuses={"docs/INDEX.md": "outside_root"},
+        )
+
+        self.assertPathFinding(
+            report,
+            "path.outside-root",
+            "docs/INDEX.md",
+            Severity.ERROR,
+        )
+
+    def test_v2_index_unreadable_is_an_error(self) -> None:
+        report = diagnose(
+            valid_v2_state(),
+            statuses={"docs/INDEX.md": "unreadable"},
+        )
+
+        self.assertPathFinding(
+            report,
+            "path.unreadable",
+            "docs/INDEX.md",
+            Severity.ERROR,
+        )
+
+    def test_v2_index_invalid_utf8_is_an_error(self) -> None:
+        report = diagnose(
+            valid_v2_state(),
+            files={"docs/INDEX.md": b"\xff"},
+        )
+
+        self.assertPathFinding(
+            report,
+            "path.encoding.invalid",
+            "docs/INDEX.md",
+            Severity.ERROR,
+        )
+
+    def test_v2_index_oversized_is_a_route_warning(self) -> None:
+        report = diagnose(
+            valid_v2_state(),
+            files={"docs/INDEX.md": b"x" * 1_048_577},
+        )
+
+        self.assertPathFinding(
+            report,
+            "path.too-large",
+            "docs/INDEX.md",
+            Severity.WARNING,
+        )
+
+    def test_current_handoff_missing_is_an_error(self) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        report = diagnose(
+            valid_v2_state(current_handoff=path),
+            statuses={path: "missing"},
+        )
+
+        self.assertPathFinding(report, "path.missing", path, Severity.ERROR)
+
+    def test_current_handoff_not_file_is_an_error(self) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        report = diagnose(
+            valid_v2_state(current_handoff=path),
+            statuses={path: "not_file"},
+        )
+
+        self.assertPathFinding(report, "path.not-file", path, Severity.ERROR)
+
+    def test_current_handoff_outside_root_is_an_error(self) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        report = diagnose(
+            valid_v2_state(current_handoff=path),
+            statuses={path: "outside_root"},
+        )
+
+        self.assertPathFinding(report, "path.outside-root", path, Severity.ERROR)
+
+    def test_current_handoff_unreadable_is_an_error(self) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        report = diagnose(
+            valid_v2_state(current_handoff=path),
+            statuses={path: "unreadable"},
+        )
+
+        self.assertPathFinding(report, "path.unreadable", path, Severity.ERROR)
+
+    def test_current_handoff_invalid_utf8_is_an_error(self) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        report = diagnose(
+            valid_v2_state(current_handoff=path),
+            files={path: b"\xff"},
+        )
+
+        self.assertPathFinding(
+            report,
+            "path.encoding.invalid",
+            path,
+            Severity.ERROR,
+        )
+
+    def test_oversized_current_handoff_is_an_error_not_a_route_warning(self) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        state = valid_v2_state(
+            current_handoff=path,
+            routed_docs=(path,),
+        )
+        report = diagnose(
+            state,
+            files={path: b"x" * 1_048_577},
+        )
+
+        self.assertFinding(report, "handoff.path.too-large", Severity.ERROR)
+        self.assertNotFinding(report, "path.too-large")
+
+    def test_routed_current_handoff_uses_one_physical_bounded_read(self) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        view = make_view(
+            valid_v2_state(current_handoff=path, routed_docs=(path,)),
+            files={
+                path: "## 1. Session Identity\n\n"
+                "- Active packet: [packet:WP-001]\n"
+            },
+        )
+
+        report = DiagnosticEngine().diagnose(
+            view,
+            DoctorPolicy(today=date(2026, 7, 10)),
+        )
+
+        self.assertEqual(report.error_count, 0)
+        self.assertEqual(view.read_counts[path], 1)
 
 
 class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):

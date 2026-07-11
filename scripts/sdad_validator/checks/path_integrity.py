@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 
 STATE_PATH = "sdad-state.yaml"
+INDEX_PATH = "docs/INDEX.md"
 OPTIONAL_CONTROL_DOCUMENTS = (
     "review-findings.md",
     "docs/TODO-Open-Items.md",
@@ -32,6 +33,7 @@ _PATH_MESSAGES = {
     "path.unreadable": "A declared file cannot be read.",
     "path.encoding.invalid": "An inspected control document is not valid UTF-8 text.",
     "path.too-large": "An inspected control document exceeds the configured size limit.",
+    "handoff.path.too-large": "The current handoff exceeds the configured size limit.",
     "path.duplicate-route": "The same routed document is declared more than once.",
 }
 
@@ -43,6 +45,7 @@ _PATH_REMEDIATIONS = {
     "path.unreadable": "Restore read access or correct the declared path.",
     "path.encoding.invalid": "Save the control document as valid UTF-8 text.",
     "path.too-large": "Reduce or archive the control document before inspection.",
+    "handoff.path.too-large": "Reduce or archive the current handoff before inspection.",
     "path.duplicate-route": "Keep one occurrence of each routed document.",
 }
 
@@ -89,6 +92,14 @@ class PathIntegrityCheck:
         snapshot = context.state_result.snapshot
         if snapshot is None:
             return tuple(findings)
+
+        current_handoff_path: str | None = None
+        if context.state_result.state_version == 2:
+            current_handoff = snapshot.scalar("current_handoff")
+            if current_handoff is not None and is_normalized_relative_posix_path(
+                current_handoff.value
+            ):
+                current_handoff_path = current_handoff.value
 
         inspection_statuses: dict[str, str] = {}
         read_results: dict[str, ReadResult] = {}
@@ -150,7 +161,11 @@ class PathIntegrityCheck:
             status = read_result.status
             if status == "too_large":
                 report_content(
-                    "path.too-large",
+                    (
+                        "handoff.path.too-large"
+                        if relative_path == current_handoff_path
+                        else "path.too-large"
+                    ),
                     relative_path,
                     "document exceeds "
                     f"{context.policy.max_control_document_bytes} bytes",
@@ -199,6 +214,15 @@ class PathIntegrityCheck:
             report_status(route.value, status)
             if status == "ok":
                 inspect_content(route.value)
+
+        if context.state_result.state_version == 2:
+            for continuity_path in (INDEX_PATH, current_handoff_path):
+                if continuity_path is None:
+                    continue
+                status = inspect(continuity_path)
+                report_status(continuity_path, status)
+                if status == "ok":
+                    inspect_content(continuity_path)
 
         for document_path in OPTIONAL_CONTROL_DOCUMENTS:
             status = inspect(document_path)
