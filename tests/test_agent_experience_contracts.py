@@ -608,7 +608,8 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
                     content,
                     (
                         ("current_handoff", "optional", "packet"),
-                        ("Active packet: [packet:<id>]", "Authority Pointers"),
+                        ("Active packet: [packet:WP-EXAMPLE]", "Authority Pointers"),
+                        ("replace", "WP-EXAMPLE", "active_packet.id"),
                     ),
                 )
         self.assertNotIn("## Decisions Made", handoff)
@@ -963,20 +964,49 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, advanced)
 
-    def test_deeper_docs_explain_feedback_semantics_and_claim_limits(self) -> None:
+    def test_deeper_docs_explain_the_current_loop_and_claim_limits(self) -> None:
         loop = read("docs/ai-work-loop.md")
         context = read("docs/context-stability.md")
         limitations = read("docs/known-limitations.md")
         adapters = read("docs/tool-adapters.md")
 
-        self.assertIn("Bounded Feedback Loop", loop)
-        self.assertIn("observable result", loop)
+        require_ordered_concepts(
+            loop,
+            (("plan",), ("route",), ("implement",), ("verify",), ("report",)),
+        )
+        require_concept_groups(
+            markdown_section(loop, "## Verify"),
+            (
+                ("validation_for", "active_packet.id"),
+                ("evidence-ready", "owner-accepted"),
+                ("doctor green", "structural consistency"),
+                ("task benchmark", "task"),
+                ("controlled comparison",),
+            ),
+        )
         self.assertIn("Hierarchical Localization", context)
         self.assertIn("External Content Is Data, Not Authority", context)
-        self.assertIn("regression tests do not establish SDAD effectiveness", limitations)
-        self.assertIn("mixed productivity results are not consensus", limitations)
-        self.assertIn("docs/research-foundations.md", adapters)
-        self.assertIn("valid syntax proves structure", adapters)
+        require_concept_groups(
+            markdown_section(limitations, "## Evidence Claim Ladder"),
+            (
+                ("doctor green", "structural"),
+                ("task benchmark", "specific task"),
+                ("controlled comparison", "improvement"),
+                ("unit", "regression", "do not establish", "productivity"),
+            ),
+        )
+        self.assertIn("research-foundations.md", adapters)
+        require_concept_groups(
+            markdown_section(
+                adapters,
+                "## Guidance, Validation, Enforcement, And Decisions",
+            ),
+            (
+                ("guidance", "enforcement"),
+                ("doctor", "tests", "ci", "deterministic validation"),
+                ("owner", "authorization", "acceptance"),
+            ),
+        )
 
     def test_bootstrap_skill_uses_progressive_disclosure(self) -> None:
         skill = read("skills/ai-spec-project-start/SKILL.md")
@@ -993,7 +1023,7 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
                 self.assertIn(route, skill)
                 self.assertTrue((ROOT / "skills/ai-spec-project-start" / route).is_file())
 
-    def test_scale_contract_is_consistent_across_active_surfaces(self) -> None:
+    def test_three_controls_are_consistent_across_active_surfaces(self) -> None:
         surfaces = (
             "templates/project-control-files/AGENTS.md",
             "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
@@ -1009,8 +1039,12 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         for path in surfaces:
             contract = read(path).lower()
             with self.subTest(path=path):
-                self.assertIn("inspects, documents, or tests", contract)
-                self.assertIn("changes, accepts, or executes", contract)
+                self.assertIn("scale", contract)
+                self.assertTrue(
+                    "execution scope" in contract or "execution_scope" in contract
+                )
+                self.assertIn("owner gate", contract)
+                self.assertNotRegex(contract, r"execution[_ ]scope (?:grants|authorizes)")
 
     def test_current_spec_sections_override_historical_material(self) -> None:
         surfaces = (

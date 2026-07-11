@@ -789,7 +789,11 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
             guide_path = root / "docs/getting-started.md"
             guide = guide_path.read_text(encoding="utf-8")
             guide_path.write_text(
-                re.sub(r"(?m)^\| 1 \|.*\n", "", guide, count=1),
+                guide.replace(
+                    "the completed `state.missing` finding and\nexit `1`",
+                    "a completed `state.missing` finding",
+                    1,
+                ),
                 encoding="utf-8",
             )
 
@@ -798,37 +802,30 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
                     self.validate(root)
 
     def test_rejects_wrong_getting_started_exit_meanings(self) -> None:
-        def replace_exit_rows(guide: str, replacements: dict[str, str]) -> str:
-            return re.sub(
-                r"(?m)^\| ([012]) \| ([^\n]+) \|$",
-                lambda match: (
-                    f"| {match.group(1)} | "
-                    f"{replacements.get(match.group(1), match.group(2))} |"
-                ),
-                guide,
-            )
-
         with tempfile.TemporaryDirectory() as tmp:
             fixture = Path(tmp)
             self.write_current_contract_fixture(fixture)
             original = (fixture / "docs/getting-started.md").read_text(
                 encoding="utf-8"
             )
-            meanings = dict(
-                re.findall(r"(?m)^\| ([012]) \| ([^\n]+) \|$", original)
-            )
             cases = (
-                {"0": meanings["2"], "2": meanings["0"]},
-                {"1": "Arbitrary text that does not define completed findings."},
+                (
+                    "the completed `state.missing` finding and\nexit `1`",
+                    "the completed `state.missing` finding and\nexit `2`",
+                ),
+                (
+                    "fatal invocation or report-construction failure uses exit `2`",
+                    "fatal invocation or report-construction failure uses exit `1`",
+                ),
             )
 
-            for replacements in cases:
-                with self.subTest(replacements=replacements):
-                    root = fixture / next(iter(replacements))
+            for index, (old, new) in enumerate(cases):
+                with self.subTest(new=new):
+                    root = fixture / str(index)
                     self.write_current_contract_fixture(root)
                     guide_path = root / "docs/getting-started.md"
                     guide_path.write_text(
-                        replace_exit_rows(original, replacements),
+                        original.replace(old, new, 1),
                         encoding="utf-8",
                     )
                     with contextlib.redirect_stderr(io.StringIO()):
@@ -841,13 +838,11 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
             self.write_current_contract_fixture(root)
             guide_path = root / "docs/getting-started.md"
             guide = guide_path.read_text(encoding="utf-8")
-            correct_zero_row = re.search(r"(?m)^\| 0 \| [^\n]+ \|$", guide)
-            self.assertIsNotNone(correct_zero_row)
             guide_path.write_text(
                 guide.replace(
-                    correct_zero_row.group(0),
-                    "| 0 | Diagnosis did not complete because the root failed. |\n"
-                    + correct_zero_row.group(0),
+                    "Doctor never executes validation commands.",
+                    "Contradictory note: `state.missing` uses exit `2`.\n\n"
+                    "Doctor never executes validation commands.",
                     1,
                 ),
                 encoding="utf-8",
@@ -877,7 +872,6 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
         for relative_path in (
             "scripts/install-agent-adapter.ps1",
             "scripts/install-agent-adapter.sh",
-            "docs/no-clone-quick-install.md",
         ):
             with self.subTest(path=relative_path):
                 content = (ROOT / relative_path).read_text(encoding="utf-8")
@@ -900,6 +894,137 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
                 (ROOT / "assets/spec-driven-ai-development-infographic.png").read_bytes()
             ).hexdigest(),
             "915eec2f2bc257897483c2616a0d08506f96db138d3f41c2bf827e039018f9c8",
+        )
+
+
+class PublicV32DocumentationContractTests(unittest.TestCase):
+    CONTRACT_PATHS = (
+        "README.md",
+        "docs/no-clone-quick-install.md",
+        "docs/getting-started.md",
+        "docs/user-guide.md",
+        "docs/owners-guide.md",
+        "docs/session-handoff.md",
+        "docs/known-limitations.md",
+        "prompts/handoff-prompt.md",
+    )
+
+    def write_fixture(self, root: Path) -> None:
+        for relative_path in self.CONTRACT_PATHS:
+            source = ROOT / relative_path
+            target = root / relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+
+    def validate(self, root: Path) -> None:
+        validator = getattr(
+            VALIDATE_REPO,
+            "validate_public_v3_2_documentation_contract",
+            None,
+        )
+        self.assertIsNotNone(validator, "public v3.2 documentation validator is missing")
+        with mock.patch.object(VALIDATE_REPO, "ROOT", root):
+            validator()
+
+    def mutate(self, root: Path, path: str, old: str, new: str) -> None:
+        target = root / path
+        content = target.read_text(encoding="utf-8")
+        mutated = content.replace(old, new, 1)
+        self.assertNotEqual(mutated, content, f"fixture mutation did not match {path}")
+        target.write_text(mutated, encoding="utf-8")
+
+    def assert_mutation_rejected(
+        self,
+        path: str,
+        old: str,
+        new: str,
+        *,
+        mirror_prompt: bool = False,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_fixture(root)
+            self.mutate(root, path, old, new)
+            if mirror_prompt:
+                other = (
+                    "README.md"
+                    if path == "docs/no-clone-quick-install.md"
+                    else "docs/no-clone-quick-install.md"
+                )
+                self.mutate(root, other, old, new)
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    self.validate(root)
+
+    def test_current_public_v3_2_docs_satisfy_the_semantic_contract(self) -> None:
+        self.validate(ROOT)
+
+    def test_rejects_reintroduced_fixed_five_question_ritual(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/no-clone-quick-install.md",
+            "Do not make me answer a fixed questionnaire.",
+            "Ask me Q1 through Q5 before inspecting the repository.",
+            mirror_prompt=True,
+        )
+
+    def test_rejects_owner_gate_conflated_with_execution_scope(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/getting-started.md",
+            "Owner gates determine which\nprotected actions still require the owner.",
+            "Execution scope determines which protected actions still require the owner.",
+        )
+
+    def test_rejects_routed_docs_as_a_read_all_instruction(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/user-guide.md",
+            "`routed_docs` is an\neligible selection set, not an instruction to read every listed file.",
+            "`routed_docs` requires reading every listed file in full.",
+        )
+
+    def test_rejects_removed_handoff_pointer_marker_lifecycle(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/session-handoff.md",
+            "6. On packet switch, completion, archive, or replacement, remove or replace the\n"
+            "   state pointer in the same coherence update. A handoff for another packet\n"
+            "   cannot remain current.",
+            "6. Keep the previous pointer for later reference.",
+        )
+
+    def test_rejects_removed_one_time_bootstrap_boundary(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/user-guide.md",
+            "The large copy-paste bootstrap prompt is for one-time install, upgrade,\n"
+            "migration, or repair. Once installed, use the repository adapter and current\n"
+            "state; do not paste the bootstrap prompt into every session.",
+            "Paste the large bootstrap prompt into every session.",
+        )
+
+    def test_rejects_removed_authorization_action_reuse_and_expiry(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/user-guide.md",
+            "Authorized action:\nPacket:\nConditions:\nExpires when:\n"
+            "Evidence required before action:",
+            "Packet:\nConditions:\nEvidence required before action:",
+        )
+
+    def test_rejects_collapsed_or_divergent_readme_copy_prompt(self) -> None:
+        cases = (
+            ("## Copy-Paste Start Prompt", "<details>\n## Copy-Paste Start Prompt"),
+            (
+                "Use the SDAD Protocol (SPEC-Driven AI Development)",
+                "Use a modified SDAD Protocol (SPEC-Driven AI Development)",
+            ),
+        )
+        for old, new in cases:
+            with self.subTest(new=new):
+                self.assert_mutation_rejected("README.md", old, new)
+
+    def test_rejects_current_legacy_vocabulary_before_migration(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/user-guide.md",
+            "## Migrating From SDAD 3.1",
+            "Use Level 4 Release-gated Autonomy for release.\n\n"
+            "## Migrating From SDAD 3.1",
         )
 
 
