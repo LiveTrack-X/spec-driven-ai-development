@@ -1410,6 +1410,100 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
                 if should_warn:
                     self.assertIs(matches[0].severity, Severity.WARNING)
 
+    def test_handoff_fenced_examples_cannot_supply_or_duplicate_marker(
+        self,
+    ) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        cases = (
+            (
+                "```markdown\n"
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:WP-001]\n"
+                "```\n",
+                ["handoff.structure.missing-marker"],
+            ),
+            (
+                "```markdown\n"
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:WP-OLD]\n"
+                "```\n\n"
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:WP-001]\n",
+                [],
+            ),
+            (
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:WP-001]\n\n"
+                "~~~markdown\n"
+                "- Active packet: [packet:WP-001]\n"
+                "~~~\n",
+                [],
+            ),
+        )
+
+        for text, expected in cases:
+            with self.subTest(expected=expected, text=text):
+                report = diagnose(
+                    valid_v2_state(current_handoff=path),
+                    files={path: text},
+                )
+                ids = [
+                    finding.id
+                    for finding in report.findings
+                    if finding.path == path
+                ]
+
+                self.assertEqual(ids, expected)
+
+    def test_index_fenced_examples_cannot_supply_or_duplicate_source(
+        self,
+    ) -> None:
+        source = (
+            "- Current handoff: use "
+            "`../sdad-state.yaml#current_handoff` when declared."
+        )
+        cases = (
+            (
+                "```markdown\n"
+                "## Active Catalog\n\n"
+                f"{source}\n"
+                "```\n",
+                True,
+            ),
+            (
+                "~~~markdown\n"
+                "## Active Catalog\n\n"
+                "- Current handoff: docs/sdad/handoffs/old.md\n"
+                "~~~\n\n"
+                "## Active Catalog\n\n"
+                f"{source}\n",
+                False,
+            ),
+            (
+                "## Active Catalog\n\n"
+                f"{source}\n\n"
+                "```markdown\n"
+                f"{source}\n"
+                "```\n",
+                False,
+            ),
+        )
+
+        for text, should_warn in cases:
+            with self.subTest(should_warn=should_warn, text=text):
+                report = diagnose(
+                    valid_v2_state(),
+                    files={"docs/INDEX.md": text},
+                )
+
+                self.assertEqual(
+                    any(
+                        finding.id == "index.current-handoff-source"
+                        for finding in report.findings
+                    ),
+                    should_warn,
+                )
+
     def test_v1_never_runs_handoff_or_index_semantics(self) -> None:
         path = "docs/sdad/handoffs/current.md"
         state = valid_state().replace(

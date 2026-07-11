@@ -49,6 +49,7 @@ _CLASSIFIED_REVIEW = re.compile(
 _UNCLASSIFIED_REVIEW = re.compile(r"^- \[packet:([^\]]+)\] .+$")
 _LINKED_TODO = re.compile(r"^- \[ \] \[packet:([^\]]+)\] .+$")
 _HANDOFF_MARKER = re.compile(r"^- Active packet: \[packet:([^\]]+)\]$")
+_MARKDOWN_FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 
 
 @dataclass(frozen=True)
@@ -104,6 +105,56 @@ def _section_lines(
         (index + 1, lines[index])
         for index in range(heading_index + 1, end_index)
     ]
+
+
+def _v2_section_lines(
+    lines: list[str],
+    heading: str,
+) -> list[tuple[int, str]] | None:
+    visible_lines: list[tuple[int, str]] = []
+    fence_character: str | None = None
+    fence_length = 0
+    for line_number, line in enumerate(lines, start=1):
+        fence = _MARKDOWN_FENCE.match(line)
+        if fence_character is None:
+            if fence is not None:
+                delimiter, info = fence.groups()
+                if delimiter[0] != "`" or "`" not in info:
+                    fence_character = delimiter[0]
+                    fence_length = len(delimiter)
+                    continue
+            visible_lines.append((line_number, line))
+            continue
+
+        if fence is not None:
+            delimiter, trailing = fence.groups()
+            if (
+                delimiter[0] == fence_character
+                and len(delimiter) >= fence_length
+                and not trailing.strip()
+            ):
+                fence_character = None
+                fence_length = 0
+
+    heading_index = next(
+        (
+            index
+            for index, (_, line) in enumerate(visible_lines)
+            if line == heading
+        ),
+        None,
+    )
+    if heading_index is None:
+        return None
+    end_index = next(
+        (
+            index
+            for index in range(heading_index + 1, len(visible_lines))
+            if visible_lines[index][1].startswith("## ")
+        ),
+        len(visible_lines),
+    )
+    return visible_lines[heading_index + 1 : end_index]
 
 
 def _captured_id(match: re.Match[str] | None, group: int) -> str | None:
@@ -253,7 +304,7 @@ def _handoff_findings(
     text = _read_control_document(context, path)
     if text is None:
         return []
-    section = _section_lines(text.splitlines(), HANDOFF_HEADING)
+    section = _v2_section_lines(text.splitlines(), HANDOFF_HEADING)
     if section is None:
         return [
             _finding(
@@ -329,7 +380,7 @@ def _index_source_findings(context: DoctorContext) -> list[Finding]:
     if text is None:
         return []
 
-    section = _section_lines(text.splitlines(), INDEX_HEADING)
+    section = _v2_section_lines(text.splitlines(), INDEX_HEADING)
     candidates = (
         []
         if section is None
