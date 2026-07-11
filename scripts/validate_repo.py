@@ -1556,6 +1556,23 @@ def validate_skill() -> None:
         fail(f"Skill frontmatter must contain only name and description: {top_level_keys}")
     if "name: ai-spec-project-start" not in frontmatter:
         fail("Skill frontmatter must include name: ai-spec-project-start")
+    for phrase in [
+        "Install or upgrade SDAD",
+        "migrate an existing SDAD project",
+        "recover or repair `sdad-state.yaml`, INDEX, ledger, or handoff consistency",
+        "run or interpret SDAD Doctor",
+        "diagnose the SDAD control plane",
+    ]:
+        if phrase not in frontmatter:
+            fail(f"Skill frontmatter missing narrow SDAD trigger: {phrase}")
+    for broad_trigger in [
+        "review this repo",
+        "implement the spec",
+        "release this",
+        "create a handoff",
+    ]:
+        if broad_trigger in frontmatter:
+            fail(f"Skill frontmatter has broad generic trigger: {broad_trigger}")
 
     body = content[match.end() :]
     if len(content.splitlines()) > 500 or len(content) > 25_000:
@@ -1577,8 +1594,8 @@ def validate_skill() -> None:
         "Full",
         "sdad-state.yaml",
         "docs/INDEX.md",
-        "Level 2 Work Packet Autonomy",
-        "Level 4 owner gates",
+        "execution_scope: unit | packet",
+        "Full -> packet plus named owner gates",
         "evidence-ready",
         "owner-accepted",
         "## Existing-Project Rules",
@@ -1590,13 +1607,75 @@ def validate_skill() -> None:
         if phrase not in body:
             fail(f"Skill body missing expected contract: {phrase}")
 
+    if "ordinary work follows the repository adapter" not in body:
+        fail("Skill body missing narrow SDAD trigger boundary")
+
+    inference = body.find("Inspect the request and repository first")
+    question = body.find("Ask at most one unresolved blocking question")
+    if inference < 0 or question < 0 or inference >= question:
+        fail("Skill must infer from repository evidence before one material question")
+
+    interpretation_fields = [
+        "Interpreted goal:",
+        "Scale:",
+        "Work boundary:",
+        "Validation contract:",
+        "Owner gates:",
+        "Handoff trigger:",
+        "Reason:",
+        "Unresolved question: none",
+    ]
+    interpretation_positions = [body.find(field, inference) for field in interpretation_fields]
+    if any(position < 0 for position in interpretation_positions) or (
+        interpretation_positions != sorted(interpretation_positions)
+    ):
+        fail("Skill interpretation report fields must be complete and ordered")
+
+    preview = body.find("read-only migration preview")
+    writes = body.find("apply the proposed control-file changes")
+    if preview < 0 or writes < 0 or preview >= writes:
+        fail("Skill migration preview must precede proposed control-file writes")
+    preview_items = [
+        "worktree status, owner changes, control files, sizes, and authority",
+        "pre-change Doctor result or read-only structural baseline",
+        "One-shot/Mini/stateful-Mini/v1 Standard-Full/mature-pre-v3 classification",
+        "active records versus history/archive candidates",
+        "exact history-preservation strategy",
+        "umbrella objective versus first executable leaf packet",
+        "each proposed validation command and bounded proves claim",
+        "immediately selectable routes and targeted-read strategy",
+        "current handoff existence and authority",
+        "owner-controlled decisions and evidence gates",
+        "proposed state, INDEX, ledger, and handoff writes without applying them",
+        "post-change Doctor strict and separate project-validation comparison plan",
+    ]
+    preview_positions = [body.find(item, preview, writes) for item in preview_items]
+    if any(position < 0 for position in preview_positions) or (
+        preview_positions != sorted(preview_positions)
+    ):
+        fail("Skill migration preview must contain twelve ordered report items")
+
+    for phrase in [
+        "v1 intensity, autonomy, save-state, and work-packet-state",
+        "Level 0 -> no execution authorization",
+        "Level 3 -> explicit owner-approved packet list, not session scope",
+        "v2 has no intensity or autonomy keys",
+        "packet, action, conditions, expiry, evidence, and source remain unchanged",
+        "change state `version: 2` last",
+        "project validation separately",
+        "parent context is not assumed",
+    ]:
+        if phrase not in body:
+            fail(f"Skill migration preview missing contract: {phrase}")
+
     runtime_contract = require_phrases(
         "skills/ai-spec-project-start/references/runtime-contract.md",
         "Skill runtime contract",
         [
             "## Scale Truth Table",
             "## Intent Route",
-            "## Autonomy And Stop Contract",
+            "## Steady-State V2 Invariants",
+            "## Execution Scope And Stop Contract",
             "## Progressive Control Plane",
             "## Sensitive Data Boundary",
             "## Context Stability",
@@ -1608,6 +1687,18 @@ def validate_skill() -> None:
     )
     if len(runtime_contract.splitlines()) > 220:
         fail("Skill runtime contract is too large")
+
+    require_phrases(
+        "skills/ai-spec-project-start/references/field-patterns.md",
+        "Skill field patterns",
+        [
+            "## Mature-Project Migration Evidence",
+            "Existing-Project Read-Only Migration Preview",
+            "dirty or untracked owner material",
+            "Doctor strict for SDAD structural consistency",
+            "project validation separately",
+        ],
+    )
 
     require_phrases(
         "skills/ai-spec-project-start/references/starter-templates.md",
@@ -2753,7 +2844,7 @@ def validate_templates() -> None:
     for phrase in [
         "Natural-Language Intent Routing",
         "Scale And Tool Gate",
-        "One-shot: no persistent SDAD files",
+        "One-shot: current request only",
         "templates/mini-sdad/cursor-mini-sdad.mdc",
         ".cursor/rules/mini-sdad.mdc",
         "review intent",
@@ -2762,11 +2853,15 @@ def validate_templates() -> None:
         "Ask only for missing information",
         "sdad-state.yaml",
         "Do not load the full rulebook",
-        "Continue autonomously inside the approved work packet",
+        "Continue inside the approved work packet",
         "simplest working design",
         "clarification checkpoint",
         "implementation notes",
         "micro-approval steps",
+        "Existing-Project Preview Gate",
+        "show proposed writes without applying them",
+        "changing state `version: 2` last",
+        "Doctor strict structural evidence and project validation separately",
     ]:
         if phrase not in kickoff:
             fail(f"Kickoff prompt missing review-worthy unit guidance: {phrase}")

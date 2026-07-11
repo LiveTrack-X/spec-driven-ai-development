@@ -345,6 +345,43 @@ class RequiredPhraseContractTests(unittest.TestCase):
             self.assertIn("Config missing: beta", error_output.getvalue())
 
 
+class SkillMigrationRepositoryContractTests(unittest.TestCase):
+    def assert_skill_mutation_rejected(self, mutate) -> str:
+        original_read = VALIDATE_REPO.read
+        skill_path = "skills/ai-spec-project-start/SKILL.md"
+
+        def read_with_mutation(candidate: str) -> str:
+            content = original_read(candidate)
+            return mutate(content) if candidate == skill_path else content
+
+        error_output = io.StringIO()
+        with mock.patch.object(VALIDATE_REPO, "read", side_effect=read_with_mutation):
+            with contextlib.redirect_stderr(error_output):
+                with self.assertRaises(SystemExit):
+                    VALIDATE_REPO.validate_skill()
+        return error_output.getvalue()
+
+    def test_rejects_preview_that_no_longer_precedes_writes(self) -> None:
+        output = self.assert_skill_mutation_rejected(
+            lambda text: text.replace(
+                "apply the proposed control-file changes",
+                "apply the proposed file changes",
+                1,
+            )
+        )
+        self.assertIn("migration preview", output)
+
+    def test_rejects_a_broad_generic_trigger(self) -> None:
+        output = self.assert_skill_mutation_rejected(
+            lambda text: text.replace(
+                "ordinary work follows the repository adapter",
+                "ordinary work invokes this skill",
+                1,
+            )
+        )
+        self.assertIn("narrow SDAD trigger", output)
+
+
 class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
     def validator(self):
         validator = getattr(

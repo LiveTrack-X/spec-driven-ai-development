@@ -42,6 +42,31 @@ platform work, or fragile runtime constraints:
   explicit severity thresholds such as Critical 0.
 - State what AI cannot verify in the current environment.
 
+## Mature-Project Migration Evidence
+
+Use the canonical twelve-item procedure in the skill's
+`Existing-Project Read-Only Migration Preview`; do not duplicate it here. This
+reference owns mature-record inventory, history preservation, and evidence
+comparison practices.
+
+- Inventory existing adapters, state, INDEX routes, active ledgers, handoffs,
+  save-state, Delivery Readiness Model records, SPECs, notes, ADRs, archives,
+  file sizes, and dirty or untracked owner material before proposing changes.
+- Separate live authority and unresolved work from closed history, background,
+  generated output, and archive candidates. Record why each candidate is kept,
+  linked, moved, or left untouched.
+- Preserve history by default. Link or move continuity content into a current
+  handoff or dated archive; do not silently rewrite provenance, flatten active
+  and historical records, or automatically delete legacy files.
+- Capture a pre-change Doctor result when available. If Doctor cannot run,
+  record a read-only structural baseline with the exact limitation.
+- Plan the post-change comparison as two evidence lanes: Doctor strict for SDAD structural consistency, and project validation separately for bounded product
+  claims. Do not let one substitute for the other.
+- Compare record counts, active packet markers, route targets, validation
+  commands, handoff pointers, owner gates, and unresolved findings before and
+  after the migration. Report unexplained loss or drift instead of normalizing
+  it away.
+
 ## Combined Use
 
 For a new project, ask:

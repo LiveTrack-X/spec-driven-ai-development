@@ -96,6 +96,22 @@ class InstallCodexSkillSmokeTests(unittest.TestCase):
                     (target / relative_path).read_bytes(),
                 )
 
+        updated_contracts = {
+            Path("SKILL.md"): "read-only migration preview",
+            Path("references/runtime-contract.md"): "Steady-State V2 Invariants",
+            Path("references/field-patterns.md"): "Mature-Project Migration Evidence",
+        }
+        for relative_path, phrase in updated_contracts.items():
+            with self.subTest(updated_contract=relative_path):
+                self.assertEqual(
+                    (source / relative_path).read_bytes(),
+                    (target / relative_path).read_bytes(),
+                )
+                self.assertIn(
+                    phrase,
+                    (target / relative_path).read_text(encoding="utf-8"),
+                )
+
         fallback = (
             target / "references" / "starter-templates.md"
         ).read_text(encoding="utf-8")

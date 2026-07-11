@@ -262,6 +262,146 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
             starter,
         )
 
+    def test_task10_start_skill_trigger_is_narrow_and_sdad_specific(self) -> None:
+        skill = read("skills/ai-spec-project-start/SKILL.md")
+        frontmatter = skill.split("---", 2)[1]
+
+        for phrase in (
+            "Install or upgrade SDAD",
+            "migrate an existing SDAD project",
+            "recover or repair `sdad-state.yaml`, INDEX, ledger, or handoff consistency",
+            "run or interpret SDAD Doctor",
+            "diagnose the SDAD control plane",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, frontmatter)
+
+        for broad_trigger in (
+            "review this repo",
+            "implement the spec",
+            "release this",
+            "create a handoff",
+        ):
+            with self.subTest(broad_trigger=broad_trigger):
+                self.assertNotIn(broad_trigger, frontmatter)
+        self.assertIn(
+            "ordinary work follows the repository adapter",
+            skill,
+        )
+
+    def test_task10_infers_before_asking_one_material_question(self) -> None:
+        skill = read("skills/ai-spec-project-start/SKILL.md")
+        inference = skill.find("Inspect the request and repository first")
+        question = skill.find("Ask at most one unresolved blocking question")
+        self.assertGreaterEqual(inference, 0)
+        self.assertGreaterEqual(question, 0)
+        self.assertLess(inference, question)
+
+        report = (
+            "Interpreted goal:\n"
+            "Scale:\n"
+            "Work boundary:\n"
+            "Validation contract:\n"
+            "Owner gates:\n"
+            "Handoff trigger:\n"
+            "Reason:\n"
+            "Unresolved question: none"
+        )
+        self.assertIn(report, skill)
+        for phrase in (
+            "not another approval step",
+            "One-shot -> current request only",
+            "Mini -> unit",
+            "Standard -> packet",
+            "Full -> packet plus named owner gates",
+            "scale, execution scope, protected action or owner gate, claim boundary, or authority",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, skill)
+
+    def test_task10_normalizes_packets_and_delegation_context(self) -> None:
+        skill = read("skills/ai-spec-project-start/SKILL.md")
+        packet = skill.split("### 7. Normalize And Bind The Work Packet", 1)[1]
+        packet_fields = (
+            "Outcome / objective",
+            "Authority / reference",
+            "Constraints / allowed scope",
+            "Validation contract",
+            "Evidence required and claim limit",
+            "Stop condition / owner gates",
+            "Required report",
+        )
+        positions = [packet.find(field) for field in packet_fields]
+        self.assertTrue(all(position >= 0 for position in positions))
+        self.assertEqual(positions, sorted(positions))
+        for phrase in (
+            "parent context is not assumed",
+            "packet ID, objective, allowed scope, routes/files, validation, gates, stop condition, and required report",
+        ):
+            self.assertIn(phrase, skill)
+
+    def test_task10_existing_project_preview_precedes_writes(self) -> None:
+        skill = read("skills/ai-spec-project-start/SKILL.md")
+        preview = skill.find("read-only migration preview")
+        writes = skill.find("apply the proposed control-file changes")
+        self.assertGreaterEqual(preview, 0)
+        self.assertGreaterEqual(writes, 0)
+        self.assertLess(preview, writes)
+
+        preview_items = (
+            "worktree status, owner changes, control files, sizes, and authority",
+            "pre-change Doctor result or read-only structural baseline",
+            "One-shot/Mini/stateful-Mini/v1 Standard-Full/mature-pre-v3 classification",
+            "active records versus history/archive candidates",
+            "exact history-preservation strategy",
+            "umbrella objective versus first executable leaf packet",
+            "each proposed validation command and bounded proves claim",
+            "immediately selectable routes and targeted-read strategy",
+            "current handoff existence and authority",
+            "owner-controlled decisions and evidence gates",
+            "proposed state, INDEX, ledger, and handoff writes without applying them",
+            "post-change Doctor strict and separate project-validation comparison plan",
+        )
+        positions = [skill.find(item, preview) for item in preview_items]
+        self.assertTrue(all(position >= 0 for position in positions))
+        self.assertEqual(positions, sorted(positions))
+        for phrase in (
+            "dirty or untracked owner material",
+            "One-shot or stateless Mini",
+            "deliberately stateful Mini remains on v1",
+            "validation_for",
+            "Doctor strict",
+            "project validation separately",
+        ):
+            self.assertIn(phrase, skill)
+
+    def test_task10_preview_maps_legacy_authority_and_changes_version_last(self) -> None:
+        skill = read("skills/ai-spec-project-start/SKILL.md")
+        for phrase in (
+            "v1 intensity, autonomy, save-state, and work-packet-state",
+            "Level 0 -> no execution authorization",
+            "Level 1 -> unit",
+            "Level 2 -> packet",
+            "Level 3 -> explicit owner-approved packet list, not session scope",
+            "Level 4 -> scope selected separately plus named owner gates",
+            "execution_scope: unit | packet",
+            "v2 has no intensity or autonomy keys",
+            "packet, action, conditions, expiry, evidence, and source remain unchanged",
+            "without automatic deletion",
+            "docs/work-packet-state.md",
+            "Delivery Readiness Model",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, skill)
+
+        coherence = skill.find(
+            "INDEX, ledger, validation, routes, and handoff are coherent"
+        )
+        version = skill.find("change state `version: 2` last", max(coherence, 0))
+        self.assertGreaterEqual(coherence, 0)
+        self.assertGreaterEqual(version, 0)
+        self.assertLess(coherence, version)
+
     def test_always_loaded_control_plane_stays_small(self) -> None:
         agents = read("templates/project-control-files/AGENTS.md")
         index = read("templates/project-control-files/docs/INDEX.md")

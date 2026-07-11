@@ -7,55 +7,69 @@ Use an owner-supervised, SPEC-driven, multi-agent, evidence-based development wo
 ## Natural-Language Intent Routing
 
 Do not require me to know SDAD terms, adapter names, or skill names. Infer the
-work intent from my wording and the current repository state. Treat
-"check/review/audit" as review intent, "implement/fix/match the spec" as SPEC
-implementation intent, "release/publish/tag" as release intent with Level 4
-gates, "docs/README/FAQ/guide" as documentation intent, "handoff/continue
-later/lost context" as handoff intent, external project references as
-reference-intake intent, and "asks too often/runs ahead" as autonomy tuning
-intent.
+work intent, scale, execution scope, validation claim, owner gates, and handoff
+trigger from my wording and the current repository state before asking me.
+Treat "check/review/audit" as review intent, "implement/fix/match the spec" as
+SPEC implementation intent, "release/publish/tag" as a protected-action route,
+"docs/README/FAQ/guide" as documentation intent, "handoff/continue later/lost
+context" as continuity intent, and external project references as
+reference-intake intent.
 
 Treat narrative modifiers as routing signals, not automatic scope expansion:
 "carefully" increases inspection depth, "fully" continues to evidence-ready for
 the approved scope, "minimal" selects compression rather than weaker evidence,
 and "commit and wait" does not imply push, release, or deploy unless named.
 
-If multiple intents match, first decide whether they can be safely composed
-inside one approved packet. If one route remains dominant, state the interpreted
-intent, SDAD scale/intensity, autonomy level, and expected evidence, then
-proceed. If the combination changes scope, risk, claim level, owner gate, or
-durable-doc requirements, ask one blocking clarification question with your
-recommended default.
+If multiple intents match, first decide whether they fit one approved packet.
+Report the interpretation compactly:
+
+```text
+Interpreted goal:
+Scale:
+Work boundary:
+Validation contract:
+Owner gates:
+Handoff trigger:
+Reason:
+Unresolved question: none
+```
+
+This report is not an approval step. Proceed when it matches my intent and no
+gate blocks action. I may override it. Ask at most one unresolved blocking
+question only when the answer changes scale, execution scope, protected action
+or owner gate, claim boundary, or authority. Include your recommended default.
 
 ## Scale And Tool Gate
 
-Before creating files, identify the active AI tool and ask:
+Infer the smallest safe scale; the old five questions are an internal aid, not
+a required questionnaire:
 
-1. Will this take more than one AI session?
-2. Will the owner return to this project later?
-3. Does done need evidence beyond "AI said so"?
-4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, real user data, auth, money, security, rollback,
-   destructive action, or production risk?
+- One-shot: current request only; create no SDAD control files by default.
+- Mini: one bounded unit and one tool-specific instruction file.
+- Standard: multiple workers, persistent state, or a packet that only inspects, documents, or tests a protected area.
+- Full: Standard plus named owner gates when the packet changes, accepts, or executes a protected action.
 
-Choose the smallest safe scale:
-
-- 0 yes: One-shot prompt. Create no SDAD control files by default.
-- 1-2 yes from questions 1-3 only, with Q4=no and Q5=no: Mini SDAD. Create one
-  tool-specific instruction file only.
-- Q4=yes or 3 yes total: Standard SDAD.
-- Q5=yes, but the packet only inspects, documents, or tests the risk area:
-  Standard SDAD minimum.
-- Q5=yes and the packet changes, accepts, or executes the gate: Full SDAD.
-- 4-5 yes: Full SDAD.
-
-Override rules beat raw yes-counts. When uncertain, choose the smaller scale
-only when no Q5 gate is active. Select exactly one active adapter: Codex `AGENTS.md`, Claude
-Code `CLAUDE.md`, Cursor `.cursor/rules/mini-sdad.mdc` for Mini or
+Execution scope is `unit | packet`; it does not grant permission for protected
+actions. Select exactly one active adapter: Codex `AGENTS.md`, Claude Code
+`CLAUDE.md`, Cursor `.cursor/rules/mini-sdad.mdc` for Mini or
 `.cursor/rules/spec-driven-ai-development.mdc` for Standard/Full, GitHub Copilot
 `.github/copilot-instructions.md`, or generic
 `AI-SESSION-INSTRUCTIONS.md`. Multiple adapters are allowed only when the
 repository intentionally uses multiple tools.
+
+## Existing-Project Preview Gate
+
+Before changing an existing SDAD project, use the canonical twelve-item
+`Existing-Project Read-Only Migration Preview` from the installed
+`ai-spec-project-start` skill. At minimum, inspect worktree and owner changes,
+capture pre-change Doctor or a limited structural baseline, classify the
+project, preserve history, select the first executable leaf, show proposed writes without applying them, and identify any real owner decision.
+
+Proceed after the preview when existing authority is sufficient. Stop only when
+scope, authority, data boundary, protected action, or an owner gate requires a
+decision. Make INDEX, active ledgers, validation identity, routes, and any
+handoff coherent before changing state `version: 2` last. After the change,
+compare Doctor strict structural evidence and project validation separately.
 
 ## Sensitive Data Gate
 
@@ -66,7 +80,7 @@ records, or private corpora into AI context unless the task requires it and
 owner policy plus tool policy explicitly permit it. Prefer redacted samples;
 if authorization is unclear, stop before reading the content and ask.
 
-## Start By Clarifying
+## Infer Before Clarifying
 
 Ask only for missing information that current repository evidence cannot answer:
 
@@ -74,7 +88,7 @@ Ask only for missing information that current repository evidence cannot answer:
 2. non-goals and what must not happen;
 3. first work packet and review-worthy units;
 4. evidence required for evidence-ready;
-5. owner-controlled decisions and Q5 gates;
+5. owner-controlled decisions and protected-action gates;
 6. active SPEC or historical material that must be promoted;
 7. spec-unstated decisions that need notes or a sparse ADR;
 8. overloaded terms that block implementation or review.
@@ -120,8 +134,8 @@ handoffs, or optional evidence files by default.
 - Use low-intervention work packets: the owner approves the boundary, not every
   micro-task.
 - Work in review-worthy development units, not micro-approval steps.
-- Continue autonomously inside the approved work packet until evidence is ready.
-- Stop for owner input only when scope expands, Q5 risk changes, destructive or
+- Continue inside the approved work packet until evidence is ready.
+- Stop for owner input only when scope expands, a protected-action risk changes, destructive or
   irreversible action is needed, an owner-controlled decision is required,
   verification is blocked, or evidence conflicts with the plan.
 - Surface assumptions, prefer the simplest working design, make surgical
@@ -152,7 +166,7 @@ Produce:
 6. version lanes if applicable,
 7. risk domains and release gates,
 8. implicit rules that must be explicit,
-9. autonomy level and first work packet,
+9. execution scope, owner gates, and first work packet,
 10. review-worthy units inside the packet,
 11. test and evidence plan,
 12. implementation-notes policy for decisions the SPEC does not state,

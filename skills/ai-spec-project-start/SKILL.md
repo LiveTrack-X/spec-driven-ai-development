@@ -1,12 +1,11 @@
 ---
 name: ai-spec-project-start
 description: >-
-  Start, adopt, review, implement, reorganize, release, or hand off a project
-  using owner-supervised SPEC-driven AI development. Use for new-project
-  kickoff, AGENTS/docs/SPEC/TODO bootstrap, natural-language requests such as
-  review this repo, implement the spec, release this, tune autonomy, or create a
-  handoff, and for converting repeated project lessons into durable rules,
-  playbooks, tests, or templates.
+  Install or upgrade SDAD; migrate an existing SDAD project;
+  recover or repair `sdad-state.yaml`, INDEX, ledger, or handoff consistency;
+  run or interpret SDAD Doctor;
+  or diagnose the SDAD control plane. Use only for SDAD-specific bootstrap,
+  migration, repair, and Doctor operations.
 ---
 
 # AI-SPEC Project Start
@@ -19,8 +18,8 @@ separate evidence from confidence, and keep future sessions recoverable.
 Read references only when their trigger applies:
 
 - Read [references/runtime-contract.md](references/runtime-contract.md) before
-  creating or changing an SDAD control surface. It owns scale, autonomy, stop,
-  privacy, source-of-truth, evidence, and completion semantics.
+  creating or changing an SDAD control surface. It owns steady-state v2 scale,
+  execution scope, owner gates, targeted routes, evidence, and stop semantics.
 - Read [references/starter-templates.md](references/starter-templates.md) when
   bootstrapping or repairing Standard/Full control files.
 - Read [references/field-patterns.md](references/field-patterns.md) when
@@ -52,49 +51,94 @@ If the repository already has SDAD, start from its current adapter,
 `sdad-state.yaml`, and `docs/INDEX.md`. Repair drift rather than rebuilding
 from scratch.
 
+This skill is not the default route for ordinary bug fixes, reviews, refactors,
+documentation, implementation, generic release work, or handoff creation. When
+SDAD is already installed, ordinary work follows the repository adapter.
+
 ### 2. Interpret The Request
 
-Map plain language to the dominant intent:
+Inspect the request and repository first. Infer the goal, scale, work boundary,
+validation claim, owner gates, and handoff trigger from available evidence. The
+old five kickoff questions may be used internally, but they are not a required
+owner questionnaire.
 
-- kickoff/adopt/reorganize: select scale and bootstrap;
-- review/audit: inspect and report evidence;
-- implement/fix: bind work to active acceptance criteria;
-- release/publish/tag/deploy/migrate: activate the named owner gates;
-- docs/README/guide: update affected documentation and source-of-truth state;
-- handoff/resume: recover or write continuity state;
-- autonomy complaints: tune packet size, autonomy, and intensity together;
-- reference intake: compare source behavior, implementation, evidence, and gaps.
+Report the result compactly:
 
-Compose multiple intents only when they fit one packet without changing scope,
-risk, claim level, owner gate, or durable-record needs. Otherwise ask one
-blocking question with a recommended default.
+```text
+Interpreted goal:
+Scale:
+Work boundary:
+Validation contract:
+Owner gates:
+Handoff trigger:
+Reason:
+Unresolved question: none
+```
+
+This is not another approval step. Proceed when the interpretation matches the
+owner's intent and no gate blocks action; the owner may override it. Ask at most one unresolved blocking question only when the answer changes scale, execution scope, protected action or owner gate, claim boundary, or authority. Include a
+recommended default and explain what the answer changes.
 
 ### 3. Select Scale
 
-Ask:
+Use these defaults unless repository evidence requires a different scale:
 
-1. Will this take more than one AI session?
-2. Will the owner return later?
-3. Does done need evidence beyond AI confidence?
-4. Will multiple AI tools or reviewers be involved?
-5. Is there release, production, migration, destructive action, real user data,
-   auth, money, security, rollback, or another owner-controlled risk?
+- One-shot -> current request only.
+- Mini -> unit.
+- Standard -> packet.
+- Full -> packet plus named owner gates.
 
-Select:
+Select Standard when multiple workers are involved, persistent state is needed,
+or the packet only inspects, documents, or tests a protected area. Select Full
+when the packet changes, accepts, or executes a protected action, or when named
+owner gates are otherwise active. One-shot creates no persistent files. Mini
+uses one instruction file and does not imply state v2.
 
-- One-shot: zero yes; create no persistent files.
-- Mini: one or two yes from questions 1-3 only, with Q4/Q5 no.
-- Standard: Q4 yes, three yes total, persistent state, or a packet that only
-  inspects, documents, or tests a Q5 area.
-- Full: four or five yes, or a packet that changes, accepts, or executes a Q5
-  gate.
+### 4. Existing-Project Read-Only Migration Preview
 
-Override rules beat raw counts. State the selected scale and why before creating
-files. Ask whether product, hardware, compatibility, package, remote tester,
-external lab, public, or release claims need evidence beyond local software
-tests; create optional evidence surfaces only for active claims.
+For an existing project, produce a read-only migration preview before any SDAD
+control-file write. Report exactly these items in order:
 
-### 4. Select Tool And Install One Adapter
+1. worktree status, owner changes, control files, sizes, and authority, including dirty or untracked owner material
+2. pre-change Doctor result or read-only structural baseline
+3. One-shot/Mini/stateful-Mini/v1 Standard-Full/mature-pre-v3 classification
+4. active records versus history/archive candidates
+5. exact history-preservation strategy
+6. umbrella objective versus first executable leaf packet
+7. each proposed validation command and bounded proves claim
+8. immediately selectable routes and targeted-read strategy
+9. current handoff existence and authority
+10. owner-controlled decisions and evidence gates
+11. proposed state, INDEX, ledger, and handoff writes without applying them
+12. post-change Doctor strict and separate project-validation comparison plan
+
+Route One-shot or stateless Mini away from v2 migration; a deliberately stateful Mini remains on v1. New Standard/Full bootstrap and eligible existing
+Standard/Full migration use v2. Inventory v1 intensity, autonomy, save-state, and work-packet-state as legacy inputs and map authorization as follows:
+
+- Level 0 -> no execution authorization.
+- Level 1 -> unit.
+- Level 2 -> packet.
+- Level 3 -> explicit owner-approved packet list, not session scope.
+- Level 4 -> scope selected separately plus named owner gates.
+
+V2 uses `execution_scope: unit | packet`; v2 has no intensity or autonomy keys.
+Preserve valid conditional owner authorization and reuse it only while packet, action, conditions, expiry, evidence, and source remain unchanged. Re-approval
+is required when any of those terms changes or the authorization expires.
+
+Link or move legacy save-state content into a current handoff or an archive
+without automatic deletion. Keep `docs/work-packet-state.md` as the legacy path
+for the optional Delivery Readiness Model; it is not current packet authority.
+
+Show all proposed writes without applying them. Existing adoption authority
+permits continuing after the preview unless scope, authority, data boundary,
+protected action, or an owner gate requires a real decision. Ensure the proposed
+INDEX, ledger, validation, routes, and handoff are coherent, then change state `version: 2` last. Compare post-change Doctor strict structural evidence and
+project validation separately; Doctor never proves project correctness.
+
+Only after that boundary, apply the proposed control-file changes. Preserve
+project history and unrelated owner work.
+
+### 5. Select Tool And Install One Adapter
 
 Identify Codex, Claude Code, Cursor, Copilot Chat, or Generic. If ambiguous, ask
 which file-editing tool is active. Claude Code means the local coding tool, not
@@ -117,7 +161,7 @@ full adapter before creating project control files.
 Do not overwrite an existing file without showing the proposed difference.
 Use force/replace only with owner authorization and preserve rollback behavior.
 
-### 5. Bootstrap The Progressive Control Plane
+### 6. Bootstrap The Progressive Control Plane
 
 For Standard or Full, create the files defined by
 [references/starter-templates.md](references/starter-templates.md). The fixed
@@ -135,51 +179,52 @@ files mandatory startup reads.
 Keep roles singular:
 
 - adapter: always-loaded safety and execution kernel;
-- `sdad-state.yaml`: current scale, intensity, autonomy, packet, gates, checks,
-  and routed docs;
+- `sdad-state.yaml`: current scale, execution scope, packet, gates, validation,
+  validation identity, and routed docs;
 - `docs/INDEX.md`: trigger-to-file routing only;
 - operating rules: durable policy loaded by heading;
 - playbooks: procedures loaded on demand;
 - SPEC/TODO/findings/notes: current authoritative work state;
-- save-state/handoff: continuity only;
+- current handoff: optional continuity only;
 - evidence/claim files: created only for an active claim.
 
 If required files already exist, inspect and merge. Do not silently replace
 project-specific paths, commands, decisions, or constraints.
 
-### 6. Bind The First Work Packet
+### 7. Normalize And Bind The Work Packet
 
-Capture:
+Normalize natural-language work into this internal packet envelope:
 
-- owner outcome and user pain;
-- smallest useful behavior;
-- active SPEC slice and acceptance criteria;
-- non-goals and do-not-touch areas;
-- current repository evidence;
-- review-worthy development units;
-- validation commands and the claims they support;
-- owner-controlled gates and stop conditions;
-- next owner checkpoint.
+```text
+Outcome / objective
+Authority / reference
+Constraints / allowed scope
+Validation contract
+Evidence required and claim limit
+Stop condition / owner gates
+Required report
+```
+
+Choose the first executable leaf packet under any broader objective. Each
+delegated worker receives packet ID, objective, allowed scope, routes/files, validation, gates, stop condition, and required report because parent context is not assumed.
 
 Write current routing values to `sdad-state.yaml`. Keep `routed_docs` limited
-to files that can affect the packet. Use the current source and tests before
-implementing from a plan.
+to eligible files that can affect the packet; current intent selects the path,
+heading, active section, or targeted match actually read. Bind `validation_for`
+to the active packet. Use current source and tests before implementing a plan.
 
-### 7. Choose Autonomy And Intensity
+### 8. Set Execution Scope And Owner Gates
 
-Use Level 1 for Mini and Level 2 Work Packet Autonomy for normal Standard/Full
-implementation. Use Level 4 owner gates for release, migration, destructive
-actions, data/auth/money/security decisions, rollback, and production claims.
-
-Use Low intensity for small docs/index/helper edits, Medium for normal
-implementation and review, and High only when the packet changes behavior,
-policy, boundary, evidence claim, or a hard-to-reverse owner tradeoff. A Q5
-project does not make every packet High.
+Use `unit` for the current bounded unit or `packet` for the approved packet.
+Multi-packet work requires an explicitly approved packet list. Scope does not
+grant permission for release, migration, destructive action, sensitive data,
+auth, money, security, rollback, production, or any other protected action;
+keep those as named owner gates.
 
 Proceed through review-worthy units without micro-approval. Stop only for the
 conditions in the runtime contract.
 
-### 8. Execute Or Route
+### 9. Execute Or Route
 
 For review-only work, return prioritized findings with file/line evidence,
 impact, and validation limits.
@@ -196,7 +241,7 @@ Record spec-unstated durable implementation judgments in
 `docs/implementation-notes.md`. Use an ADR only for a hard-to-reverse,
 surprising tradeoff. Do not record raw internal reasoning.
 
-### 9. Finish At The Right Boundary
+### 10. Finish At The Right Boundary
 
 Call work evidence-ready only when scoped implementation, relevant checks, docs,
 and residual risk are shown. Keep owner-accepted, hardware-verified,
@@ -204,7 +249,7 @@ release-candidate, and production-ready states separate.
 
 Return a compact checkpoint:
 
-- scale, intensity, autonomy, and packet;
+- scale, execution scope, owner gates, and packet;
 - changed files and behavior;
 - checks run and what they prove;
 - docs/control state changed or checked;
@@ -212,10 +257,9 @@ Return a compact checkpoint:
 - remaining risk and owner decisions;
 - acceptance state and next step.
 
-Update save-state or create a handoff only when the session pauses, changes
-hands, remains blocked/partial/unverified, owner direction changes, or context
-would be expensive to reconstruct. Link existing artifacts rather than copying
-long transcripts.
+Create or update `current_handoff` only when work pauses, changes hands, remains
+blocked/partial/unverified, owner direction changes, or context would be
+expensive to reconstruct. Link authorities instead of copying their contents.
 
 ## Existing-Project Rules
 
@@ -224,7 +268,7 @@ long transcripts.
 - Do not treat archived plans, product notes, external references, handoffs, or
   chat memory as current implementation authority.
 - Do not let a lower evidence tier support a stronger claim.
-- Do not use higher autonomy to bypass owner gates.
+- Do not use broader execution scope to bypass owner gates.
 - Do not assume commit authorizes push, release, deployment, migration, or an
   external message.
 - Do not hide partial, degraded, skipped, simulated, or unverified behavior.
