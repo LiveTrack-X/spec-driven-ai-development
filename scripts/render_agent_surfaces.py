@@ -6,13 +6,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_PATH = "templates/project-control-files/AGENTS.md"
-CANONICAL_TITLE = "# Project Agent Control Plane"
+CANONICAL_TITLE = "# SDAD Protocol Agent Kernel"
 CANONICAL_SCOPE = (
     "Scope: Required, always-loaded instructions for AI agents and maintainers"
 )
 
 CURSOR_PREFIX = """---
-description: Route Cursor through a compact, evidence-based SDAD control plane.
+description: Route Cursor through the compact, evidence-based SDAD Protocol kernel.
 globs:
 alwaysApply: true
 ---
@@ -21,32 +21,32 @@ alwaysApply: true
 
 SURFACES = {
     "adapters/codex/AGENTS.md": (
-        "# SPEC-Driven AI Development Agent Contract",
+        "# SDAD Protocol",
         "Scope: Codex project instructions",
         "",
     ),
     "adapters/claude-code/CLAUDE.md": (
-        "# SPEC-Driven AI Development",
+        "# SDAD Protocol",
         "Scope: Claude Code project memory",
         "",
     ),
     "adapters/gemini-cli/GEMINI.md": (
-        "# SPEC-Driven AI Development",
+        "# SDAD Protocol",
         "Scope: Gemini CLI project context",
         "",
     ),
     "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc": (
-        "# SPEC-Driven AI Development",
+        "# SDAD Protocol",
         "Scope: Cursor project rule",
         CURSOR_PREFIX,
     ),
     "adapters/github-copilot/.github/copilot-instructions.md": (
-        "# SPEC-Driven AI Development",
+        "# SDAD Protocol",
         "Scope: GitHub Copilot project instructions",
         "",
     ),
     "adapters/generic/AI-SESSION-INSTRUCTIONS.md": (
-        "# SPEC-Driven AI Development",
+        "# SDAD Protocol",
         "Scope: Generic AI coding-agent instructions",
         "",
     ),

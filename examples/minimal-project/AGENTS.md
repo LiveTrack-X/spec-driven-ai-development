@@ -4,7 +4,8 @@ Read progressively:
 
 1. `sdad-state.yaml` for the active packet, gates, checks, and routed docs.
 2. `docs/INDEX.md` for trigger-to-file routing.
-3. Current source/tests and only the routed files.
+3. Inspect current source/tests; current intent selects the path, heading, active section, or targeted match;
+   routed membership does not require a full-file read.
 4. The relevant heading in `docs/Repository-Operating-Rules.md` on demand.
 
 Evidence beats confidence. Current source/tests beat stale history. Owner

@@ -53,6 +53,25 @@ ORDERED_STARTUP_ROUTE = (
     "docs/Repository-Operating-Rules.md",
 )
 
+TARGETED_ROUTE_CONTRACT = (
+    "current intent",
+    "routed path, heading, active section, or targeted match",
+    "does not mean read the whole file",
+)
+
+FORBIDDEN_KERNEL_WORDING = (
+    "@sdad-state.yaml",
+    "@docs/INDEX.md",
+    "@README.md",
+    "Q5",
+    "operating intensity",
+    "autonomy",
+    "recovery mode",
+    "owner checkpoint",
+    "AI-complete",
+    "save-state.md",
+)
+
 INDEX_ROUTES = (
     "sdad-state.yaml",
     "SPEC/SPEC-COMPLETE.md",
@@ -124,6 +143,28 @@ def _require_phrases(
     for phrase in phrases:
         if phrase not in text:
             violations.append(f"{relative_path} missing canonical phrase: {phrase}")
+
+
+def _validate_startup_kernel(
+    relative_path: str,
+    text: str,
+    violations: list[str],
+) -> None:
+    positions = [text.find(token) for token in TARGETED_ROUTE_CONTRACT]
+    if any(position < 0 for position in positions) or positions != sorted(positions):
+        violations.append(
+            f"{relative_path} must route current intent to one targeted path, "
+            "heading, active section, or match; routed membership cannot require "
+            "a full-file read"
+        )
+
+    lowered = text.lower()
+    for phrase in FORBIDDEN_KERNEL_WORDING:
+        if phrase.lower() in lowered:
+            violations.append(
+                f"{relative_path} contains forbidden always-loaded kernel "
+                f"wording: {phrase}"
+            )
 
 
 def _visible_markdown_lines(text: str) -> list[str]:
@@ -359,12 +400,15 @@ def collect_agent_experience_violations(root: Path) -> list[str]:
     for relative_path in STARTUP_SURFACES:
         text = content.get(relative_path, "")
         if text:
+            violation_count = len(violations)
             _require_ordered_tokens(
                 relative_path,
                 text,
                 ORDERED_STARTUP_ROUTE,
                 violations,
             )
+            if len(violations) == violation_count:
+                _validate_startup_kernel(relative_path, text, violations)
 
     index_path = "templates/project-control-files/docs/INDEX.md"
     index = content.get(index_path, "")

@@ -33,7 +33,7 @@ class RenderAgentSurfacesTests(unittest.TestCase):
         canonical = (ROOT / self.module.CANONICAL_PATH).read_text(encoding="utf-8")
         expected = canonical.replace(
             self.module.CANONICAL_TITLE,
-            "# SPEC-Driven AI Development",
+            "# SDAD Protocol",
             1,
         ).replace(
             self.module.CANONICAL_SCOPE,
@@ -50,7 +50,7 @@ class RenderAgentSurfacesTests(unittest.TestCase):
             template = root / "templates/project-control-files/AGENTS.md"
             template.parent.mkdir(parents=True)
             template.write_text(
-                "# Project Agent Control Plane\n\n"
+                "# SDAD Protocol Agent Kernel\n\n"
                 "Status: Active\n"
                 "Scope: Required, always-loaded instructions for AI agents and maintainers\n"
                 "\n## Fast Start\ncore\n",
