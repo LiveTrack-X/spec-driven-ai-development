@@ -368,6 +368,34 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
                 diagnose(state)
         self.assertEqual(caught.exception.state_version, 2)
 
+    def test_post_read_iteration_failure_after_v2_is_annotated(self) -> None:
+        state = (
+            valid_state()
+            .replace("version: 1", "version: 2", 1)
+            .replace("owner_gates:", "validation_for: WP-001\nowner_gates:", 1)
+        )
+
+        def lazy_findings():
+            raise RuntimeError("lazy finding iteration failed")
+            yield
+
+        with patch(
+            "sdad_validator.checks.path_integrity.PathIntegrityCheck.run",
+            return_value=lazy_findings(),
+        ):
+            try:
+                diagnose(state)
+            except DiagnosticError as exc:
+                caught = exc
+            except RuntimeError as exc:
+                self.fail(f"raw post-read exception escaped: {exc}")
+            else:
+                self.fail("post-read iteration failure did not raise")
+
+        self.assertEqual(caught.kind, "internal_error")
+        self.assertEqual(caught.state_version, 2)
+        self.assertIsInstance(caught.__cause__, RuntimeError)
+
     def test_v2_unregistered_finding_is_rejected_with_state_version(self) -> None:
         state = (
             valid_state()

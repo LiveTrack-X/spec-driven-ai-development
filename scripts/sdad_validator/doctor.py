@@ -335,8 +335,35 @@ class DiagnosticEngine:
     def diagnose(self, view: ProjectView, policy: DoctorPolicy) -> DoctorReport:
         diagnostic_view = _CachedProjectView(view)
         state_result = _read_state(diagnostic_view, policy)
+        try:
+            return self._diagnose_after_state_read(
+                diagnostic_view,
+                policy,
+                state_result,
+            )
+        except DiagnosticError as exc:
+            if exc.state_version == state_result.state_version:
+                raise
+            raise DiagnosticError(
+                exc.kind,
+                str(exc),
+                state_version=state_result.state_version,
+            ) from exc
+        except Exception as exc:
+            raise DiagnosticError(
+                "internal_error",
+                "Diagnostic engine failed.",
+                state_version=state_result.state_version,
+            ) from exc
+
+    def _diagnose_after_state_read(
+        self,
+        view: _CachedProjectView,
+        policy: DoctorPolicy,
+        state_result: StateContractResult,
+    ) -> DoctorReport:
         context = DoctorContext(
-            view=diagnostic_view,
+            view=view,
             policy=policy,
             state_result=state_result,
         )
