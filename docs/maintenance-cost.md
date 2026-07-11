@@ -9,7 +9,8 @@ micro-task.
 For an active Standard or Full packet, the steady structural cost is:
 
 - one `validation_for` value equal to `active_packet.id`;
-- one `[packet:<active_packet.id>]` marker in each active TODO or review record;
+- one copyable `[packet:WP-EXAMPLE]` marker in each active TODO or review record,
+  replacing `WP-EXAMPLE` with the exact `active_packet.id` value;
 - cleanup or reclassification of active records at checkpoint/packet switch;
 - one optional current handoff read only when resume/handoff intent needs it.
 

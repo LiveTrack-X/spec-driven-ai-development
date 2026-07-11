@@ -50,12 +50,13 @@ agent.
 The logical control spine is:
 
 ```text
-Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner decision -> Maintenance
+Scale/compress -> Execution scope -> Active SPEC slice -> Work packet -> Validation/owner gates -> Evidence-ready -> Owner decision -> Maintenance
 ```
 
-Scale and compression happen before creating files. Evidence-tier and reference
-gates happen before evidence-ready. Owner acceptance happens after evidence,
-not because a gate passed.
+Scale selects the persistent control surface; `execution_scope` selects the
+current `unit` or `packet` boundary; owner gates protect specific actions.
+Validation and reference gates happen before evidence-ready. Owner acceptance
+happens after evidence, not because a gate passed.
 
 ### 1. Start From Pain
 
@@ -75,6 +76,7 @@ For Standard and Full SDAD, create the core control files before expanding
 implementation:
 
 - `AGENTS.md`
+- `sdad-state.yaml`
 - `docs/INDEX.md`
 - `docs/Repository-Operating-Rules.md`
 - `SPEC/SPEC-COMPLETE.md`
@@ -82,8 +84,8 @@ implementation:
 - `review-findings.md`
 - `README.md`
 
-These files let a non-coding owner supervise progress by reading current scope,
-open work, review findings, evidence, and handoff notes.
+These files let a non-coding owner supervise progress by reading the current
+packet, validation contract, open work, review findings, and evidence.
 
 For One-shot, Mini SDAD, or a small Standard packet, apply the Small Project
 Compression Rule before creating this full set. A single evidence-ready summary
@@ -108,16 +110,20 @@ Split context into layers:
 
 - always-loaded instructions: short tool-specific rules such as `AGENTS.md`,
   `CLAUDE.md`, Cursor rules, Copilot instructions, or generic session rules,
-- active control files: current SPEC, TODO, review findings, implementation
-  notes, save-state, and current handoff,
+- startup route: adapter -> `sdad-state.yaml` -> `docs/INDEX.md`,
+- active control files: current SPEC, targeted source/tests, TODO, review
+  findings, and implementation notes selected for the current intent,
+- optional continuity: the state-declared `current_handoff`, read only for
+  resume/handoff intent and used only as pointers plus last-observed status,
 - on-demand references: pattern catalog, anti-patterns, field notes, setup
   guides, localized docs, and other explanatory material,
 - archive and evidence: old handoffs, logs, generated reports, historical
-  notes, private data, and large local artifacts.
+  notes, state-v1 `save-state.md`, private data, and large local artifacts.
 
-The AI should load the first layer by default, read only the relevant current
-sections of the second layer, open the third layer when a question requires it,
-and handle the fourth layer through bounded reads and path references.
+The AI should load the adapter and startup route by default, select only the
+current controls needed for the intent, load continuity only when needed, open
+on-demand references when a question requires them, and handle archive/evidence
+through bounded reads and path references.
 
 This is a context-stability rule, not a new source-of-truth order. Current code,
 tests, runtime docs, and the active SPEC still outrank old handoffs, archives,
@@ -135,7 +141,7 @@ Route ordinary requests by intent:
 - documentation: "docs", "README", "FAQ", "guide", "explain",
 - handoff: "continue later", "handoff", "next session", "lost context",
 - reference intake: "borrow from this repo", "can we adopt this idea",
-- autonomy tuning: "asks too often", "runs ahead".
+- execution control: "asks too often", "runs ahead".
 
 Treat narrative modifiers as routing signals, not automatic scope expansion.
 "Carefully", "thoroughly", or "audit the whole flow" increases inspection depth
@@ -147,10 +153,10 @@ release, or deploy unless those are named.
 
 If multiple intents match, first decide whether they can be safely composed
 inside one approved packet. When one route remains dominant, state the
-interpreted intent, SDAD scale/intensity, autonomy level, and expected evidence
-before proceeding. If the combination changes scope, risk, claim level, owner
-gate, or durable-doc requirements, ask one blocking clarification question with
-a recommended default.
+interpreted intent, SDAD scale, `execution_scope`, applicable owner gates, and
+expected evidence before proceeding. If the combination changes scope, risk,
+claim level, owner gate, or durable-doc requirements, ask one blocking
+clarification question with a recommended default.
 
 Intent routing is not automatic permission to expand scope, read the whole
 repository, skip evidence, or bypass owner gates.
@@ -164,18 +170,20 @@ available. In SDAD, useful Codex practice becomes governed operating behavior:
   with target files, examples, constraints, non-goals, and expected evidence,
 - environment improvement loop: when setup, scripts, env vars, or dependency
   gaps repeatedly block verification, route the fix to TODO, rules, templates,
-  or handoff instead of rediscovering it each session,
+  or implementation notes instead of rediscovering it each session,
 - controlled task queue: use Codex-style background work for small fixes,
   exploratory branches, or follow-up ideas only when each item has a bounded
-  packet, evidence expectation, and owner gate,
+  packet and evidence expectation; require owner gates only for protected
+  actions,
 - optional multi-candidate review: use multiple candidate answers for design,
   refactor, performance, or migration tradeoffs, then record the chosen
   rationale in implementation notes or an ADR when durable.
 
 Do not let a Codex queue become a hidden backlog. Queue items must either stay
 outside active scope, enter `docs/TODO-Open-Items.md`, become a review finding,
-or be captured in handoff/save-state. Do not treat the best candidate as
-accepted until evidence and owner acceptance are visible.
+or become an approved packet. A handoff may point to those authorities only
+when continuity is needed. Do not treat the best candidate as accepted until
+evidence and owner acceptance are visible.
 
 ### 3d. Layer Repository Control Surfaces
 
@@ -189,8 +197,11 @@ control surfaces by what they can reliably do:
   summary instead of flooding the main context,
 - enforced guarantee: CI, tests, validators, hooks, permissions, deny rules, or
   release gates that must run or must block regardless of AI memory,
-- reviewed memory: implementation notes, ADRs, operating rules, handoffs, and
-  trace links that are safe for later sessions to trust.
+- reviewed memory: implementation notes, ADRs, operating rules, and trace links
+  that are safe for later sessions to trust,
+- continuity checkpoint: an optional state-declared current handoff containing
+  authority pointers and last-observed results, not duplicated decisions or
+  current state.
 
 Guidance vs enforcement is a safety boundary. Use guidance for judgment,
 style, source-of-truth order, and owner-gate criteria. Use enforcement for
@@ -222,17 +233,19 @@ Use this default order:
 2. active runtime docs,
 3. canonical integrated SPEC,
 4. active or planned SPEC files,
-5. current handoff/save-state files,
-6. product notes and external references,
-7. historical or archived records,
-8. chat memory or AI confidence.
+5. current execution declaration and active ledgers,
+6. recorded owner decisions and authorizations for their declared scope,
+7. product notes and external references,
+8. historical or archived records, including state-v1 save-state files,
+9. optional handoff continuity hints,
+10. chat memory or AI confidence.
 
 Read order is routing, not authority: startup docs help find current files, but
 this order decides conflicts. Owner decisions control scope, risk tolerance, and
-acceptance. They become durable source of truth only when recorded in active
-docs, SPEC, ADR, or claim registry. A current handoff may carry the decision for
-continuity until it is promoted; it does not turn weak evidence into stronger
-evidence.
+acceptance. They become durable source of truth only when recorded in the
+applicable active SPEC, ADR, claim registry, or authoritative authorization
+record. A current handoff may link to that record and preserve last-observed
+status; it cannot become or replace the authorization.
 
 Apply current-over-historical precedence inside SPECs: when a SPEC contains a
 timeline from past to present, the newest active/current section wins over older
@@ -275,8 +288,8 @@ Examples:
 - release asset selection and auto-updaters,
 - prompt contracts and model/tool boundaries.
 
-Each risk domain needs specific review prompts, tests, docs, and handoff
-evidence.
+Each risk domain needs specific review prompts, tests, docs, and evidence. Add a
+handoff pointer only when another session needs continuity.
 
 ### 8. Make Completion Evidence-Based
 
@@ -302,7 +315,7 @@ claims, use the optional Product evidence templates:
 - Claim Registry: allowed, qualified, blocked, and forbidden claims,
 - Artifact Contract: required files, metadata, verifier, privacy, retention, and
   lineage for generated or imported artifacts,
-- Work Packet State Model: explicit states from `ai_complete` through
+- Delivery Readiness Model: explicit states from `ai_complete` through
   `production_ready`,
 - Remote Evidence Import / Quarantine Pattern: quarantine, validation, privacy,
   review, and acceptance before claim changes.
@@ -375,9 +388,10 @@ shown compactly.
 Turn on separate surfaces only when their job exists: SPEC for changed behavior
 or acceptance criteria, TODO for continuing work, review findings for active
 defects or blocked gates, implementation notes for durable spec-unstated
-choices, save-state or handoff for continuity, and product evidence templates
-for claims that need mapped evidence, claim boundaries, artifact contracts, or
-remote evidence review.
+choices, a packet-bound `current_handoff` only for cross-session continuity, and
+product evidence templates for claims that need mapped evidence, claim
+boundaries, artifact contracts, or remote evidence review. State-v2 work never
+creates or routes `save-state.md`; an existing copy is v1 migration/history.
 
 ### 9. Use A Slice-First Evidence Loop
 
@@ -455,7 +469,7 @@ budget, and owner adoption gate. See
 
 ### 12. Pressure-Test Plans Before Building
 
-When a work packet is fuzzy, do a short clarification checkpoint before coding.
+When a work packet is fuzzy, do a short clarification step before coding.
 
 The AI should first inspect the repository. If current code, tests, active docs,
 SPEC, ADRs, TODOs, or review findings answer the question, use that evidence
@@ -551,7 +565,7 @@ A decision normally deserves an ADR only when it is hard to reverse, would
 surprise a future maintainer without context, and represents a real tradeoff.
 
 Use implementation notes for smaller spec-unstated implementation choices that
-need to survive handoff but are not durable enough for an ADR.
+need to survive sessions and review but are not durable enough for an ADR.
 
 ## Pattern Matrix
 
@@ -559,12 +573,12 @@ need to survive handoff but are not durable enough for an ADR.
 | --- | --- | --- |
 | Fresh AI session starts in wrong context | Mandatory docs router and first-read loop | Version-specific rule file and workspace lane |
 | Docs conflict with implementation | Source-of-truth order | Architecture responsibility map |
-| AI says a feature is complete | Evidence handoff and TODO/review ledgers | Release gate and Critical 0 threshold |
+| AI says a feature is complete | Evidence-ready report and TODO/review ledgers | Release gate and Critical 0 threshold |
 | Code contains unstated implementation choices | Implementation notes with verification impact | ADR or owner gate when the choice affects release/risk |
 | Plan is fuzzy before coding | Infer from repository evidence, then ask one blocking question with a recommended answer | Owner gate when risk, release, data, security, or tradeoff changes |
 | AI loads too much or too little context | Layered context route and bounded reads | Explicit resume package for release or migration work |
 | User uses plain language instead of a skill name | Natural-language intent routing | Gate release, migration, destructive, data, auth, money, security, rollback, and production claims |
-| Codex setup fails repeatedly | Environment improvement loop into rules, TODOs, templates, or handoff | Release readiness blocks until setup evidence is repeatable |
+| Codex setup fails repeatedly | Environment improvement loop into rules, TODOs, templates, or implementation notes | Release readiness blocks until setup evidence is repeatable |
 | Codex task queue accumulates side quests | Controlled task queue with packet boundaries | Owner gate before queue items become release scope |
 | Several candidate solutions exist | Optional multi-candidate review | ADR or implementation note when the tradeoff is durable |
 | Existing product, repo, demo, or design is used as a reference | Reference Parity Review Gate with source behavior -> implemented behavior -> evidence | Owner gate before reference-critical gaps become release or production claims |
@@ -600,17 +614,19 @@ A project using this pattern should be able to show the owner:
 Recommended public name:
 
 ```text
-SPEC-Driven AI Development
+SDAD Protocol
 ```
 
 Precise description:
 
 ```text
-Owner-supervised, SPEC-driven, multi-agent, evidence-based AI development.
+Repository-local AI work protocol for state, evidence, owner control, decisions,
+and handoffs across coding agents and sessions.
 ```
 
 Korean description:
 
 ```text
-인간 오너 감독형, SPEC 주도, 다중 AI 교차검증 기반 개발 플로우.
+코딩 에이전트와 세션 전반의 상태, 증거, 소유자 통제, 결정, 인계를
+저장소 안에서 관리하는 AI 작업 프로토콜.
 ```

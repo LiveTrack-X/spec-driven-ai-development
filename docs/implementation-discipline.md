@@ -19,25 +19,27 @@ decisions.
 Before coding, state the assumptions that affect scope, design, risk, or
 verification.
 
-Use the autonomy model:
+Keep the three controls separate: scale chooses the persistent control surface,
+`execution_scope` bounds work to a `unit` or `packet`, and owner gates protect
+specific actions.
 
-- local implementation assumption with low risk: state it, proceed, verify, and
-  report it in the checkpoint;
+- local implementation assumption with low risk inside the approved execution
+  scope: state it, proceed, verify, and report it in the evidence-ready report;
 - product, risk, release, data, auth, money, destructive, or policy assumption:
-  stop and ask the owner;
+  stop at the applicable owner gate;
 - conflicting evidence: stop and show the conflict.
 
 The goal is not to ask more often. The goal is to avoid silent guessing.
 
-## 2. Run A Clarification Checkpoint When The Plan Is Fuzzy
+## 2. Run A Clarification Step When The Plan Is Fuzzy
 
-Use a clarification checkpoint when the work packet has ambiguous scope,
+Use a clarification step when the work packet has ambiguous scope,
 overloaded terms, a hard-to-reverse choice, unclear evidence, or a likely owner
 tradeoff.
 
 Before asking the owner, inspect the current code, tests, active docs, SPEC, and
 review findings. If the repository already answers the question, use that answer
-and cite the evidence in the checkpoint.
+and cite the evidence in the report.
 
 When a question remains:
 
@@ -57,13 +59,13 @@ For projects with repeated domain-language confusion, create a small optional
 `docs/domain-language.md` routed from `docs/INDEX.md`; keep it glossary-only, not
 an implementation log.
 
-Resolved checkpoint outcomes must be routed:
+Resolved outcomes must be routed:
 
 - SPEC or active docs for behavior and source-of-truth changes,
 - `docs/implementation-notes.md` for spec-unstated implementation choices,
 - ADRs for durable hard-to-reverse decisions,
 - `docs/TODO-Open-Items.md` or `review-findings.md` for follow-up work or risk,
-- handoff notes when the session must restart later.
+- a packet-bound handoff pointer only when another session needs continuity.
 
 ## 3. Prefer The Smallest Working Design
 
@@ -78,7 +80,7 @@ Avoid:
 - error handling for impossible states that are outside the accepted scope.
 
 If the solution became much larger than the problem, pause locally and simplify
-before handoff.
+before reporting.
 
 ## 4. Make Surgical Changes
 
@@ -113,8 +115,8 @@ Examples:
 - docs or prompt change: show which workflow confusion the change prevents.
 
 For multi-step packets, use a short plan where each step has a matching check.
-This lets the AI continue autonomously inside the packet without asking for
-permission after each small task.
+This lets the AI continue inside its declared `execution_scope` without asking
+for permission after each small task.
 
 ## 6. Preserve Implementation Memory
 

@@ -21,7 +21,7 @@ Use this exact structure:
 
 ## 1. Session Identity
 
-- Active packet: [packet:<active_packet.id>]
+- Active packet: [packet:WP-EXAMPLE]
 - Repository / worktree:
 - Branch / HEAD:
 - Dirty state:
@@ -51,13 +51,8 @@ Use this exact structure:
 
 - Constraints / do-not-touch areas:
 - Unsatisfied owner gates:
-- Active conditional authorization, if any:
-  - Decision:
-  - Authorized action:
-  - Packet:
-  - Conditions:
-  - Expires when:
-  - Evidence required before action:
+- Authoritative authorization record, if any:
+- Last-observed authorization status:
 - Blockers or residual risk:
 
 ## 6. Resume Instructions
@@ -71,8 +66,9 @@ Use this exact structure:
 ```
 
 The first exact `## 1. Session Identity` section must contain exactly one valid
-marker in the exact form `- Active packet: [packet:<id>]`. Its ID must equal
-`sdad-state.yaml#active_packet.id`.
+marker. Start from the copyable example `- Active packet: [packet:WP-EXAMPLE]`,
+then replace `WP-EXAMPLE` with the exact
+`sdad-state.yaml#active_packet.id` value.
 
 ## Authority And Compression Rules
 
@@ -81,6 +77,7 @@ marker in the exact form `- Active packet: [packet:<id>]`. Its ID must equal
 - Hard-to-reverse architecture decision -> ADR.
 - Unresolved work -> TODO or review finding.
 - Current execution declaration -> `sdad-state.yaml`.
+- Protected-action authorization -> authoritative owner-decision record.
 - Cross-session recovery links/results -> handoff.
 
 Use Authority Pointers; do not duplicate full SPEC decisions, ADR rationale,
@@ -88,9 +85,12 @@ TODOs, findings, implementation notes, logs, diffs, or evidence files. State
 claim limits, skipped checks, residual risk, and owner acceptance separately.
 Evidence-ready is not owner-accepted.
 
-Preserve an owner authorization only while its recorded packet, action,
-conditions, expiry, required evidence, and source remain unchanged. An expired
-or failed condition, or a relevant source change, requires re-approval.
+Point to the single authoritative owner-authorization record and include only
+its last-observed status in the handoff. The handoff itself is never reusable
+authority. Reuse the authorization only after verifying that its recorded
+packet, action, conditions, expiry, required evidence, and source remain
+unchanged. An expired or failed condition, or a relevant source change, requires
+re-approval.
 
 ## Pointer Lifecycle
 

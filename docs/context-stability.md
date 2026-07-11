@@ -15,8 +15,9 @@ logs, generated artifacts, old journals, or private data into the chat.
 - Archives preserve history, but they are not the default startup path.
 - Generated files, logs, local databases, private corpora, and tool caches are
   not default AI reading material.
-- Fresh sessions should resume from current summaries, active specs, handoffs,
-  and targeted repository inspection.
+- Fresh sessions start adapter -> `sdad-state.yaml` -> `docs/INDEX.md` ->
+  current source/tests. Read optional `current_handoff` only for resume/handoff
+  intent, then follow its targeted authority pointers.
 - If an AI chat becomes unstable, first suspect context growth from large files
   or broad searches before changing runtime code.
 
@@ -84,16 +85,15 @@ These are default review triggers, not hard failures:
 If the project has stricter local limits, record them in
 `docs/Repository-Operating-Rules.md`.
 
-## Live-State Size Budget
+## Active Control File Size Budget
 
-Files such as `sdad-state.yaml`, `next-task.md`, `review-findings.md`, the
-state-declared current handoff, and `docs/TODO-Open-Items.md` should stay short
-enough to read as active operating state. A `save-state.md` file is state-v1
-migration input only. Treat `docs/implementation-notes.md` the same way when a
-project uses it:
-it is current decision context, not a permanent thought journal.
+`sdad-state.yaml`, `review-findings.md`, `docs/TODO-Open-Items.md`, and
+`docs/implementation-notes.md` should stay short enough for targeted current
+use. The optional state-declared handoff must also stay compact, but it is
+continuity rather than operating-state authority. A `save-state.md` file is
+state-v1 migration input or archived history only.
 
-If a live-state file becomes long, repetitive, or hard to audit:
+If an active control file becomes long, repetitive, or hard to audit:
 
 1. Preserve the old material in an archive or history location.
 2. Keep the active file focused on current objective, open items, constraints,
@@ -111,7 +111,8 @@ Common split routes:
 - completed TODOs -> `docs/archive/todo-history/YYYY-MM-DD-topic.md`,
 - closed findings -> `docs/review/archive/YYYY-MM-DD-topic.md`,
 - old implementation notes -> `docs/archive/implementation-notes/YYYY-MM-DD-topic.md`,
-- old save-state entries -> `docs/state/save-state-archive/YYYY-MM-DD-topic.md`,
+- legacy state-v1 save-state history ->
+  `docs/archive/migration/save-state-v1/YYYY-MM-DD-topic.md`,
 - long command output, screenshots, imports, or traces ->
   `docs/archive/evidence/YYYY-MM-DD-HHMM-start-topic.md`,
 - remote evidence import records ->
@@ -146,7 +147,7 @@ caches unless the owner explicitly chooses them for the current packet.
 Use project-appropriate archive paths. Common patterns:
 
 ```text
-docs/state/save-state-archive/YYYY-MM-DD-topic.md
+docs/archive/migration/save-state-v1/YYYY-MM-DD-topic.md
 docs/state/next-task-history/YYYY-MM-DD-topic.md
 docs/review/archive/YYYY-MM-DD-topic.md
 docs/archive/todo-history/YYYY-MM-DD-topic.md
@@ -155,7 +156,8 @@ docs/archive/YYYY-MM-DD-topic.md
 
 ## Handoff Requirements
 
-When context stability work happens, the handoff should include:
+When context stability work happens and a handoff is actually needed, it should
+point to the authoritative records and include only last-observed recovery facts:
 
 - which active files were slimmed or rerouted,
 - where historical material was preserved,

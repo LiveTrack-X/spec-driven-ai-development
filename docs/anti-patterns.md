@@ -14,8 +14,9 @@ Symptom: the agent says the work is done because the explanation is coherent.
 Why it fails: fluent summaries can hide missing tests, docs drift, migration
 gaps, security regressions, or unverified runtime behavior.
 
-Replace with: evidence-based handoff with changed files, commands run, results,
-docs checked, remaining risks, and incomplete work.
+Replace with: an evidence-ready report with changed files, commands run,
+results, docs checked, remaining risks, and incomplete work. Create a handoff
+only when continuity is needed, and make it point to the evidence authority.
 
 ## 2. Historical SPEC Override
 
@@ -65,8 +66,8 @@ for owner approval before continuing.
 Why it fails: owner supervision becomes a bottleneck, review has too little
 substance to be useful, and implementation flow collapses.
 
-Replace with: define a bounded work packet, use review-worthy units inside it
-for review and evidence, and let the AI proceed autonomously until changed
+Replace with: define `execution_scope: unit | packet`, use review-worthy units
+for review and evidence, and let the AI proceed inside that boundary until changed
 files, checks, limits, and evidence are ready. Stop early only for scope
 expansion, owner-gate changes, destructive actions, owner-controlled decisions,
 blocked verification, or evidence conflicts.
@@ -90,17 +91,17 @@ production claim, and owner risk-acceptance gates intact.
 ## 5c. Hidden Codex Queue
 
 Symptom: Codex is used as a background queue for side ideas, small fixes,
-explorations, or cleanup, but the queue is not reflected in TODOs, review
-findings, save-state, handoff, or owner scope.
+explorations, or cleanup, but the queue is not reflected in the approved packet,
+TODOs, review findings, or owner scope.
 
 Why it fails: the project appears to move faster while active scope becomes
 unclear. Queue items can silently become release expectations without evidence
 or owner acceptance.
 
-Replace with: controlled task queues. Each queued item needs a bounded packet,
-expected evidence, and an owner gate before it becomes active scope. Keep side
-ideas in backlog, TODO, review findings, save-state, or handoff instead of
-private chat/task memory.
+Replace with: controlled task queues. Each active item needs a bounded packet
+and expected evidence; protected actions additionally need an owner gate. Keep
+side ideas in backlog, TODO, or review findings instead of private chat/task
+memory. A handoff only points to those authorities when continuity is needed.
 
 ## 6. Unscoped Percent Complete
 
@@ -120,7 +121,10 @@ tests, active docs, or active SPEC.
 
 Why it fails: handoffs are snapshots and can become stale.
 
-Replace with: use handoff to resume, then verify against source-of-truth order.
+Replace with: use a handoff only when state v2 declares it through optional
+`current_handoff` for continuity. Follow its authority pointers, verify them
+against the source-of-truth order, and never reuse the handoff itself as state,
+decision, or authorization authority.
 
 ## 8. Docs Drift Normalization
 
@@ -241,8 +245,9 @@ Why it fails: the AI chat becomes harder to audit, more expensive to resume, and
 more likely to collapse under stale or irrelevant context. The project can look
 broken even when runtime code is not involved.
 
-Replace with: keep active live-state files as short routing summaries, move old
-history to archive/history files, verify authorization before private-data
+Replace with: keep `sdad-state.yaml`, active TODOs/findings, and implementation
+notes short; keep the optional current handoff a compact continuity pointer,
+not live state. Move old history to archives, verify authorization before private-data
 access, and use bounded reads for archives, logs, generated artifacts,
 authorized private data, and search output.
 

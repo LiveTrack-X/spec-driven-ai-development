@@ -37,8 +37,10 @@ evidence.
 Why it matters: AI agents can sound certain while missing tests, migrations,
 edge cases, docs drift, or runtime failures.
 
-Operational form: every handoff must include commands run, results, files
-changed, docs checked, remaining risks, and what is not complete.
+Operational form: every evidence-ready report must name commands run, results,
+files changed, docs checked, remaining risks, and what is not complete. When a
+handoff is needed, it links to that evidence and records only last-observed
+status needed for recovery.
 
 ### 3. Active Beats Interesting
 
@@ -94,12 +96,12 @@ Stop for the owner only when scope expands, risk posture changes, a destructive
 or irreversible action is needed, an owner-controlled decision is required,
 verification is blocked, or evidence conflicts with the plan.
 
-### 6a. Implementation Discipline Makes Autonomy Safe
+### 6a. Implementation Discipline Makes Bounded Execution Safe
 
 Rule: inside an approved work packet, the AI must surface assumptions, prefer
 simple designs, make surgical diffs, and tie each step to verification.
 
-Why it matters: low-intervention autonomy only works when the agent does not
+Why it matters: low-intervention execution only works when the agent does not
 hide confusion, overbuild, touch unrelated code, or claim success without a
 goal-matched check.
 
@@ -125,8 +127,9 @@ implicitly included.
 
 Why it matters: "reasonable assumptions" can become silent commitments.
 
-Operational form: record non-goals in SPEC, TODO, or handoff. Promote them only
-through owner decision.
+Operational form: record non-goals in the active SPEC. Put unresolved work in
+TODO or findings. A handoff points to those authorities when continuity needs
+them.
 
 ### 9. Stated Uncertainty Beats Silent Guessing
 
@@ -136,7 +139,8 @@ Why it matters: AI often fills gaps with plausible defaults. Those defaults can
 be wrong for product, security, cost, or release strategy.
 
 Operational form: use "Assumption", "Needs owner decision", or "Not verified"
-labels in handoff and review.
+labels in the applicable SPEC, implementation note, TODO/finding, or evidence
+report. A handoff links to the authoritative record.
 
 ### 9a. Repository Evidence Beats Unnecessary Questions
 
@@ -184,8 +188,8 @@ issue.
 
 Why it matters: AI agents often start from docs. Stale docs become future bugs.
 
-Operational form: every code handoff must include a documentation consistency
-check, even when no docs changed.
+Operational form: every code packet report must include a documentation
+consistency check, even when no docs changed.
 
 ### 12. Handoff Is Context, Not Authority
 
@@ -194,8 +198,9 @@ active docs, or current SPEC.
 
 Why it matters: handoffs can freeze a moment-in-time view that becomes stale.
 
-Operational form: use handoff to resume, then verify against source-of-truth
-order before implementing.
+Operational form: read a handoff only when state v2 declares it through optional
+`current_handoff` and continuity is needed. Verify its pointers against the
+source-of-truth order before implementing. It is never operating-state authority.
 
 ### 13. Archive Preserves Memory, Not Active Work
 
@@ -324,7 +329,7 @@ name the exact skill, the workflow is brittle.
 Operational form: infer matching intents from the user's wording and current
 repository state. If multiple intents match, first decide whether they can be
 safely composed inside one approved packet. State the interpreted intent, SDAD
-scale/intensity, autonomy level, and expected evidence. If the combination
+scale, `execution_scope`, applicable owner gates, and expected evidence. If the combination
 changes scope, risk, claim level, owner gate, or durable-doc requirements, ask
 one blocking clarification question with a recommended default. Do not use
 intent routing to bypass owner gates.

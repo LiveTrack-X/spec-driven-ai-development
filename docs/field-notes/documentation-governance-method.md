@@ -57,17 +57,21 @@ This pattern explicitly ranks evidence:
 2. active runtime docs,
 3. canonical integrated SPEC,
 4. active or planned SPEC files,
-5. current handoff/save-state files,
-6. product notes and external references,
-7. historical or archived records,
-8. chat memory or AI confidence.
+5. current execution declaration and active ledgers,
+6. recorded owner decisions and authorizations for their declared scope,
+7. product notes and external references,
+8. historical or archived records, including state-v1 save-state files,
+9. optional handoff continuity hints,
+10. chat memory or AI confidence.
 
 Reusable rule: SPECs can define intent, but implementation status must come from
 code, tests, migrations, and repeatable commands.
 Read order is routing, not authority. Owner decisions control scope, risk
 tolerance, and acceptance; durable owner decisions belong in active docs, SPEC,
-ADR, or claim registry. A current handoff may carry the decision for continuity
-until it is promoted. Owner acceptance does not upgrade weak evidence.
+ADR, claim registry, or the authoritative authorization record. A current
+handoff may point to those authorities and record last-observed status, but it
+cannot carry or replace the decision. Owner acceptance does not upgrade weak
+evidence.
 
 If a SPEC spans past-to-present history, current active sections override older
 sections. Older sections remain useful rationale but should not drive new
@@ -92,10 +96,11 @@ implementation rationale a bounded implementation-notes surface.
 
 Use minimum documentation update sets. A code change that touches security,
 configuration, retrieval, worker lifecycle, prompts, roadmap status, or open gap
-status should imply a specific set of docs to check or update before handoff.
+status should imply a specific set of docs to check or update before reporting.
 
-Reusable rule: every implementation handoff must say either which docs changed
-or which docs were checked and why no content change was needed.
+Reusable rule: every implementation packet report must say either which docs
+changed or which docs were checked and why no content change was needed. Create
+a handoff only when another session needs continuity.
 
 ### 6. Separate Core Completion From Production Readiness
 

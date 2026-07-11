@@ -23,6 +23,10 @@ Repository structure is part of the SDAD control layer. It should answer:
 - what non-negotiable behavior must be enforced by tools, not reminders,
 - what project memory is reviewed, versioned, and safe to reuse.
 
+Keep the user controls separate: scale selects the persistent control surface,
+`execution_scope` selects `unit` or `packet`, and owner gates protect specific
+actions. A handoff owns none of those controls.
+
 Do not turn this into maximum bureaucracy. The goal is smaller startup context,
 stronger guarantees, and easier owner review.
 
@@ -35,7 +39,8 @@ stronger guarantees, and easier owner review.
 | On-demand procedure | Repeatable steps called only when needed | skills, checklists, review playbooks, release playbooks | Non-negotiable safety guarantees |
 | Isolated exploration | Research that should not flood the main working context | bounded subagent, separate review pass, candidate branch, workflow run | Owner acceptance or final completion |
 | Enforced guarantee | Behavior that must happen or must be blocked | CI, tests, validators, hooks, permissions, deny rules, protected release gates | Style guidance or nuanced owner tradeoffs |
-| Reviewed memory | Durable lessons the next session may trust | implementation notes, ADRs, operating rules, handoffs, trace links | Hidden chat memory, unreviewed auto-memory, secrets |
+| Reviewed memory | Durable lessons the next session may trust | implementation notes, ADRs, operating rules, trace links | Hidden chat memory, unreviewed auto-memory, secrets |
+| Continuity checkpoint | Optional recovery pointers and last-observed results | state-declared current handoff | Current packet state, duplicated decisions, hidden authority |
 
 Each surface should stay in its lane. A Markdown rule can guide an AI, but it
 should not be the only protection for secrets, destructive commands, production
@@ -110,8 +115,10 @@ project/
   scripts/
     validators or release checks
   review-findings.md
-  docs/sdad/handoffs/YYYY-MM-DD-topic.md  # optional, state-declared
 ```
+
+Create `docs/sdad/handoffs/YYYY-MM-DD-topic.md` only when state v2 declares it
+through optional `current_handoff` for a real continuity need.
 
 Add routed rules, skills, hooks, CI jobs, or agent workflows only when repeated
 pain proves the need. For One-shot or Mini SDAD, keep the same principle but
@@ -122,8 +129,9 @@ summary.
 
 - Keep always-loaded instructions short enough to read at every session start.
 - Move long explanations to on-demand docs or field notes.
-- Move current work state to TODO, review findings, SPEC, and save-state, not
-  to tool-specific global instructions.
+- Move current execution state to `sdad-state.yaml`, unresolved work to TODO or
+  findings, requirements to SPEC, and implementation choices to implementation
+  notes—not to tool-specific global instructions or handoff.
 - Move raw logs and large traces to archive/evidence paths with IDs.
 - Promote repeated safety checks to validators or CI instead of more prose.
 - Promote repeated owner tradeoffs to ADRs only when they are hard to reverse.
@@ -155,7 +163,7 @@ installed tools, permissions, hooks, auto mode, source-of-truth routing,
 enforced guarantees, or default access to local/private data.
 
 Do not let a cleanup routine silently remove rare but critical tools, disable a
-safety hook, enable broader autonomy, or pre-approve commands just because they
+safety hook, broaden `execution_scope`, remove an owner gate, or pre-approve commands just because they
 are usually read-only. Treat those as risk-gated control-surface changes.
 
 ## Evidence Boundary

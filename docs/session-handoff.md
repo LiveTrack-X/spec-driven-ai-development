@@ -26,6 +26,7 @@ Handoff-only decisions are continuity hints. Put each durable fact in one home:
 | Hard-to-reverse architecture decision | ADR |
 | Unresolved work | TODO or review finding |
 | Current execution declaration | `sdad-state.yaml` |
+| Protected-action authorization | authoritative owner-decision record |
 | Cross-session recovery links/results | current handoff |
 
 Use an `## 3. Authority Pointers` section rather than copying SPEC text, ADR
@@ -46,8 +47,9 @@ authority pointers needed for the next decision.
 
 1. Write the handoff under `docs/sdad/handoffs/YYYY-MM-DD-topic.md`.
 2. In its first exact `## 1. Session Identity` section, include exactly one
-   canonical marker: `- Active packet: [packet:<active_packet.id>]`.
-   The wire-format shape is `- Active packet: [packet:<id>]`.
+   canonical example marker: `- Active packet: [packet:WP-EXAMPLE]`. When
+   writing the handoff, replace `WP-EXAMPLE` with the exact
+   `sdad-state.yaml#active_packet.id` value.
 3. Set optional `current_handoff` in `sdad-state.yaml` to that in-root path.
 4. Keep the exact INDEX source line:
    `- Current handoff: use ../sdad-state.yaml#current_handoff when declared.`
@@ -96,13 +98,8 @@ Do not add the handoff path to `routed_docs` merely because it exists.
 
 - Constraints / do-not-touch areas:
 - Unsatisfied owner gates:
-- Active conditional authorization, if any:
-  - Decision:
-  - Authorized action:
-  - Packet:
-  - Conditions:
-  - Expires when:
-  - Evidence required before action:
+- Authoritative authorization record, if any:
+- Last-observed authorization status:
 - Blockers or residual risk:
 
 ## 6. Resume Instructions
@@ -113,9 +110,11 @@ pointers required for the next decision. Repository truth overrides this
 checkpoint.
 ```
 
-An authorization may be reused only while its packet, action, conditions,
-expiry, evidence prerequisite, and recorded source remain unchanged. Re-approval
-is required after expiry, a failed condition, or relevant source change.
+The handoff's last-observed status is not reusable authority. Follow its pointer
+to the single authoritative authorization record and verify that the packet,
+action, conditions, expiry, evidence prerequisite, and recorded source remain
+unchanged. Re-approval is required after expiry, a failed condition, or relevant
+source change.
 
 ## Bounded Resume Reads
 
