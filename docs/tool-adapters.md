@@ -110,6 +110,9 @@ always-loaded context.
 
 Provider references:
 
+See [Research Foundations](research-foundations.md) for the primary-source
+evidence behind SDAD's cross-provider adapter and control boundaries.
+
 - Claude Code project memory: <https://code.claude.com/docs/en/memory>
 - Cursor project rules: <https://cursor.com/docs/rules>
 - GitHub Copilot repository instructions:
