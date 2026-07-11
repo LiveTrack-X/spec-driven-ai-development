@@ -525,6 +525,124 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         )
         require_concept_groups(progressive, (("install", "upgrade"),))
 
+    def test_task11_public_front_door_separates_the_three_user_controls(self) -> None:
+        for path in (
+            "README.md",
+            "docs/getting-started.md",
+            "docs/user-guide.md",
+            "docs/owners-guide.md",
+        ):
+            with self.subTest(path=path):
+                content = read(path)
+                require_concept_groups(
+                    content,
+                    (
+                        ("scale", "unit", "packet"),
+                        ("owner gate",),
+                    ),
+                )
+                require_ordered_concepts(
+                    content,
+                    (
+                        ("scale",),
+                        ("persistent control", "control documents", "control surface"),
+                        ("execution_scope", "execution scope"),
+                    ),
+                )
+
+    def test_task11_exposes_one_loop_with_only_conditional_branches(self) -> None:
+        loop = read("docs/ai-work-loop.md")
+        require_ordered_concepts(
+            loop,
+            (("plan",), ("route",), ("implement",), ("verify",), ("report",)),
+        )
+        require_concept_groups(loop, (("owner gate", "handoff", "triggered"),))
+        for retired_loop in ("Fast Loop", "Normal Loop", "Recover Lite", "Recover Standard"):
+            with self.subTest(retired_loop=retired_loop):
+                self.assertNotIn(retired_loop, loop)
+
+    def test_task11_canonical_prompt_is_infer_first_and_one_time(self) -> None:
+        no_clone = read("docs/no-clone-quick-install.md")
+        prompt = fenced_prompt(no_clone, "## Option 1: Give This To Your AI Agent")
+        require_ordered_concepts(
+            prompt,
+            (
+                ("inspect",),
+                ("infer", "derive"),
+                ("at most one",),
+                ("blocking question", "material question"),
+            ),
+        )
+        require_concept_groups(
+            prompt,
+            (
+                ("every session",),
+                ("execution_scope", "unit", "packet"),
+                ("validation_for", "active_packet.id"),
+                ("current_handoff", "optional", "packet-bound"),
+                ("read-only migration preview", "before writes"),
+                ("adapter", "sdad-state.yaml", "docs/index.md"),
+            ),
+        )
+        self.assertRegex(prompt.lower(), r"\b(one-time|once)\b")
+
+    def test_task11_routes_docs_selectively_and_keeps_legacy_at_the_end(self) -> None:
+        guide = read("docs/user-guide.md")
+        require_concept_groups(
+            guide,
+            (("routed_docs", "eligible", "select", "not", "all"),),
+        )
+        migration = guide.lower().find("migrating from sdad 3.1")
+        self.assertGreaterEqual(migration, 0)
+        for legacy_term in ("level 0", "operating intensity", "q5"):
+            position = guide.lower().find(legacy_term)
+            if position >= 0:
+                self.assertGreater(position, migration, legacy_term)
+
+    def test_task11_continuity_uses_one_packet_bound_handoff_pointer(self) -> None:
+        handoff = read("docs/session-handoff.md")
+        prompt = read("prompts/handoff-prompt.md")
+        for name, content in (("guide", handoff), ("prompt", prompt)):
+            with self.subTest(name=name):
+                require_concept_groups(
+                    content,
+                    (
+                        ("current_handoff", "optional", "packet"),
+                        ("Active packet: [packet:<id>]", "Authority Pointers"),
+                    ),
+                )
+        self.assertNotIn("## Decisions Made", handoff)
+        self.assertNotIn("## Decisions Made", prompt)
+
+    def test_task11_documents_authority_and_evidence_claim_boundaries(self) -> None:
+        limitations = read("docs/known-limitations.md")
+        require_concept_groups(
+            limitations,
+            (
+                ("markdown", "technically block", "tools"),
+                ("tool-native", "session", "checkpoint", "diagnostics", "not sdad"),
+                ("doctor green", "structural consistency"),
+                ("task benchmark", "specific task"),
+                ("controlled comparison", "improvement"),
+            ),
+        )
+
+    def test_task11_localized_guides_preserve_protocol_field_names(self) -> None:
+        for path in (
+            "docs/user-guide.ko.md",
+            "docs/user-guide.ja.md",
+            "docs/user-guide.zh.md",
+        ):
+            with self.subTest(path=path):
+                require_concept_groups(
+                    read(path),
+                    (
+                        ("execution_scope", "unit", "packet"),
+                        ("routed_docs", "current_handoff"),
+                        ("evidence-ready", "owner-accepted"),
+                    ),
+                )
+
     def test_always_loaded_control_plane_stays_small(self) -> None:
         agents = read("templates/project-control-files/AGENTS.md")
         index = read("templates/project-control-files/docs/INDEX.md")
