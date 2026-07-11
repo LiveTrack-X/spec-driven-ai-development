@@ -74,8 +74,8 @@ review fix is recorded in a separate follow-up commit containing this update.
 - The validator now rejects the exact full-read instruction through the
   independent forbidden-wording check and reports one actionable violation.
 - GREEN: agent-experience 44/44 and render 3/3 passed.
-- Full suite, run once after the behavior fix: 353 tests passed with 3 existing
-  environment-gated skips and no failures or errors.
+- Full suite, run once after the behavior fix: 353 tests ran; 350 passed with
+  3 existing environment-gated skips and no failures or errors.
 - Repository validation, render parity, changed-Python compilation, and
   `git diff --check` passed. The kernel and fixed-startup budgets remain the
   exact values recorded above; no canonical or rendered surface changed.
