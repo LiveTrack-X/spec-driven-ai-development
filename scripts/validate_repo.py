@@ -578,16 +578,32 @@ def validate_doctor_gemini_documentation_contract() -> None:
                 fail(f"{path} must contain the exact Gemini install command once: {command}")
 
 
-def _assigned_names(target: ast.expr) -> set[str]:
-    if isinstance(target, ast.Name):
-        return {target.id}
-    if isinstance(target, (ast.List, ast.Tuple)):
-        return {
-            name
-            for element in target.elts
-            for name in _assigned_names(element)
-        }
-    return set()
+def _string_binding_sites(
+    node: ast.AST,
+    protected_names: set[str],
+) -> list[tuple[str, int]]:
+    bindings: list[tuple[str, int]] = []
+    if isinstance(node, (ast.AsyncFunctionDef, ast.ClassDef, ast.FunctionDef)):
+        bindings.append((node.name, id(node)))
+    elif isinstance(node, ast.Import):
+        for alias in node.names:
+            name = alias.asname or alias.name.split(".", 1)[0]
+            bindings.append((name, id(alias)))
+    elif isinstance(node, ast.ImportFrom):
+        for alias in node.names:
+            if alias.name == "*":
+                bindings.extend((name, id(alias)) for name in protected_names)
+            else:
+                bindings.append((alias.asname or alias.name, id(alias)))
+    elif isinstance(node, ast.ExceptHandler) and node.name is not None:
+        bindings.append((node.name, id(node)))
+    elif isinstance(node, ast.arg):
+        bindings.append((node.arg, id(node)))
+    elif isinstance(node, (ast.MatchAs, ast.MatchStar)) and node.name is not None:
+        bindings.append((node.name, id(node)))
+    elif isinstance(node, ast.MatchMapping) and node.rest is not None:
+        bindings.append((node.rest, id(node)))
+    return [binding for binding in bindings if binding[0] in protected_names]
 
 
 def _validate_doctor_source_versions(doctor_source: str) -> None:
@@ -601,47 +617,47 @@ def _validate_doctor_source_versions(doctor_source: str) -> None:
     except SyntaxError:
         fail("SDAD doctor CLI must contain valid Python source")
 
-    module_level_nodes = {id(node) for node in module.body}
-    assignments: dict[str, list[tuple[ast.stmt, ast.expr | None, bool]]] = {
-        name: [] for name in (*expected, "SCHEMA_VERSION")
-    }
-    for node in ast.walk(module):
-        if isinstance(node, ast.Assign):
-            names = {
-                name
-                for target in node.targets
-                for name in _assigned_names(target)
-            }
-            simple = len(node.targets) == 1 and isinstance(node.targets[0], ast.Name)
-        elif isinstance(node, ast.AnnAssign):
-            names = _assigned_names(node.target)
-            simple = isinstance(node.target, ast.Name)
-        elif isinstance(node, ast.AugAssign):
-            names = _assigned_names(node.target)
-            simple = False
-        else:
-            continue
-        for name in names & assignments.keys():
-            assignments[name].append((node, node.value, simple))
-
-    if assignments["SCHEMA_VERSION"]:
-        fail("SDAD doctor CLI must not assign generic SCHEMA_VERSION")
-
-    for name, expected_value in expected.items():
-        declarations = assignments[name]
-        if len(declarations) != 1:
-            fail(f"SDAD doctor CLI must assign {name} exactly once")
-        node, value, simple = declarations[0]
+    protected_names = {*expected, "SCHEMA_VERSION"}
+    canonical_targets: dict[str, list[int]] = {name: [] for name in expected}
+    for node in module.body:
         if (
-            id(node) not in module_level_nodes
-            or not simple
-            or not isinstance(value, ast.Constant)
-            or type(value.value) is not type(expected_value)
-            or value.value != expected_value
+            not isinstance(node, ast.Assign)
+            or len(node.targets) != 1
+            or not isinstance(node.targets[0], ast.Name)
         ):
+            continue
+        name = node.targets[0].id
+        expected_value = expected.get(name)
+        if (
+            name in expected
+            and isinstance(node.value, ast.Constant)
+            and type(node.value.value) is type(expected_value)
+            and node.value.value == expected_value
+        ):
+            canonical_targets[name].append(id(node.targets[0]))
+
+    binding_sites: dict[str, set[int]] = {name: set() for name in protected_names}
+    for node in ast.walk(module):
+        if (
+            isinstance(node, ast.Name)
+            and isinstance(node.ctx, ast.Store)
+            and node.id in protected_names
+        ):
+            binding_sites[node.id].add(id(node))
+        for name, site in _string_binding_sites(node, protected_names):
+            binding_sites[name].add(site)
+
+    if binding_sites["SCHEMA_VERSION"]:
+        fail("SDAD doctor CLI must not bind generic SCHEMA_VERSION")
+
+    for name in expected:
+        targets = canonical_targets[name]
+        if len(targets) != 1:
             fail(
-                f"SDAD doctor CLI must assign {name} its exact literal value"
+                f"SDAD doctor CLI must declare {name} once as its exact literal"
             )
+        if binding_sites[name] != {targets[0]}:
+            fail(f"SDAD doctor CLI must not rebind {name}")
 
 
 def validate_doctor_checkout_contract() -> None:

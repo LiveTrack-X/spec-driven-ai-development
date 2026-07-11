@@ -593,6 +593,26 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
         self.assertNotEqual(mutated, source)
         self.assert_source_rejected(mutated)
 
+    def test_rejects_named_expression_version_reassignment(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        mutated = source.replace(
+            'DOCTOR_VERSION = "3.2.0"',
+            'DOCTOR_VERSION = "3.2.0"\n(DOCTOR_VERSION := "3.2.1")',
+            1,
+        )
+        self.assertNotEqual(mutated, source)
+        self.assert_source_rejected(mutated)
+
+    def test_rejects_starred_version_reassignment(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        mutated = source.replace(
+            'DOCTOR_VERSION = "3.2.0"',
+            'DOCTOR_VERSION = "3.2.0"\n*DOCTOR_VERSION, = ["3.2.1"]',
+            1,
+        )
+        self.assertNotEqual(mutated, source)
+        self.assert_source_rejected(mutated)
+
     def test_rejects_annotated_generic_schema_version(self) -> None:
         source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
         mutated = source.replace(
@@ -602,6 +622,42 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
         )
         self.assertNotEqual(mutated, source)
         self.assert_source_rejected(mutated)
+
+    def test_rejects_named_expression_generic_schema_version(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        mutated = source.replace(
+            "REPORT_SCHEMA_VERSION = 2",
+            "REPORT_SCHEMA_VERSION = 2\n(SCHEMA_VERSION := 1)",
+            1,
+        )
+        self.assertNotEqual(mutated, source)
+        self.assert_source_rejected(mutated)
+
+    def test_rejects_other_common_python_bindings(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        cases = {
+            "for-target": "for DOCTOR_VERSION in ():\n    pass",
+            "with-target": "with context() as DOCTOR_VERSION:\n    pass",
+            "comprehension-target": "[None for DOCTOR_VERSION in ()]",
+            "function-name": "def DOCTOR_VERSION():\n    pass",
+            "class-name": "class DOCTOR_VERSION:\n    pass",
+            "import-alias": "import package as DOCTOR_VERSION",
+            "from-import-alias": "from package import value as DOCTOR_VERSION",
+            "wildcard-import": "from package import *",
+            "except-name": (
+                "try:\n    pass\n"
+                "except Exception as DOCTOR_VERSION:\n    pass"
+            ),
+            "pattern-capture": (
+                "match {}:\n"
+                '    case {"key": DOCTOR_VERSION}:\n'
+                "        pass"
+            ),
+            "argument": "def helper(DOCTOR_VERSION):\n    pass",
+        }
+        for name, binding in cases.items():
+            with self.subTest(name=name):
+                self.assert_source_rejected(source + "\n" + binding + "\n")
 
 
 class StableReleaseContractTests(unittest.TestCase):
