@@ -762,6 +762,27 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
     def test_current_documentation_satisfies_the_contract(self) -> None:
         self.validate(ROOT)
 
+    def test_rejects_reversed_state_to_report_schema_relationships(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_current_contract_fixture(root)
+            path = root / "docs/user-guide.md"
+            content = path.read_text(encoding="utf-8")
+            old = (
+                "Existing v1 JSON calls remain report schema 1; guarded/state-v2 calls use report\n"
+                "schema 2."
+            )
+            new = (
+                "Existing v1 JSON calls remain report schema 2; guarded/state-v2 calls use report\n"
+                "schema 1."
+            )
+            self.assertIn(old, content)
+            path.write_text(content.replace(old, new, 1), encoding="utf-8")
+
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    self.validate(root)
+
     def test_rejects_a_full_exit_table_in_the_compact_readme_section(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -974,11 +995,73 @@ class PublicV32DocumentationContractTests(unittest.TestCase):
             "Execution scope determines which protected actions still require the owner.",
         )
 
+    def test_rejects_keyword_preserving_scope_and_gate_reversal(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/getting-started.md",
+            "Execution\nscope determines how far the AI may work now. Owner gates determine which\n"
+            "protected actions still require the owner.",
+            "Execution\nscope determines which protected actions still require the owner. Owner gates\n"
+            "determine how far the AI may work now.",
+        )
+
     def test_rejects_routed_docs_as_a_read_all_instruction(self) -> None:
         self.assert_mutation_rejected(
             "docs/user-guide.md",
             "`routed_docs` is an\neligible selection set, not an instruction to read every listed file.",
             "`routed_docs` requires reading every listed file in full.",
+        )
+
+    def test_rejects_keyword_preserving_routed_docs_reversal(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/user-guide.md",
+            "`routed_docs` is an\neligible selection set, not an instruction to read every listed file.",
+            "`routed_docs` is an eligible selection set that requires reading every listed\n"
+            "file as a read-all route; it is not optional.",
+        )
+
+    def test_rejects_removed_no_clone_overwrite_guard(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/no-clone-quick-install.md",
+            "$targetItem = Get-Item -Force -LiteralPath $targetPath -ErrorAction SilentlyContinue\n"
+            "if ($targetItem) {\n"
+            "  if (($targetItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {\n"
+            "    throw \"Refusing to install through linked path: $targetPath\"\n"
+            "  }\n"
+            "  throw \"Target already exists: $targetPath\"\n"
+            "}",
+            "$targetItem = $null\n# Existing targets may be replaced.",
+        )
+
+    def test_rejects_removed_no_clone_staging_or_atomic_publication(self) -> None:
+        cases = (
+            (
+                "$tempPath = Join-Path $targetDir (\".sdad-download.\" + "
+                "[guid]::NewGuid().ToString(\"N\") + \".tmp\")",
+                "$tempPath = $targetPath",
+            ),
+            (
+                "[IO.File]::Move($tempPath, $targetPath)",
+                "Copy-Item -LiteralPath $tempPath -Destination $targetPath -Force",
+            ),
+        )
+        for old, new in cases:
+            with self.subTest(new=new):
+                self.assert_mutation_rejected(
+                    "docs/no-clone-quick-install.md",
+                    old,
+                    new,
+                )
+
+    def test_rejects_removed_no_clone_exact_target_postcondition(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/no-clone-quick-install.md",
+            "if [[ ! -f \"$target_path\" ]]; then\n"
+            "  nested_temp=\"$target_path/$(basename \"$temp_path\")\"\n"
+            "  if [[ -f \"$nested_temp\" ]]; then rm -- \"$nested_temp\"; fi\n"
+            "  echo \"Publication did not create the exact target file: $target_path\" >&2\n"
+            "  exit 1\n"
+            "fi",
+            "# Exact-target postcondition removed.",
         )
 
     def test_rejects_removed_handoff_pointer_marker_lifecycle(self) -> None:

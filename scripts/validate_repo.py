@@ -261,28 +261,14 @@ GEMINI_POWERSHELL_INSTALL = (
 GEMINI_BASH_INSTALL = (
     "./scripts/install-agent-adapter.sh gemini-cli /path/to/project"
 )
-DOCTOR_EXIT_ROW_CONTRACTS = {
-    "0": (
-        "Diagnosis completed and the selected policy passes: no errors, and no "
-        "warnings when `--strict` is set."
-    ),
-    "1": (
-        "Diagnosis completed, but findings fail policy: errors, or warnings with "
-        "`--strict`."
-    ),
-    "2": (
-        "Diagnosis did not complete because of invalid invocation, an unusable "
-        "root, state I/O, or an internal failure."
-    ),
-}
-DOCTOR_GEMINI_DOC_CONTRACTS = {
-    "README.md": "## Diagnose Stateful Projects",
-    "adapters/README.md": None,
-    "docs/getting-started.md": "## Diagnose With SDAD Doctor",
-    "docs/user-guide.md": "## Diagnose With SDAD Doctor",
-    "docs/tool-adapters.md": "## Tool Notes",
-    "docs/known-limitations.md": "## Doctor Diagnostic Boundary",
-}
+DOCTOR_GEMINI_DOC_CONTRACTS = (
+    "README.md",
+    "adapters/README.md",
+    "docs/getting-started.md",
+    "docs/user-guide.md",
+    "docs/tool-adapters.md",
+    "docs/known-limitations.md",
+)
 RESEARCH_MATRIX_HEADER = (
     "| Primary source | Last verified | Paraphrased principle | "
     "Adopted SDAD decision | Limitation or non-transferable detail | Control type |"
@@ -515,6 +501,157 @@ def _require_concept_groups(
             fail(f"{label} missing concepts: {', '.join(missing)}")
 
 
+def _contract_prose(content: str) -> str:
+    return " ".join(content.replace("`", "").lower().split())
+
+
+def _require_report_schema_relationship(content: str, label: str) -> None:
+    prose = _contract_prose(content)
+    v1_lane = r"\b(?:state-)?v1\b(?:(?!\bstate[- ]v2\b).){0,180}"
+    v2_lane = r"\bstate[- ]v2\b.{0,180}"
+    if re.search(v1_lane + r"\b(?:report\s+)?schema\s+1\b", prose) is None:
+        fail(f"{label} must bind v1 calls to report schema 1")
+    if re.search(v2_lane + r"\b(?:report\s+)?schema\s+2\b", prose) is None:
+        fail(f"{label} must bind state v2 calls to report schema 2")
+    if re.search(v1_lane + r"\b(?:report\s+)?schema\s+2\b", prose) or re.search(
+        v2_lane + r"\b(?:report\s+)?schema\s+1\b",
+        prose,
+    ):
+        fail(f"{label} contradicts the state/report schema relationship")
+
+
+def _require_three_control_relationship(content: str, label: str) -> None:
+    prose = _contract_prose(content)
+    if re.search(r"execution scope[^.]{0,120}\bhow far\b", prose) is None:
+        fail(f"{label} must bind execution scope to the current work boundary")
+    if re.search(
+        r"owner gates?[^.]{0,140}(?:protected actions?|require(?:s|d)? the owner)",
+        prose,
+    ) is None:
+        fail(f"{label} must bind owner gates to protected actions")
+    if re.search(r"execution scope[^.]{0,140}\bprotected actions?\b", prose):
+        fail(f"{label} must not grant protected actions through execution scope")
+
+
+def _require_routed_docs_selection_relationship(content: str, label: str) -> None:
+    prose = _contract_prose(content)
+    if re.search(r"routed_docs[^.]{0,140}eligible selection set", prose) is None:
+        fail(f"{label} must define routed_docs as an eligible selection set")
+    if re.search(
+        r"routed_docs[^.]{0,220}(?:not[^.]{0,100}(?:read every|read-all)|"
+        r"never[^.]{0,100}(?:full-read|read-all))",
+        prose,
+    ) is None:
+        fail(f"{label} must state that routed_docs is not a read-all instruction")
+    if re.search(
+        r"routed_docs[^.]{0,220}(?:requires? reading every|"
+        r"read-all (?:route|selection))",
+        prose,
+    ):
+        fail(f"{label} contradicts the routed_docs selection contract")
+
+
+def _single_fenced_body(section: str, language: str, label: str) -> str:
+    bodies = re.findall(
+        rf"(?ms)^```{re.escape(language)}\s*\n(.*?)^```\s*$",
+        section,
+    )
+    if len(bodies) != 1:
+        fail(f"{label} must contain exactly one {language} snippet")
+    return bodies[0]
+
+
+def _validate_no_clone_install_contract(no_clone: str) -> None:
+    latest = _markdown_section(no_clone, "## Latest Versus Pinned Sources", 2)
+    _require_concept_groups(
+        latest,
+        "No-clone pinned-source guidance",
+        [
+            ("pinned commit", "path", "sha-256", "do not mix"),
+            ("40-character commit sha", "/main/", "intentionally"),
+            ("install-sources.json", "revision/path/hash contract"),
+        ],
+    )
+
+    powershell_section = _markdown_section(
+        no_clone,
+        "## Option 2: One-Paste PowerShell Installer",
+        2,
+    )
+    powershell = _single_fenced_body(
+        powershell_section,
+        "powershell",
+        "No-clone PowerShell installer",
+    )
+    _require_concept_groups(
+        powershell,
+        "No-clone PowerShell safeguards",
+        [
+            ("refusing to install through linked path", "target already exists"),
+            (".sdad-download.", "$temppath", "$targetpath"),
+            ("invoke-webrequest", "-maximumredirection 0", "downloaded adapter is empty"),
+            ("get-filehash", "sha-256 mismatch"),
+            ("[io.file]::move($temppath, $targetpath)", "finally", "remove-item"),
+        ],
+    )
+    _require_ordered_concepts(
+        powershell,
+        "No-clone PowerShell publication order",
+        [
+            ("target already exists",),
+            (".sdad-download.",),
+            ("invoke-webrequest",),
+            ("sha-256 mismatch",),
+            ("[io.file]::move($temppath, $targetpath)",),
+        ],
+    )
+
+    bash_section = _markdown_section(
+        no_clone,
+        "## Option 3: One-Paste Bash Installer",
+        2,
+    )
+    bash = _single_fenced_body(bash_section, "bash", "No-clone Bash installer")
+    _require_concept_groups(
+        bash,
+        "No-clone Bash safeguards",
+        [
+            ("refusing to install through linked path", "target already exists"),
+            ("mktemp", ".sdad-download.", "trap cleanup exit"),
+            ("curl", "--fail", "downloaded adapter is empty"),
+            ("sha256sum", "shasum", "sha-256 mismatch"),
+            ("ln --", "target appeared during installation", "nothing was overwritten"),
+            ("if [[ ! -f \"$target_path\" ]]", "exact target file"),
+        ],
+    )
+    _require_ordered_concepts(
+        bash,
+        "No-clone Bash publication order",
+        [
+            ("target already exists",),
+            (".sdad-download.",),
+            ("curl",),
+            ("sha-256 mismatch",),
+            ("ln --",),
+            ("exact target file",),
+        ],
+    )
+
+    after = _markdown_section(no_clone, "## After The Installer", 2)
+    _require_concept_groups(
+        after,
+        "No-clone post-install contract",
+        [
+            ("progressive_control_plane=true", "revision", "source path", "checksum"),
+            ("smallest scale", "unit", "packet", "owner gates"),
+            ("state version 2", "packet-owned validation", "state -> index"),
+            ("plan -> route -> implement -> verify -> report", "evidence-ready"),
+            ("save-state.md", "current_handoff", "conditional"),
+            ("create-on-demand", "current claim", "proposed changes"),
+        ],
+    )
+
+
 def _section_opening(content: str, heading: str, level: int = 2) -> str:
     section = _markdown_section(content, heading, level)
     table = re.search(r"(?m)^\|", section)
@@ -578,6 +715,7 @@ def validate_public_v3_2_documentation_contract() -> None:
         fail("README copy-paste prompt must exactly match no-clone Option 1")
     if re.search(r"(?i)<(?:details|summary)\b", readme):
         fail("README copy-paste prompt must remain expanded")
+    _validate_no_clone_install_contract(no_clone)
 
     _require_concept_groups(
         canonical_prompt,
@@ -608,6 +746,10 @@ def validate_public_v3_2_documentation_contract() -> None:
             ("owner gates", "protected actions", "require the owner"),
         ],
     )
+    _require_three_control_relationship(
+        controls_opening,
+        "Getting Started three-control explanation",
+    )
     _require_ordered_concepts(
         _markdown_section(getting_started, "## Bootstrap Standard Or Full", 2),
         "Getting Started state-v2 bootstrap",
@@ -634,6 +776,10 @@ def validate_public_v3_2_documentation_contract() -> None:
             ("one-time", "install", "upgrade", "migration", "repair"),
             ("installed", "adapter", "state", "do not paste", "every session"),
         ],
+    )
+    _require_routed_docs_selection_relationship(
+        context,
+        "User Guide selective-context contract",
     )
     authorization = _markdown_section(user_guide, "## Owner Authorization", 2)
     _require_authorization_record(authorization, "User Guide owner authorization")
@@ -772,6 +918,7 @@ def validate_doctor_gemini_documentation_contract() -> None:
             ("structural consistency", "not", "product correctness", "owner acceptance"),
         ],
     )
+    _require_report_schema_relationship(readme_doctor, "README Doctor section")
     if re.search(r"(?m)^\|\s*(?:Exit|0|1|2)\s*\|", readme_doctor):
         fail("README doctor section must stay compact and omit the exit table")
     if len(readme_doctor.splitlines()) > 24:
@@ -804,6 +951,10 @@ def validate_doctor_gemini_documentation_contract() -> None:
             ("structural consistency", "not", "product correctness", "owner acceptance"),
         ],
     )
+    _require_report_schema_relationship(
+        getting_started_doctor,
+        "Getting Started Doctor section",
+    )
     if re.search(
         r"(?is)state\.missing[^.!?\n]{0,100}exit\s+`2`",
         getting_started_doctor,
@@ -833,6 +984,7 @@ def validate_doctor_gemini_documentation_contract() -> None:
             ("controlled comparison", "better"),
         ],
     )
+    _require_report_schema_relationship(user_doctor, "User Guide Doctor section")
 
     limitations_doctor = _markdown_section(
         contents["docs/known-limitations.md"],
@@ -860,6 +1012,10 @@ def validate_doctor_gemini_documentation_contract() -> None:
             ("missing state", "completed finding"),
             ("doctor version", "state schema version", "report schema version", "separate"),
         ],
+    )
+    _require_report_schema_relationship(
+        limitations_doctor,
+        "Known limitations Doctor section",
     )
 
     tool_adapters = contents["docs/tool-adapters.md"]
