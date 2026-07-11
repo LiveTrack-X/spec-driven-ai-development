@@ -762,27 +762,6 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
     def test_current_documentation_satisfies_the_contract(self) -> None:
         self.validate(ROOT)
 
-    def test_rejects_reversed_state_to_report_schema_relationships(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            self.write_current_contract_fixture(root)
-            path = root / "docs/user-guide.md"
-            content = path.read_text(encoding="utf-8")
-            old = (
-                "Existing v1 JSON calls remain report schema 1; guarded/state-v2 calls use report\n"
-                "schema 2."
-            )
-            new = (
-                "Existing v1 JSON calls remain report schema 2; guarded/state-v2 calls use report\n"
-                "schema 1."
-            )
-            self.assertIn(old, content)
-            path.write_text(content.replace(old, new, 1), encoding="utf-8")
-
-            with contextlib.redirect_stderr(io.StringIO()):
-                with self.assertRaises(SystemExit):
-                    self.validate(root)
-
     def test_rejects_a_full_exit_table_in_the_compact_readme_section(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -988,37 +967,6 @@ class PublicV32DocumentationContractTests(unittest.TestCase):
             mirror_prompt=True,
         )
 
-    def test_rejects_owner_gate_conflated_with_execution_scope(self) -> None:
-        self.assert_mutation_rejected(
-            "docs/getting-started.md",
-            "Owner gates determine which\nprotected actions still require the owner.",
-            "Execution scope determines which protected actions still require the owner.",
-        )
-
-    def test_rejects_keyword_preserving_scope_and_gate_reversal(self) -> None:
-        self.assert_mutation_rejected(
-            "docs/getting-started.md",
-            "Execution\nscope determines how far the AI may work now. Owner gates determine which\n"
-            "protected actions still require the owner.",
-            "Execution\nscope determines which protected actions still require the owner. Owner gates\n"
-            "determine how far the AI may work now.",
-        )
-
-    def test_rejects_routed_docs_as_a_read_all_instruction(self) -> None:
-        self.assert_mutation_rejected(
-            "docs/user-guide.md",
-            "`routed_docs` is an\neligible selection set, not an instruction to read every listed file.",
-            "`routed_docs` requires reading every listed file in full.",
-        )
-
-    def test_rejects_keyword_preserving_routed_docs_reversal(self) -> None:
-        self.assert_mutation_rejected(
-            "docs/user-guide.md",
-            "`routed_docs` is an\neligible selection set, not an instruction to read every listed file.",
-            "`routed_docs` is an eligible selection set that requires reading every listed\n"
-            "file as a read-all route; it is not optional.",
-        )
-
     def test_rejects_removed_no_clone_overwrite_guard(self) -> None:
         self.assert_mutation_rejected(
             "docs/no-clone-quick-install.md",
@@ -1108,6 +1056,85 @@ class PublicV32DocumentationContractTests(unittest.TestCase):
             "## Migrating From SDAD 3.1",
             "Use Level 4 Release-gated Autonomy for release.\n\n"
             "## Migrating From SDAD 3.1",
+        )
+
+
+class PublicRelationshipHelperTests(unittest.TestCase):
+    def assert_rejected(self, helper: object, content: str, label: str) -> None:
+        with contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit):
+                helper(content, label)
+
+    def test_accepts_positive_report_schema_relationship(self) -> None:
+        helper = VALIDATE_REPO._require_report_schema_relationship
+        helper(
+            "Existing v1 calls use report schema 1. State v2 calls use report schema 2.",
+            "positive schema relation",
+        )
+
+    def test_accepts_negative_report_schema_clarification(self) -> None:
+        helper = VALIDATE_REPO._require_report_schema_relationship
+        helper(
+            "V1 does not use report schema 2 and remains on report schema 1. "
+            "State v2 does not use report schema 1 and uses report schema 2.",
+            "negative schema clarification",
+        )
+
+    def test_rejects_reversed_report_schema_relationship(self) -> None:
+        helper = VALIDATE_REPO._require_report_schema_relationship
+        self.assert_rejected(
+            helper,
+            "V1 uses report schema 2 and does not use report schema 1. "
+            "State v2 uses report schema 1 and does not use report schema 2.",
+            "reversed schema relation",
+        )
+
+    def test_accepts_positive_three_control_relationship(self) -> None:
+        helper = VALIDATE_REPO._require_three_control_relationship
+        helper(
+            "Execution scope determines how far work proceeds now. Owner gates "
+            "determine which protected actions require the owner.",
+            "positive three-control relation",
+        )
+
+    def test_accepts_negative_execution_scope_clarification(self) -> None:
+        helper = VALIDATE_REPO._require_three_control_relationship
+        helper(
+            "Execution scope determines how far work proceeds and does not authorize "
+            "protected actions. Owner gates require owner authorization for protected actions.",
+            "negative scope clarification",
+        )
+
+    def test_rejects_reversed_owner_gate_relationship(self) -> None:
+        helper = VALIDATE_REPO._require_three_control_relationship
+        self.assert_rejected(
+            helper,
+            "Execution scope determines how far work proceeds and authorizes protected "
+            "actions. Owner gates do not require the owner for protected actions.",
+            "reversed owner-gate relation",
+        )
+
+    def test_accepts_positive_routed_docs_relationship(self) -> None:
+        helper = VALIDATE_REPO._require_routed_docs_selection_relationship
+        helper(
+            "routed_docs is an eligible selection set, not an instruction to read every file.",
+            "positive routed-docs relation",
+        )
+
+    def test_accepts_negative_routed_docs_clarification(self) -> None:
+        helper = VALIDATE_REPO._require_routed_docs_selection_relationship
+        helper(
+            "routed_docs is an eligible selection set and is not a read-all route.",
+            "negative routed-docs clarification",
+        )
+
+    def test_rejects_reversed_routed_docs_relationship(self) -> None:
+        helper = VALIDATE_REPO._require_routed_docs_selection_relationship
+        self.assert_rejected(
+            helper,
+            "routed_docs is an eligible selection set that requires reading every file "
+            "as a read-all route.",
+            "reversed routed-docs relation",
         )
 
 

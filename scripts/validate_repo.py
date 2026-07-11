@@ -505,32 +505,79 @@ def _contract_prose(content: str) -> str:
     return " ".join(content.replace("`", "").lower().split())
 
 
+def _has_affirmative_schema_relation(segment: str, schema: int) -> bool:
+    for match in re.finditer(rf"\b(?:report\s+)?schema\s+{schema}\b", segment):
+        prefix = segment[max(0, match.start() - 80) : match.start()]
+        local_prefix = re.split(r"(?:[.;]|\b(?:and|but)\b)", prefix)[-1]
+        if re.search(
+            r"\b(?:do|does|is|are|was|were|can|must|will|should)\s+not\b"
+            r"[^.;]{0,60}$|\bnever\b[^.;]{0,60}$|\bdoesn't\b[^.;]{0,60}$",
+            local_prefix,
+        ) is None:
+            return True
+    return False
+
+
 def _require_report_schema_relationship(content: str, label: str) -> None:
     prose = _contract_prose(content)
-    v1_lane = r"\b(?:state-)?v1\b(?:(?!\bstate[- ]v2\b).){0,180}"
-    v2_lane = r"\bstate[- ]v2\b.{0,180}"
-    if re.search(v1_lane + r"\b(?:report\s+)?schema\s+1\b", prose) is None:
+    v1_match = re.search(r"\b(?:state-)?v1\b", prose)
+    v2_match = (
+        re.search(r"\bstate[- ]v2\b", prose[v1_match.end() :])
+        if v1_match is not None
+        else None
+    )
+    if v1_match is None or v2_match is None:
+        fail(f"{label} must declare both the v1 and state v2 report lanes")
+    v2_start = v1_match.end() + v2_match.start()
+    v1_lane = prose[v1_match.start() : v2_start]
+    v2_lane = prose[v2_start:]
+    if not _has_affirmative_schema_relation(v1_lane, 1):
         fail(f"{label} must bind v1 calls to report schema 1")
-    if re.search(v2_lane + r"\b(?:report\s+)?schema\s+2\b", prose) is None:
+    if not _has_affirmative_schema_relation(v2_lane, 2):
         fail(f"{label} must bind state v2 calls to report schema 2")
-    if re.search(v1_lane + r"\b(?:report\s+)?schema\s+2\b", prose) or re.search(
-        v2_lane + r"\b(?:report\s+)?schema\s+1\b",
-        prose,
+    if _has_affirmative_schema_relation(v1_lane, 2) or _has_affirmative_schema_relation(
+        v2_lane,
+        1,
     ):
         fail(f"{label} contradicts the state/report schema relationship")
 
 
 def _require_three_control_relationship(content: str, label: str) -> None:
     prose = _contract_prose(content)
-    if re.search(r"execution scope[^.]{0,120}\bhow far\b", prose) is None:
+    execution = re.search(r"\bexecution scope\b", prose)
+    owner = (
+        re.search(r"\bowner gates?\b", prose[execution.end() :])
+        if execution is not None
+        else None
+    )
+    if execution is None or owner is None:
+        fail(f"{label} must declare execution scope before owner gates")
+    owner_start = execution.end() + owner.start()
+    execution_lane = prose[execution.start() : owner_start]
+    owner_lane = prose[owner_start:]
+    if re.search(r"\bhow far\b", execution_lane) is None:
         fail(f"{label} must bind execution scope to the current work boundary")
     if re.search(
-        r"owner gates?[^.]{0,140}(?:protected actions?|require(?:s|d)? the owner)",
-        prose,
+        r"\b(?:do|does|is|are)\s+not\b[^.]{0,60}"
+        r"(?:require|owner (?:authorization|permission|decision))",
+        owner_lane,
+    ):
+        fail(f"{label} must not negate the owner-gate requirement")
+    if "protected action" not in owner_lane or re.search(
+        r"(?:require(?:s|d)?\s+(?:the\s+)?owner|"
+        r"owner (?:authorization|permission|decision)|"
+        r"permission for (?:a\s+)?protected action)",
+        owner_lane,
     ) is None:
         fail(f"{label} must bind owner gates to protected actions")
-    if re.search(r"execution scope[^.]{0,140}\bprotected actions?\b", prose):
-        fail(f"{label} must not grant protected actions through execution scope")
+    for match in re.finditer(
+        r"(?:authoriz\w*|permit\w*|grant\w*|allow\w*|determine(?:s|d)? which)"
+        r"[^.]{0,60}\bprotected actions?\b",
+        execution_lane,
+    ):
+        prefix = execution_lane[max(0, match.start() - 24) : match.start()]
+        if re.search(r"\b(?:do|does|is|are|can|must|will)\s+not\s*$", prefix) is None:
+            fail(f"{label} must not grant protected actions through execution scope")
 
 
 def _require_routed_docs_selection_relationship(content: str, label: str) -> None:
@@ -544,8 +591,8 @@ def _require_routed_docs_selection_relationship(content: str, label: str) -> Non
     ) is None:
         fail(f"{label} must state that routed_docs is not a read-all instruction")
     if re.search(
-        r"routed_docs[^.]{0,220}(?:requires? reading every|"
-        r"read-all (?:route|selection))",
+        r"routed_docs[^.]{0,220}(?:requires? reading every|must read every|"
+        r"\bis\s+(?:an?\s+)?read-all (?:route|selection))",
         prose,
     ):
         fail(f"{label} contradicts the routed_docs selection contract")
