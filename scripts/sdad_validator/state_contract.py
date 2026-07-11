@@ -21,11 +21,21 @@ V1_STATE_KEYS = (
     "validation",
     "routed_docs",
 )
-V2_STATE_KEYS = (*V1_STATE_KEYS, "validation_for", "current_handoff")
+V2_STATE_KEYS = (
+    "scale",
+    "execution_scope",
+    "active_spec",
+    "active_packet",
+    "owner_gates",
+    "validation",
+    "routed_docs",
+    "validation_for",
+    "current_handoff",
+)
 
 REQUIRED_TOP_LEVEL_KEYS_BY_VERSION = {
     1: frozenset(V1_STATE_KEYS),
-    2: frozenset((*V1_STATE_KEYS, "validation_for")),
+    2: frozenset(V2_STATE_KEYS[:-1]),
 }
 KNOWN_TOP_LEVEL_KEYS_BY_VERSION = {
     1: frozenset(("version", "updated", *V1_STATE_KEYS)),
@@ -39,8 +49,7 @@ STATE_ENUMS_BY_VERSION = {
     },
     2: {
         "scale": frozenset({"standard", "full"}),
-        "intensity": frozenset({"low", "medium", "high"}),
-        "autonomy": frozenset({"0", "1", "2", "3", "4"}),
+        "execution_scope": frozenset({"unit", "packet"}),
     },
 }
 

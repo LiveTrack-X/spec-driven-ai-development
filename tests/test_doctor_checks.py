@@ -210,12 +210,20 @@ def valid_state(
 
 def valid_v2_state(
     *,
+    execution_scope: str = "packet",
     validation_for: str | None = None,
     current_handoff: str | None = None,
     **kwargs: object,
 ) -> str:
     packet_id = str(kwargs.get("packet_id", "WP-001"))
-    state = valid_state(**kwargs).replace("version: 1", "version: 2", 1)
+    legacy_state = valid_state(**kwargs).replace("version: 1", "version: 2", 1)
+    state_lines: list[str] = []
+    for line in legacy_state.splitlines():
+        if line.startswith("intensity:"):
+            state_lines.append(f"execution_scope: {execution_scope}")
+        elif not line.startswith("autonomy:"):
+            state_lines.append(line)
+    state = "\n".join(state_lines) + "\n"
     owner = packet_id if validation_for is None else validation_for
     insertion = f"validation_for: {owner}\n"
     if current_handoff is not None:
@@ -1884,6 +1892,29 @@ class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):
         lower_autonomy = diagnose(valid_state(autonomy="3", status="blocked"))
         self.assertNotFinding(lower_autonomy, "gate.required")
 
+        legacy = diagnose(valid_state(autonomy="4", status="in_progress"))
+        legacy_finding = next(
+            finding for finding in legacy.findings if finding.id == "gate.required"
+        )
+        self.assertEqual(
+            (
+                legacy_finding.message,
+                legacy_finding.evidence,
+                legacy_finding.remediation,
+            ),
+            (
+                "Autonomy level 4 requires a current owner gate in this status.",
+                "autonomy 4 with status in_progress and no owner_gates",
+                "Name the owner decision that can stop this active packet.",
+            ),
+        )
+
+    def test_v2_stale_autonomy_never_activates_the_v1_gate_rule(self) -> None:
+        report = diagnose(valid_v2_state() + "autonomy: 4\n")
+
+        self.assertFinding(report, "state.schema.unknown-key", Severity.WARNING)
+        self.assertNotFinding(report, "gate.required")
+
     def test_pending_gate_changes_from_warning_to_error_at_terminal_status(self) -> None:
         warning = diagnose(
             valid_state(status="owner_accepted", owner_gates=("Approve release",))
@@ -1945,6 +1976,51 @@ class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):
                     ),
                 )
                 self.assertFinding(report, "gate.q5-review", Severity.WARNING)
+
+    def test_v2_keyword_review_uses_protected_action_wording(self) -> None:
+        policy = DoctorPolicy(
+            today=date(2026, 7, 10),
+            q5_keywords=frozenset({"destructive action"}),
+        )
+        v2 = diagnose(
+            valid_v2_state(objective="Perform a destructive action safely."),
+            policy=policy,
+        )
+        finding = next(
+            finding for finding in v2.findings if finding.id == "gate.q5-review"
+        )
+        self.assertIs(finding.severity, Severity.WARNING)
+        self.assertNotFinding(v2, "gate.required")
+        self.assertEqual(
+            (finding.message, finding.evidence, finding.remediation),
+            (
+                "The packet objective contains a protected-action term but has no owner gate.",
+                "objective matched protected-action term: destructive action",
+                "Review whether the protected action requires an explicit owner gate.",
+            ),
+        )
+        self.assertNotIn(
+            "q5",
+            " ".join(
+                (finding.message, finding.evidence, finding.remediation)
+            ).casefold(),
+        )
+
+        v1 = diagnose(
+            valid_state(objective="Perform a destructive action safely."),
+            policy=policy,
+        )
+        legacy = next(
+            finding for finding in v1.findings if finding.id == "gate.q5-review"
+        )
+        self.assertEqual(
+            (legacy.message, legacy.evidence, legacy.remediation),
+            (
+                "The packet objective contains a Q5-like term but has no owner gate.",
+                "objective matched injected Q5 term: destructive action",
+                "Have the owner review whether an explicit gate is required.",
+            ),
+        )
 
     def test_q5_matching_has_whole_token_boundaries_and_no_hidden_keywords(self) -> None:
         nonmatches = (

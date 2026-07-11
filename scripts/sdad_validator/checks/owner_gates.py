@@ -63,6 +63,8 @@ def _finding(
     severity: Severity,
     line: int | None,
     evidence: str,
+    *,
+    protected_action_language: bool = False,
 ) -> Finding:
     messages = {
         "gate.required": "Autonomy level 4 requires a current owner gate in this status.",
@@ -74,14 +76,24 @@ def _finding(
         "gate.q5-review": "Have the owner review whether an explicit gate is required.",
         "gate.pending-after-acceptance": "Reconcile the packet status with its remaining owner gates.",
     }
+    if finding_id == "gate.q5-review" and protected_action_language:
+        message = (
+            "The packet objective contains a protected-action term but has no owner gate."
+        )
+        remediation = (
+            "Review whether the protected action requires an explicit owner gate."
+        )
+    else:
+        message = messages[finding_id]
+        remediation = remediations[finding_id]
     return Finding(
         id=finding_id,
         severity=severity,
-        message=messages[finding_id],
+        message=message,
         path=STATE_PATH,
         line=line,
         evidence=evidence,
-        remediation=remediations[finding_id],
+        remediation=remediation,
     )
 
 
@@ -120,13 +132,15 @@ class OwnerGatesCheck:
         )
         autonomy = snapshot.scalar("autonomy")
         objective = snapshot.active_packet.get("objective")
+        protected_action_language = context.state_result.state_version == 2
         gate_values = tuple(
             gate.value for gate in snapshot.owner_gates if gate.value.strip()
         )
         findings: list[Finding] = []
 
         if (
-            autonomy is not None
+            context.state_result.state_version == 1
+            and autonomy is not None
             and autonomy.value == "4"
             and status in AUTONOMY_FOUR_GATE_STATUSES
             and not gate_values
@@ -165,7 +179,12 @@ class OwnerGatesCheck:
                         "gate.q5-review",
                         Severity.WARNING,
                         objective.line,
-                        f"objective matched injected Q5 term: {matched_keyword}",
+                        (
+                            f"objective matched protected-action term: {matched_keyword}"
+                            if protected_action_language
+                            else f"objective matched injected Q5 term: {matched_keyword}"
+                        ),
+                        protected_action_language=protected_action_language,
                     )
                 )
         return tuple(findings)

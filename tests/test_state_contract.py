@@ -11,6 +11,11 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from sdad_validator.state_contract import (  # noqa: E402
+    KNOWN_TOP_LEVEL_KEYS_BY_VERSION,
+    REQUIRED_TOP_LEVEL_KEYS_BY_VERSION,
+    STATE_ENUMS_BY_VERSION,
+    V1_STATE_KEYS,
+    V2_STATE_KEYS,
     collect_template_state_violations,
     inspect_state,
     is_normalized_relative_posix_path,
@@ -48,20 +53,42 @@ routed_docs:
   - review-findings.md
 """
 
+V2_STATE = """version: 2
+updated: YYYY-MM-DD
+
+# state v2: standard | full
+scale: standard
+# unit | packet
+execution_scope: packet
+
+active_spec: SPEC/SPEC-COMPLETE.md
+active_packet:
+  id: bootstrap
+  objective: Replace with the current evidence-ready objective.
+  status: not_started
+validation_for: bootstrap
+
+# Keep only gates that can stop the current packet.
+owner_gates: []
+
+# Keep commands short and runnable from the repository root.
+validation:
+  - command: Replace with the project validation command.
+    proves: Replace with the claim this command supports.
+
+# List only documents needed by the current packet.
+routed_docs:
+  - docs/TODO-Open-Items.md
+  - review-findings.md
+"""
+
 
 def valid_v1_state() -> str:
     return V1_STATE
 
 
 def valid_v2_state() -> str:
-    return (
-        V1_STATE.replace("version: 1", "version: 2", 1)
-        .replace(
-            "  status: not_started\n\n# Keep only gates",
-            "  status: not_started\nvalidation_for: bootstrap\n\n# Keep only gates",
-            1,
-        )
-    )
+    return V2_STATE
 
 
 class StateContractTests(unittest.TestCase):
@@ -108,7 +135,14 @@ class StateContractTests(unittest.TestCase):
             with self.subTest(expected=expected):
                 self.assertIn(expected, [issue.id for issue in inspect_state(text).issues])
 
-        for scale in ("one-shot", "mini"):
+        for scale in ("standard", "full"):
+            with self.subTest(scale=scale):
+                result = inspect_state(
+                    baseline.replace("scale: standard", f"scale: {scale}")
+                )
+                self.assertEqual(result.issues, ())
+
+        for scale in ("one-shot", "mini", "huge", "2"):
             with self.subTest(scale=scale):
                 result = inspect_state(
                     baseline.replace("scale: standard", f"scale: {scale}")
@@ -116,6 +150,152 @@ class StateContractTests(unittest.TestCase):
                 self.assertIn(
                     "state.schema.unsupported-value",
                     [issue.id for issue in result.issues],
+                )
+
+    def test_v1_and_v2_controls_are_explicit_and_non_inheriting(self) -> None:
+        self.assertEqual(
+            V1_STATE_KEYS,
+            (
+                "scale",
+                "intensity",
+                "autonomy",
+                "active_spec",
+                "active_packet",
+                "owner_gates",
+                "validation",
+                "routed_docs",
+            ),
+        )
+        self.assertEqual(
+            V2_STATE_KEYS,
+            (
+                "scale",
+                "execution_scope",
+                "active_spec",
+                "active_packet",
+                "owner_gates",
+                "validation",
+                "routed_docs",
+                "validation_for",
+                "current_handoff",
+            ),
+        )
+        self.assertEqual(
+            REQUIRED_TOP_LEVEL_KEYS_BY_VERSION[2],
+            frozenset(V2_STATE_KEYS[:-1]),
+        )
+        self.assertEqual(
+            KNOWN_TOP_LEVEL_KEYS_BY_VERSION[2],
+            frozenset(("version", "updated", *V2_STATE_KEYS)),
+        )
+        self.assertEqual(
+            STATE_ENUMS_BY_VERSION,
+            {
+                1: {
+                    "scale": frozenset(
+                        {"one-shot", "mini", "standard", "full"}
+                    ),
+                    "intensity": frozenset({"low", "medium", "high"}),
+                    "autonomy": frozenset({"0", "1", "2", "3", "4"}),
+                },
+                2: {
+                    "scale": frozenset({"standard", "full"}),
+                    "execution_scope": frozenset({"unit", "packet"}),
+                },
+            },
+        )
+
+    def test_v1_accepts_every_legacy_control_enum(self) -> None:
+        cases = (
+            (
+                "scale",
+                "standard",
+                ("one-shot", "mini", "standard", "full"),
+            ),
+            ("intensity", "medium", ("low", "medium", "high")),
+            ("autonomy", "2", ("0", "1", "2", "3", "4")),
+        )
+        for key, baseline, accepted_values in cases:
+            for value in accepted_values:
+                with self.subTest(key=key, value=value):
+                    result = inspect_state(
+                        valid_v1_state().replace(
+                            f"{key}: {baseline}",
+                            f"{key}: {value}",
+                            1,
+                        )
+                    )
+                    self.assertEqual(result.issues, ())
+
+    def test_v2_execution_scope_accepts_only_unit_or_packet_scalars(self) -> None:
+        baseline = valid_v2_state()
+        for scope in ("unit", "packet"):
+            with self.subTest(scope=scope):
+                result = inspect_state(
+                    baseline.replace(
+                        "execution_scope: packet",
+                        f"execution_scope: {scope}",
+                    )
+                )
+                self.assertEqual(result.issues, ())
+
+        cases = (
+            (
+                baseline.replace("execution_scope: packet\n", ""),
+                "state.schema.missing-key",
+            ),
+            (
+                baseline.replace(
+                    "execution_scope: packet",
+                    "execution_scope:\n  nested: value",
+                ),
+                "state.schema.wrong-kind",
+            ),
+            (
+                baseline.replace("execution_scope: packet", "execution_scope: ''"),
+                "state.schema.unsupported-value",
+            ),
+            (
+                baseline.replace("execution_scope: packet", "execution_scope: 2"),
+                "state.schema.unsupported-value",
+            ),
+            (
+                baseline.replace(
+                    "execution_scope: packet",
+                    "execution_scope: ask_first",
+                ),
+                "state.schema.unsupported-value",
+            ),
+            (
+                baseline.replace(
+                    "execution_scope: packet",
+                    "execution_scope: session",
+                ),
+                "state.schema.unsupported-value",
+            ),
+        )
+        for text, expected in cases:
+            with self.subTest(expected=expected, text=text):
+                issues = [
+                    issue
+                    for issue in inspect_state(text).issues
+                    if issue.evidence == "execution_scope"
+                    or "execution_scope" in issue.message
+                ]
+                self.assertEqual([issue.id for issue in issues], [expected])
+
+    def test_v2_treats_intensity_and_autonomy_as_unknown_legacy_keys(self) -> None:
+        for key, value in (("intensity", "medium"), ("autonomy", "4")):
+            with self.subTest(key=key):
+                result = inspect_state(valid_v2_state() + f"{key}: {value}\n")
+                unknown = [
+                    issue
+                    for issue in result.issues
+                    if issue.id == "state.schema.unknown-key"
+                ]
+                self.assertEqual(
+                    [(issue.evidence, issue.severity) for issue in unknown],
+                    [(key, "warning")],
                 )
 
     def test_v2_packet_identity_grammar_is_exact(self) -> None:

@@ -73,14 +73,17 @@ def _write_project(
     )
     route_lines = "\n".join(f"  - {path}" for path in routed_docs)
     version_line = "" if state_version is None else f"version: {state_version}\n"
+    state_controls = (
+        "scale: standard\nexecution_scope: packet\n"
+        if state_version == 2
+        else "scale: standard\nintensity: low\nautonomy: 2\n"
+    )
     version_two_fields = (
         "validation_for: cli-contract\n" if state_version == 2 else ""
     )
     (root / "sdad-state.yaml").write_text(
         version_line + f"updated: {updated_value}\n"
-        "scale: standard\n"
-        "intensity: low\n"
-        "autonomy: 2\n"
+        f"{state_controls}"
         "active_spec: SPEC/SPEC-COMPLETE.md\n"
         "active_packet:\n"
         "  id: cli-contract\n"
@@ -237,6 +240,11 @@ class DoctorCliSubprocessTests(unittest.TestCase):
         self.assertEqual(payload["schema_version"], 2)
         self.assertEqual(payload["doctor_version"], "3.2.0")
         self.assertEqual(payload["state_version"], 2)
+        self.assertFalse(
+            {"state.schema.missing-key", "state.schema.unknown-key"}
+            & {finding["id"] for finding in payload["findings"]},
+            payload["findings"],
+        )
         self.assertEqual(result.stderr, "")
 
     def test_guarded_missing_declared_version_reports_effective_v1(self) -> None:

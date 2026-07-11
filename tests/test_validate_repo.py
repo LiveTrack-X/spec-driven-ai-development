@@ -670,6 +670,54 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
                 self.assert_source_rejected(source + "\n" + binding + "\n")
 
 
+class OwnerAmendmentSourceContractTests(unittest.TestCase):
+    DESIGN = "docs/superpowers/specs/2026-07-11-sdad-3.2-packet-consistency-design.md"
+    PLAN = "docs/superpowers/plans/2026-07-11-sdad-3.2.0-implementation.md"
+    HEADING = "## Owner-Approved Terminology And User-Control Amendment"
+
+    def test_design_and_plan_append_the_exact_owner_amendment_contract(self) -> None:
+        for relative_path in (self.DESIGN, self.PLAN):
+            with self.subTest(relative_path=relative_path):
+                content = (ROOT / relative_path).read_text(encoding="utf-8")
+                self.assertEqual(content.count(self.HEADING), 1)
+                for contract in (
+                    "Display name: `SDAD Protocol`",
+                    "Plan -> Route -> Implement -> Verify -> Report",
+                    "`execution_scope`: exactly `unit | packet`",
+                    "`intensity` and `autonomy` are not state-v2 keys",
+                    "`routed_docs` is an eligible selection set",
+                    "`current_handoff` is the sole current handoff pointer",
+                    "`docs/work-packet-state.md`",
+                    "Delivery Readiness Model",
+                    "Guidance, validation, technical enforcement, and owner decision",
+                    "### Task 7A Corrective Delta",
+                ):
+                    self.assertIn(contract, content)
+
+    def test_plan_records_remaining_task_and_release_order_deltas(self) -> None:
+        content = (ROOT / self.PLAN).read_text(encoding="utf-8")
+        ordered_markers = (
+            "#### Task 8 delta",
+            "#### Task 9 delta",
+            "#### Task 10 delta",
+            "#### Task 11 delta",
+            "#### Task 12 delta",
+            "fresh-context smoke",
+            "new infographic",
+            "final whole-branch review",
+            "remote release",
+            "published-hash verification",
+            "global skill update and smoke",
+        )
+        positions = [content.find(marker) for marker in ordered_markers]
+        self.assertNotIn(-1, positions)
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn(
+            "conditional on green local, branch-CI, tag-CI, and published-hash gates with unchanged source",
+            content,
+        )
+
+
 class StableReleaseContractTests(unittest.TestCase):
     EXPECTED_SOURCES = {
         "mini": {
