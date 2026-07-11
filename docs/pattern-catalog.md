@@ -50,7 +50,7 @@ agent.
 The logical control spine is:
 
 ```text
-Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner checkpoint -> Maintenance
+Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner decision -> Maintenance
 ```
 
 Scale and compression happen before creating files. Evidence-tier and reference
@@ -193,7 +193,7 @@ control surfaces by what they can reliably do:
   trace links that are safe for later sessions to trust.
 
 Guidance vs enforcement is a safety boundary. Use guidance for judgment,
-style, source-of-truth order, and owner checkpoint criteria. Use enforcement for
+style, source-of-truth order, and owner-gate criteria. Use enforcement for
 secrets, destructive commands, migrations, release artifacts, production
 deploys, money/data/security boundaries, required tests, and generated-artifact
 exclusion. If the project would be unsafe when the AI follows a rule only most
@@ -360,15 +360,15 @@ Do not let a lower tier unlock a higher claim. A local test does not prove
 hardware compatibility. A browser screenshot does not prove persistence. A
 remote tester bundle does not prove production readiness until production
 evidence and owner gates exist.
-No evidence tier grants owner acceptance without the owner checkpoint or a
+No evidence tier grants owner acceptance without an owner decision or a
 delegated acceptance policy.
 
 ### 8c. Compress Small Projects Before Adding Files
 
 Small Project Compression Rule: create the smallest evidence surface that keeps
 the owner in control. One evidence-ready summary is enough for One-shot, Mini
-SDAD, or a small Standard packet when the packet has one active slice, no Q5
-gate changed, no unresolved finding must survive the turn, no durable
+SDAD, or a small Standard packet when the packet has one active slice, no
+protected-action owner gate changed, no unresolved finding must survive the turn, no durable
 spec-unstated decision exists, no handoff is expected, and evidence can be
 shown compactly.
 
@@ -561,7 +561,7 @@ need to survive handoff but are not durable enough for an ADR.
 | Docs conflict with implementation | Source-of-truth order | Architecture responsibility map |
 | AI says a feature is complete | Evidence handoff and TODO/review ledgers | Release gate and Critical 0 threshold |
 | Code contains unstated implementation choices | Implementation notes with verification impact | ADR or owner gate when the choice affects release/risk |
-| Plan is fuzzy before coding | Clarification checkpoint with recommended answer | Owner checkpoint when risk, release, data, security, or tradeoff changes |
+| Plan is fuzzy before coding | Infer from repository evidence, then ask one blocking question with a recommended answer | Owner gate when risk, release, data, security, or tradeoff changes |
 | AI loads too much or too little context | Layered context route and bounded reads | Explicit resume package for release or migration work |
 | User uses plain language instead of a skill name | Natural-language intent routing | Gate release, migration, destructive, data, auth, money, security, rollback, and production claims |
 | Codex setup fails repeatedly | Environment improvement loop into rules, TODOs, templates, or handoff | Release readiness blocks until setup evidence is repeatable |

@@ -1,171 +1,143 @@
 # Product Evidence Templates
 
 Status: Active reference
-Scope: Optional Standard/Full SDAD templates for product, hardware, external
-tester, release, and compatibility claims
 
-Use these templates when a project needs evidence stronger than local software
-tests, especially when work depends on hardware, packaging, remote testers,
-external labs, real users, generated artifacts, or product/release claims.
-
-These templates grew from hardware/product work where SDAD kept claim gates and
-evidence boundaries intact, but active docs became too large, completion states
-were ambiguous, evidence mapping was scattered, and remote hardware validation
-needed a first-class loop. The templates are generic by design; do not copy
-project-specific names, devices, or claims unless they are true for the current
-project.
+These optional Standard/Full templates support product, hardware, external
+tester, package, release, production, and compatibility claims that local source
+checks cannot establish. Install only the records the active claim can maintain.
 
 ## Template Set
 
-Install only the files the project can maintain:
-
 - **Evidence Matrix**:
   [`docs/evidence-matrix.md`](../templates/project-control-files/docs/evidence-matrix.md)
-  maps requirements and claims to evidence, status, scope, freshness, and gaps.
+  maps requirements and claims to evidence, scope, freshness, and gaps.
 - **Claim Registry**:
   [`docs/claim-registry.md`](../templates/project-control-files/docs/claim-registry.md)
-  lists allowed, qualified, blocked, and forbidden claims across README, SPEC,
-  UI, release notes, manifests, packaging, and support text.
+  records allowed, qualified, blocked, and forbidden claims.
 - **Artifact Contract**:
   [`docs/artifact-contracts.md`](../templates/project-control-files/docs/artifact-contracts.md)
-  defines required files, metadata, verifier commands, retention, privacy, and
-  lineage for packages, firmware, support bundles, logs, or imported evidence.
-- **Work Packet State Model**:
+  defines required files, metadata, verifier commands, lineage, privacy, and
+  retention for packages and evidence bundles.
+- **Delivery Readiness Model**:
   [`docs/work-packet-state.md`](../templates/project-control-files/docs/work-packet-state.md)
-  defines packet states so `ai_complete`, `software_verified`,
-  `tester_ready`, `hardware_verified`, `owner_accepted`, and
-  `production_ready` are not collapsed into one word: done.
+  distinguishes software evidence, tester readiness, external evidence,
+  hardware verification, release candidacy, and production readiness.
 - **Remote Evidence Import / Quarantine Pattern**:
   [`docs/remote-evidence-import.md`](../templates/project-control-files/docs/remote-evidence-import.md)
-  defines a quarantine-to-accepted flow for remote tester bundles and external
-  evidence before any claim gate changes.
+  keeps external evidence quarantined until structure, privacy, lineage, scope,
+  and review checks pass.
+
+The `docs/work-packet-state.md` path is retained in 3.2 for compatibility. Its
+title and role are Delivery Readiness Model. It is not current packet authority;
+`sdad-state.yaml` remains authoritative for active packet identity, execution
+scope, validation contract, owner gates, and status.
 
 ## When To Use
 
-Use this template set when any of these are true:
+Use a relevant template when:
 
-- a local software test cannot prove the product claim,
-- hardware, firmware, device compatibility, packaging, or deployment matters,
-- evidence comes from another machine, tester, user, lab, or external platform,
-- generated artifacts must be traced to a commit, build, verifier, or package,
-- README, UI, release notes, or manifests could overclaim support,
-- active TODO, review, or save-state files are carrying too much completed
-  evidence history.
+- a local software check cannot prove the claim;
+- hardware, firmware, compatibility, packaging, or deployment matters;
+- evidence arrives from another machine, tester, user, lab, or platform;
+- generated artifacts need commit/build/verifier lineage;
+- README, UI, release notes, manifests, or support text could overclaim;
+- active TODO or finding files are carrying completed evidence history.
 
-Treat this as a product evidence flag, not a new SDAD scale. A yes to this flag
-usually means `Standard SDAD / Medium` or higher and at least the relevant
-templates from this set. Use `Full SDAD / High` only when the current packet
-changes a release, production, hardware compatibility, security, data, money,
-destructive-action, rollback, or other Q5 gate.
-
-## How The Templates Work Together
-
-Use the work-packet state model to name the current packet state.
-
-Use the evidence matrix to decide which requirements are covered, stale,
-blocked, or still software-only.
-
-Use the claim registry to decide which public or user-facing claims are allowed.
-
-Use artifact contracts to define what a package, support bundle, firmware image,
-log set, or evidence bundle must contain before it can be reviewed.
-
-Use remote evidence import when evidence crosses a trust boundary. Imported
-evidence starts in quarantine, then becomes validated, reviewed, and accepted
-only after structure, privacy, lineage, and scope checks pass.
+This is a product-evidence trigger, not a new scale. Use Standard when persistent
+packet state is needed. Use Full when the same persistent surface also needs
+protected-action owner gates. Scale does not grant authorization.
 
 ## Required Separation
 
-Keep packet states, evidence statuses, and owner acceptance separate:
+Keep readiness lanes, evidence statuses, and owner acceptance separate:
 
-- `ai_complete`: the AI finished an implementation slice.
-- `software_verified`: local commands passed, but hardware/product claims may
-  still be unproven.
-- `tester_ready`: an artifact can be sent to a tester, but evidence is not back.
-- `evidence_received`: a bundle arrived, but is not reviewed or accepted.
-- `hardware_verified`: qualified evidence was reviewed and mapped to
-  requirements.
-- `owner_accepted`: the owner accepted a named scope.
-- `production_ready`: release/production evidence and owner gate passed.
+- **Software evidence-ready**: scoped local commands support the stated claim.
+- **Tester-ready**: the named artifact and procedure are ready to send.
+- **External evidence received**: a bundle arrived but may still be quarantined.
+- **Hardware-verified**: reviewed evidence supports the named hardware scope.
+- **Release-candidate**: declared package, migration, and rollback checks passed.
+- **Production-ready**: the applicable production evidence and owner gate passed.
 
-Evidence status values live in `docs/evidence-matrix.md` and stop at review,
-such as `missing`, `software_only`, `evidence_received`, `reviewed_pass`,
-`reviewed_warn`, or `reviewed_fail`.
+Evidence Matrix statuses remain evidence-specific, for example `missing`,
+`software_only`, `evidence_received`, `reviewed_pass`, `reviewed_warn`, and
+`reviewed_fail`. Owner acceptance is an acceptance field or ledger, not an
+evidence status. Evidence-ready is not owner-accepted, and owner acceptance
+cannot strengthen missing evidence.
 
-Owner acceptance is an acceptance field or ledger, not an evidence status.
-
-Do not use local software evidence to unlock hardware, compatibility,
-production, or release claims unless the evidence matrix and claim registry
-explicitly allow that scope.
+Older 3.1 records may contain `ai_complete`, `software_verified`,
+`tester_ready`, `hardware_verified`, `owner_accepted`, or `production_ready`.
+Preserve those as historical data during migration; map current reports to the
+readiness lanes and state-v2 packet status without silently rewriting evidence.
 
 ## Evidence Tier Claim Boundary
 
-Use the weakest public claim that all required evidence tiers support.
+Use the weakest public claim supported by every required tier.
 
-| Evidence tier | Supports claims like | Does not support by itself |
-|---|---|---|
-| `local_test` | source-level behavior, unit/contract/CLI checks, deterministic local regressions | browser UI, live service behavior, persistence after restart, hardware, production |
-| `browser_render` | visible UI render, interaction, layout, screenshot-reviewed product controls | backend correctness, persisted state, remote hardware, deployment safety |
-| `live_runtime` | service starts and works in a real local/dev runtime with its configured dependencies | state durability after restart, remote environment compatibility, production readiness |
-| `persisted_state` | reload/restart/import/export proves durable state for the named scope | live hardware behavior, remote tester results, production operation |
-| `remote_hardware` | named device, tester, lab, or external machine evidence after quarantine and review | all-device compatibility, production rollout, owner acceptance |
-| `production_evidence` | deployed, packaged, monitored, rollback-ready, or release-channel claims for the named environment | broader claims than the deployed scope, owner acceptance without a checkpoint |
+| Evidence tier | Supports | Does not support by itself |
+| --- | --- | --- |
+| `local_test` | source behavior, unit/contract/CLI checks | browser UI, live services, persistence, hardware, production |
+| `browser_render` | visible render, interaction, layout | backend correctness, persistence, hardware, deployment safety |
+| `live_runtime` | real local/dev service behavior | restart durability, remote compatibility, production readiness |
+| `persisted_state` | reload/restart/import/export durability for named scope | hardware behavior, remote tester results, production operation |
+| `remote_hardware` | reviewed evidence for a named device/tester/lab | all-device support, production rollout, owner acceptance |
+| `production_evidence` | named deployed/package/monitor/rollback scope | broader environments or owner acceptance without a gate |
 
-A higher-sounding tier does not automatically cover a lower one when the scope
-differs. For example, a remote hardware bundle can support a device claim but
-not prove browser UI parity, persisted local state, or production rollback.
+Tier names do not imply containment when scopes differ. A remote hardware bundle
+can support a device claim while saying nothing about browser parity, persisted
+local state, or production rollback.
 
 ## Claim Gate Smoke
 
-Before evidence-ready, owner checkpoint, release notes, or package metadata,
-scan `docs/claim-registry.md` for claims affected by the packet:
+Before an evidence-ready report, protected release action, or public/package
+claim:
 
-- Any `blocked_until_evidence` claim remains blocked unless the required
-  evidence tier, freshness, and scope are present.
-- A warning-level result can become `accepted_within_scope` only when the public
-  claim is qualified to the reviewed scope.
-- A release, production, hardware, compatibility, security, data, money, or
-  rollback claim must fail closed when the evidence tier is missing or weaker
-  than the claim.
-- A passing local test may coexist with a blocked production, release, hardware,
-  compatibility, or rollback claim. Report the local behavior as supported and
-  keep the stronger claim blocked.
-- If a CLI, API, file, manifest, or UI text shape is part of the evidence, the
-  active SPEC or artifact contract must name that output contract before the
-  evidence can support the claim.
-- Match the check to the artifact type. A syntax check for one language does not
-  prove CSS validity, HTML rendering, browser behavior, persisted state, or live
-  runtime behavior.
-- Keep one canonical artifact manifest for each generated package or evidence
-  bundle; duplicate manifest copies are evidence drift unless one is explicitly
-  marked as derived.
+- keep every `blocked_until_evidence` claim blocked until required tier,
+  freshness, and scope are present;
+- use `accepted_within_scope` only when the public claim is qualified to the
+  reviewed scope;
+- fail closed when a release, production, hardware, compatibility, security,
+  data, money, or rollback claim lacks sufficient evidence;
+- allow a passing local test to coexist with a blocked stronger claim;
+- name a CLI, API, file, manifest, UI, or other output contract in the active
+  SPEC or artifact contract before treating shape checks as evidence;
+- match the check to the artifact type: syntax does not prove rendering,
+  persistence, hardware, or live runtime;
+- keep one canonical artifact manifest for each generated package or bundle.
+
+A claim remains blocked when required evidence is missing, stale, quarantined,
+unreviewed, out of scope, or weaker than the claim.
+
+## Conditional Owner Authorization
+
+When an action can be pre-authorized, record:
+
+```text
+Decision:
+Authorized action:
+Packet:
+Conditions:
+Expires when:
+Evidence required before action:
+```
+
+Reuse the authorization only while all recorded fields and relevant source stay
+unchanged. Expiry, failed conditions, missing required evidence, or source
+changes require re-approval. Acceptance remains a separate owner decision.
+
+## Evidence Layers And Claims
+
+- Markdown guidance and records make expectations visible; they do not block tools.
+- Doctor/tests/CI provide deterministic validation only for their defined checks.
+- permissions/hooks/sandbox/branch protection/release controls provide technical enforcement.
+- authorization and acceptance belong to the owner-decision layer.
+
+Doctor green proves structural consistency. A successful task benchmark proves
+the named task. Only a controlled comparison supports an improvement claim.
 
 ## Context Budget
 
-These templates should reduce active-doc size, not create another journal.
-
-- Keep `docs/TODO-Open-Items.md` focused on active work and next action.
-- Keep `review-findings.md` focused on active bugs, risks, and blocked gates.
-- Keep long evidence history, raw logs, old bundles, and completed packet
-  details out of mandatory start-loop docs.
-- Link to accepted evidence paths and archive locations instead of pasting logs
-  into active state files.
-- Use bounded reads for imported evidence, generated artifacts, logs, archives,
-  and private data.
-
-## Owner Checkpoint
-
-Before a product, hardware, compatibility, or release claim is accepted, the
-checkpoint should answer:
-
-- Which requirement or claim is being accepted?
-- Which evidence IDs support it?
-- What is the evidence tier and freshness rule?
-- What scope was accepted, and what remains pending?
-- Did remote evidence pass quarantine, privacy, lineage, and review checks?
-- Which public/user-facing claims are still blocked or must remain qualified?
-- Which docs, TODOs, review findings, and artifacts were updated?
-
-Evidence-ready still is not owner-accepted. A claim remains blocked when the
-required evidence is missing, stale, quarantined, unreviewed, out of scope, or
-too weak for the claim.
+Keep TODOs focused on unresolved work and findings focused on active defects or
+risks. Link evidence paths and archive locations instead of pasting raw logs into
+active state. Use bounded reads for imported evidence, generated artifacts,
+archives, logs, databases, and authorized private data. A current handoff links
+to these authorities; it does not duplicate them.

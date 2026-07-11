@@ -1,7 +1,8 @@
 # Research Foundations
 
 Status: Active reference, outside startup context
-Scope: Source-to-decision record for SDAD 3.1.0 cross-model guidance
+Scope: Source-to-decision record for current cross-model guidance; source dates
+and historical adoption notes remain explicit
 
 Sources inform bounded design decisions; they do not establish SDAD
 effectiveness. Mixed productivity results are not consensus. No reported
@@ -23,7 +24,7 @@ SDAD decision and limitation say they do.
 | [Gemini CLI GEMINI.md](https://geminicli.com/docs/cli/gemini-md/) | 2026-07-10 | Repository context can be supplied through a project instruction file and inspected when troubleshooting. | Render the canonical kernel deterministically to repository-root `GEMINI.md`. | Gemini context commands and `GEMINI_SYSTEM_MD` behavior are provider-specific and not owner acceptance. | Deterministic validation |
 | [Google Gemini prompt strategies](https://ai.google.dev/gemini-api/docs/prompting-strategies) | 2026-07-10 | Clear task, constraints, context, and output expectations reduce ambiguity. | Make outcome, acceptance, scope, evidence, and gates explicit in each packet. | Model-specific formatting advice and examples are not copied into the shared kernel. | Guidance |
 | [GitHub Copilot repository instructions](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions) | 2026-07-10 | Repository instructions use a defined file location and coexist with other instruction scopes. | Render and validate the canonical kernel at the documented Copilot repository path. | GitHub loading and precedence behavior may evolve and does not enforce SDAD completion. | Deterministic validation |
-| [GitHub Copilot agent risks and mitigations](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations) | 2026-07-10 | External inputs can carry malicious instructions, so permissions and review must constrain actions. | Treat embedded external instructions as untrusted evidence and retain owner-controlled Q5 gates. | Provider mitigations reduce particular risks but do not solve prompt injection or prove correctness. | Owner policy |
+| [GitHub Copilot agent risks and mitigations](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations) | 2026-07-10 | External inputs can carry malicious instructions, so permissions and review must constrain actions. | Treat embedded external instructions as untrusted evidence and retain owner gates for protected actions. | Provider mitigations reduce particular risks but do not solve prompt injection or prove correctness. | Owner policy |
 | [Cursor rules](https://cursor.com/docs/rules) | 2026-07-10 | Project rules can be persistent or scoped through Cursor's rule format. | Render one persistent `.mdc` adapter and add narrower rules only after an observed need. | Cursor metadata, rule selection, and precedence are provider-specific. | Deterministic validation |
 | [Cursor agent best practices](https://cursor.com/blog/agent-best-practices) | 2026-07-10 | Targeted context, planning, and iterative verification improve controllability. | Use hierarchical localization and bounded observable feedback instead of broad startup loading. | Vendor workflow recommendations are guidance, not evidence of SDAD effectiveness. | Guidance |
 | [NIST AI RMF Core](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/) | 2026-07-10 | AI risk work should govern, map, measure, and manage risk throughout the lifecycle. | Keep explicit risk routes, evidence limits, owner decisions, and reviewable controls. | The framework is organization-level and does not prescribe this repository's exact files or thresholds. | Owner policy |

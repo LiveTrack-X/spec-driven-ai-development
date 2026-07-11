@@ -1,113 +1,86 @@
-# Cross-Model Review Prompt
+# SDAD Evidence Review Prompt
 
-You are reviewing a project built through owner-supervised, SPEC-driven AI development.
+Review this SDAD Protocol packet as an independent reviewer. Read the installed
+adapter, `sdad-state.yaml`, and `docs/INDEX.md` first; inspect current source and
+tests; then select only the routed paths, headings, active sections, or targeted
+matches required by the review. Do not read every `routed_docs` member.
 
-Take a code-review stance. Prioritize bugs, security risks, missing tests, docs
-drift, false completion claims, overreach beyond the active SPEC, speculative
-complexity, and unrelated drive-by changes.
+Context Stability applies before review inputs. Use bounded reads above 50 KB,
+run a context-stability check above 200 KB, and do no full startup read above 1
+MB. Treat private data as an authorization boundary regardless of size. Prefer
+metadata, schema, sample, targeted search, redaction, and explicit excludes.
 
-## Review Inputs
+## Establish The Review Boundary
 
-Context Stability applies before review inputs. Review sessions often touch
-large SPECs, TODOs, findings, handoffs, archives, and generated reports, so do
-not load them in full by default.
+Establish these before reviewing, but place them after findings in the Evidence
+or Unverified Areas output sections:
 
-Use bounded reads for large files: inspect file size, read headings or matching
-sections, limit search output, and use explicit excludes. Default soft triggers:
-bounded reads above 50 KB or 500 lines, context-stability check above 200 KB or
-2,000 lines, and no full startup read above 1 MB unless the owner explicitly
-asks for historical reconstruction.
+- state schema, scale, and `execution_scope`;
+- exact active packet marker and objective;
+- validation contract owner (`validation_for`) and bounded claims;
+- applicable owner gates and any reusable conditional authorization;
+- routed documents actually read;
+- excluded or unverified areas.
 
-Sensitive data is an authorization boundary, not a size threshold. Use
-metadata-only inspection by default. Do not read `.env` files, credentials,
-keys, tokens, cookies, raw customer records, or private corpora unless the
-review requires it and owner policy plus tool policy explicitly permit it.
-Prefer redacted samples; if authorization is unclear, stop before reading.
+Do not assume worker context, prior chat, provider task/checkpoint state, or an
+old handoff is current. If state declares `current_handoff`, read it only when
+continuity affects this review and verify its first Session Identity marker
+matches the packet.
 
-Read:
+## Review For
 
-1. the active tool adapter or `AGENTS.md`,
-2. `sdad-state.yaml` when present,
-3. `docs/INDEX.md`,
-4. changed source/tests and only the active SPEC, TODO, findings, notes, or
-   policy/playbook headings routed for this review.
+1. Correctness defects, regressions, unsafe behavior, and unmet acceptance.
+2. Validation that does not establish its stated `proves` claim or belongs to a
+   different packet.
+3. Active TODO/finding markers for another packet, or terminal state with open
+   current records.
+4. Source, tests, SPEC, state, INDEX, ledger, handoff, and public-doc drift.
+5. Unrecorded spec-unstated implementation decisions: small choices belong in
+   `docs/implementation-notes.md`; hard-to-reverse decisions belong in ADRs.
+6. Evidence overclaim, skipped/partial checks, weak artifact verification, or
+   owner acceptance inferred from evidence-ready status.
+7. Protected actions without a current owner gate or authorization, and
+   authorization reused after expiry, failed conditions, missing required
+   evidence, or relevant source change.
+8. Documentation record audit gaps: change type, routed surfaces, docs changed,
+   docs checked with no update needed, and validation commands run.
+9. Context, secret, private-data, generated-artifact, archive, or log handling
+   that exceeds its declared authorization or bounded-read need.
 
-Do not read `docs/Repository-Operating-Rules.md` in full by default. Load the
-relevant heading only when policy, risk, evidence, or maintenance behavior is
-under review.
+Markdown records guidance/authority but does not technically block tools.
+Doctor, tests, and CI are deterministic validation; permissions, hooks,
+sandboxing, deny rules, branch protection, and release/deploy controls are
+technical enforcement; authorization and acceptance are owner decisions. Do
+not report one layer as proof of another.
 
-If the SPEC spans past-to-present history, identify the current active section
-before judging whether implementation matches the SPEC.
+## Decision And Continuity Rules
 
-Also identify the approved work packet, autonomy level, and evidence-ready units
-if the handoff provides them.
-If the implementation made decisions the SPEC did not state, inspect
-`docs/implementation-notes.md` or the handoff's Implementation notes section.
-If the plan was ambiguous, check whether the AI used repository evidence before
-asking the owner and whether unresolved clarification questions were escalated
-instead of silently chosen.
+Use one authoritative home per fact:
 
-## Source Of Truth
+- requirement/acceptance -> active SPEC;
+- small spec-unstated implementation decision -> implementation notes;
+- hard-to-reverse architecture decision -> ADR;
+- unresolved work -> TODO or finding;
+- current execution -> `sdad-state.yaml`;
+- cross-session recovery links/results -> current handoff.
 
-Prefer:
+Handoff-only and state-v1 save-state-only decisions are continuity hints until
+promoted to their correct authority. A new state-v2 project does not use
+`save-state.md` as current state or handoff authority.
 
-1. code, migrations, tests, reproducible commands,
-2. active runtime docs,
-3. canonical SPEC,
-4. active SPEC files,
-5. current handoff/save-state files,
-6. product notes and external references,
-7. historical or archived records,
-8. chat memory or AI confidence.
+## Required Output
 
-Current active SPEC sections override older historical SPEC sections.
-Read order is routing, not authority.
-Obvious-but-unwritten assumptions should not be treated as accepted project
-rules unless they are present in active docs, SPEC, or owner decisions.
-Owner decisions control scope, risk tolerance, and acceptance; they do not
-upgrade weak evidence. Check whether durable owner decisions were recorded in
-active docs, SPEC, ADR, or claim registry; treat handoff-only or
-save-state-only decisions as continuity until promoted.
+Use findings-first output in this exact order:
 
-## Output Format
+1. **Critical/Important findings** — severity, file/line, concrete evidence,
+   impact, and smallest corrective action.
+2. **Evidence** — commands/checks observed, result, and bounded claim supported.
+3. **Compatibility regressions** — especially state-v1 behavior and public
+   wire formats; say “none found” when appropriate.
+4. **Documentation/state drift** — state/INDEX/validation/ledger/handoff and
+   one-fact-one-home issues.
+5. **Unverified areas** — skipped, blocked, unavailable, or out-of-scope checks.
+6. **No-finding statement** — only when no Critical or Important finding remains.
 
-List findings first, ordered by severity. For each finding include:
-
-- file and line if available,
-- what is wrong,
-- why it matters,
-- how to reproduce or verify,
-- suggested fix direction.
-
-Then include:
-
-- missing tests,
-- docs drift,
-- missing documentation record audit: changed files or claims that implied doc
-  checks, change type and routed documentation surfaces, docs changed, docs checked with no update
-  needed, stale docs, archive/evidence links, and validation commands,
-- missing implementation notes for spec-unstated assumptions, changes,
-  compromises, rejected alternatives, owner-relevant tradeoffs, follow-up, or
-  verification impact,
-- hidden assumptions that should become explicit rules,
-- missing clarification checkpoint for fuzzy scope, overloaded terms,
-  hard-to-reverse choices, or owner tradeoffs,
-- assumptions that required owner input but were silently chosen,
-- speculative abstractions or generalized code that the active SPEC did not need,
-- unrelated refactors, formatting, cleanup, comment rewrites, or adjacent edits,
-- partial, degraded, skipped, or unverified behavior that was not labeled,
-- version-lane or migration sync risk, if applicable,
-- high-risk domain checklist gaps, if applicable,
-- advanced extension fit-gate gaps, if applicable,
-- evaluation leakage risk, if prompts, harnesses, retrieval, memory, review
-  rules, or agent scaffolds were tuned,
-- whether search evidence is separated from owner acceptance evidence,
-- whether concrete budget was stated for expensive or repeated eval loops,
-- release or production-readiness blockers, if applicable,
-- missing ADRs for durable decisions, if applicable,
-- assumptions,
-- whether the change is safe to accept.
-
-Do not rewrite the implementation unless asked. Do not accept "AI said complete"
-or "evidence-ready" as owner acceptance.
-For release candidates, call out whether Critical 0 has been met.
+Keep the internal checklist internal. Do not pad the output with a narration of
+every review step. Evidence-ready remains distinct from owner-accepted.

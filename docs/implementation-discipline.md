@@ -4,7 +4,7 @@ Status: Active reference
 Scope: Coding behavior inside an approved SDAD work packet
 
 SDAD is the project control layer. Implementation discipline is the lower-level
-coding behavior that keeps AI autonomy from becoming messy.
+coding behavior that keeps bounded AI execution from becoming messy.
 
 This page adapts compatible lessons from
 [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)
@@ -12,7 +12,7 @@ and Andrej Karpathy's public observations about LLM coding pitfalls. It also
 adapts compatible clarification and documentation patterns from
 [mattpocock/skills](https://github.com/mattpocock/skills). Keep this as a
 guardrail inside SDAD, not as a replacement for SPEC, evidence, review, or owner
-checkpoints.
+decisions.
 
 ## 1. Surface Assumptions
 
@@ -136,4 +136,4 @@ This discipline is working when:
 - project terminology stops shifting between sessions,
 - verification maps to the stated goal,
 - spec-unstated decisions are available to the next session,
-- owner checkpoints receive evidence instead of apology-driven rewrites.
+- owner gates and acceptance decisions receive evidence instead of apology-driven rewrites.

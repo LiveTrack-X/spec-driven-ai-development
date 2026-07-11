@@ -144,7 +144,7 @@ Rule: before asking the owner a clarification question, inspect current code,
 tests, active docs, SPEC, TODOs, review findings, and ADRs when those sources
 can answer it.
 
-Why it matters: owner checkpoints are valuable, but unnecessary questions create
+Why it matters: owner gates are valuable, but unnecessary questions create
 approval fatigue and slow down work packets that are already bounded.
 
 Operational form: use a clarification checkpoint for fuzzy plans. Ask only the

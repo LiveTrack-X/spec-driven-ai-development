@@ -1,7 +1,10 @@
 # Working Order Field Test
 
-Status: Active reference
-Scope: Multi-agent disposable-project test of the SDAD Working Order
+Status: Historical v3.1 field test; retained as observed evidence
+Scope: Multi-agent disposable-project test of the former SDAD Working Order
+
+This record preserves the vocabulary and observations used by the v3.1 test.
+It is not the current state-v2 operating contract.
 
 This note records a field test of the SDAD Working Order:
 

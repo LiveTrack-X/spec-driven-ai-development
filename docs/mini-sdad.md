@@ -1,106 +1,67 @@
 # Mini SDAD
 
-Mini SDAD is the one-file version of SPEC-Driven AI Development.
-
-Use it when a project is too small for full docs, SPEC folders, ADRs, and review
-ledgers, but still needs basic protection against scope drift, vague completion,
-or context loss.
+Mini SDAD is the one-file SDAD Protocol scale for small, bounded work. It adds a
+compact evidence and scope contract without installing the Standard/Full state,
+INDEX, SPEC, TODO, finding, and handoff surfaces.
 
 ## When To Use Mini SDAD
 
-Use Mini SDAD when one or two of these are true, and there is no Q4/Q5
-multi-tool or high-risk override:
+Use Mini when one or two of these are true:
 
-- the work may take more than one AI session,
-- you may return to the project later,
-- "done" needs evidence beyond "AI said so",
-- you want the AI to avoid unrelated changes,
-- you want a tiny handoff record without creating full project governance.
+- the work may continue beyond the current interaction;
+- you may return later and need a compact recovery note;
+- “done” needs check evidence;
+- unrelated-change protection matters;
+- the request is one small bugfix, workflow, UI, docs, or prompt unit.
 
-Do not use Mini SDAD for one-shot throwaway work that ends in one prompt and does
-not need future context.
+Do not use Mini for a throwaway One-shot that needs no continuity. Use Standard
+or Full when the work needs durable packet state, multiple active ledgers,
+multi-session/multi-agent coordination, or protected-action owner gates such as
+release, production, migration, destructive action, real user data, auth,
+money, security, or rollback.
 
-Use Standard or Full SDAD when multiple AI tools, durable review findings,
-release gates, migrations, user data, auth, money, or production risk appears.
-Q5-style risk beats the raw yes-count: one production, migration, user data,
-auth, money, destructive, release, or rollback risk is enough to use Standard at
-minimum, and often Full.
+## Mini Execution Boundary
 
-Mini SDAD exists because full control files have a maintenance cost. If you do
-not want to update SPEC, TODO, and review ledgers at the end of every loop, stay
-Mini.
+Mini defaults to one `unit`. Scale controls the persistent control surface;
+execution scope controls how far the AI may work now; owner gates control
+protected actions. A unit can contain the connected edits and checks needed for
+one reviewable outcome. Do not stop for approval after every micro-task.
 
-## Natural-Language Requests In Mini
+The owner can say “check this,” “fix it,” “make the README clearer,” or “create
+a tiny handoff” without knowing a skill name. The AI infers intent and the unit
+from repository evidence, reports the interpretation, and asks at most the next
+blocking question when its answer would change scale or an owner gate.
 
-Mini SDAD also supports natural-language intent routing. The owner can say
-"check this", "fix it", "make the README clearer", or "create a tiny handoff"
-without knowing a skill name.
+Examples:
 
-The AI should infer the intent, keep the work inside one small review-worthy
-unit, and report evidence-ready status. If the request implies release,
-migration, real user data, auth, money, security, destructive action, rollback,
-production claim, or owner risk acceptance, recommend escalation to Standard or
-Full SDAD with explicit gates.
+- one bugfix plus its regression check;
+- one small UI/workflow change plus validation;
+- one connected docs/prompt change;
+- one necessary cleanup inside the requested outcome.
 
-## Mini Review-Worthy Unit
-
-Mini SDAD should not stop after every micro-task. Define one small
-review-worthy unit, then let the AI continue inside that boundary until it can
-show evidence.
-
-Default autonomy is Level 1 Unit Autonomy, with the active unit treated as one
-small approved packet. The AI completes that boundary, reports evidence-ready
-status, and asks only at the checkpoint or when a stop condition appears. Do not
-turn each small SPEC item into a separate approval gate. Use Level 2 Work Packet
-Autonomy only when the owner names a packet with multiple related units.
-
-A Mini review-worthy unit may include:
-
-- one small UI/workflow change,
-- one bugfix plus its check,
-- one connected docs or prompt update,
-- one short cleanup needed for the requested task.
-
-Stop and ask the owner only when scope expands, Q5-style risk appears, a
-destructive or irreversible action is needed, an owner-controlled decision is
-required, verification is blocked, or evidence conflicts with the plan.
-
-If the mini unit is fuzzy, inspect available repository evidence before asking
-the owner. Ask only the next blocking clarification question and include the
-AI's recommended answer.
+Stop when scope expands beyond the unit, a protected action needs owner
+authorization, a destructive or irreversible action is required, validation is
+blocked, evidence conflicts with the plan, or the owner must accept risk.
 
 ## Mini Unit Completion Criteria
 
-A Mini SDAD unit is evidence-ready only when:
+A Mini unit is evidence-ready only when:
 
-- the active task is restated,
-- changed files are listed,
-- tests, commands, or manual checks are shown, or the reason they could not run
-  is stated,
-- user-visible behavior or output is described,
-- limitations and unverified behavior are named,
-- fuzzy scope was resolved from evidence or escalated to the owner,
-- unrelated scope was not added,
-- owner decisions or acceptance needed are named.
+- the interpreted outcome and excluded scope are stated;
+- changed files and user-visible behavior are listed;
+- tests, commands, or manual checks are shown, or the gap is explicit;
+- the evidence claim is bounded to what those checks establish;
+- limitations, skipped checks, and unverified behavior are named;
+- unrelated scope was not added;
+- required owner authorization or acceptance is named separately.
 
-AI confidence is not completion.
-
-Not evidence-ready when:
-
-- the AI only says it is done,
-- checks were not run and the gap is hidden,
-- known uncertainty is not named,
-- unrelated changes were made without owner approval.
-
-Final done still requires owner acceptance unless the owner has explicitly
-delegated the acceptance policy. Requested changes or deferred decisions mean
-the unit is not done.
+AI confidence, provider task status, or a clean syntax check is not completion.
+Evidence-ready is not owner-accepted.
 
 ## What Mini SDAD Creates
 
-Mini SDAD creates one instruction file for the AI tool.
-
-Use the same content from:
+Mini creates one instruction file for the active tool. Until release metadata
+rotates, use the stable v3.1.0 source:
 
 ```text
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/templates/mini-sdad/MINI-SDAD.md
@@ -109,14 +70,10 @@ https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72
 Expected SHA-256:
 `f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669`.
 
-That full 40-character commit SHA is the stable v3.1.0 baseline. Replace the
-revision with `main` only when you intentionally want changing, unpinned
-instructions.
-
-Save it as the right instruction file for your tool:
+Use `main` only when changing, unpinned instructions are intentional.
 
 | Tool | Save as |
-|---|---|
+| --- | --- |
 | Codex | `AGENTS.md` |
 | Claude Code | `CLAUDE.md` |
 | Gemini CLI | `GEMINI.md` |
@@ -124,9 +81,8 @@ Save it as the right instruction file for your tool:
 | GitHub Copilot | `.github/copilot-instructions.md` |
 | Generic AI tool | `AI-SESSION-INSTRUCTIONS.md` |
 
-Cursor requires MDC frontmatter. When installing from a clone, copy
-`templates/mini-sdad/cursor-mini-sdad.mdc`. For a no-clone install, prepend
-this block to the canonical Mini SDAD body:
+Cursor requires MDC frontmatter. From a clone, copy
+`templates/mini-sdad/cursor-mini-sdad.mdc`. For no-clone installation, prepend:
 
 ```yaml
 ---
@@ -138,68 +94,53 @@ alwaysApply: true
 
 ## Mini SDAD Prompt
 
-Paste this into your AI coding tool:
-
 ```text
-Use Mini SDAD for this project.
+Use Mini SDAD for this project. The default execution boundary is one unit.
 
 Fetch this exact template:
 https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/templates/mini-sdad/MINI-SDAD.md
 Expected SHA-256: f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669
 
-Before fetching, state that you are installing Mini SDAD and explain why this
-scale was chosen.
-
-Save it as the correct instruction file for this tool:
-- Codex -> ./AGENTS.md
-- Claude Code -> ./CLAUDE.md
-- Cursor -> ./.cursor/rules/mini-sdad.mdc
-- Copilot Chat -> ./.github/copilot-instructions.md
-- Generic AI agent -> ./AI-SESSION-INSTRUCTIONS.md
-
-For Cursor, prepend the MDC frontmatter shown above before saving.
+Before fetching, state that you are installing Mini SDAD and why Mini fits.
+Save it at the correct tool-native path. For Cursor, prepend the documented MDC
+frontmatter.
 
 Before saving:
-1. show me the source URL,
-2. show me the first 10 lines of the fetched file,
+1. show the source URL,
+2. show the first 10 fetched lines,
 3. compute SHA-256 and require an exact match,
 4. confirm the target path.
 
-If you cannot fetch the template, stop and say so. Do not invent the template
-from memory. Offer deterministic fallback options: retry with network access,
-ask me to paste the raw template content from the source URL, use the terminal
-installer, or clone/download the repository manually.
+If fetching fails, stop rather than inventing the template. Offer deterministic
+fallback options: retry with network access, ask me to paste the raw source,
+use the terminal installer, or clone/download the repository.
 
-After saving it, ask me for:
-- the active task,
-- what is out of scope,
-- what evidence proves evidence-ready,
-- whether any risk requires Standard or Full SDAD.
+Infer the active unit, excluded scope, required validation, and applicable
+owner gates from my request and repository evidence. Ask only the next question
+whose answer would change Mini suitability or an owner gate. Report that
+interpretation before editing.
 
-For each unit, do not call it evidence-ready until changed files, check evidence,
-and limitations or unverified behavior are shown. Do not call final completion
-done until owner acceptance is shown or the owner has explicitly delegated the
-acceptance policy.
-
-If the unit required a decision the request or SPEC did not state, include a
-short Implementation notes section in the evidence-ready summary. Do not create
-a persistent implementation-notes file for Mini SDAD unless the project
-escalates.
+Do not call the unit evidence-ready until changed files, check evidence, claim
+limits, and unverified behavior are shown. Keep owner acceptance separate. If a
+small spec-unstated implementation decision matters, include it in the final
+Implementation notes; do not create another persistent control file unless the
+project escalates.
 ```
 
 ## Escalation Rule
 
-Stay Mini by default.
+Stay Mini while one instruction file and one-unit reports remain sufficient.
+Escalate only when evidence shows a need for persistent packet state or more
+control: repeated context loss, durable TODOs/findings, multiple agents/sessions,
+conflicting active docs, or an owner-gated release/production/migration/data/
+security/destructive action.
 
-Escalate only when evidence shows the project needs more structure:
+See [Getting Started](getting-started.md) or
+[No-Clone Quick Install](no-clone-quick-install.md) when escalating.
 
-- repeated context loss,
-- three or more persistence/evidence signals, or durable TODOs/review findings
-  that no longer fit the one-file control surface,
-- multiple AI tools or sessions,
-- conflicting docs or old plans,
-- release, production, migration, destructive action, real user data, auth,
-  money, security, rollback, or another owner-controlled gate.
+## Migrating From SDAD 3.1
 
-When escalating, move to [getting-started.md](getting-started.md) or
-[no-clone-quick-install.md](no-clone-quick-install.md).
+Older Mini guidance may describe numeric autonomy levels or a risk-question
+score. Treat those as legacy selection language, not state-v2 fields. The 3.2
+interpretation is Mini -> `unit`, with protected actions governed separately by
+owner gates.

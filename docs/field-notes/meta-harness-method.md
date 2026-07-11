@@ -53,7 +53,7 @@ marked `unknown`, or marked `blocking`:
 | Offline experience | Prior traces, reports, docs, or failure notes that may inform candidates |
 | Online experience | Candidate traces, metadata, scores, logs, and artifacts to preserve |
 | Budget | Candidate count, wall-clock time, token/API spend, evaluation runs, or owner review time |
-| Adoption gate | Owner checkpoint required before any discovered harness becomes active |
+| Adoption gate | Owner acceptance required before any discovered harness becomes active |
 
 ## Eleven Harness Surfaces
 
@@ -129,7 +129,7 @@ Stop the harness optimization loop when:
 - the evaluation metric no longer reflects owner value,
 - trace volume makes active docs unreadable,
 - the winning candidate is not meaningfully better than the baseline,
-- adoption would change a Q5 risk gate without owner review.
+- adoption would change a protected-action owner gate without owner review.
 
 When stopped, record the best candidate, failed candidates, budget used, and the
 next owner decision. Do not silently convert "promising" into "adopted".

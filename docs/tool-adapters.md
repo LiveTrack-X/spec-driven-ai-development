@@ -1,25 +1,26 @@
 # Tool Adapters
 
 Status: Active reference
-Scope: How to use SPEC-Driven AI Development across AI coding tools
 
-This repository is tool-neutral. Codex skills are one delivery format, not the
-method itself. Use the adapter that matches the AI coding environment.
-
-Each adapter is a self-contained rendering of the same compact runtime kernel.
-It routes through `sdad-state.yaml` and `docs/INDEX.md`, then loads detailed
-policy or playbooks on demand.
+SDAD Protocol is tool-neutral. An adapter is a compact rendering of the same
+repository runtime kernel, not the whole method and not technical enforcement.
+After installation, ordinary work follows the adapter -> `sdad-state.yaml` ->
+`docs/INDEX.md` route and selects only the source/tests and routed content needed
+for the current intent.
 
 ## Supported Adapters
 
-| Tool | Adapter file | Use when |
-| --- | --- | --- |
-| Codex | `AGENTS.md` + `ai-spec-project-start` skill | You want repository rules plus an installable Codex skill. |
-| Claude Code | `CLAUDE.md` | You want project memory loaded by Claude Code at session start. |
-| Gemini CLI | `GEMINI.md` | You want repository-root project context for Gemini CLI. |
-| Cursor | `.cursor/rules/spec-driven-ai-development.mdc` | You want persistent project rules for Cursor Agent and inline edit. |
-| GitHub Copilot | `.github/copilot-instructions.md` | You want repository-level custom instructions for Copilot Chat, review, or coding agent flows. |
-| Generic AI coding tool | `AI-SESSION-INSTRUCTIONS.md` | The tool has no special instruction-file convention. |
+| Tool | Adapter file |
+| --- | --- |
+| Codex | `AGENTS.md` plus optional `ai-spec-project-start` install/upgrade skill |
+| Claude Code | `CLAUDE.md` |
+| Gemini CLI | repository-root `GEMINI.md` |
+| Cursor | `.cursor/rules/spec-driven-ai-development.mdc` |
+| GitHub Copilot | `.github/copilot-instructions.md` |
+| Generic AI coding tool | `AI-SESSION-INSTRUCTIONS.md` |
+
+Install one adapter unless the repository intentionally uses multiple tools and
+will keep their shared contract synchronized.
 
 ## Install An Adapter
 
@@ -43,105 +44,78 @@ macOS/Linux:
 ./scripts/install-agent-adapter.sh generic /path/to/project
 ```
 
-If your checkout lost executable bits, prefix the command with `bash`, for
-example `bash ./scripts/install-agent-adapter.sh claude-code /path/to/project`.
+If a checkout lost executable bits, use Bash explicitly, for example:
+
+```bash
+bash ./scripts/install-agent-adapter.sh claude-code /path/to/project
+```
 
 The installer refuses to overwrite existing files unless `-Force` or `--force`
 is used.
-Adapter installation produces guidance, not enforcement. Keep non-negotiable
-controls in their actual enforcement surfaces.
 
-## Adapter Design
+## Runtime Contract
 
-Each adapter keeps only the high-signal operating rules:
+Adapters keep only high-signal rules:
 
-- progressive state -> INDEX -> source/tests -> on-demand route,
-- context-stability and bounded-read guard before first-read files,
-- source-of-truth order,
-- current-over-historical SPEC precedence,
-- natural-language intent routing so users can say "review this", "implement
-  this", "release this", or "create a handoff" without knowing skill names,
-- evidence-based completion,
-- implicit rules made explicit,
-- TODO/review ledger separation,
-- documentation consistency checks,
-- work-packet autonomy instead of micro-approval,
-- clarification checkpoints for fuzzy plans after repository evidence is
-  checked,
-- implementation discipline for assumptions, simplicity, surgical diffs, and
-  verification,
-- implementation notes for spec-unstated assumptions, changes, compromises,
-  rejected alternatives, owner-relevant tradeoffs, follow-up, and verification
-  impact,
-- release/risk gate reminders,
-- owner decision control.
+- load state and INDEX before optional guidance;
+- treat `routed_docs` as eligible selections, never a full-read list;
+- infer the scale, execution scope, and owner gates from repository evidence;
+- default Mini to `unit` and Standard/Full to `packet`;
+- use Plan -> Route -> Implement -> Verify -> Report, branching to an owner gate
+  or handoff only when triggered;
+- separate validation evidence, owner authorization, and owner acceptance;
+- record each durable fact in its single authoritative home;
+- delegate packet, objective, scope, routes, validation, gates, stop condition,
+  and report requirements because a worker may not inherit parent context;
+- keep archives, logs, generated artifacts, databases, and authorized private
+  data behind bounded reads.
 
-Longer explanations stay in this repository's docs and templates.
-
-The cross-model decisions and their non-transferable limits are recorded in
-`docs/research-foundations.md`: [Research Foundations](research-foundations.md),
-outside the startup context.
-
-`templates/project-control-files/AGENTS.md` is the canonical runtime kernel.
-Regenerate all self-contained adapters with:
+The canonical runtime kernel is
+`templates/project-control-files/AGENTS.md`. Render every adapter with:
 
 ```bash
 python scripts/render_agent_surfaces.py --write
 ```
 
-Check for drift without writing with:
+Check parity without writing:
 
 ```bash
 python scripts/render_agent_surfaces.py --check
 ```
 
-Adapters are guidance, not enforcement. If a behavior must always happen or
-must never happen, route it to an enforced surface such as CI, required tests,
-validators, hooks, permissions, deny rules, branch protection, release gates, or
-artifact verification. Keep the adapter rule as the readable explanation, but
-do not rely on Markdown alone for secrets, destructive actions, migrations,
-production deploys, release assets, or money/data/security boundaries.
+## Guidance, Validation, Enforcement, And Decisions
 
-Use
-[field-notes/repository-control-surface-method.md](field-notes/repository-control-surface-method.md)
-when deciding whether a repeated rule belongs in always-loaded guidance, routed
-guidance, an on-demand procedure, isolated exploration, an enforced guarantee,
-or reviewed project memory.
+Adapter installation produces guidance, not enforcement. Markdown can record an
+authority rule, but it cannot technically block a tool. Use Doctor/tests/CI for
+deterministic validation and permissions, hooks, sandboxing, deny rules, branch
+protection, release gates, or deployment controls for enforcement. Owner
+authorization and acceptance remain owner decisions. None of these layers may
+upgrade weak evidence into a stronger claim.
+
+Provider sandbox, policy, permission, trusted-folder, plan, checkpoint, session,
+memory, and doctor/health features remain provider facilities. They can help the
+workflow but do not become SDAD state, handoff, Doctor, authorization, or
+acceptance authority.
 
 ## Tool Notes
 
-### Provider Runtime Boundaries
-
-Provider rules remain guidance unless the provider or repository enforces them.
-Provider sandbox, policy, permission, and trusted-folder controls are distinct
-from SDAD guidance and can constrain actions.
-Neither tool success nor provider enforcement proves completion, product correctness, or owner approval.
-Likewise, valid syntax proves structure, while observed results and
-task-specific semantic validation establish the evidence claim.
-
-Gemini CLI reads repository `GEMINI.md` as project context. When troubleshooting
-what it actually loaded, use the stable `/memory show` command. Reload and
-refresh aliases vary across official documentation, so this guide does not
-promise or validate them.
-
-`GEMINI_SYSTEM_MD` replaces the system prompt; it is not the project adapter install path.
-The override can replace or bypass the expected baseline.
-Gemini headless Plan Mode is not owner acceptance and cannot bypass Q5 controls.
+Gemini CLI reads repository `GEMINI.md` as project context. Use `/memory show`
+to inspect what it loaded. `GEMINI_SYSTEM_MD` replaces the system prompt; it is
+not the project adapter install path. Gemini headless Plan Mode is not owner
+acceptance and cannot bypass an applicable owner gate.
 
 Nested or path-specific Claude, Cursor, Copilot, or Gemini instructions should
 be added only after an observed domain-specific failure justifies the extra
 always-loaded context.
 
-### Provider References
+Provider references:
 
-- Claude Code uses project `CLAUDE.md` memory files. See Anthropic's memory docs:
-  <https://code.claude.com/docs/en/memory>
-- Cursor project rules live under `.cursor/rules` as `.mdc` files. See Cursor's
-  rules docs: <https://cursor.com/docs/rules>
-- GitHub Copilot repository instructions use `.github/copilot-instructions.md`.
-  See GitHub's docs: <https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions>
-- Gemini CLI project context uses repository `GEMINI.md`. See Gemini CLI's
-  context docs: <https://geminicli.com/docs/cli/gemini-md/>
+- Claude Code project memory: <https://code.claude.com/docs/en/memory>
+- Cursor project rules: <https://cursor.com/docs/rules>
+- GitHub Copilot repository instructions:
+  <https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions>
+- Gemini CLI project context: <https://geminicli.com/docs/cli/gemini-md/>
 
-Tool behavior can change. If a tool stops loading the expected file, keep the
-method content and update only the adapter path.
+Tool behavior can change. If a tool stops loading the expected path, preserve
+the protocol contract and update the adapter path only after verifying the
+provider's current official behavior.

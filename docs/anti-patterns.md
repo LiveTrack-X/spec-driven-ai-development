@@ -68,7 +68,7 @@ substance to be useful, and implementation flow collapses.
 Replace with: define a bounded work packet, use review-worthy units inside it
 for review and evidence, and let the AI proceed autonomously until changed
 files, checks, limits, and evidence are ready. Stop early only for scope
-expansion, Q5 risk changes, destructive actions, owner-controlled decisions,
+expansion, owner-gate changes, destructive actions, owner-controlled decisions,
 blocked verification, or evidence conflicts.
 
 ## 5b. Trigger Word Dependency
@@ -266,7 +266,7 @@ or mechanical edit logs.
 Symptom: the AI asks the owner broad clarification questions that current code,
 tests, active docs, SPEC, TODOs, review findings, or ADRs could answer.
 
-Why it fails: owner checkpoints become busywork, and the AI avoids doing the
+Why it fails: owner questions become busywork, and the AI avoids doing the
 basic repository inspection that makes its recommendation useful.
 
 Replace with: inspect repository evidence first. If ambiguity remains, ask only

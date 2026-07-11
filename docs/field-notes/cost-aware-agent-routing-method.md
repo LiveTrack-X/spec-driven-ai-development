@@ -75,7 +75,7 @@ Good advisor triggers:
 
 Advisor output is not owner acceptance. Treat it as review evidence. If the
 advisor changes scope, risk, architecture, release posture, data boundary, or
-owner tradeoff, route the decision to the owner checkpoint or an ADR instead of
+owner tradeoff, route the decision to the applicable owner gate or an ADR instead of
 letting the executor silently adopt it.
 
 ## Orchestrator-Worker
@@ -173,7 +173,7 @@ Stop or downgrade the route when:
 - evidence quality drops because the evaluator is too weak or too close to the
   generator,
 - active docs become a transcript of agent chatter,
-- the route changes owner-controlled risk without an owner checkpoint.
+- the route changes owner-controlled risk without an owner decision.
 
 When stopped, record the route used, budget spent, evidence produced, unresolved
 risks, and the next owner decision. Do not convert "the loop kept running" into

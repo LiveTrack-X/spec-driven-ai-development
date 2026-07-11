@@ -86,9 +86,11 @@ If the project has stricter local limits, record them in
 
 ## Live-State Size Budget
 
-Files such as `save-state.md`, `next-task.md`, `review-findings.md`, and
-`docs/TODO-Open-Items.md` should stay short enough to read as active operating
-state. Treat `docs/implementation-notes.md` the same way when a project uses it:
+Files such as `sdad-state.yaml`, `next-task.md`, `review-findings.md`, the
+state-declared current handoff, and `docs/TODO-Open-Items.md` should stay short
+enough to read as active operating state. A `save-state.md` file is state-v1
+migration input only. Treat `docs/implementation-notes.md` the same way when a
+project uses it:
 it is current decision context, not a permanent thought journal.
 
 If a live-state file becomes long, repetitive, or hard to audit:

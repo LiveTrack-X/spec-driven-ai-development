@@ -49,7 +49,7 @@ Use guidance when the rule requires judgment:
 - domain vocabulary,
 - review posture,
 - source-of-truth order,
-- owner checkpoint criteria,
+- owner-gate and acceptance criteria,
 - when to create an ADR instead of an implementation note.
 
 Use enforcement when the behavior must be deterministic:
@@ -110,7 +110,7 @@ project/
   scripts/
     validators or release checks
   review-findings.md
-  save-state.md
+  docs/sdad/handoffs/YYYY-MM-DD-topic.md  # optional, state-declared
 ```
 
 Add routed rules, skills, hooks, CI jobs, or agent workflows only when repeated
@@ -150,7 +150,7 @@ The checkup is a report-first routine. It may recommend:
 
 Report-only checkup output can be evidence-ready when it lists inspected
 surfaces, proposed changes, expected context savings or routing benefit, and
-risks. Applying the changes is a separate owner checkpoint whenever it changes
+risks. Applying the changes is a separate owner decision whenever it changes
 installed tools, permissions, hooks, auto mode, source-of-truth routing,
 enforced guarantees, or default access to local/private data.
 
@@ -165,7 +165,7 @@ evidence by itself.
 
 Evidence-ready still requires changed files, checks, relevant docs reviewed,
 known limits, and risk status for the active packet. Owner-accepted still
-requires the owner checkpoint or delegated acceptance policy. A new control
+requires owner acceptance or a delegated acceptance policy. A new control
 surface is only adopted when the owner can see what behavior changed, what is
 enforced, what remains guidance, and how to roll it back.
 
@@ -181,7 +181,7 @@ Before adopting this pattern, answer:
 - Where does reviewed project memory live?
 - Which generated, private, local, log, dependency, or evidence surfaces must
   stay out of default AI context?
-- What owner checkpoint accepts the new structure?
+- What owner decision accepts the new structure?
 
 If these answers create more active docs than the owner can review, reduce the
 scope. SDAD control surfaces should make the project easier to supervise, not

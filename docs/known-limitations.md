@@ -1,137 +1,129 @@
 # Known Limitations And Adoption Notes
 
-This page names the current limits of SPEC-Driven AI Development so teams can
-adopt it deliberately instead of treating the package as stronger than it is.
+SDAD Protocol is a repository-local operating protocol. It improves the
+visibility and structural consistency of state, validation, owner control,
+decisions, and continuity; it does not make AI output correct by itself.
 
-## Enforcement Scope
+## Four Control Layers
 
-SDAD separates guidance from guarantees. Adapter files, prompts, templates, and
-field notes can steer an AI coding session, but they cannot enforce behavior by
-themselves. Non-negotiable behavior still belongs in CI, required tests, hooks,
-permissions, deny rules, branch protection, release gates, or deployment
-controls.
+Keep these layers distinct:
 
-Tool-provider policies, sandboxes, permissions, and trusted-folder controls may
-add useful boundaries, but provider guidance is not enforcement of SDAD's
-completion, evidence, or owner-gate contract.
+| Layer | What it can establish | What it cannot establish |
+| --- | --- | --- |
+| Guidance | Markdown records the intended route and rules | technical blocking |
+| Deterministic validation | Doctor, tests, and CI check defined contracts | product correctness outside their checks |
+| Technical enforcement | permissions, hooks, sandboxing, deny rules, branch protection, release/deploy controls constrain actions | owner acceptance or implementation quality |
+| Owner decision | authorization and acceptance record human control | stronger evidence than was actually collected |
 
-The repository validator protects important documentation, template, adapter,
-and link contracts. It is not a substitute for downstream product tests,
-security review, or owner acceptance.
+Adapter files, prompts, templates, and state are recorded authority or guidance,
+not technical enforcement. Put non-negotiable blocking in the applicable
+permissions, hooks, sandbox, CI, branch protection, release, or deployment
+surface. Tool success and provider enforcement do not prove completion.
+Markdown does not technically block tools.
 
 ## Doctor Diagnostic Boundary
 
-`sdad doctor` is checkout-only in 3.1.0 and is a read-only diagnostic. Adapter
-installers and no-clone setup do not install it in downstream projects.
+`sdad doctor` remains checkout-only in 3.2.0. Adapter and no-clone installation
+do not install a standalone Doctor into downstream projects. An operator must
+resolve a trusted checkout and run:
 
-Doctor checks the state contract and selected control-plane coherence.
-Doctor does not execute validation commands. It does not mutate or fix project files.
-It does not use the network. A missing state is a completed finding rather than
-proof of installation or invocation failure.
+```text
+python <SDAD_CHECKOUT>/scripts/sdad.py --version
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.0 [--json] [--strict]
+```
 
-A clean report is not proof of correctness, effectiveness, release approval, or owner acceptance.
-Doctor cannot inspect runtime behavior beyond its bounded files, establish that
-declared validation commands ran, resolve ambiguous prose, or replace product
-tests, security review, release gates, or owner judgment.
+`--require-version 3.2.0` proves only that the invoked program reports the exact
+required Doctor version. It does not prove a clean checkout, hash provenance,
+command execution, or product correctness. A fork or dirty checkout may retain
+the same version string. Use a shell-neutral wrapper that resolves an
+operator-configured checkout and always supplies `--strict --require-version
+3.2.0` when a repeatable local command is needed.
 
-## Regression Evidence And Method Claims
+Doctor is a read-only structural diagnostic. It checks the declared state and
+selected control-plane coherence. It does not execute validation commands,
+mutate or fix project files, use the network, resolve ambiguous prose, inspect
+the full runtime, or replace product tests, security review, release gates, and
+owner judgment. Missing state is a completed finding, not an invocation crash.
 
-Repository regression tests do not establish SDAD effectiveness or comparative
-gains in productivity, quality, safety, cost, or completion rate. They establish
-only the package behaviors and contracts they exercise. Across studies, mixed productivity results are not consensus:
-task shape, tool generation, experience, repository, and chosen metric can
-change the observed outcome.
+Doctor version, state schema version, and JSON report schema version are
+separate contracts. Existing state-v1 calls keep report schema 1 unless the
+caller opts into the guarded/new report lane; guarded state-v2 calls use report
+schema 2. JSON `root` and `state_version` may be null when project or state
+identity is unavailable.
 
-The primary sources in [Research Foundations](research-foundations.md) inform
-bounded design decisions; they do not validate SDAD as a method. Public claims
-need representative tasks, held-out or fresh evaluation, repeated trials when
-nondeterminism matters, semantic review, and explicit limitations. A benchmark,
-vendor guide, subjective speed report, or copied percentage is not sufficient.
+## Tool-Native Features Are Not Protocol Authority
+
+Provider session history, checkpoints, plans, memory displays, task status, and
+tool-native doctor/health commands may be useful convenience or diagnostics.
+They are not `sdad-state.yaml`, the state-declared current handoff, or `sdad
+doctor`, and they do not replace SDAD owner gates. When a provider surface and
+repository state disagree, inspect current source/tests and the repository
+authority chain before proceeding.
+Tool-native session and checkpoint diagnostics are not SDAD authority.
+
+## Evidence Claim Ladder
+
+- Doctor green supports only the claim that its structural checks passed.
+- A task benchmark supports only the specific task under its recorded conditions.
+- Only a controlled comparison supports an improvement claim for SDAD 3.2 over
+  another baseline.
+
+Repository unit/regression tests establish only the package behaviors and
+contracts they exercise. They do not establish general gains in productivity,
+quality, safety, cost, or completion rate. Public method claims need
+representative tasks, fresh or held-out evaluation, semantic review, repeated
+trials when nondeterminism matters, and explicit limitations.
 
 ## Validator Maintainability
 
-`scripts/validate_repo.py` is intentionally strict and currently acts as the
-main repository contract test. Agent-startup budgets, state keys, routes, and
-README entry points now live in the pure
-`scripts/sdad_validator/agent_experience.py` module. Adapter parity is checked
-by `scripts/render_agent_surfaces.py`. Focused tests also cover Markdown/MDC
-links, unittest discovery, Action pins, install-source hashes, and the diagram
-CSP. The remaining legacy documentation validator is still a large change
-surface. When changing method docs, templates, or required phrases:
+`scripts/validate_repo.py` is intentionally strict and remains a large change
+surface. Pure contract modules and focused tests cover state keys, routes,
+agent-startup budgets, adapter parity, links, Action pins, install hashes, and
+other stable interfaces. Explanatory prose should be checked by concepts or
+section structure; exact strings should be reserved for schemas, enums,
+filenames, headings, packet markers, finding IDs, and synchronized copy prompts.
 
-- keep changes small and tied to a named SDAD surface,
-- add or update focused tests when behavior changes,
-- run `python scripts/validate_repo.py`,
-- run `python -m unittest discover -s tests`,
-- run `git diff --check` before release.
+Before release run at least:
 
-Remaining improvement: continue splitting `validate_templates()` by stable
-semantic surface and replace prose snippets with headings, schemas, routes, or
-manifests where that reduces maintenance without weakening checks.
+```text
+python scripts/render_agent_surfaces.py --check
+python scripts/validate_repo.py
+python -m unittest discover -s tests -v
+git diff --check
+```
 
 ## Installer Test Coverage
 
-This repository includes smoke tests for the local adapter and Codex skill
-installers. They cover every adapter route, expected file placement, overwrite
-refusal, forced replacement, linked-path rejection, hard-link isolation,
-Windows read-only targets, full skill payload parity, and transaction cleanup
-on Bash and PowerShell. CI runs the suite on Ubuntu and Windows. The tests still
-do not prove every shell, policy, concurrent filesystem change, path, or
-permission edge case.
-
-The v3.1.0 local verification run reported three Windows privilege-dependent skips.
-They cover permission or link scenarios that this environment could not create.
-Those skips are environment limits, not passing evidence for the skipped cases;
-the remaining platform matrix belongs to CI and appropriately privileged hosts.
-
-Automated repository tests live under `tests/`; do not create a separate
-`test/` tree.
-
-Teams with stricter deployment requirements should add their own install smoke
-tests in the target environment, especially for locked-down Windows policies,
-managed developer machines, WSL boundary cases, and paths with organization
-specific access controls.
+Local smoke tests cover adapter placement, overwrite refusal, forced
+replacement, linked-path rejection, hard-link isolation, Windows read-only
+targets, full skill payload parity, and transaction cleanup on Bash and
+PowerShell. CI runs on Ubuntu and Windows. These tests do not prove every shell,
+policy, concurrent filesystem change, path, permission, WSL, or managed-device
+edge case. Automated repository tests live under `tests/`; do not create a
+separate `test/` tree.
 
 ## Raw URL Reproducibility
 
-The executable no-clone instructions pin the stable v3.1.0 baseline at the full
-40-character commit SHA `1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa`. Each
-downloaded adapter is verified with SHA-256. A commit ID is immutable; a readable
-tag can move unless repository policy makes it immutable. The one-paste installers
-download to a temporary file, verify it,
-and only then publish it without clobbering a target that appeared concurrently.
+Until the 3.2 release metadata rotation, the executable no-clone instructions
+remain pinned to the stable v3.1.0 baseline at full 40-character commit SHA
+`1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa`. Each downloaded adapter is verified
+with SHA-256. `install-sources.json` is the revision/path/hash contract.
 
-That pinned baseline declares `progressive_control_plane=true` and includes the
-compact state -> INDEX -> on-demand runtime. No-clone users should still follow
-the installed baseline rather than combine it with changing `main` content. The
-current working tree must not be used as an integrity pin.
-
-`install-sources.json` is the single revision/path/hash contract. Repository
-validation recomputes every listed hash from the pinned Git object and checks
-that the user-facing install surfaces carry the matching URL and checksum.
-
-Use `/main/` only when changing, unpinned instructions are intentional. Record
-the chosen revision in setup notes or a handoff. Do not mix `main` and a pinned
-revision in the same install unless the difference is intentional and
-documented. Repository access, TLS, local trust stores, and a compromised
-maintainer account remain outside what a checksum published in this repository
-can fully protect.
+A commit ID is immutable; a tag is readable but may move unless repository
+policy prevents it. Checksums published in the same repository cannot protect
+against every maintainer-account, TLS, local trust-store, or repository-access
+failure. Do not mix `main` and a pinned revision unless the difference is
+intentional and recorded. The current working tree is never an integrity pin.
 
 ## Collaboration Signals
 
-This public repository may not expose a large issue or pull-request history.
-Use `CHANGELOG.md`, field notes, release notes, and the current docs as the
-primary public design record. Teams adopting SDAD should keep their own
-roadmap, known limitations, ADRs, review findings, and owner decisions in the
-target project.
+Public issue and pull-request history may be sparse. Use current code and docs,
+`CHANGELOG.md`, release notes, field notes, active findings, and ADRs as the
+public record. Historical field tests describe the version and conditions they
+actually exercised; they are not current 3.2 behavior claims.
 
 ## Example Depth
 
-`examples/minimal-project/` demonstrates the minimum control-file topology. It
-is not a full worked product example. Use it to understand file placement and
-state-to-INDEX progressive routing, then create project-specific SPEC, TODO,
-evidence, and handoff content from the real product context.
-
-Future improvement: add a compact worked example that closes one small finding,
-records implementation evidence, and shows the owner checkpoint without turning
-the example into a large sample application.
+`examples/minimal-project/` demonstrates the minimum topology, not a complete
+product or proof of effectiveness. Real adopters must create project-specific
+SPEC, TODO, validation, evidence, owner-gate, and optional handoff records.

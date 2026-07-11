@@ -3,15 +3,14 @@
 Status: Active reference
 Scope: Decide whether SPEC-driven AI development is appropriate for a project
 
-Use this assessment before bootstrapping a new project. Score each question:
-
-- `0`: no / not relevant
-- `1`: somewhat / likely soon
-- `2`: yes / already happening
+Use this assessment before bootstrapping a new project. The AI should infer the
+conditions from the request and repository first. Ask at most one question only
+when its answer would change the recommended scale or an owner gate. The owner
+can override the recommendation.
 
 ## 30-Second Scale Gate
 
-Use this quick gate before the full assessment:
+Infer these conditions before the full assessment:
 
 1. Will this take more than one AI session?
 2. Will you come back to this project later?
@@ -25,33 +24,33 @@ Then check the product evidence flag:
 - Will product, hardware, compatibility, packaging, remote tester, external lab,
   or release claims need evidence stronger than local software tests?
 
-Override rules beat raw yes-counts:
+Use these defaults:
 
-| Trigger | Recommendation |
-|---|---|
-| 0 yes | Use a one-shot prompt. Do not install SDAD files. |
-| 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | Use [Mini SDAD](mini-sdad.md). |
-| Q4=yes or 3 yes total | Use Standard SDAD with core control files. |
-| Q5=yes, but the packet only inspects, documents, or tests the risk area | Use Standard SDAD minimum, even if it is the only yes. |
-| Q5=yes and the packet changes, accepts, or executes the gate | Use Full SDAD with review, conditional ADRs, and risk gates. |
-| 4-5 yes | Use Full SDAD with review, conditional ADRs, and active risk gates. |
+| Observed need | Recommendation |
+| --- | --- |
+| Current request only, no persistent control needed | One-shot |
+| One small reviewable outcome, one instruction file is sufficient | [Mini SDAD](mini-sdad.md), execution boundary `unit` |
+| Persistent multi-session packet state, ledgers, or routing | Standard, execution boundary `packet` |
+| Standard controls plus protected release/production/migration/data/security/destructive actions | Full, execution boundary `packet` plus applicable owner gates |
 
-When unsure, choose the smaller scale only if no Q5 gate is active. Escalate
-when repeated pain, context loss, risk, or multiple sessions appear.
+Scale determines the persistent control surface, execution scope determines
+`unit` or `packet`, and owner gates determine where protected actions stop.
+Work that only inspects, documents, or tests a protected risk area can remain
+Standard; work that changes, accepts, or executes the protected action uses Full
+with the applicable owner gate.
 
-A yes to the product evidence flag is not automatically Full SDAD, but it does
-trigger the relevant product evidence templates. Use Standard SDAD minimum when
-those templates must persist across sessions. Changing, accepting, or executing
-a Q5 release, production, user-data, auth, money, migration,
-destructive-action, or rollback gate still requires Full SDAD.
+A positive product-evidence flag is not automatically Full. It triggers only the
+relevant create-on-demand evidence templates. Use Standard when those records
+must persist; use Full when the packet also changes, accepts, or executes a
+protected release, production, user-data, auth, money, migration, security,
+destructive-action, or rollback gate.
 
 Maintenance cost matters: choose Standard or Full SDAD only when you can keep
 `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`, `review-findings.md`, and
-rules/ADRs current at the end of each loop. If the project uses `save-state.md`,
-it must also be updated when sessions pause, handoff is expected, direction
-changes, blocked/partial/unverified state remains, or context would be expensive
-to reconstruct. If that cost is too high, use [Mini SDAD](mini-sdad.md) or a
-one-shot prompt.
+rules/ADRs current at packet boundaries. If cross-session continuity is needed,
+state v2 may declare one optional current handoff. Existing `save-state.md` is
+state-v1 migration input only. If that cost is too high, use
+[Mini SDAD](mini-sdad.md) or a one-shot prompt.
 
 ## Advanced Extension Fit Gate
 
@@ -110,6 +109,10 @@ For advisor, worker, and loop routing without harness search, use
 
 ## Questions
 
+Use this optional detailed score only when the quick inference is genuinely
+ambiguous: `0` no/not relevant, `1` somewhat/likely soon, `2` yes/already
+happening. Do not force the owner through every question.
+
 1. Will more than one AI session, model, or tool work on the project?
 2. Does the owner need to supervise direction without writing most code directly?
 3. Will the project have active SPECs, historical SPECs, product notes, or archived plans?
@@ -149,13 +152,14 @@ Project:
 Score:
 Fit:
 Recommended control files:
-Required clarification checkpoints or glossary route:
+Unresolved scale/gate question or glossary route:
 Required review roles:
 Risk gates needed:
 Advanced extension fit gate needed:
 Advanced extension unknowns/blockers:
 Owner decisions needed before implementation:
-Recommended autonomy level:
+Recommended execution scope:
+Applicable owner gates:
 First work packet:
 Review-worthy units inside packet:
 Implementation discipline risks:
