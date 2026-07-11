@@ -5,15 +5,28 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from ..diagnostics import Finding, Severity
-from ..state_contract import ACTIVE_PACKET_STATUSES
+from ..state_contract import (
+    ACTIVE_PACKET_STATUSES,
+    is_normalized_relative_posix_path,
+    is_valid_v2_packet_id,
+)
 
 if TYPE_CHECKING:
     from ..doctor import DoctorContext
 
 
 STATE_PATH = "sdad-state.yaml"
+INDEX_PATH = "docs/INDEX.md"
 REVIEW_PATH = "review-findings.md"
 TODO_PATH = "docs/TODO-Open-Items.md"
+HANDOFF_HEADING = "## 1. Session Identity"
+HANDOFF_PREFIX = "- Active packet:"
+INDEX_HEADING = "## Active Catalog"
+INDEX_SOURCE_PREFIX = "- Current handoff:"
+INDEX_SOURCE_LINE = (
+    "- Current handoff: use "
+    "`../sdad-state.yaml#current_handoff` when declared."
+)
 REVIEW_HEADING = "## Active Findings"
 TODO_HEADINGS = (
     "## Active Work",
@@ -35,6 +48,7 @@ _CLASSIFIED_REVIEW = re.compile(
 )
 _UNCLASSIFIED_REVIEW = re.compile(r"^- \[packet:([^\]]+)\] .+$")
 _LINKED_TODO = re.compile(r"^- \[ \] \[packet:([^\]]+)\] .+$")
+_HANDOFF_MARKER = re.compile(r"^- Active packet: \[packet:([^\]]+)\]$")
 
 
 @dataclass(frozen=True)
@@ -44,16 +58,7 @@ class _ActiveItem:
     critical: bool = False
 
 
-def _read_optional_document(context: DoctorContext, path: str) -> str | None:
-    assert context.state_result.snapshot is not None
-    declared = any(
-        route.value == path for route in context.state_result.snapshot.routed_docs
-    )
-    inspection = context.view.inspect(path)
-    if not declared and inspection.status == "missing":
-        return None
-    if inspection.status != "ok":
-        return None
+def _read_control_document(context: DoctorContext, path: str) -> str | None:
     try:
         read_result = context.view.read_bytes(
             path,
@@ -67,6 +72,19 @@ def _read_optional_document(context: DoctorContext, path: str) -> str | None:
         return read_result.data.decode("utf-8")
     except UnicodeDecodeError:
         return None
+
+
+def _read_optional_document(context: DoctorContext, path: str) -> str | None:
+    assert context.state_result.snapshot is not None
+    declared = any(
+        route.value == path for route in context.state_result.snapshot.routed_docs
+    )
+    inspection = context.view.inspect(path)
+    if not declared and inspection.status == "missing":
+        return None
+    if inspection.status != "ok":
+        return None
+    return _read_control_document(context, path)
 
 
 def _section_lines(
@@ -154,6 +172,21 @@ def _finding(
     evidence: str,
 ) -> Finding:
     messages = {
+        "handoff.structure.missing-marker": (
+            "The current handoff is missing its canonical active-packet marker."
+        ),
+        "handoff.structure.duplicate-marker": (
+            "The current handoff contains multiple active-packet marker candidates."
+        ),
+        "handoff.structure.invalid-marker": (
+            "The current handoff active-packet marker is malformed."
+        ),
+        "handoff.packet-mismatch": (
+            "The current handoff marker does not match the active packet."
+        ),
+        "index.current-handoff-source": (
+            "The INDEX current-handoff source is missing, duplicate, or noncanonical."
+        ),
         "review.structure.missing-section": "The review document is missing its exact active section.",
         "todo.structure.missing-section": "The TODO document is missing a required exact section.",
         "packet.open-finding": "An active review finding remains for the current packet.",
@@ -163,6 +196,25 @@ def _finding(
         "packet.marker.unrepresentable": "The active packet ID cannot be represented by the marker grammar.",
     }
     remediations = {
+        "handoff.structure.missing-marker": (
+            "Add one canonical active-packet marker to the first exact "
+            "Session Identity section."
+        ),
+        "handoff.structure.duplicate-marker": (
+            "Keep exactly one active-packet marker in the first exact "
+            "Session Identity section."
+        ),
+        "handoff.structure.invalid-marker": (
+            "Use the exact - Active packet: [packet:ID] marker with a valid "
+            "packet ID."
+        ),
+        "handoff.packet-mismatch": (
+            "Update or replace the handoff so its marker matches active_packet.id."
+        ),
+        "index.current-handoff-source": (
+            "Use the canonical current-handoff source line in the first exact "
+            "Active Catalog section."
+        ),
         "review.structure.missing-section": "Add the exact ## Active Findings section before diagnosing its contents.",
         "todo.structure.missing-section": "Add both exact active TODO section headings before diagnosing their contents.",
         "packet.open-finding": "Resolve, close, or reconcile the linked finding with packet status.",
@@ -180,6 +232,135 @@ def _finding(
         evidence=evidence,
         remediation=remediations[finding_id],
     )
+
+
+def _handoff_findings(
+    context: DoctorContext,
+    packet_id: str | None,
+) -> list[Finding]:
+    if context.state_result.state_version != 2:
+        return []
+    snapshot = context.state_result.snapshot
+    if snapshot is None:
+        return []
+    current_handoff = snapshot.scalar("current_handoff")
+    if current_handoff is None or not is_normalized_relative_posix_path(
+        current_handoff.value
+    ):
+        return []
+
+    path = current_handoff.value
+    text = _read_control_document(context, path)
+    if text is None:
+        return []
+    section = _section_lines(text.splitlines(), HANDOFF_HEADING)
+    if section is None:
+        return [
+            _finding(
+                "handoff.structure.missing-marker",
+                Severity.ERROR,
+                path=path,
+                line=None,
+                evidence=f"missing exact section: {HANDOFF_HEADING}",
+            )
+        ]
+
+    candidates = [
+        entry for entry in section if entry[1].startswith(HANDOFF_PREFIX)
+    ]
+    if not candidates:
+        return [
+            _finding(
+                "handoff.structure.missing-marker",
+                Severity.ERROR,
+                path=path,
+                line=None,
+                evidence=(
+                    "no active-packet marker candidate in first "
+                    "Session Identity section"
+                ),
+            )
+        ]
+    if len(candidates) > 1:
+        return [
+            _finding(
+                "handoff.structure.duplicate-marker",
+                Severity.ERROR,
+                path=path,
+                line=candidates[0][0],
+                evidence=f"found {len(candidates)} active-packet marker candidates",
+            )
+        ]
+
+    line_number, candidate = candidates[0]
+    marker = _HANDOFF_MARKER.fullmatch(candidate)
+    marker_id = marker.group(1) if marker is not None else None
+    if marker_id is None or not is_valid_v2_packet_id(marker_id):
+        return [
+            _finding(
+                "handoff.structure.invalid-marker",
+                Severity.ERROR,
+                path=path,
+                line=line_number,
+                evidence=f"invalid active-packet marker: {candidate}",
+            )
+        ]
+    if (
+        packet_id is not None
+        and is_valid_v2_packet_id(packet_id)
+        and marker_id != packet_id
+    ):
+        return [
+            _finding(
+                "handoff.packet-mismatch",
+                Severity.ERROR,
+                path=path,
+                line=line_number,
+                evidence=f"handoff packet {marker_id}; active packet {packet_id}",
+            )
+        ]
+    return []
+
+
+def _index_source_findings(context: DoctorContext) -> list[Finding]:
+    if context.state_result.state_version != 2:
+        return []
+    text = _read_control_document(context, INDEX_PATH)
+    if text is None:
+        return []
+
+    section = _section_lines(text.splitlines(), INDEX_HEADING)
+    candidates = (
+        []
+        if section is None
+        else [
+            entry
+            for entry in section
+            if entry[1].startswith(INDEX_SOURCE_PREFIX)
+        ]
+    )
+    if len(candidates) == 1 and candidates[0][1] == INDEX_SOURCE_LINE:
+        return []
+
+    if section is None:
+        evidence = f"missing exact section: {INDEX_HEADING}"
+    elif not candidates:
+        evidence = (
+            "current-handoff source is missing from first Active Catalog section"
+        )
+    elif len(candidates) > 1:
+        evidence = f"found {len(candidates)} current-handoff source candidates"
+    else:
+        evidence = f"noncanonical current-handoff source: {candidates[0][1]}"
+    return [
+        _finding(
+            "index.current-handoff-source",
+            Severity.WARNING,
+            path=INDEX_PATH,
+            line=candidates[0][0] if candidates else None,
+            evidence=evidence,
+        )
+    ]
 
 
 def _coherence_findings(
@@ -266,6 +447,9 @@ class ReviewStateCheck:
                     evidence=f"active_packet.id contains ]: {packet_id}",
                 )
             )
+
+        findings.extend(_index_source_findings(context))
+        findings.extend(_handoff_findings(context, packet_id))
 
         review_text = _read_optional_document(context, REVIEW_PATH)
         todo_text = _read_optional_document(context, TODO_PATH)

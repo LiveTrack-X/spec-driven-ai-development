@@ -124,7 +124,15 @@ V2_INDEX_TEXT = """# Project Documentation Router
 """
 
 V2_ONLY_FINDING_IDS = frozenset(
-    {"handoff.path.too-large", "validation.packet-mismatch"}
+    {
+        "handoff.packet-mismatch",
+        "handoff.path.too-large",
+        "handoff.structure.duplicate-marker",
+        "handoff.structure.invalid-marker",
+        "handoff.structure.missing-marker",
+        "index.current-handoff-source",
+        "validation.packet-mismatch",
+    }
 )
 
 
@@ -973,6 +981,22 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
             doctor_module.FIXED_FINDING_SEVERITIES["handoff.path.too-large"],
             Severity.ERROR,
         )
+        for finding_id in (
+            "handoff.structure.missing-marker",
+            "handoff.structure.duplicate-marker",
+            "handoff.structure.invalid-marker",
+            "handoff.packet-mismatch",
+        ):
+            self.assertEqual(
+                doctor_module.FIXED_FINDING_SEVERITIES[finding_id],
+                Severity.ERROR,
+            )
+        self.assertEqual(
+            doctor_module.FIXED_FINDING_SEVERITIES[
+                "index.current-handoff-source"
+            ],
+            Severity.WARNING,
+        )
 
     def test_engine_rejects_reordered_checks_and_fixed_severity_breaches(self) -> None:
         from sdad_validator import checks
@@ -1110,6 +1134,18 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
             f"{finding_id} for {path} did not have severity {severity}: {matches}",
         )
 
+    def assertNoHandoffSemanticFindings(self, report: DoctorReport) -> None:
+        semantic_ids = {
+            "handoff.structure.missing-marker",
+            "handoff.structure.duplicate-marker",
+            "handoff.structure.invalid-marker",
+            "handoff.packet-mismatch",
+        }
+        self.assertFalse(
+            semantic_ids & {finding.id for finding in report.findings},
+            f"unexpected handoff semantic cascade: {report.findings}",
+        )
+
     def test_v2_index_missing_is_an_error(self) -> None:
         report = diagnose(
             valid_v2_state(),
@@ -1122,6 +1158,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
             "docs/INDEX.md",
             Severity.ERROR,
         )
+        self.assertNotFinding(report, "index.current-handoff-source")
 
     def test_v2_index_not_file_is_an_error(self) -> None:
         report = diagnose(
@@ -1135,6 +1172,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
             "docs/INDEX.md",
             Severity.ERROR,
         )
+        self.assertNotFinding(report, "index.current-handoff-source")
 
     def test_v2_index_outside_root_is_an_error(self) -> None:
         report = diagnose(
@@ -1148,6 +1186,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
             "docs/INDEX.md",
             Severity.ERROR,
         )
+        self.assertNotFinding(report, "index.current-handoff-source")
 
     def test_v2_index_unreadable_is_an_error(self) -> None:
         report = diagnose(
@@ -1161,6 +1200,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
             "docs/INDEX.md",
             Severity.ERROR,
         )
+        self.assertNotFinding(report, "index.current-handoff-source")
 
     def test_v2_index_invalid_utf8_is_an_error(self) -> None:
         report = diagnose(
@@ -1174,6 +1214,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
             "docs/INDEX.md",
             Severity.ERROR,
         )
+        self.assertNotFinding(report, "index.current-handoff-source")
 
     def test_v2_index_oversized_is_a_route_warning(self) -> None:
         report = diagnose(
@@ -1187,6 +1228,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
             "docs/INDEX.md",
             Severity.WARNING,
         )
+        self.assertNotFinding(report, "index.current-handoff-source")
 
     def test_current_handoff_missing_is_an_error(self) -> None:
         path = "docs/sdad/handoffs/current.md"
@@ -1196,6 +1238,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
         )
 
         self.assertPathFinding(report, "path.missing", path, Severity.ERROR)
+        self.assertNoHandoffSemanticFindings(report)
 
     def test_current_handoff_not_file_is_an_error(self) -> None:
         path = "docs/sdad/handoffs/current.md"
@@ -1205,6 +1248,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
         )
 
         self.assertPathFinding(report, "path.not-file", path, Severity.ERROR)
+        self.assertNoHandoffSemanticFindings(report)
 
     def test_current_handoff_outside_root_is_an_error(self) -> None:
         path = "docs/sdad/handoffs/current.md"
@@ -1214,6 +1258,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
         )
 
         self.assertPathFinding(report, "path.outside-root", path, Severity.ERROR)
+        self.assertNoHandoffSemanticFindings(report)
 
     def test_current_handoff_unreadable_is_an_error(self) -> None:
         path = "docs/sdad/handoffs/current.md"
@@ -1223,6 +1268,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
         )
 
         self.assertPathFinding(report, "path.unreadable", path, Severity.ERROR)
+        self.assertNoHandoffSemanticFindings(report)
 
     def test_current_handoff_invalid_utf8_is_an_error(self) -> None:
         path = "docs/sdad/handoffs/current.md"
@@ -1237,6 +1283,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
             path,
             Severity.ERROR,
         )
+        self.assertNoHandoffSemanticFindings(report)
 
     def test_oversized_current_handoff_is_an_error_not_a_route_warning(self) -> None:
         path = "docs/sdad/handoffs/current.md"
@@ -1251,6 +1298,7 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
 
         self.assertFinding(report, "handoff.path.too-large", Severity.ERROR)
         self.assertNotFinding(report, "path.too-large")
+        self.assertNoHandoffSemanticFindings(report)
 
     def test_routed_current_handoff_uses_one_physical_bounded_read(self) -> None:
         path = "docs/sdad/handoffs/current.md"
@@ -1269,6 +1317,125 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
 
         self.assertEqual(report.error_count, 0)
         self.assertEqual(view.read_counts[path], 1)
+
+    def test_handoff_marker_precedence_emits_one_finding(self) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        cases = (
+            ("# Handoff\n", "handoff.structure.missing-marker"),
+            (
+                "## 1. Session Identity\n\nNo marker.\n",
+                "handoff.structure.missing-marker",
+            ),
+            (
+                "## 1. Session Identity\n\nNo marker.\n\n"
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:WP-001]\n",
+                "handoff.structure.missing-marker",
+            ),
+            (
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:WP-001]\n"
+                "- Active packet: [packet:WP-001]\n",
+                "handoff.structure.duplicate-marker",
+            ),
+            (
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:bad id]\n",
+                "handoff.structure.invalid-marker",
+            ),
+            (
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:WP-OLD]\n",
+                "handoff.packet-mismatch",
+            ),
+            (
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:WP-001]\n",
+                None,
+            ),
+        )
+
+        for text, expected in cases:
+            with self.subTest(expected=expected):
+                report = diagnose(
+                    valid_v2_state(current_handoff=path),
+                    files={path: text},
+                )
+
+                ids = [
+                    finding.id
+                    for finding in report.findings
+                    if finding.path == path
+                ]
+                self.assertEqual(ids, [] if expected is None else [expected])
+
+    def test_index_source_line_uses_first_exact_section(self) -> None:
+        source = (
+            "- Current handoff: use "
+            "`../sdad-state.yaml#current_handoff` when declared."
+        )
+        cases = (
+            (
+                "## Active Catalog\n\nNo source.\n\n"
+                "## Active Catalog\n\n"
+                f"{source}\n",
+                True,
+            ),
+            (
+                "## Active Catalog\n\n"
+                f"{source}\n{source}\n",
+                True,
+            ),
+            (
+                "## Active Catalog\n\n"
+                "- Current handoff: docs/sdad/handoffs/old.md\n",
+                True,
+            ),
+            (f"## Active Catalog\n\n{source}\n", False),
+        )
+
+        for text, should_warn in cases:
+            with self.subTest(should_warn=should_warn, text=text):
+                report = diagnose(
+                    valid_v2_state(),
+                    files={"docs/INDEX.md": text},
+                )
+                matches = [
+                    finding
+                    for finding in report.findings
+                    if finding.id == "index.current-handoff-source"
+                ]
+
+                self.assertEqual(len(matches), int(should_warn))
+                if should_warn:
+                    self.assertIs(matches[0].severity, Severity.WARNING)
+
+    def test_v1_never_runs_handoff_or_index_semantics(self) -> None:
+        path = "docs/sdad/handoffs/current.md"
+        state = valid_state().replace(
+            "owner_gates:",
+            f"current_handoff: {path}\nowner_gates:",
+            1,
+        )
+        report = diagnose(
+            state,
+            files={
+                path: "# Missing canonical handoff marker\n",
+                "docs/INDEX.md": (
+                    "## Active Catalog\n\n"
+                    "- Current handoff: docs/sdad/handoffs/old.md\n"
+                ),
+            },
+        )
+
+        self.assertFinding(report, "state.schema.unknown-key", Severity.WARNING)
+        self.assertFalse(
+            any(
+                finding.id.startswith("handoff.")
+                or finding.id == "index.current-handoff-source"
+                for finding in report.findings
+            )
+        )
 
 
 class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):

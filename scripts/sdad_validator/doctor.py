@@ -78,7 +78,15 @@ STATE_V1_FINDING_IDS = frozenset(
     }
 )
 STATE_V2_ONLY_FINDING_IDS = frozenset(
-    {"handoff.path.too-large", "validation.packet-mismatch"}
+    {
+        "handoff.packet-mismatch",
+        "handoff.path.too-large",
+        "handoff.structure.duplicate-marker",
+        "handoff.structure.invalid-marker",
+        "handoff.structure.missing-marker",
+        "index.current-handoff-source",
+        "validation.packet-mismatch",
+    }
 )
 ALLOWED_FINDING_IDS_BY_STATE_VERSION = {
     1: STATE_V1_FINDING_IDS,
@@ -146,6 +154,7 @@ WARNING_ONLY_FINDING_IDS = frozenset(
         "state.updated.future",
         "path.too-large",
         "path.duplicate-route",
+        "index.current-handoff-source",
         "validation.unknown-key",
         "gate.q5-review",
         "review.structure.missing-section",
