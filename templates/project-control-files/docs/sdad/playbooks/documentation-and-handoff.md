@@ -4,69 +4,70 @@ Status: On demand
 Trigger: durable decision, documentation drift, close-loop maintenance, pause,
 resume, handoff, or oversized control file
 
-## Record Routing
+## One Fact, One Authoritative Home
 
-Write each fact once in the smallest authoritative surface:
+Write each fact once:
 
-- scope, behavior, non-goal, or acceptance criterion: active SPEC;
-- current or deferred work: `docs/TODO-Open-Items.md`;
-- defect, failed check, blocked gate, or unresolved risk: `review-findings.md`;
-- spec-unstated implementation decision: `docs/implementation-notes.md`;
-- hard-to-reverse surprising tradeoff: numbered ADR;
-- claim/evidence status: evidence matrix and claim registry;
-- resume-only context: `save-state.md` or current handoff.
+- requirement, behavior, non-goal, or acceptance change -> active SPEC;
+- small spec-unstated implementation decision -> implementation notes;
+- hard-to-reverse architecture decision -> numbered ADR;
+- unresolved work -> TODO or review finding;
+- current execution declaration -> `sdad-state.yaml`;
+- cross-session recovery pointers and observed results -> current handoff;
+- claim/evidence status -> the applicable evidence or claim record.
 
-Handoff and save-state provide continuity, not implementation authority. Promote
-scope, behavior, risk, claim, or acceptance decisions to SPEC, ADR, TODO,
-findings, or claim registry before implementing from them.
+A handoff links to these authorities. It does not duplicate full SPEC decisions,
+implementation notes, ADR rationale, TODOs, findings, or long command/file logs.
+
+## Routed Document Semantics
+
+`routed_docs` is an eligible current-packet selection set. Current intent chooses
+the path, heading, active section, or targeted match actually read. Membership
+never means load every listed file in full. Report only routed documents that
+were actually read.
 
 ## Control File Budget
 
-- Minimal: one changed active state/doc surface.
-- Normal: TODO/findings plus affected docs.
-- Heavy: SPEC, TODO, findings, save-state, ADR, and rules, or four or more
-  control files in one packet.
+- Minimal: one changed active state or documentation surface.
+- Normal: state plus the affected ledger or authority.
+- Heavy: four or more control files or a new durable decision record.
 
-If Heavy repeats for three packets, reassess scale and intensity. Do not create
-files solely to make the process look complete.
-
-Keep active files current and short. Move closed TODOs/findings, old evidence,
-logs, and narrative history into timestamped archives and link them. INDEX must
-remain routing-only; the rulebook must remain policy-only.
+Keep active files short. Move closed TODOs/findings and old evidence to a
+Recently Closed section or timestamped archive, then link them. Do not create a
+file solely to make the process look complete.
 
 ## Documentation Update Check
 
-At packet or handoff boundaries, check only surfaces affected by the change:
+At packet or handoff boundaries, check only affected surfaces:
 
-- behavior/configuration: README, runtime docs, canonical SPEC;
-- prompt/tool contract: prompt docs, adapter/skill, tests;
-- data/security/destructive action: policy/security docs, SPEC, open findings;
-- release/migration/version: release docs, risk playbook, SPEC;
-- public/product/hardware/package claim: evidence and claim files;
-- continuity change: state, TODO/findings, and handoff.
+- behavior/configuration -> README, runtime docs, active SPEC;
+- prompt/tool contract -> adapter or skill source, tests, affected guidance;
+- data/security/destructive action -> policy, SPEC, findings, owner gate;
+- release/migration/version -> release docs, risk playbook, SPEC;
+- public/product/hardware/package claim -> evidence and claim records;
+- continuity change -> state pointer and the compact handoff.
 
-If no update is needed, name the files checked and why. Do not claim completion
-while active control state is stale.
+If no update is needed, name the files checked and why. Do not claim an evidence
+checkpoint while current control state is stale.
 
-## Handoff
+## Current Handoff
 
-Create `docs/sdad/handoffs/YYYY-MM-DD-topic.md` before closing, replacing, or
-restarting a long session when another session must continue. Include objective,
-branch/context, scale/intensity/autonomy, packet and unit status, changed files,
-decisions, checks, docs, remaining risks, do-not-touch areas, owner decisions,
-acceptance state, next steps, and a short reactivation prompt. Link evidence by
-path or URL rather than copying transcripts.
+`current_handoff` is the latest resume checkpoint, not live state. Declare it in
+`sdad-state.yaml` only when a real recovery document exists. Read it only for
+resume or continuity intent, and verify its pointers against current repository
+truth.
 
-## Save-State Triggers
+On a packet switch, the old pointer must be removed or replaced in the same
+coherence transaction. A handoff for another packet cannot remain current.
 
-Update `save-state.md` when work pauses before acceptance, changes hands,
-direction or acceptance criteria change, blocked/partial/unverified state
-remains, or reconstruction would be expensive. Otherwise omit it or state that
-no trigger applied.
+Use `docs/sdad/handoffs/YYYY-MM-DD-topic.md`. Include only repository/branch/
+worktree/HEAD/dirty state, current goal and next action, authority paths, last
+observed validation with claim limits, open constraints/gates, and bounded
+resume instructions.
 
 ## Close-Loop Gate
 
-Before evidence-ready: run or explain routed checks; synchronize SPEC, TODO,
-findings, notes, state, and claims whose status changed; check unfinished active
-packets and generated artifacts; record residual risk; keep owner-accepted
-separate from AI-complete.
+Before an evidence checkpoint: run or explain routed checks; synchronize state
+and changed authorities; inspect unfinished active records and generated
+artifacts when relevant; record residual risk; and keep owner acceptance
+separate from evidence-ready implementation.

@@ -9,3 +9,7 @@ None currently tracked.
 ## Severity Gate
 
 Release candidates should reach Critical 0 before owner acceptance.
+
+## Recently Closed
+
+- Move resolved findings here with bounded evidence.

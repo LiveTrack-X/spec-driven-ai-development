@@ -24,10 +24,11 @@ When sources conflict, prefer:
 2. active runtime and operating documents for current controlled state;
 3. canonical SPEC for the integrated product baseline;
 4. active SPEC files for the approved slice;
-5. current handoff and save-state for continuity;
-6. product notes and external references as unpromoted input;
-7. archives and historical records as rationale;
-8. chat memory and AI confidence as hints only.
+5. `sdad-state.yaml` for the current execution declaration;
+6. the state-declared current handoff for cross-session recovery;
+7. product notes and external references as unpromoted input;
+8. archives and historical records as rationale;
+9. chat memory and AI confidence as hints only.
 
 If a SPEC spans past-to-present history, current active sections override older
 background, roadmap, and archived material. This exception resolves chronology
@@ -38,7 +39,7 @@ documentation, but it cannot choose future product scope. Owner decisions
 control direction, risk tolerance, irreversible actions, and acceptance. Record
 durable owner decisions in the appropriate active source of truth.
 
-A handoff or save-state decision is continuity until promoted. Before
+A handoff-only decision is continuity until promoted. Before
 implementation, promote anything that changes scope, acceptance criteria,
 behavior, public claims, risk, evidence, or owner acceptance to SPEC, ADR,
 claim registry, TODO, or findings.
@@ -48,7 +49,7 @@ claim registry, TODO, or findings.
 Keep these states distinct:
 
 - planned: the packet has not produced evidence;
-- AI-complete / evidence-ready: scoped implementation and checks are shown;
+- evidence-ready: scoped implementation and checks are shown;
 - software-verified: required local software evidence passed;
 - tester-ready or hardware-verified: the corresponding external evidence exists;
 - release-candidate or production-ready: every named release gate passed;
@@ -59,7 +60,7 @@ approve scope. A successful commit cannot authorize push, release, deploy,
 migration, destructive action, or risk acceptance.
 
 The AI may continue autonomously inside an approved packet. It must stop when
-scope expands, a Q5 risk or claim gate changes, an irreversible action is
+scope expands, a protected-action or claim gate changes, an irreversible action is
 required, an owner-controlled tradeoff remains unresolved, verification is
 blocked, or evidence conflicts with the requested plan.
 
@@ -117,7 +118,8 @@ Write each decision once:
 - TODO: current or deferred work;
 - review findings: defect, failed check, unresolved risk, or blocked gate;
 - claim/evidence files: allowed, qualified, or blocked claim status;
-- save-state/handoff: resume context only.
+- `sdad-state.yaml`: current execution declaration;
+- handoff: cross-session recovery pointers/results only.
 
 Do not store raw internal reasoning, mechanical edit journals, or copied logs in
 active control files. Repeated pain becomes a concise rule, playbook, test,
@@ -146,10 +148,10 @@ when the installed artifact is part of the claim.
 Load only the triggered playbook:
 
 - `sdad/playbooks/context-and-data.md`: large/private input and context recovery;
-- `sdad/playbooks/work-packets.md`: scale, autonomy, intensity, clarification;
-- `sdad/playbooks/evidence-and-risk-gates.md`: Q5, claims, parity, release;
+- `sdad/playbooks/work-packets.md`: scale, execution scope, packet, delegation;
+- `sdad/playbooks/evidence-and-risk-gates.md`: owner gates, claims, parity, release;
 - `sdad/playbooks/documentation-and-handoff.md`: record routing, budgets,
-  maintenance, save-state, and handoff;
+  maintenance, state, and handoff;
 - `sdad/playbooks/advanced-extensions.md`: harness, eval, memory, and loop fit.
 
 ## Rule Maintenance

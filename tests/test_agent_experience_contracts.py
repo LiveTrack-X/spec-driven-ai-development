@@ -47,6 +47,184 @@ def substantive_lines(text: str) -> set[str]:
 
 
 class AgentExperienceSurfaceTests(unittest.TestCase):
+    def test_task8_canonical_and_fallback_states_use_v2_identity(self) -> None:
+        canonical = read("templates/project-control-files/sdad-state.yaml")
+        minimal = read("examples/minimal-project/sdad-state.yaml")
+        starter = read("skills/ai-spec-project-start/references/starter-templates.md")
+        starter_match = re.search(
+            r"(?ms)^## Active State Schema\s+.*?^```yaml\s*\n(.*?)^```$",
+            starter,
+        )
+        self.assertIsNotNone(starter_match)
+
+        for name, state, packet_id in (
+            ("canonical", canonical, "bootstrap"),
+            ("minimal", minimal, "example"),
+            ("installed fallback", starter_match.group(1), "bootstrap"),
+        ):
+            with self.subTest(name=name):
+                self.assertIn("version: 2", state)
+                self.assertIn("scale: standard", state)
+                self.assertIn("execution_scope: packet", state)
+                self.assertIn(f"  id: {packet_id}", state)
+                self.assertIn(f"validation_for: {packet_id}", state)
+                self.assertNotRegex(state, r"(?m)^intensity:")
+                self.assertNotRegex(state, r"(?m)^autonomy:")
+                self.assertNotRegex(state, r"(?m)^current_handoff:")
+                self.assertNotIn("save-state.md", state)
+
+        self.assertIn(
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            canonical,
+        )
+        self.assertIn("eligible current-packet", canonical.lower())
+        self.assertIn("intent", canonical.lower())
+
+    def test_task8_ledgers_index_and_handoff_use_canonical_wire_formats(self) -> None:
+        source_line = (
+            "- Current handoff: use "
+            "`../sdad-state.yaml#current_handoff` when declared."
+        )
+        handoff_shape = (
+            "## 1. Session Identity\n\n"
+            "- Active packet: [packet:bootstrap]"
+        )
+
+        for path in (
+            "templates/project-control-files/docs/INDEX.md",
+            "examples/minimal-project/docs/INDEX.md",
+        ):
+            with self.subTest(path=path):
+                self.assertEqual(read(path).count(source_line), 1)
+
+        for path, packet_id in (
+            ("templates/project-control-files/docs/TODO-Open-Items.md", "bootstrap"),
+            ("examples/minimal-project/docs/TODO-Open-Items.md", "example"),
+        ):
+            content = read(path)
+            with self.subTest(path=path):
+                for heading in (
+                    "## Active Work",
+                    "## Release / Production Readiness",
+                    "## Recently Closed",
+                ):
+                    self.assertIn(heading, content)
+                active_records = re.findall(r"(?m)^- \[ \] .+$", content)
+                self.assertTrue(active_records)
+                self.assertTrue(
+                    all(f"[packet:{packet_id}]" in line for line in active_records)
+                )
+
+        review = read("templates/project-control-files/review-findings.md")
+        self.assertIn("## Active Findings", review)
+        self.assertIn("None currently tracked.", review)
+        self.assertIn("## Recently Closed", review)
+        self.assertNotRegex(review, r"(?m)^- \[[ xX]\].*None currently tracked")
+
+        handoff = read(
+            "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
+        )
+        starter = read("skills/ai-spec-project-start/references/starter-templates.md")
+        self.assertEqual(handoff.count(handoff_shape), 1)
+        self.assertIn("## Optional Current Handoff", starter)
+        self.assertEqual(starter.count(handoff_shape), 1)
+
+    def test_task8_save_state_is_legacy_only_and_absent_from_v2_routes(self) -> None:
+        save_state = read("templates/project-control-files/save-state.md")
+        self.assertIn("state-v1 migration input", save_state.lower())
+        self.assertIn("do not delete", save_state.lower())
+        self.assertIn("do not auto-migrate", save_state.lower())
+
+        for path in (
+            "templates/project-control-files/README.md",
+            "templates/project-control-files/docs/INDEX.md",
+            "templates/project-control-files/docs/Repository-Operating-Rules.md",
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "templates/project-control-files/docs/sdad/playbooks/"
+            "documentation-and-handoff.md",
+            "templates/project-control-files/docs/sdad/playbooks/"
+            "evidence-and-risk-gates.md",
+            "skills/ai-spec-project-start/references/starter-templates.md",
+        ):
+            with self.subTest(path=path):
+                self.assertNotIn("save-state.md", read(path))
+
+    def test_task8_delivery_readiness_is_optional_and_not_packet_authority(self) -> None:
+        readiness = read("templates/project-control-files/docs/work-packet-state.md")
+        self.assertTrue(readiness.startswith("# Delivery Readiness Model\n"))
+        self.assertIn("optional", readiness.lower())
+        self.assertIn("on demand", readiness.lower())
+        self.assertIn("## Conditional Owner Authorization", readiness)
+        for field in (
+            "- Decision:",
+            "- Authorized action:",
+            "- Packet:",
+            "- Conditions:",
+            "- Expires when:",
+            "- Evidence required before action:",
+        ):
+            with self.subTest(field=field):
+                self.assertEqual(readiness.count(field), 1)
+        for duplicate_authority in (
+            "active_packet:",
+            "execution_scope:",
+            "validation_for:",
+            "owner_gates:",
+        ):
+            self.assertNotIn(duplicate_authority, readiness)
+
+    def test_task8_playbooks_encode_one_loop_transition_and_targeted_routes(self) -> None:
+        packets = read(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md"
+        )
+        continuity = read(
+            "templates/project-control-files/docs/sdad/playbooks/"
+            "documentation-and-handoff.md"
+        )
+        gates = read(
+            "templates/project-control-files/docs/sdad/playbooks/"
+            "evidence-and-risk-gates.md"
+        )
+        project_readme = read("templates/project-control-files/README.md")
+
+        self.assertIn("Plan -> Route -> Implement -> Verify -> Report", packets)
+        for concept in (
+            "outcome",
+            "authority",
+            "constraints",
+            "validation",
+            "claim limits",
+            "gates and stop conditions",
+            "required report",
+        ):
+            with self.subTest(concept=concept):
+                self.assertIn(concept, packets.lower())
+
+        transition = (
+            "select next leaf",
+            "classify",
+            "review validation",
+            "update state",
+            "remove or replace",
+            "doctor strict",
+            "project checks",
+            "advance",
+            "rerun doctor",
+        )
+        positions = [packets.lower().find(token) for token in transition]
+        self.assertTrue(all(position >= 0 for position in positions), positions)
+        self.assertEqual(positions, sorted(positions))
+
+        self.assertIn("latest resume checkpoint", continuity.lower())
+        self.assertIn("not live state", continuity.lower())
+        self.assertIn("packet switch", continuity.lower())
+        self.assertRegex(continuity.lower(), r"remove(?:d)? or replace(?:d)?")
+        self.assertIn("optional", gates.lower())
+        self.assertIn("on demand", gates.lower())
+        self.assertIn("permits selection", project_readme.lower())
+        self.assertIn("never", project_readme.lower())
+        self.assertIn("full-file", project_readme.lower())
+
     def test_always_loaded_control_plane_stays_small(self) -> None:
         agents = read("templates/project-control-files/AGENTS.md")
         index = read("templates/project-control-files/docs/INDEX.md")
@@ -66,18 +244,13 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
     def test_active_state_exposes_the_minimum_routing_contract(self) -> None:
         state = read("templates/project-control-files/sdad-state.yaml")
 
-        self.assertIn(
-            "intensity: medium",
-            state,
-            "the active-state template must use the official Low/Medium/High taxonomy",
-        )
-
         for key in (
+            "version:",
             "scale:",
-            "intensity:",
-            "autonomy:",
+            "execution_scope:",
             "active_spec:",
             "active_packet:",
+            "validation_for:",
             "owner_gates:",
             "validation:",
             "routed_docs:",
@@ -85,8 +258,10 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
             with self.subTest(key=key):
                 self.assertIn(key, state)
 
-        self.assertIn("0 = ask-first", state)
-        self.assertIn("3 = session", state)
+        self.assertIn("version: 2", state)
+        self.assertIn("execution_scope: packet", state)
+        self.assertNotRegex(state, r"(?m)^intensity:")
+        self.assertNotRegex(state, r"(?m)^autonomy:")
 
     def test_project_templates_route_the_installed_tool_adapter(self) -> None:
         surfaces = (
@@ -103,12 +278,10 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         handoff = read(
             "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
         )
-        self.assertIn("Change type and routed documentation surfaces", handoff)
-        self.assertNotIn("Minimum update-set row", handoff)
-        self.assertLess(
-            handoff.find("First, load the installed tool adapter"),
-            handoff.find("Then read this current handoff only as deeply as needed"),
-        )
+        self.assertIn("## 3. Authority Pointers", handoff)
+        self.assertIn("## 4. Last Observed Validation", handoff)
+        self.assertIn("First load the installed tool adapter", handoff)
+        self.assertNotIn("## 10. Commands / Tests Run", handoff)
         self.assertIn("authorized private data", handoff)
 
         for path in (
@@ -245,7 +418,7 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
 
         for phrase in (
             "## Fresh-Context Review",
-            "Q5",
+            "protected-action",
             "release candidate",
             "fresh context",
             "review evidence, not owner acceptance",
@@ -386,28 +559,53 @@ class AgentExperienceValidatorTests(unittest.TestCase):
             "TODO-Open-Items.md\n"
             "review-findings.md\n"
             "implementation-notes.md\n"
-            "save-state.md\n"
             "sdad/playbooks/context-and-data.md\n"
             "sdad/playbooks/work-packets.md\n"
             "sdad/playbooks/evidence-and-risk-gates.md\n"
             "sdad/playbooks/documentation-and-handoff.md\n"
-            "sdad/playbooks/advanced-extensions.md\n",
+            "sdad/playbooks/advanced-extensions.md\n"
+            "- Current handoff: use "
+            "`../sdad-state.yaml#current_handoff` when declared.\n",
             encoding="utf-8",
         )
         (root / "templates/project-control-files/sdad-state.yaml").write_text(
+            "version: 2\n"
+            "updated: YYYY-MM-DD\n"
             "scale: standard\n"
-            "intensity: medium\n"
-            "autonomy: 2\n"
+            "execution_scope: packet\n"
             "active_spec: SPEC/SPEC-COMPLETE.md\n"
             "active_packet:\n"
-            "  id: packet-1\n"
+            "  id: bootstrap\n"
             "  objective: Validate the compact control plane.\n"
             "  status: not_started\n"
+            "validation_for: bootstrap\n"
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md\n"
             "owner_gates: []\n"
             "validation: []\n"
             "routed_docs: []\n",
             encoding="utf-8",
         )
+        template_files = {
+            "templates/project-control-files/docs/TODO-Open-Items.md": (
+                "## Active Work\n\n- [ ] [packet:bootstrap] Active work.\n\n"
+                "## Release / Production Readiness\n\n"
+                "- [ ] [packet:bootstrap] Release evidence.\n\n"
+                "## Recently Closed\n"
+            ),
+            "templates/project-control-files/review-findings.md": (
+                "## Active Findings\n\nNone currently tracked.\n\n"
+                "## Recently Closed\n"
+            ),
+            "templates/project-control-files/docs/sdad/handoffs/"
+            "YYYY-MM-DD-topic.md": (
+                "## 1. Session Identity\n\n"
+                "- Active packet: [packet:bootstrap]\n"
+            ),
+        }
+        for relative_path, text in template_files.items():
+            path = root / relative_path
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding="utf-8")
         (root / "README.md").write_text(
             "## Start Here\n"
             "[User guide](docs/user-guide.md)\n"
@@ -470,12 +668,14 @@ class AgentExperienceValidatorTests(unittest.TestCase):
             self.build_valid_tree(root)
             required_routes = (
                 "sdad-state.yaml SPEC/SPEC-COMPLETE.md TODO-Open-Items.md "
-                "review-findings.md implementation-notes.md save-state.md "
+                "review-findings.md implementation-notes.md "
                 "sdad/playbooks/context-and-data.md "
                 "sdad/playbooks/work-packets.md "
                 "sdad/playbooks/evidence-and-risk-gates.md "
                 "sdad/playbooks/documentation-and-handoff.md "
                 "sdad/playbooks/advanced-extensions.md "
+                "- Current handoff: use "
+                "`../sdad-state.yaml#current_handoff` when declared. "
             )
             (root / "templates/project-control-files/docs/INDEX.md").write_text(
                 required_routes + "x" * (4_001 - len(required_routes)),
@@ -505,18 +705,13 @@ class AgentExperienceValidatorTests(unittest.TestCase):
 
             self.assertEqual(
                 self.collect(root),
-                ["sdad-state.yaml missing top-level key: scale"],
+                ["Missing required state key: scale"],
             )
 
     def test_state_rejects_unknown_routing_values(self) -> None:
         cases = (
-            ("scale: standard", "scale: huge", "unsupported scale: huge"),
-            (
-                "intensity: medium",
-                "intensity: normal",
-                "unsupported intensity: normal",
-            ),
-            ("autonomy: 2", "autonomy: 9", "unsupported autonomy: 9"),
+            ("scale: standard", "scale: huge", "Unsupported scale: huge"),
+            ("execution_scope: packet", "execution_scope: session", "Unsupported execution_scope: session"),
         )
 
         for old, new, expected in cases:
@@ -529,41 +724,43 @@ class AgentExperienceValidatorTests(unittest.TestCase):
 
                 self.assertIn(expected, self.collect(root))
 
-    def test_state_accepts_every_documented_autonomy_level(self) -> None:
-        for level in ("0", "1", "2", "3", "4"):
-            with self.subTest(level=level), tempfile.TemporaryDirectory() as tmp:
+    def test_state_accepts_every_documented_execution_scope(self) -> None:
+        for scope in ("unit", "packet"):
+            with self.subTest(scope=scope), tempfile.TemporaryDirectory() as tmp:
                 root = Path(tmp)
                 self.build_valid_tree(root)
                 path = root / "templates/project-control-files/sdad-state.yaml"
                 state = path.read_text(encoding="utf-8").replace(
-                    "autonomy: 2",
-                    f"autonomy: {level}",
+                    "execution_scope: packet",
+                    f"execution_scope: {scope}",
                 )
                 path.write_text(state, encoding="utf-8")
 
-                self.assertNotIn(f"unsupported autonomy: {level}", self.collect(root))
+                self.assertNotIn(
+                    f"Unsupported execution_scope: {scope}", self.collect(root)
+                )
 
     def test_state_rejects_duplicate_keys_and_invalid_packet_contract(self) -> None:
         cases = (
             (
                 "scale: standard",
                 "scale: standard\nscale: full",
-                "sdad-state.yaml duplicate top-level key: scale",
+                "Duplicate top-level key: scale",
             ),
             (
                 "  status: not_started",
                 "  status: invented",
-                "unsupported active_packet status: invented",
+                "Unsupported active_packet status: invented",
             ),
             (
                 "  objective: Validate the compact control plane.\n",
                 "",
-                "sdad-state.yaml active_packet missing key: objective",
+                "active_packet is missing objective",
             ),
             (
                 "active_spec: SPEC/SPEC-COMPLETE.md",
                 "active_spec: ../outside.md",
-                "sdad-state.yaml active_spec must be a relative path: ../outside.md",
+                "active_spec must be a normalized repository-relative POSIX path",
             ),
         )
 
@@ -583,26 +780,26 @@ class AgentExperienceValidatorTests(unittest.TestCase):
         cases = (
             (
                 "active_packet:\n"
-                "  id: packet-1\n"
+                "  id: bootstrap\n"
                 "  objective: Validate the compact control plane.\n"
                 "  status: not_started",
                 "active_packet: nope",
-                "sdad-state.yaml active_packet must be a mapping",
+                "State key active_packet must be a mapping",
             ),
             (
                 "owner_gates: []",
                 "owner_gates: disabled",
-                "sdad-state.yaml owner_gates must be a list",
+                "State key owner_gates must be a list",
             ),
             (
                 "validation: []",
                 "validation: true",
-                "sdad-state.yaml validation must be a list",
+                "State key validation must be a list",
             ),
             (
                 "routed_docs: []",
                 "routed_docs: all",
-                "sdad-state.yaml routed_docs must be a list",
+                "State key routed_docs must be a list",
             ),
         )
 
@@ -656,7 +853,7 @@ class AgentExperienceValidatorTests(unittest.TestCase):
             self.build_valid_tree(root)
             path = root / "templates/project-control-files/docs/INDEX.md"
             path.write_text(
-                path.read_text(encoding="utf-8").replace("save-state.md\n", ""),
+                path.read_text(encoding="utf-8").replace("review-findings.md\n", ""),
                 encoding="utf-8",
             )
 
@@ -664,8 +861,25 @@ class AgentExperienceValidatorTests(unittest.TestCase):
                 self.collect(root),
                 [
                     "templates/project-control-files/docs/INDEX.md missing route: "
-                    "save-state.md"
+                    "review-findings.md"
                 ],
+            )
+
+    def test_index_requires_one_canonical_handoff_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.build_valid_tree(root)
+            path = root / "templates/project-control-files/docs/INDEX.md"
+            source = (
+                "- Current handoff: use "
+                "`../sdad-state.yaml#current_handoff` when declared.\n"
+            )
+            path.write_text(path.read_text(encoding="utf-8") + source, encoding="utf-8")
+
+            self.assertIn(
+                "templates/project-control-files/docs/INDEX.md must contain exactly "
+                "one canonical current-handoff source line",
+                self.collect(root),
             )
 
     def test_index_requires_each_on_demand_playbook_route(self) -> None:

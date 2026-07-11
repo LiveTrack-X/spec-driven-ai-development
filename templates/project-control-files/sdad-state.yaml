@@ -1,18 +1,22 @@
-version: 1
+version: 2
 updated: YYYY-MM-DD
 
-# one-shot | mini | standard | full
+# standard | full
 scale: standard
-# low | medium | high
-intensity: medium
-# 0 = ask-first, 1 = unit, 2 = work packet, 3 = session, 4 = owner-gated risk
-autonomy: 2
+# unit | packet; this boundary does not replace owner gates.
+execution_scope: packet
 
 active_spec: SPEC/SPEC-COMPLETE.md
 active_packet:
   id: bootstrap
   objective: Replace with the current evidence-ready objective.
   status: not_started
+
+# Must equal active_packet.id after the validation contract is reviewed.
+validation_for: bootstrap
+
+# Optional. Uncomment only when a current resume checkpoint actually exists.
+# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md
 
 # Keep only gates that can stop the current packet.
 owner_gates: []
@@ -22,7 +26,7 @@ validation:
   - command: Replace with the project validation command.
     proves: Replace with the claim this command supports.
 
-# List only documents needed by the current packet.
+# Eligible current-packet selections; intent chooses which targeted content to read.
 routed_docs:
   - docs/TODO-Open-Items.md
   - review-findings.md

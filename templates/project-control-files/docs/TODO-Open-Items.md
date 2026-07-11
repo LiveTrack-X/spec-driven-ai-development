@@ -12,7 +12,7 @@ Scope: Current implementation backlog only
 
 ## Active Work
 
-- [ ] Define the first active SPEC slice with evidence needed and completion condition.
+- [ ] [packet:bootstrap] Define the first active SPEC slice, evidence, and completion condition.
 
 ## Future / Deferred
 
@@ -22,4 +22,9 @@ Scope: Current implementation backlog only
 
 ## Release / Production Readiness
 
-- [ ] Define release or production evidence if this project will be shipped or deployed.
+- [ ] [packet:bootstrap] Define release or production evidence when this project will ship or deploy.
+
+## Recently Closed
+
+- Move recently completed packet records here with bounded evidence.
+- Archive older closed history when it no longer affects current decisions.

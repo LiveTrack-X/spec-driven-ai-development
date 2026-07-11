@@ -96,6 +96,21 @@ class InstallCodexSkillSmokeTests(unittest.TestCase):
                     (target / relative_path).read_bytes(),
                 )
 
+        fallback = (
+            target / "references" / "starter-templates.md"
+        ).read_text(encoding="utf-8")
+        for phrase in (
+            "version: 2",
+            "execution_scope: packet",
+            "validation_for: bootstrap",
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            "## Optional Current Handoff",
+            "## 1. Session Identity\n\n"
+            "- Active packet: [packet:bootstrap]",
+        ):
+            with self.subTest(fallback_phrase=phrase):
+                self.assertIn(phrase, fallback)
+
     def test_bash_installer_requires_force_before_replacing_existing_skill(self) -> None:
         bash = find_bash()
         if not bash:

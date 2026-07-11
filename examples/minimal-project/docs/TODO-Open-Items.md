@@ -4,8 +4,12 @@ Status: Active
 
 ## Active Work
 
-- [ ] Define the first implementation slice.
+- [ ] [packet:example] Define the first implementation slice.
 
 ## Release / Production Readiness
 
-- [ ] Define release or production evidence if this project will be shipped or deployed.
+- [ ] [packet:example] Define release or production evidence if this project will ship or deploy.
+
+## Recently Closed
+
+- Move completed example records here with their evidence.

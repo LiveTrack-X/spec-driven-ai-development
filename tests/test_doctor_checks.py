@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import sys
+import shutil
+import tempfile
 import unittest
 from collections import Counter
 from datetime import date
@@ -27,6 +29,7 @@ from sdad_validator.doctor import (  # noqa: E402
     _CachedProjectView,
 )
 from sdad_validator.project_view import (  # noqa: E402
+    FilesystemProjectView,
     PathInspection,
     ReadResult,
 )
@@ -356,6 +359,40 @@ class DoctorAssertions:
             any(finding.id == finding_id for finding in report.findings),
             f"unexpected {finding_id}: {report.findings}",
         )
+
+
+class Task8MinimalExampleTests(DoctorAssertions, unittest.TestCase):
+    def test_minimal_example_is_strict_clean_after_replacing_only_sentinels(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "minimal-project"
+            shutil.copytree(ROOT / "examples" / "minimal-project", project)
+            state_path = project / "sdad-state.yaml"
+            original = state_path.read_text(encoding="utf-8")
+            runnable = (
+                original.replace("updated: YYYY-MM-DD", "updated: 2026-07-11", 1)
+                .replace(
+                    "command: Replace with a project check.",
+                    "command: python -m unittest discover -s tests",
+                    1,
+                )
+                .replace(
+                    "proves: Replace with the supported claim.",
+                    "proves: The minimal project unit tests pass.",
+                    1,
+                )
+            )
+            state_path.write_text(runnable, encoding="utf-8")
+
+            report = DiagnosticEngine().diagnose(
+                FilesystemProjectView(project),
+                DoctorPolicy(today=date(2026, 7, 11)),
+            )
+
+            self.assertEqual(report.findings, ())
+            self.assertEqual(report.checks_run, FIXED_CHECKS)
+            self.assertEqual(report.state_version, 2)
 
 
 class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):

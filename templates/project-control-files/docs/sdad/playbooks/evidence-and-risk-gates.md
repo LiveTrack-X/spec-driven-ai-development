@@ -1,73 +1,74 @@
 # Evidence And Risk Gates Playbook
 
 Status: On demand
-Trigger: Q5 risk, release, public claim, reference parity, product, hardware,
-compatibility, package, remote tester, or production evidence
+Trigger: owner-controlled risk, release, public claim, reference parity, product,
+hardware, compatibility, package, remote tester, or production evidence
 
-## Q5 Owner Gates
+## Owner Gates
 
-Q5 includes release, production, migration, destructive action, real user data,
-auth, money, security, rollback, and equivalent owner-controlled risk. Any Q5
-yes is Standard minimum when the packet only inspects, documents, or tests the
-area. Use Full when the current packet changes, accepts, or executes a Q5 gate,
-including its boundary, policy, evidence claim, accepted risk, or external
-action.
+Release, production, migration, destructive action, real user data, auth, money,
+security, rollback, and equivalent protected actions remain owner gates. Local,
+reversible implementation may continue inside the declared packet, but stop
+before the gated action, risk acceptance, or external publication.
 
-Level 4 means implementation may proceed inside the approved packet, but the
-AI must stop before the gated action or owner acceptance. Commit does not imply
-push; push does not imply release; release does not imply deploy.
+Commit does not imply push; push does not imply release; release does not imply
+deploy. Execution scope never substitutes for an owner gate.
+
+## Conditional Owner Authorization
+
+When a routed readiness record contains a conditional authorization, reuse it
+only while the packet, action, conditions, expiry, evidence prerequisite, and
+recorded source remain unchanged. An expired or failed condition is a stop.
+Do not copy the authorization into state or invent a gate registry.
 
 ## Fresh-Context Review
 
-For a Q5 change, release candidate, migration, destructive action, security
-boundary, or public effectiveness claim, request an implementation-independent
-review from fresh context when another reviewer or isolated pass is available.
-Review the final diff, acceptance criteria, validation evidence, open findings,
-and residual risk. This is review evidence, not owner acceptance, and it is not
-required for tiny low-risk work.
+For a protected-action change, release candidate, migration, destructive action,
+security boundary, or public effectiveness claim, request a fresh context,
+implementation-independent review when an isolated pass is available. Review the final diff,
+acceptance criteria, validation evidence, open findings, and residual risk.
+This is review evidence, not owner acceptance.
 
 ## Evidence Tiers
 
-Match claims to the strongest evidence actually obtained:
+Match each claim to the strongest evidence actually obtained:
 
-1. static inspection or local unit test,
-2. local integration or rendered artifact,
-3. live runtime or persisted-state observation,
-4. installed/package smoke outside the source tree,
-5. remote hardware, external lab, or representative environment,
+1. static inspection or local unit test;
+2. local integration or rendered artifact;
+3. live runtime or persisted-state observation;
+4. installed/package smoke outside the source tree;
+5. remote hardware, external lab, or representative environment;
 6. production observation under an approved policy.
 
-A lower tier cannot unlock a higher-tier claim. Passing tests do not prove
-hardware behavior, package contents, production safety, or owner acceptance.
-Mark skipped, partial, degraded, simulated, and unverified evidence explicitly.
+A lower tier cannot unlock a higher-tier claim. Mark skipped, partial, degraded,
+simulated, stale, and unverified evidence explicitly.
 
-## Product Evidence Files
+## Optional Product Evidence
 
-Create only the files needed by an active claim:
+Create these files only on demand when an active claim needs the boundary:
 
 - `docs/evidence-matrix.md`: claim-to-evidence status;
 - `docs/claim-registry.md`: allowed, qualified, and blocked claims;
 - `docs/artifact-contracts.md`: required package or report contents;
-- `docs/work-packet-state.md`: AI-complete through production-ready states;
+- `docs/work-packet-state.md`: optional Delivery Readiness Model and conditional
+  authorization record;
 - `docs/remote-evidence-import.md`: quarantine and review of external bundles.
 
-Keep evidence-ready, tester-ready, hardware-verified, release-candidate, and
-owner-accepted states separate.
+The readiness record does not own the active packet identity, objective,
+execution scope, validation contract, owner-gate list, or current status.
 
 ## Reference Parity
 
-When behavior is derived from another product, repository, design, demo, or
-field project, map source behavior to implemented behavior, evidence, and every
-gap or deferred claim. Reference parity is a claim audit, not permission to copy
-the reference implementation.
+For reference-derived behavior, map source behavior to implemented behavior,
+evidence, and every gap or deferred claim. Parity review is a claim audit, not
+permission to copy the reference implementation.
 
-## Release And Version Lanes
+## Release And Claim Boundaries
 
-When stable and next-version work coexist, state the active lane, forward-port
-or backport policy, artifact identity, migration/rollback checks, and release
-owner gate. Validate source, generated package, installed artifact, and public
-release separately when those are separate claims.
+State the active release lane, artifact identity, migration/rollback checks,
+and owner gate. Validate source, generated package, installed artifact, and
+public release separately when those are separate claims.
 
-Before evidence-ready, check unfinished packets, generated or cache files,
-artifact manifests, version surfaces, and installed-artifact smoke from outside
-the source tree. Owner acceptance never upgrades weak evidence.
+Doctor green proves structural consistency. A task benchmark proves that task.
+Only a controlled comparison supports an improvement claim. Owner acceptance
+never upgrades weak evidence.

@@ -1,111 +1,56 @@
-# Work Packet State Model
+# Delivery Readiness Model
 
-Status: Active
-Scope: Standard state names for work packets, review-worthy units, evidence, and
-owner acceptance
+Status: Optional, on demand
+Scope: product, hardware, release, or production claims that need readiness
+evidence beyond the active execution declaration
 
-Use this file to prevent "done" from collapsing implementation, verification,
-tester readiness, evidence import, hardware validation, owner acceptance, and
-production readiness into one ambiguous state.
+Use this record only when an active claim needs it. `sdad-state.yaml` remains the
+sole authority for current packet identity, objective, execution scope,
+validation contract, owner-gate list, and current status. Link to state instead
+of repeating those facts here.
 
-## Packet States
+## Readiness Evidence Lanes
 
-Packet states are separate from evidence matrix statuses. For example,
-`hardware_evidence_received` at the packet level usually corresponds to
-`evidence_received` in `docs/evidence-matrix.md`, and it still requires
-quarantine/import/review before any claim changes.
+Keep readiness claims distinct and attach bounded evidence:
 
-Do not set `owner_accepted` until an owner checkpoint accepts the named scope.
-If evidence is ready but owner acceptance is pending, use the strongest verified
-pre-owner state such as `software_verified`, `hardware_verified`, or
-`release_candidate` and write "owner acceptance pending" in the summary.
+| Lane | Evidence question | Example evidence |
+| --- | --- | --- |
+| Software evidence-ready | Did scoped local checks pass? | unit/integration results |
+| Tester-ready | Is a named artifact plus procedure ready? | manifest and tester runbook |
+| External evidence received | Was a returned bundle quarantined and reviewed? | lineage/privacy review |
+| Hardware-verified | Does reviewed evidence support the named hardware claim? | target-device result |
+| Release-candidate | Are declared build, package, migration, and rollback checks green? | release gate record |
+| Production-ready | Did the applicable owner gate and production evidence complete? | authorization plus evidence |
 
-| State | Meaning | May continue without owner? | May claim done? | Typical next action |
-| --- | --- | --- | --- | --- |
-| `not_started` | Packet is defined but work has not begun. | Yes, if packet is approved | No | Start implementation |
-| `in_progress` | Work is underway inside approved scope. | Yes | No | Continue until evidence-ready or stop condition |
-| `ai_complete` | AI finished edits or draft output. | Yes, for checks/docs inside scope | No | Run checks and update evidence |
-| `software_verified` | Local software checks passed for scoped behavior. | Yes, if no owner gate changed | No for product/hardware claims | Prepare artifact or request review |
-| `tester_ready` | Artifact and instructions are ready for tester/lab. | Yes, for docs/tooling | No | Send artifact or wait for tester |
-| `hardware_evidence_received` | Remote or hardware evidence arrived. | No claim change yet | No | Quarantine/import/review evidence |
-| `hardware_verified` | Evidence was reviewed and supports scoped hardware/product claim. | Maybe, if packet allows | Evidence-ready only | Owner checkpoint |
-| `owner_accepted` | Owner accepted a named scope. | Yes, for next approved packet | Yes for accepted scope | Archive/advance |
-| `release_candidate` | Release bundle is candidate-ready with known gates. | Only within release prep | No production claim | Release review |
-| `production_ready` | Production/release gate passed with owner acceptance. | No, owner gate required | Yes for accepted scope | Release or deploy |
-| `blocked` | Stop condition or missing dependency prevents progress. | No | No | Ask owner or record finding |
-| `deferred` | Work intentionally moved out of active scope. | Yes, on other scope | No | Track in TODO/backlog |
+Passing one lane does not imply another. Evidence-ready is not owner-accepted,
+and owner acceptance cannot strengthen missing evidence.
 
-## Work Packet Template
+## Conditional Owner Authorization
 
-```yaml
-id: WP-001
-name: Remote hardware validation
-status: tester_ready
-sdad_scale_intensity: Full SDAD / Medium
-autonomy_level: Level 2 with Level 4 claim gates
-owner_gate: true
-allowed_scope:
-  - package verifier
-  - tester instructions
-  - support bundle import
-non_goals:
-  - production release
-  - compatibility claim upgrade
-requirements:
-  - real target hardware evidence
-  - package manifest evidence
-evidence:
-  - EVID-002
-artifacts:
-  - ART-001
-claims:
-  - CLAIM-001
-blocked_by:
-  - external tester hardware
-continue_allowed:
-  - docs
-  - tooling
-  - verifier hardening
-must_stop_for:
-  - production claim
-  - compatibility claim upgrade
-  - destructive migration
-next_action:
-  - send tester-ready package
-  - import returned bundle through quarantine
-```
+### AUTH-EXAMPLE
 
-## Completion Language
+- Decision:
+- Authorized action:
+- Packet:
+- Conditions:
+- Expires when:
+- Evidence required before action:
 
-Use precise status language:
+Reuse this authorization only while its packet, action, conditions, expiry,
+evidence prerequisite, and recorded source remain unchanged. An expired or failed condition is a stop.
+Keep currently unsatisfied gates in the simple
+state `owner_gates` list; do not create a second registry here.
 
-- "AI edits complete; verification pending."
-- "Software evidence-ready; hardware pending."
-- "Tester-ready; remote evidence not received."
-- "Remote evidence received; import review pending."
-- "Hardware verified for stated scope; owner acceptance pending."
-- "Owner-accepted for stated scope; unresolved gaps remain."
+## Claim Limits
 
-Avoid unqualified "done" unless owner acceptance or delegated acceptance policy
-is visible.
+- Name the exact artifact, environment, hardware target, release lane, or
+  production boundary covered.
+- Link the evidence matrix, claim registry, artifact contract, or remote import
+  review instead of copying their content.
+- State skipped, partial, simulated, stale, and unverified evidence.
+- Use precise readiness language; avoid an unqualified "done."
 
-## Stop / Continue Rule
+## Close Or Archive
 
-Continue inside the approved packet for:
-
-- docs and control-file sync,
-- verifier, import, packaging, or support tooling,
-- local software checks,
-- evidence matrix updates that do not upgrade blocked claims,
-- artifact contract cleanup,
-- review summary preparation.
-
-Stop for owner input when:
-
-- scope expands,
-- release, production, compatibility, hardware, data, auth, money, security,
-  destructive-action, rollback, or other Q5 gates change,
-- a claim would be upgraded,
-- hardware SKU, target platform, or acceptance scope is an owner decision,
-- verification is blocked or contradicts the plan,
-- imported evidence fails privacy, lineage, or sufficiency checks.
+Remove expired authorizations. When a readiness record no longer affects an
+active claim, archive it with its evidence links rather than leaving it routed.

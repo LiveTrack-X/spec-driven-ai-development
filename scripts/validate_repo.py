@@ -1202,6 +1202,207 @@ def validate_local_markdown_links() -> None:
                     )
 
 
+def validate_canonical_template_contract() -> None:
+    source_line = (
+        "- Current handoff: use "
+        "`../sdad-state.yaml#current_handoff` when declared."
+    )
+    identity = (
+        "## 1. Session Identity\n\n"
+        "- Active packet: [packet:bootstrap]"
+    )
+
+    canonical_state = require_phrases(
+        "templates/project-control-files/sdad-state.yaml",
+        "Canonical state-v2 template",
+        [
+            "version: 2",
+            "scale: standard",
+            "execution_scope: packet",
+            "  id: bootstrap",
+            "validation_for: bootstrap",
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        ],
+    )
+    minimal_state = require_phrases(
+        "examples/minimal-project/sdad-state.yaml",
+        "Minimal state-v2 example",
+        [
+            "version: 2",
+            "scale: standard",
+            "execution_scope: packet",
+            "  id: example",
+            "validation_for: example",
+        ],
+    )
+    for label, state in (
+        ("Canonical state-v2 template", canonical_state),
+        ("Minimal state-v2 example", minimal_state),
+    ):
+        for forbidden in ("intensity", "autonomy", "current_handoff"):
+            if re.search(rf"(?m)^{forbidden}:", state):
+                fail(f"{label} must omit live or legacy key: {forbidden}")
+        if "save-state.md" in state:
+            fail(f"{label} must not route legacy save-state.md")
+
+    starter = require_phrases(
+        "skills/ai-spec-project-start/references/starter-templates.md",
+        "Installed-skill fallback templates",
+        [
+            "version: 2",
+            "execution_scope: packet",
+            "validation_for: bootstrap",
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            "## Optional Current Handoff",
+            identity,
+        ],
+    )
+    state_match = re.search(
+        r"(?ms)^## Active State Schema\s+.*?^```yaml\s*\n(.*?)^```$",
+        starter,
+    )
+    if state_match is None:
+        fail("Installed-skill fallback is missing its canonical state-v2 block")
+    for forbidden in ("intensity", "autonomy", "current_handoff"):
+        if re.search(rf"(?m)^{forbidden}:", state_match.group(1)):
+            fail(f"Installed-skill fallback must omit live or legacy key: {forbidden}")
+
+    for label, path in (
+        ("Canonical INDEX", "templates/project-control-files/docs/INDEX.md"),
+        ("Minimal INDEX", "examples/minimal-project/docs/INDEX.md"),
+    ):
+        content = read(path)
+        if content.count(source_line) != 1:
+            fail(f"{label} must contain exactly one current-handoff source line")
+
+    for label, path, packet_id in (
+        (
+            "Canonical TODO",
+            "templates/project-control-files/docs/TODO-Open-Items.md",
+            "bootstrap",
+        ),
+        (
+            "Minimal TODO",
+            "examples/minimal-project/docs/TODO-Open-Items.md",
+            "example",
+        ),
+    ):
+        todo = require_phrases(
+            path,
+            label,
+            [
+                "## Active Work",
+                "## Release / Production Readiness",
+                "## Recently Closed",
+            ],
+        )
+        for heading in ("## Active Work", "## Release / Production Readiness"):
+            section = _markdown_section(todo, heading, 2)
+            records = re.findall(r"(?m)^- \[ \] .+$", section)
+            if not records or any(
+                f"[packet:{packet_id}]" not in record for record in records
+            ):
+                fail(f"{label} active records must use [packet:{packet_id}]")
+
+    for label, path in (
+        ("Canonical review", "templates/project-control-files/review-findings.md"),
+        ("Minimal review", "examples/minimal-project/review-findings.md"),
+    ):
+        require_phrases(
+            path,
+            label,
+            ["## Active Findings", "None currently tracked.", "## Recently Closed"],
+        )
+
+    handoff = read(
+        "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
+    )
+    if handoff.count(identity) != 1:
+        fail("Canonical handoff must contain exactly one Session Identity marker")
+
+    save_state = read("templates/project-control-files/save-state.md").lower()
+    for phrase in (
+        "state-v1 migration input",
+        "do not delete",
+        "do not auto-migrate",
+    ):
+        if phrase not in save_state:
+            fail(f"Legacy save-state boundary missing: {phrase}")
+
+    readiness = require_phrases(
+        "templates/project-control-files/docs/work-packet-state.md",
+        "Delivery Readiness Model",
+        [
+            "# Delivery Readiness Model",
+            "Status: Optional, on demand",
+            "## Conditional Owner Authorization",
+            "### AUTH-EXAMPLE",
+            "- Decision:",
+            "- Authorized action:",
+            "- Packet:",
+            "- Conditions:",
+            "- Expires when:",
+            "- Evidence required before action:",
+        ],
+    )
+    for field in (
+        "- Decision:",
+        "- Authorized action:",
+        "- Packet:",
+        "- Conditions:",
+        "- Expires when:",
+        "- Evidence required before action:",
+    ):
+        if readiness.count(field) != 1:
+            fail(f"Delivery readiness authorization field must occur once: {field}")
+
+    current_surfaces = (
+        "templates/project-control-files/README.md",
+        "templates/project-control-files/docs/INDEX.md",
+        "templates/project-control-files/docs/Repository-Operating-Rules.md",
+        "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+        "templates/project-control-files/docs/sdad/playbooks/documentation-and-handoff.md",
+        "templates/project-control-files/docs/sdad/playbooks/evidence-and-risk-gates.md",
+        "templates/project-control-files/docs/work-packet-state.md",
+        "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        "skills/ai-spec-project-start/references/starter-templates.md",
+    )
+    forbidden_terms = (
+        r"\bQ5\b",
+        r"operating intensity",
+        r"\bautonomy\b",
+        r"recovery mode",
+        r"owner checkpoint",
+        r"AI-complete",
+        r"Standard minimum",
+    )
+    for path in current_surfaces:
+        content = read(path)
+        if "save-state.md" in content:
+            fail(f"Current state-v2 surface routes legacy save-state.md: {path}")
+        for pattern in forbidden_terms:
+            if re.search(pattern, content, re.IGNORECASE):
+                fail(f"Current state-v2 surface uses legacy terminology: {path}")
+
+    packets = read(
+        "templates/project-control-files/docs/sdad/playbooks/work-packets.md"
+    ).lower()
+    transition = (
+        "select next leaf",
+        "classify",
+        "review validation",
+        "update state",
+        "remove or replace",
+        "doctor strict",
+        "project checks",
+        "advance",
+        "rerun doctor",
+    )
+    positions = [packets.find(token) for token in transition]
+    if any(position < 0 for position in positions) or positions != sorted(positions):
+        fail("Work-packet transition procedure is incomplete or out of order")
+
+
 def validate_skill() -> None:
     content = read("skills/ai-spec-project-start/SKILL.md")
     if not content.startswith("---\n"):
@@ -1296,6 +1497,7 @@ def validate_skill() -> None:
 def validate_templates() -> None:
     for path in REQUIRED_FILES:
         read(path)
+    validate_canonical_template_contract()
     validate_doctor_checkout_contract()
     validate_doctor_gemini_documentation_contract()
     manifest = validate_install_source_manifest()
@@ -1750,34 +1952,27 @@ def validate_templates() -> None:
     for phrase in [
         "SDAD Session Handoff",
         "Session Identity",
-        "Operating Mode",
-        "Owner Review Compression",
-        "Advanced Extension Status",
-        "Search evidence",
-        "Owner acceptance evidence",
-        "Evaluation leakage risk",
-        "Concrete budget used",
-        "Bounded-read instructions",
-        "Implementation Notes",
-        "Reference existing SPECs",
-        "Documentation Record Audit",
-        "Change type and routed documentation surfaces",
-        "Docs checked with no update needed",
-        "Validation commands run",
-        "First, load the installed tool adapter",
-        "Then read this current handoff only as deeply as needed",
+        "Active packet: [packet:bootstrap]",
+        "Resume Checkpoint",
+        "Authority Pointers",
+        "Last Observed Validation",
+        "Bounded claim supported",
+        "Open Constraints And Gates",
+        "Resume Instructions",
+        "First load the installed tool adapter",
         "current source/tests",
         "authorized private data",
-        "Commands / Tests Run",
-        "Reactivation Prompt",
-        "Do not assume the previous chat context is available",
     ]:
         if phrase not in handoff_template:
             fail(f"Session handoff template missing: {phrase}")
     save_state = read("templates/project-control-files/save-state.md")
     for phrase in [
+        "Legacy Save State",
+        "State-v1 migration input only",
+        "not current state-v2 authority",
+        "Do not delete it",
+        "do not auto-migrate it",
         "Update Triggers",
-        "Active session recovery state",
         "Context Stability Rule",
         "50 KB",
         "session is ending or pausing",
@@ -1892,19 +2087,18 @@ def validate_templates() -> None:
             fail(f"Artifact contracts template missing: {phrase}")
     work_packet_state = read("templates/project-control-files/docs/work-packet-state.md")
     for phrase in [
-        "Work Packet State Model",
-        "Packet States",
-        "ai_complete",
-        "software_verified",
-        "tester_ready",
-        "hardware_evidence_received",
-        "hardware_verified",
-        "owner_accepted",
-        "production_ready",
-        "Completion Language",
-        "Stop / Continue Rule",
-        "Packet states are separate from evidence matrix statuses",
-        "Do not set `owner_accepted` until an owner checkpoint",
+        "Delivery Readiness Model",
+        "Status: Optional, on demand",
+        "Readiness Evidence Lanes",
+        "Software evidence-ready",
+        "Tester-ready",
+        "Hardware-verified",
+        "Release-candidate",
+        "Production-ready",
+        "Conditional Owner Authorization",
+        "Evidence required before action",
+        "expired or failed condition is a stop",
+        "`sdad-state.yaml` remains the",
     ]:
         if phrase not in work_packet_state:
             fail(f"Work packet state template missing: {phrase}")

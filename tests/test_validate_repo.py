@@ -345,6 +345,46 @@ class RequiredPhraseContractTests(unittest.TestCase):
             self.assertIn("Config missing: beta", error_output.getvalue())
 
 
+class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
+    def validator(self):
+        validator = getattr(
+            VALIDATE_REPO,
+            "validate_canonical_template_contract",
+            None,
+        )
+        self.assertIsNotNone(validator, "canonical template validator is missing")
+        return validator
+
+    def test_current_canonical_templates_satisfy_contract(self) -> None:
+        self.validator()()
+
+    def test_rejects_duplicate_current_handoff_source(self) -> None:
+        validator = self.validator()
+        original_read = VALIDATE_REPO.read
+        index_path = "templates/project-control-files/docs/INDEX.md"
+        source = (
+            "- Current handoff: use "
+            "`../sdad-state.yaml#current_handoff` when declared."
+        )
+
+        def read_with_duplicate(path: str) -> str:
+            content = original_read(path)
+            if path == index_path:
+                return content + "\n" + source + "\n"
+            return content
+
+        error_output = io.StringIO()
+        with mock.patch.object(VALIDATE_REPO, "read", side_effect=read_with_duplicate):
+            with contextlib.redirect_stderr(error_output):
+                with self.assertRaises(SystemExit):
+                    validator()
+
+        self.assertIn(
+            "Canonical INDEX must contain exactly one current-handoff source line",
+            error_output.getvalue(),
+        )
+
+
 class DoctorGeminiDocumentationContractTests(unittest.TestCase):
     CONTRACT_PATHS = {
         "README.md",

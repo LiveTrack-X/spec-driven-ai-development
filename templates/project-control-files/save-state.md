@@ -1,10 +1,14 @@
-# Save State
+# Legacy Save State
 
-Status: Active session recovery state
+Status: State-v1 migration input only
 Last updated: YYYY-MM-DD
 
-Use this file only when current context would be expensive to reconstruct from
-code, active docs, SPEC, TODO, and review findings.
+This file remains available so an existing state-v1 project can be understood
+during migration. It is not current state-v2 authority or a default route.
+Do not delete it and do not auto-migrate it; preserve project-specific continuity
+until the owner-approved migration procedure classifies it.
+
+The remaining sections describe the legacy state-v1 recovery shape.
 
 ## Context Stability Rule
 

@@ -1,13 +1,13 @@
-version: 1
+version: 2
 updated: YYYY-MM-DD
 scale: standard
-intensity: low
-autonomy: 2
+execution_scope: packet
 active_spec: SPEC/SPEC-COMPLETE.md
 active_packet:
   id: example
   objective: Keep the minimal example internally consistent.
   status: not_started
+validation_for: example
 owner_gates: []
 validation:
   - command: Replace with a project check.

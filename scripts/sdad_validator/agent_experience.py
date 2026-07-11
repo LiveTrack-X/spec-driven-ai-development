@@ -51,13 +51,38 @@ INDEX_ROUTES = (
     "TODO-Open-Items.md",
     "review-findings.md",
     "implementation-notes.md",
-    "save-state.md",
     "sdad/playbooks/context-and-data.md",
     "sdad/playbooks/work-packets.md",
     "sdad/playbooks/evidence-and-risk-gates.md",
     "sdad/playbooks/documentation-and-handoff.md",
     "sdad/playbooks/advanced-extensions.md",
 )
+
+CURRENT_HANDOFF_SOURCE = (
+    "- Current handoff: use "
+    "`../sdad-state.yaml#current_handoff` when declared."
+)
+HANDOFF_IDENTITY = (
+    "## 1. Session Identity\n\n"
+    "- Active packet: [packet:bootstrap]"
+)
+
+TASK8_REQUIRED_PHRASES = {
+    "templates/project-control-files/docs/TODO-Open-Items.md": (
+        "## Active Work",
+        "- [ ] [packet:bootstrap]",
+        "## Release / Production Readiness",
+        "## Recently Closed",
+    ),
+    "templates/project-control-files/review-findings.md": (
+        "## Active Findings",
+        "None currently tracked.",
+        "## Recently Closed",
+    ),
+    "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md": (
+        HANDOFF_IDENTITY,
+    ),
+}
 
 
 def _read(root: Path, relative_path: str, violations: list[str]) -> str:
@@ -85,6 +110,52 @@ def _require_ordered_tokens(
             violations.append(f"{relative_path} missing ordered route: {token}")
             return
         previous = position
+
+
+def _require_phrases(
+    relative_path: str,
+    text: str,
+    phrases: tuple[str, ...],
+    violations: list[str],
+) -> None:
+    for phrase in phrases:
+        if phrase not in text:
+            violations.append(f"{relative_path} missing canonical phrase: {phrase}")
+
+
+def _validate_task8_templates(
+    root: Path,
+    canonical_state: str,
+    index: str,
+    violations: list[str],
+) -> None:
+    canonical_state_path = "templates/project-control-files/sdad-state.yaml"
+    if canonical_state:
+        _require_phrases(
+            canonical_state_path,
+            canonical_state,
+            (
+                "version: 2",
+                "scale: standard",
+                "execution_scope: packet",
+                "  id: bootstrap",
+                "validation_for: bootstrap",
+                "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            ),
+            violations,
+        )
+
+    for relative_path, phrases in TASK8_REQUIRED_PHRASES.items():
+        text = _read(root, relative_path, violations)
+        if text:
+            _require_phrases(relative_path, text, phrases, violations)
+
+    index_path = "templates/project-control-files/docs/INDEX.md"
+    if index and index.count(CURRENT_HANDOFF_SOURCE) != 1:
+        violations.append(
+            f"{index_path} must contain exactly one canonical "
+            "current-handoff source line"
+        )
 
 
 def collect_agent_experience_violations(root: Path) -> list[str]:
@@ -121,6 +192,13 @@ def collect_agent_experience_violations(root: Path) -> list[str]:
 
     state = content.get("templates/project-control-files/sdad-state.yaml", "")
     violations.extend(collect_template_state_violations(state))
+
+    _validate_task8_templates(
+        root,
+        state,
+        content.get("templates/project-control-files/docs/INDEX.md", ""),
+        violations,
+    )
 
     _read(
         root,

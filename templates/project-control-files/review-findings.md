@@ -8,7 +8,7 @@ Scope: Active bugs and review findings only
 None currently tracked.
 
 Do not leave closed findings in this section. Move fixed or accepted items to
-`## Recently Closed` before evidence-ready, save-state, or handoff.
+`## Recently Closed` before an evidence checkpoint or handoff.
 
 ## Severity Gate
 
@@ -18,7 +18,7 @@ Do not leave closed findings in this section. Move fixed or accepted items to
 
 ## Recently Closed
 
-- Record fixed blockers with evidence.
+- Record fixed blockers with evidence, for example `[packet:bootstrap]`.
 - Move old closed history to archive when it stops affecting current decisions.
 
 ## Guardrails
