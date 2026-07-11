@@ -5,6 +5,11 @@ The fastest path is the expanded
 to [No-Clone Option 1](no-clone-quick-install.md#option-1-give-this-to-your-ai-agent).
 Use that large prompt once for install, upgrade, migration, or repair.
 
+The stable v3.2.0 install sources are pinned by
+[`install-sources.json`](../install-sources.json) to immutable behavior baseline
+`b433b4cbf490bd875a40b76127abefbefed3f243`. See the
+[v3.2.0 release notes](releases/v3.2.0.md) for the bounded change and evidence.
+
 ## Choose The Three Controls
 
 Scale determines which persistent control surface is installed. Execution

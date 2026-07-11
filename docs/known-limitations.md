@@ -102,11 +102,15 @@ policy, concurrent filesystem change, path, permission, WSL, or managed-device
 edge case. Automated repository tests live under `tests/`; do not create a
 separate `test/` tree.
 
+The v3.2.0 local Windows release gate passed 391 tests with three
+privilege-dependent permission/link skips. Those skips disclose unexercised
+local conditions; they are not pass evidence for those scenarios.
+
 ## Raw URL Reproducibility
 
-Until the 3.2 release metadata rotation, the executable no-clone instructions
-remain pinned to the stable v3.1.0 baseline at full 40-character commit SHA
-`1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa`. Each downloaded adapter is verified
+The executable no-clone instructions are pinned to the stable v3.2.0 baseline
+at full 40-character commit SHA
+`b433b4cbf490bd875a40b76127abefbefed3f243`. Each downloaded adapter is verified
 with SHA-256. `install-sources.json` is the revision/path/hash contract.
 
 A commit ID is immutable; a tag is readable but may move unless repository

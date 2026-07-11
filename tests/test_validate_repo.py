@@ -1333,6 +1333,7 @@ class OwnerAmendmentSourceContractTests(unittest.TestCase):
 
 
 class StableReleaseContractTests(unittest.TestCase):
+    EXPECTED_BASELINE_REVISION = "b433b4cbf490bd875a40b76127abefbefed3f243"
     EXPECTED_SOURCES = {
         "mini": {
             "path": "templates/mini-sdad/MINI-SDAD.md",
@@ -1341,48 +1342,65 @@ class StableReleaseContractTests(unittest.TestCase):
         "codex": {
             "path": "adapters/codex/AGENTS.md",
             "target": "AGENTS.md",
-            "sha256": "fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba",
+            "sha256": "93cd9e34b2ef3d2130f869559ac6b51db1acbcd68d7a7124d7ce71008d25fe15",
         },
         "claude-code": {
             "path": "adapters/claude-code/CLAUDE.md",
             "target": "CLAUDE.md",
-            "sha256": "dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5",
+            "sha256": "e3e1d384c5f6678e20b200b89e3a25f2476a107a5e02289fbc5584a0e6f88daa",
         },
         "gemini-cli": {
             "path": "adapters/gemini-cli/GEMINI.md",
             "target": "GEMINI.md",
-            "sha256": "a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23",
+            "sha256": "3772568b3df01ba7602d577f04fdce69cf23b06da65ca601180a735238998c91",
         },
         "cursor": {
             "path": "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
             "target": ".cursor/rules/spec-driven-ai-development.mdc",
-            "sha256": "371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68",
+            "sha256": "0fcb1f1e42539eaef31a2662e57500ec33155558910582d956ede1c5e7e9d7bd",
         },
         "github-copilot": {
             "path": "adapters/github-copilot/.github/copilot-instructions.md",
             "target": ".github/copilot-instructions.md",
-            "sha256": "335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4",
+            "sha256": "f82a0e645663fbf205401dfa2c48b2ba749f9af3442007cbc33d012563871a3f",
         },
         "generic": {
             "path": "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
             "target": "AI-SESSION-INSTRUCTIONS.md",
-            "sha256": "9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75",
+            "sha256": "5356149751afcc80595f9d4a150c074d6fc10d612efb310f2257a3aaeb524057",
         },
     }
 
-    def test_manifest_has_exact_v3_1_0_identity_and_baseline_sources(self) -> None:
+    def test_manifest_has_exact_v3_2_0_identity_and_baseline_sources(self) -> None:
         manifest = json.loads((ROOT / "install-sources.json").read_text(encoding="utf-8"))
-        self.assertEqual(manifest["label"], "v3.1.0 stable baseline")
-        self.assertEqual(
-            manifest["revision"],
-            "1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa",
-        )
+        self.assertEqual(manifest["schema_version"], 1)
+        self.assertEqual(manifest["label"], "v3.2.0 stable baseline")
+        self.assertEqual(manifest["revision"], self.EXPECTED_BASELINE_REVISION)
         self.assertEqual(
             manifest["capabilities"],
             {"progressive_control_plane": True},
         )
         self.assertEqual(manifest["sources"], self.EXPECTED_SOURCES)
+        self.assertEqual(set(manifest["sources"]), VALIDATE_REPO.INSTALL_SOURCE_KEYS)
+        self.assertNotIn("doctor", manifest["sources"])
         self.assertEqual(VALIDATE_REPO.STABLE_RELEASE_SOURCES, self.EXPECTED_SOURCES)
+
+    def test_v3_2_release_identity_surfaces_are_present(self) -> None:
+        release = (ROOT / "docs/releases/v3.2.0.md").read_text(encoding="utf-8")
+        self.assertIn("# SDAD v3.2.0", release)
+        self.assertIn("Release date: 2026-07-12", release)
+        self.assertIn("Tag: `v3.2.0`", release)
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        self.assertTrue(
+            changelog.startswith(
+                "# Changelog\n\n## Unreleased\n\nNothing yet.\n\n"
+                "## 3.2.0 - 2026-07-12\n"
+            )
+        )
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("docs/releases/v3.2.0.md", readme)
+        self.assertNotIn("<details", readme)
+        self.assertNotIn("<summary", readme)
 
     def test_current_stable_release_surfaces_satisfy_contract(self) -> None:
         manifest = json.loads((ROOT / "install-sources.json").read_text(encoding="utf-8"))

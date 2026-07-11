@@ -53,8 +53,8 @@ files from different revisions. A full 40-character commit SHA provides the
 stable baseline; `/main/` is only for intentionally testing changing content.
 
 [install-sources.json](../install-sources.json) is the canonical
-revision/path/hash contract. Pins remain at the stable v3.1.0 release until the
-v3.2 release metadata task rotates them.
+revision/path/hash contract. Pins use the stable v3.2.0 release baseline; keep
+the revision, source path, and checksum from that one manifest together.
 
 ## Option 1: Give This To Your AI Agent
 
@@ -149,7 +149,7 @@ migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/templates/mini-sdad/MINI-SDAD.md
 Expected SHA-256: f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669
 
 Before fetching, state that you are installing Mini SDAD and explain why this
@@ -179,12 +179,12 @@ Codex / Claude Code / Gemini CLI / Cursor / Copilot Chat / Generic.
 Claude Code means the local/CLI coding tool with project filesystem access. It
 does not mean Claude.ai chat.
 
-- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba
-- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5
-- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23
-- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68
-- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4
-- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 93cd9e34b2ef3d2130f869559ac6b51db1acbcd68d7a7124d7ce71008d25fe15
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 e3e1d384c5f6678e20b200b89e3a25f2476a107a5e02289fbc5584a0e6f88daa
+- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 3772568b3df01ba7602d577f04fdce69cf23b06da65ca601180a735238998c91
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 0fcb1f1e42539eaef31a2662e57500ec33155558910582d956ede1c5e7e9d7bd
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 f82a0e645663fbf205401dfa2c48b2ba749f9af3442007cbc33d012563871a3f
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 5356149751afcc80595f9d4a150c074d6fc10d612efb310f2257a3aaeb524057
 
 Before saving the adapter:
 1. show me the source URL,
@@ -364,15 +364,15 @@ Change `$adapter = "codex"` if you use another tool.
 ```powershell
 $ErrorActionPreference = "Stop"
 $adapter = "codex" # codex, claude-code, gemini-cli, cursor, github-copilot, generic
-$revision = "1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa" # stable v3.1.0 baseline
+$revision = "b433b4cbf490bd875a40b76127abefbefed3f243" # stable v3.2.0 baseline
 $base = "https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/$revision"
 $files = @{
-  "codex" = @("adapters/codex/AGENTS.md", "AGENTS.md", "fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba")
-  "claude-code" = @("adapters/claude-code/CLAUDE.md", "CLAUDE.md", "dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5")
-  "gemini-cli" = @("adapters/gemini-cli/GEMINI.md", "GEMINI.md", "a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23")
-  "cursor" = @("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc", ".cursor/rules/spec-driven-ai-development.mdc", "371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68")
-  "github-copilot" = @("adapters/github-copilot/.github/copilot-instructions.md", ".github/copilot-instructions.md", "335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4")
-  "generic" = @("adapters/generic/AI-SESSION-INSTRUCTIONS.md", "AI-SESSION-INSTRUCTIONS.md", "9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75")
+  "codex" = @("adapters/codex/AGENTS.md", "AGENTS.md", "93cd9e34b2ef3d2130f869559ac6b51db1acbcd68d7a7124d7ce71008d25fe15")
+  "claude-code" = @("adapters/claude-code/CLAUDE.md", "CLAUDE.md", "e3e1d384c5f6678e20b200b89e3a25f2476a107a5e02289fbc5584a0e6f88daa")
+  "gemini-cli" = @("adapters/gemini-cli/GEMINI.md", "GEMINI.md", "3772568b3df01ba7602d577f04fdce69cf23b06da65ca601180a735238998c91")
+  "cursor" = @("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc", ".cursor/rules/spec-driven-ai-development.mdc", "0fcb1f1e42539eaef31a2662e57500ec33155558910582d956ede1c5e7e9d7bd")
+  "github-copilot" = @("adapters/github-copilot/.github/copilot-instructions.md", ".github/copilot-instructions.md", "f82a0e645663fbf205401dfa2c48b2ba749f9af3442007cbc33d012563871a3f")
+  "generic" = @("adapters/generic/AI-SESSION-INSTRUCTIONS.md", "AI-SESSION-INSTRUCTIONS.md", "5356149751afcc80595f9d4a150c074d6fc10d612efb310f2257a3aaeb524057")
 }
 if (-not $files.ContainsKey($adapter)) { throw "Unknown adapter: $adapter" }
 $source, $target, $expectedSha256 = $files[$adapter]
@@ -428,38 +428,38 @@ Change `adapter="codex"` if you use another tool.
 ```bash
 set -euo pipefail
 adapter="codex" # codex, claude-code, gemini-cli, cursor, github-copilot, generic
-revision="1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa" # stable v3.1.0 baseline
+revision="b433b4cbf490bd875a40b76127abefbefed3f243" # stable v3.2.0 baseline
 base="https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/$revision"
 case "$adapter" in
   codex)
     source="adapters/codex/AGENTS.md"
     target="AGENTS.md"
-    expected_sha256="fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba"
+    expected_sha256="93cd9e34b2ef3d2130f869559ac6b51db1acbcd68d7a7124d7ce71008d25fe15"
     ;;
   claude-code)
     source="adapters/claude-code/CLAUDE.md"
     target="CLAUDE.md"
-    expected_sha256="dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5"
+    expected_sha256="e3e1d384c5f6678e20b200b89e3a25f2476a107a5e02289fbc5584a0e6f88daa"
     ;;
   gemini-cli)
     source="adapters/gemini-cli/GEMINI.md"
     target="GEMINI.md"
-    expected_sha256="a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23"
+    expected_sha256="3772568b3df01ba7602d577f04fdce69cf23b06da65ca601180a735238998c91"
     ;;
   cursor)
     source="adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc"
     target=".cursor/rules/spec-driven-ai-development.mdc"
-    expected_sha256="371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68"
+    expected_sha256="0fcb1f1e42539eaef31a2662e57500ec33155558910582d956ede1c5e7e9d7bd"
     ;;
   github-copilot)
     source="adapters/github-copilot/.github/copilot-instructions.md"
     target=".github/copilot-instructions.md"
-    expected_sha256="335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4"
+    expected_sha256="f82a0e645663fbf205401dfa2c48b2ba749f9af3442007cbc33d012563871a3f"
     ;;
   generic)
     source="adapters/generic/AI-SESSION-INSTRUCTIONS.md"
     target="AI-SESSION-INSTRUCTIONS.md"
-    expected_sha256="9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75"
+    expected_sha256="5356149751afcc80595f9d4a150c074d6fc10d612efb310f2257a3aaeb524057"
     ;;
   *)
     echo "Unknown adapter: $adapter" >&2
@@ -528,9 +528,9 @@ echo "Next prompt: Read $target_path and bootstrap this project into SPEC-Driven
 
 ## After The Installer
 
-Check the capability disclosed above. The stable v3.1.0 manifest declares
+Check the capability disclosed above. The stable v3.2.0 manifest declares
 `progressive_control_plane=true`, so the prompt below applies to both a local
-v3.1.0 checkout and its pinned no-clone sources. Keep the revision, source path,
+v3.2.0 checkout and its pinned no-clone sources. Keep the revision, source path,
 and checksum from one manifest together.
 
 Open your AI coding tool in the target project and say:

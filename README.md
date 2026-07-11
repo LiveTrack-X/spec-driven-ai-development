@@ -4,7 +4,7 @@ SPEC-Driven AI Development: a repository-local operating protocol for state,
 evidence, owner control, decisions, and handoffs across coding agents and
 sessions.
 
-Status: `3.1.0` stable documentation/package release.
+Status: `3.2.0` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -154,7 +154,7 @@ migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/templates/mini-sdad/MINI-SDAD.md
 Expected SHA-256: f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669
 
 Before fetching, state that you are installing Mini SDAD and explain why this
@@ -184,12 +184,12 @@ Codex / Claude Code / Gemini CLI / Cursor / Copilot Chat / Generic.
 Claude Code means the local/CLI coding tool with project filesystem access. It
 does not mean Claude.ai chat.
 
-- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba
-- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5
-- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23
-- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68
-- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4
-- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 93cd9e34b2ef3d2130f869559ac6b51db1acbcd68d7a7124d7ce71008d25fe15
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 e3e1d384c5f6678e20b200b89e3a25f2476a107a5e02289fbc5584a0e6f88daa
+- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 3772568b3df01ba7602d577f04fdce69cf23b06da65ca601180a735238998c91
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 0fcb1f1e42539eaef31a2662e57500ec33155558910582d956ede1c5e7e9d7bd
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 f82a0e645663fbf205401dfa2c48b2ba749f9af3442007cbc33d012563871a3f
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 5356149751afcc80595f9d4a150c074d6fc10d612efb310f2257a3aaeb524057
 
 Before saving the adapter:
 1. show me the source URL,
@@ -369,7 +369,7 @@ makes it immutable. Use `/main/` only when you explicitly want the latest,
 unpinned instructions, and record the chosen revision in setup notes. See
 [install-sources.json](install-sources.json) for the canonical revision/path/hash
 contract and [docs/known-limitations.md](docs/known-limitations.md) for its limits.
-See [the v3.1.0 release notes](docs/releases/v3.1.0.md) for the bounded change,
+See [the v3.2.0 release notes](docs/releases/v3.2.0.md) for the bounded change,
 compatibility, and verification record.
 
 ## Diagnose Stateful Projects
@@ -548,7 +548,8 @@ evidence or handoff records required by the current claim.
 - [Tool Adapters](docs/tool-adapters.md)
 - [Known Limitations](docs/known-limitations.md)
 - [Security](SECURITY.md)
-- [Stable v3.1.0 release notes](docs/releases/v3.1.0.md)
+- [Stable v3.2.0 release notes](docs/releases/v3.2.0.md)
+- [Historical v3.1.0 release notes](docs/releases/v3.1.0.md)
 
 ## Validate
 

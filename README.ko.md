@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-상태: `3.1.0` 안정 문서/패키지 릴리즈.
+상태: `3.2.0` 안정 문서/패키지 릴리즈.
 
 효과는 프로젝트 적합도, 오너의 운영 규율, evidence 품질에 따라 달라집니다.
 

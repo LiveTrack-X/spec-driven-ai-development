@@ -83,6 +83,7 @@ REQUIRED_FILES = [
     "docs/implicit-rules.md",
     "docs/tool-adapters.md",
     "docs/releases/v3.1.0.md",
+    "docs/releases/v3.2.0.md",
     "docs/field-notes/repository-control-surface-method.md",
     "docs/field-notes/cost-aware-agent-routing-method.md",
     "docs/field-notes/documentation-governance-method.md",
@@ -187,11 +188,11 @@ INSTALL_SOURCE_SURFACES = {
     "docs/no-clone-quick-install.md": INSTALL_SOURCE_KEYS,
     "docs/mini-sdad.md": {"mini"},
 }
-STABLE_RELEASE_VERSION = "3.1.0"
-STABLE_RELEASE_TAG = "v3.1.0"
-STABLE_RELEASE_TITLE = "SDAD v3.1.0"
-STABLE_RELEASE_DATE = "2026-07-10"
-STABLE_RELEASE_REVISION = "1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa"
+STABLE_RELEASE_VERSION = "3.2.0"
+STABLE_RELEASE_TAG = "v3.2.0"
+STABLE_RELEASE_TITLE = "SDAD v3.2.0"
+STABLE_RELEASE_DATE = "2026-07-12"
+STABLE_RELEASE_REVISION = "b433b4cbf490bd875a40b76127abefbefed3f243"
 STABLE_RELEASE_SOURCES = {
     "mini": {
         "path": "templates/mini-sdad/MINI-SDAD.md",
@@ -200,32 +201,32 @@ STABLE_RELEASE_SOURCES = {
     "codex": {
         "path": "adapters/codex/AGENTS.md",
         "target": "AGENTS.md",
-        "sha256": "fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba",
+        "sha256": "93cd9e34b2ef3d2130f869559ac6b51db1acbcd68d7a7124d7ce71008d25fe15",
     },
     "claude-code": {
         "path": "adapters/claude-code/CLAUDE.md",
         "target": "CLAUDE.md",
-        "sha256": "dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5",
+        "sha256": "e3e1d384c5f6678e20b200b89e3a25f2476a107a5e02289fbc5584a0e6f88daa",
     },
     "gemini-cli": {
         "path": "adapters/gemini-cli/GEMINI.md",
         "target": "GEMINI.md",
-        "sha256": "a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23",
+        "sha256": "3772568b3df01ba7602d577f04fdce69cf23b06da65ca601180a735238998c91",
     },
     "cursor": {
         "path": "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
         "target": ".cursor/rules/spec-driven-ai-development.mdc",
-        "sha256": "371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68",
+        "sha256": "0fcb1f1e42539eaef31a2662e57500ec33155558910582d956ede1c5e7e9d7bd",
     },
     "github-copilot": {
         "path": "adapters/github-copilot/.github/copilot-instructions.md",
         "target": ".github/copilot-instructions.md",
-        "sha256": "335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4",
+        "sha256": "f82a0e645663fbf205401dfa2c48b2ba749f9af3442007cbc33d012563871a3f",
     },
     "generic": {
         "path": "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
         "target": "AI-SESSION-INSTRUCTIONS.md",
-        "sha256": "9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75",
+        "sha256": "5356149751afcc80595f9d4a150c074d6fc10d612efb310f2257a3aaeb524057",
     },
 }
 SENSITIVE_DATA_SURFACES = [
@@ -1379,7 +1380,10 @@ def validate_stable_release_contract(manifest: dict[str, object]) -> None:
     if capabilities != {"progressive_control_plane": True}:
         fail("Stable release capabilities must declare progressive_control_plane=true")
     if manifest.get("sources") != STABLE_RELEASE_SOURCES:
-        fail("Stable release source paths, targets, or hashes do not match v3.1.0")
+        fail(
+            "Stable release source paths, targets, or hashes do not match "
+            f"{STABLE_RELEASE_TAG}"
+        )
 
     release_path = f"docs/releases/v{STABLE_RELEASE_VERSION}.md"
     require_phrases(
@@ -1389,26 +1393,23 @@ def validate_stable_release_contract(manifest: dict[str, object]) -> None:
             f"# {STABLE_RELEASE_TITLE}",
             f"Release date: {STABLE_RELEASE_DATE}",
             f"Tag: `{STABLE_RELEASE_TAG}`",
-            "## SDAD Doctor",
-            "checkout-only",
-            "read-only",
-            "Exit `0`",
-            "Exit `1`",
-            "Exit `2`",
-            "does not prove correctness, effectiveness, or owner acceptance",
-            "## Gemini CLI Adapter",
-            "`GEMINI.md`",
-            "## Cross-Model Guidance",
-            "embedded instructions",
-            "semantic validation",
-            "fresh-context review",
-            "## Research And Evaluation Boundary",
-            "25 official or primary sources",
-            "do not establish SDAD effectiveness",
-            "## Compatibility And Migration",
-            "## Verification",
-            "three Windows privilege-dependent skips",
-            "provider guidance is not enforcement",
+            "## State v2 And Packet Identity",
+            "execution_scope",
+            "validation_for",
+            "## SDAD Doctor 3.2",
+            "--require-version 3.2.0",
+            "report schema 1",
+            "report schema 2",
+            "## Handoff, INDEX, And Ledger Consistency",
+            "current_handoff",
+            "## Targeted Routing",
+            "eligible selection set",
+            "## Migration Preview And Upgrade Compatibility",
+            "read-only preview",
+            "## Verification Evidence",
+            "fresh-context task benchmark",
+            "## Known Limitations",
+            "does not prove correctness, productivity, or owner acceptance",
         ],
     )
 
@@ -1418,7 +1419,10 @@ def validate_stable_release_contract(manifest: dict[str, object]) -> None:
         f"## {STABLE_RELEASE_VERSION} - {STABLE_RELEASE_DATE}\n"
     )
     if not changelog.startswith(expected_changelog_prefix):
-        fail("CHANGELOG must place the v3.1.0 entry directly after Unreleased")
+        fail(
+            "CHANGELOG must place the current stable release entry directly "
+            "after Unreleased"
+        )
 
     localized_statuses = {
         "README.md": f"Status: `{STABLE_RELEASE_VERSION}`",
@@ -1428,9 +1432,9 @@ def validate_stable_release_contract(manifest: dict[str, object]) -> None:
     }
     for path, marker in localized_statuses.items():
         if marker not in read(path):
-            fail(f"{path} does not show the stable v3.1.0 status")
+            fail(f"{path} does not show the stable {STABLE_RELEASE_VERSION} status")
     if f"docs/releases/v{STABLE_RELEASE_VERSION}.md" not in read("README.md"):
-        fail("README must link the v3.1.0 release notes")
+        fail(f"README must link the {STABLE_RELEASE_TAG} release notes")
 
     raw_url_boundary = _markdown_section(
         read("docs/known-limitations.md"),
@@ -1441,7 +1445,7 @@ def validate_stable_release_contract(manifest: dict[str, object]) -> None:
         raw_url_boundary,
         "Known limitations stable-install boundary",
         [
-            ("stable v3.1.0 baseline", STABLE_RELEASE_REVISION),
+            (f"stable {STABLE_RELEASE_TAG} baseline", STABLE_RELEASE_REVISION),
             ("sha-256", "install-sources.json"),
             ("do not mix", "main", "pinned revision"),
         ],

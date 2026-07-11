@@ -4,6 +4,30 @@
 
 Nothing yet.
 
+## 3.2.0 - 2026-07-12
+
+- Added state schema v2 with one executable active packet, exact
+  `execution_scope: unit | packet`, packet-owned validation, and optional
+  packet-bound handoff continuity while preserving the state-v1 contract.
+- Upgraded the checkout-only Doctor to 3.2.0 with explicit version guarding,
+  separate Doctor/state/report version domains, report-schema compatibility,
+  and deterministic INDEX, handoff, packet, TODO, and finding coherence checks.
+- Added a read-only migration preview that maps legacy state without silently
+  rewriting repositories, and documented conditional owner-authorization reuse
+  and expiry.
+- Tightened agent startup to adapter -> state -> INDEX plus one intent-selected
+  route, with `routed_docs` treated as an eligible selection set rather than a
+  read-all list.
+- Reworked public terminology around scale, execution scope, owner gates,
+  validation, evidence-ready status, and owner acceptance; kept v3.1 terminology
+  in migration and historical surfaces.
+- Replaced the README overview artwork and kept the expanded Copy-Paste Start
+  Prompt byte-identical to No-Clone Option 1.
+- Pinned all seven no-clone sources to immutable behavior baseline
+  `b433b4cbf490bd875a40b76127abefbefed3f243` with SHA-256 verification.
+- Added task-scoped fresh-context evidence and release validation without
+  claiming comparative productivity or general effectiveness.
+
 ## 3.1.0 - 2026-07-10
 
 - Added the checkout-only, read-only `sdad doctor` diagnostic for stateful
