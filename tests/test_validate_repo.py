@@ -885,7 +885,7 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
                     re.search(r"\bdoctor\b|scripts[/\\]sdad\.py", content, flags=re.I)
                 )
 
-    def test_owner_artwork_and_expanded_copy_prompt_are_unchanged(self) -> None:
+    def test_v3_2_artwork_and_expanded_copy_prompt_are_canonical(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         no_clone = (ROOT / "docs/no-clone-quick-install.md").read_text(
             encoding="utf-8"
@@ -899,7 +899,7 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
             hashlib.sha256(
                 (ROOT / "assets/spec-driven-ai-development-infographic.png").read_bytes()
             ).hexdigest(),
-            "5c5a53a8973599839a83cefa8ea787277cbe580c98d04eb608b597a84b540793",
+            "915eec2f2bc257897483c2616a0d08506f96db138d3f41c2bf827e039018f9c8",
         )
 
 
