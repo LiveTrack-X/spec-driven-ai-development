@@ -100,6 +100,7 @@ class DiagnosticRecordTests(unittest.TestCase):
                     "checks_skipped",
                     "error_count",
                     "warning_count",
+                    "state_version",
                 ),
             ),
             (PathInspection, ("status", "resolved_path")),
@@ -165,13 +166,29 @@ class DiagnosticRecordTests(unittest.TestCase):
         with self.assertRaises(FrozenInstanceError):
             report.root = "changed"  # type: ignore[misc]
 
-    def test_diagnostic_error_accepts_only_the_four_stable_kinds(self) -> None:
+    def test_report_and_error_preserve_optional_state_version(self) -> None:
+        report = DoctorReport(
+            root="C:/project",
+            findings=(),
+            checks_run=(),
+            checks_skipped=(),
+            error_count=0,
+            warning_count=0,
+            state_version=2,
+        )
+        self.assertEqual(report.state_version, 2)
+
+        error = DiagnosticError("internal_error", "failed", state_version=2)
+        self.assertEqual(error.state_version, 2)
+
+    def test_diagnostic_error_accepts_only_the_five_stable_kinds(self) -> None:
         expected_kinds = frozenset(
             {
                 "invalid_invocation",
                 "unusable_root",
                 "unreadable_state",
                 "internal_error",
+                "version_mismatch",
             }
         )
 

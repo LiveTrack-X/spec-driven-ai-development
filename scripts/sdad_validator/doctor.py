@@ -29,7 +29,7 @@ CHECK_NAMES = (
     "review_state",
 )
 
-ALLOWED_FINDING_IDS = frozenset(
+STATE_V1_FINDING_IDS = frozenset(
     {
         "state.missing",
         "state.too-large",
@@ -77,6 +77,20 @@ ALLOWED_FINDING_IDS = frozenset(
         "packet.marker.unrepresentable",
     }
 )
+STATE_V2_ONLY_FINDING_IDS = frozenset()
+ALLOWED_FINDING_IDS_BY_STATE_VERSION = {
+    1: STATE_V1_FINDING_IDS,
+    2: STATE_V1_FINDING_IDS | STATE_V2_ONLY_FINDING_IDS,
+}
+ALLOWED_FINDING_IDS = STATE_V1_FINDING_IDS
+
+
+def _allowed_finding_ids(state_version: int | None) -> frozenset[str]:
+    return ALLOWED_FINDING_IDS_BY_STATE_VERSION.get(
+        state_version,
+        STATE_V1_FINDING_IDS,
+    )
+
 
 CONDITIONAL_SEVERITY_IDS = frozenset(
     {
@@ -145,7 +159,9 @@ FIXED_FINDING_SEVERITIES = {
         if finding_id in WARNING_ONLY_FINDING_IDS
         else Severity.ERROR
     )
-    for finding_id in ALLOWED_FINDING_IDS - CONDITIONAL_SEVERITY_IDS
+    for finding_id in (
+        STATE_V1_FINDING_IDS | STATE_V2_ONLY_FINDING_IDS
+    ) - CONDITIONAL_SEVERITY_IDS
 }
 
 
@@ -332,34 +348,44 @@ class DiagnosticEngine:
             raise DiagnosticError(
                 "internal_error",
                 "The built-in diagnostic check sequence does not match schema version 1.",
+                state_version=state_result.state_version,
             )
 
         findings_with_order: list[tuple[int, Finding]] = []
         checks_run: list[str] = []
         checks_skipped: list[str] = []
         for check_index, check in enumerate(BUILT_IN_CHECKS):
-            if check.name != "state_schema" and state_result.snapshot is None:
+            if check.name != "state_schema" and (
+                state_result.snapshot is None
+                or state_result.state_version is None
+            ):
                 checks_skipped.append(check.name)
                 continue
             try:
                 check_findings = check.run(context)
-            except DiagnosticError:
-                raise
+            except DiagnosticError as exc:
+                raise DiagnosticError(
+                    exc.kind,
+                    str(exc),
+                    state_version=state_result.state_version,
+                ) from exc
             except Exception as exc:
                 raise DiagnosticError(
                     "internal_error",
                     f"Diagnostic check {check.name} failed.",
+                    state_version=state_result.state_version,
                 ) from exc
             checks_run.append(check.name)
             findings_with_order.extend(
                 (check_index, finding) for finding in check_findings
             )
 
+        allowed_finding_ids = _allowed_finding_ids(state_result.state_version)
         unexpected_ids = sorted(
             {
                 finding.id
                 for _, finding in findings_with_order
-                if finding.id not in ALLOWED_FINDING_IDS
+                if finding.id not in allowed_finding_ids
             }
         )
         if unexpected_ids:
@@ -367,6 +393,7 @@ class DiagnosticEngine:
                 "internal_error",
                 "A diagnostic check emitted unsupported finding IDs: "
                 + ", ".join(unexpected_ids),
+                state_version=state_result.state_version,
             )
 
         non_enum_severities = sorted(
@@ -382,6 +409,7 @@ class DiagnosticEngine:
                 "internal_error",
                 "A diagnostic check emitted non-enum severities for: "
                 + ", ".join(non_enum_severities),
+                state_version=state_result.state_version,
             )
 
         packet_status = _usable_packet_status(state_result)
@@ -399,6 +427,7 @@ class DiagnosticEngine:
                 "internal_error",
                 "A diagnostic check emitted invalid conditional severities for: "
                 + ", ".join(conditional_breaches),
+                state_version=state_result.state_version,
             )
 
         severity_breaches = sorted(
@@ -414,6 +443,7 @@ class DiagnosticEngine:
                 "internal_error",
                 "A diagnostic check emitted invalid fixed severities for: "
                 + ", ".join(severity_breaches),
+                state_version=state_result.state_version,
             )
 
         findings_with_order.sort(
@@ -445,4 +475,5 @@ class DiagnosticEngine:
             warning_count=sum(
                 finding.severity is Severity.WARNING for finding in frozen_findings
             ),
+            state_version=state_result.state_version,
         )

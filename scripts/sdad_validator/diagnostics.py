@@ -25,6 +25,7 @@ DIAGNOSTIC_ERROR_KINDS = frozenset(
         "unusable_root",
         "unreadable_state",
         "internal_error",
+        "version_mismatch",
     }
 )
 
@@ -62,11 +63,19 @@ class DoctorReport:
     checks_skipped: tuple[str, ...]
     error_count: int
     warning_count: int
+    state_version: int | None = None
 
 
 class DiagnosticError(RuntimeError):
-    def __init__(self, kind: str, message: str) -> None:
+    def __init__(
+        self,
+        kind: str,
+        message: str,
+        *,
+        state_version: int | None = None,
+    ) -> None:
         if kind not in DIAGNOSTIC_ERROR_KINDS:
             raise ValueError(f"unsupported diagnostic error kind: {kind}")
         super().__init__(message)
         self.kind = kind
+        self.state_version = state_version

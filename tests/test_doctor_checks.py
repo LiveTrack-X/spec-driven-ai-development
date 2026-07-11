@@ -13,6 +13,7 @@ SCRIPTS = ROOT / "scripts"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
+from sdad_validator import doctor as doctor_module  # noqa: E402
 from sdad_validator.diagnostics import (  # noqa: E402
     DiagnosticError,
     DoctorPolicy,
@@ -336,6 +337,61 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
                 self.assertFinding(report, finding_id, Severity.ERROR)
                 self.assertEqual(report.checks_run, ("state_schema",))
                 self.assertEqual(report.checks_skipped, FIXED_CHECKS[1:])
+
+    def test_declared_future_version_runs_only_state_schema(self) -> None:
+        report = diagnose(valid_state().replace("version: 1", "version: 99", 1))
+
+        self.assertFinding(report, "state.schema.unsupported-version", Severity.ERROR)
+        self.assertEqual(report.checks_run, ("state_schema",))
+        self.assertEqual(report.checks_skipped, FIXED_CHECKS[1:])
+        self.assertIsNone(report.state_version)
+
+    def test_parser_failure_skips_every_dependent_check(self) -> None:
+        report = diagnose("version: 1\nscale: &shared standard\n")
+
+        self.assertFinding(report, "state.syntax.unsupported", Severity.ERROR)
+        self.assertEqual(report.checks_run, ("state_schema",))
+        self.assertEqual(report.checks_skipped, FIXED_CHECKS[1:])
+        self.assertIsNone(report.state_version)
+
+    def test_check_error_after_effective_v2_is_annotated(self) -> None:
+        state = (
+            valid_state()
+            .replace("version: 1", "version: 2", 1)
+            .replace("owner_gates:", "validation_for: WP-001\nowner_gates:", 1)
+        )
+        with patch(
+            "sdad_validator.checks.path_integrity.PathIntegrityCheck.run",
+            side_effect=DiagnosticError("internal_error", "failed"),
+        ):
+            with self.assertRaises(DiagnosticError) as caught:
+                diagnose(state)
+        self.assertEqual(caught.exception.state_version, 2)
+
+    def test_v2_unregistered_finding_is_rejected_with_state_version(self) -> None:
+        state = (
+            valid_state()
+            .replace("version: 1", "version: 2", 1)
+            .replace("owner_gates:", "validation_for: WP-001\nowner_gates:", 1)
+        )
+        unregistered = Finding(
+            id="state.v2.unregistered",
+            severity=Severity.ERROR,
+            message="unregistered v2 finding",
+            path="sdad-state.yaml",
+            line=1,
+            evidence="test contract breach",
+            remediation="register the finding",
+        )
+        with patch(
+            "sdad_validator.checks.path_integrity.PathIntegrityCheck.run",
+            return_value=(unregistered,),
+        ):
+            with self.assertRaises(DiagnosticError) as caught:
+                diagnose(state)
+
+        self.assertEqual(caught.exception.kind, "internal_error")
+        self.assertEqual(caught.exception.state_version, 2)
 
     def test_state_is_read_exactly_once_for_a_complete_diagnosis(self) -> None:
         view = make_view(valid_state())
@@ -834,9 +890,24 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
         )
         self.assertEqual(emitted & STATE_PATH_FINDING_IDS, STATE_PATH_FINDING_IDS)
 
-    def test_schema_v1_finding_allowlist_is_exactly_the_documented_44_ids(self) -> None:
-        self.assertEqual(len(ALL_SCHEMA_V1_FINDING_IDS), 44)
+    def test_schema_v1_finding_allowlist_remains_exact(self) -> None:
         self.assertEqual(ALLOWED_FINDING_IDS, ALL_SCHEMA_V1_FINDING_IDS)
+        self.assertEqual(len(ALLOWED_FINDING_IDS), 44)
+        self.assertEqual(
+            getattr(doctor_module, "STATE_V1_FINDING_IDS", None),
+            ALL_SCHEMA_V1_FINDING_IDS,
+        )
+        self.assertEqual(
+            getattr(doctor_module, "STATE_V2_ONLY_FINDING_IDS", None),
+            frozenset(),
+        )
+        self.assertEqual(
+            getattr(doctor_module, "ALLOWED_FINDING_IDS_BY_STATE_VERSION", None),
+            {
+                1: ALL_SCHEMA_V1_FINDING_IDS,
+                2: ALL_SCHEMA_V1_FINDING_IDS,
+            },
+        )
 
     def test_engine_rejects_reordered_checks_and_fixed_severity_breaches(self) -> None:
         from sdad_validator import checks
