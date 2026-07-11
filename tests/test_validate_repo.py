@@ -613,6 +613,16 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
         self.assertNotEqual(mutated, source)
         self.assert_source_rejected(mutated)
 
+    def test_rejects_deleting_required_version_constants(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        for name in (
+            "DOCTOR_VERSION",
+            "LEGACY_REPORT_SCHEMA_VERSION",
+            "REPORT_SCHEMA_VERSION",
+        ):
+            with self.subTest(name=name):
+                self.assert_source_rejected(source + f"\ndel {name}\n")
+
     def test_rejects_annotated_generic_schema_version(self) -> None:
         source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
         mutated = source.replace(

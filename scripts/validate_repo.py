@@ -640,7 +640,7 @@ def _validate_doctor_source_versions(doctor_source: str) -> None:
     for node in ast.walk(module):
         if (
             isinstance(node, ast.Name)
-            and isinstance(node.ctx, ast.Store)
+            and isinstance(node.ctx, (ast.Del, ast.Store))
             and node.id in protected_names
         ):
             binding_sites[node.id].add(id(node))
