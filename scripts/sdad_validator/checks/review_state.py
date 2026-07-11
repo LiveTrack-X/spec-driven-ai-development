@@ -261,11 +261,16 @@ def _parse_v2_record(
         else open_pattern.fullmatch(line)
     )
 
-    marker = _V2_PACKET_MARKER.search(line)
+    marker_candidate = _V2_PACKET_LIKE.search(line)
+    marker = (
+        _V2_PACKET_MARKER.fullmatch(marker_candidate.group(0))
+        if marker_candidate is not None
+        else None
+    )
     packet_id = marker.group(1) if marker is not None else None
     if packet_id is not None and is_valid_v2_packet_id(packet_id):
         marker_state = "valid"
-    elif marker is not None or _V2_PACKET_LIKE.search(line) is not None:
+    elif marker_candidate is not None:
         marker_state = "invalid"
         packet_id = None
     else:

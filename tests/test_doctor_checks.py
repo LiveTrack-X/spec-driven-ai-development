@@ -2156,6 +2156,57 @@ class DoctorV2LedgerTests(DoctorAssertions, unittest.TestCase):
                 ]
                 self.assertEqual(matching, [expected])
 
+    def test_first_packet_looking_token_controls_mixed_marker_precedence(
+        self,
+    ) -> None:
+        cases = (
+            (
+                "review",
+                "review-findings.md",
+                "- [packet=WP-OLD] [packet:WP-001] description",
+            ),
+            (
+                "review",
+                "review-findings.md",
+                "- [Packet:WP-OLD] [packet:WP-001] description",
+            ),
+            (
+                "todo",
+                "docs/TODO-Open-Items.md",
+                "- [ ] [packet=WP-OLD] [packet:WP-001] description",
+            ),
+            (
+                "todo",
+                "docs/TODO-Open-Items.md",
+                "- [ ] [Packet:WP-OLD] [packet:WP-001] description",
+            ),
+        )
+        for kind, path, line in cases:
+            with self.subTest(kind=kind, line=line):
+                document = (
+                    f"## Active Findings\n\n{line}\n"
+                    if kind == "review"
+                    else (
+                        f"## Active Work\n\n{line}\n\n"
+                        "## Release / Production Readiness\n\n"
+                        "None currently tracked.\n"
+                    )
+                )
+                report = diagnose(
+                    valid_v2_state(),
+                    files={path: document},
+                )
+                matching = [
+                    finding
+                    for finding in report.findings
+                    if finding.path == path
+                ]
+                self.assertEqual(
+                    [finding.id for finding in matching],
+                    ["ledger.open-item-invalid-marker"],
+                )
+                self.assertIs(matching[0].severity, Severity.WARNING)
+
     def test_exact_open_grammars_preserve_current_packet_checks(self) -> None:
         review_lines = (
             "- [Critical] [packet:WP.1_2-3] Critical description",
