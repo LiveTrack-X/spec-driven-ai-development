@@ -8,7 +8,10 @@ from pathlib import PurePosixPath
 from types import MappingProxyType
 
 
-STATE_KEYS = (
+SUPPORTED_STATE_VERSIONS = frozenset({1, 2})
+V2_PACKET_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+
+V1_STATE_KEYS = (
     "scale",
     "intensity",
     "autonomy",
@@ -18,11 +21,27 @@ STATE_KEYS = (
     "validation",
     "routed_docs",
 )
+V2_STATE_KEYS = (*V1_STATE_KEYS, "validation_for", "current_handoff")
 
-STATE_ENUMS = {
-    "scale": frozenset({"one-shot", "mini", "standard", "full"}),
-    "intensity": frozenset({"low", "medium", "high"}),
-    "autonomy": frozenset({"0", "1", "2", "3", "4"}),
+REQUIRED_TOP_LEVEL_KEYS_BY_VERSION = {
+    1: frozenset(V1_STATE_KEYS),
+    2: frozenset((*V1_STATE_KEYS, "validation_for")),
+}
+KNOWN_TOP_LEVEL_KEYS_BY_VERSION = {
+    1: frozenset(("version", "updated", *V1_STATE_KEYS)),
+    2: frozenset(("version", "updated", *V2_STATE_KEYS)),
+}
+STATE_ENUMS_BY_VERSION = {
+    1: {
+        "scale": frozenset({"one-shot", "mini", "standard", "full"}),
+        "intensity": frozenset({"low", "medium", "high"}),
+        "autonomy": frozenset({"0", "1", "2", "3", "4"}),
+    },
+    2: {
+        "scale": frozenset({"standard", "full"}),
+        "intensity": frozenset({"low", "medium", "high"}),
+        "autonomy": frozenset({"0", "1", "2", "3", "4"}),
+    },
 }
 
 ACTIVE_PACKET_KEYS = ("id", "objective", "status")
@@ -50,7 +69,6 @@ STATE_COLLECTION_KINDS = {
     "routed_docs": "list",
 }
 
-_KNOWN_TOP_LEVEL_KEYS = frozenset(("version", "updated", *STATE_KEYS))
 _KEY_PATTERN = r"[A-Za-z_][\w-]*"
 _MAPPING_LINE = re.compile(
     rf"^(?P<key>{_KEY_PATTERN}):(?P<tail>(?:[ \t].*)?)$"
@@ -96,6 +114,7 @@ class StateIssue:
 class StateContractResult:
     snapshot: StateSnapshot | None
     issues: tuple[StateIssue, ...]
+    state_version: int | None = None
 
 
 @dataclass(frozen=True)
@@ -137,6 +156,10 @@ def is_normalized_relative_posix_path(value: str) -> bool:
         and ".." not in path.parts
         and path.as_posix() == value
     )
+
+
+def is_valid_v2_packet_id(value: str) -> bool:
+    return V2_PACKET_ID_PATTERN.fullmatch(value) is not None
 
 
 def _issue(
@@ -428,6 +451,279 @@ def _duplicate_issues(
     return issues
 
 
+def _resolve_state_version(
+    top_level: tuple[_MappingItem, ...],
+) -> tuple[int | None, tuple[StateIssue, ...]]:
+    grouped = _by_key(top_level)
+    if "version" not in grouped:
+        return (
+            1,
+            (
+                _issue(
+                    "state.schema.missing-version",
+                    "warning",
+                    "State version is missing; legacy version 1 compatibility is assumed",
+                    "version",
+                    None,
+                ),
+            ),
+        )
+
+    version = grouped["version"][-1].node
+    if version.kind != "scalar":
+        return (
+            None,
+            (
+                _issue(
+                    "state.schema.wrong-kind",
+                    "error",
+                    "State version must be a scalar",
+                    version.kind,
+                    version.line,
+                ),
+            ),
+        )
+
+    declared = version.scalar or ""
+    for supported in SUPPORTED_STATE_VERSIONS:
+        if declared == str(supported):
+            return supported, ()
+    return (
+        None,
+        (
+            _issue(
+                "state.schema.unsupported-version",
+                "error",
+                f"Unsupported state version: {declared}",
+                declared,
+                version.line,
+            ),
+        ),
+    )
+
+
+def _v2_contract_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
+    issues: list[StateIssue] = []
+    grouped = _by_key(top_level)
+    nodes = _last_nodes(top_level)
+    issues.extend(_duplicate_issues(grouped, "top-level", None))
+
+    required = REQUIRED_TOP_LEVEL_KEYS_BY_VERSION[2]
+    for key in V2_STATE_KEYS:
+        if key in required and key not in grouped:
+            issues.append(
+                _issue(
+                    "state.schema.missing-key",
+                    "error",
+                    f"Missing required state key: {key}",
+                    key,
+                    None,
+                )
+            )
+
+    for key, allowed in STATE_ENUMS_BY_VERSION[2].items():
+        node = nodes.get(key)
+        if node is None:
+            continue
+        if node.kind != "scalar":
+            issues.append(
+                _issue(
+                    "state.schema.wrong-kind",
+                    "error",
+                    f"State key {key} must be a scalar",
+                    node.kind,
+                    node.line,
+                )
+            )
+        elif node.scalar not in allowed:
+            issues.append(
+                _issue(
+                    "state.schema.unsupported-value",
+                    "error",
+                    f"Unsupported {key}: {node.scalar}",
+                    node.scalar or "",
+                    node.line,
+                )
+            )
+
+    validation_for = nodes.get("validation_for")
+    if validation_for is not None:
+        if validation_for.kind != "scalar":
+            issues.append(
+                _issue(
+                    "state.schema.wrong-kind",
+                    "error",
+                    "State key validation_for must be a scalar",
+                    validation_for.kind,
+                    validation_for.line,
+                )
+            )
+        elif not is_valid_v2_packet_id(validation_for.scalar or ""):
+            issues.append(
+                _issue(
+                    "state.schema.unsupported-value",
+                    "error",
+                    f"Unsupported validation_for: {validation_for.scalar}",
+                    validation_for.scalar or "",
+                    validation_for.line,
+                )
+            )
+
+    active_spec_node = nodes.get("active_spec")
+    if (
+        active_spec_node is not None
+        and active_spec_node.kind == "scalar"
+        and not is_normalized_relative_posix_path(active_spec_node.scalar or "")
+    ):
+        issues.append(
+            _issue(
+                "path.invalid",
+                "error",
+                "active_spec must be a normalized repository-relative POSIX path",
+                active_spec_node.scalar or "",
+                active_spec_node.line,
+            )
+        )
+
+    current_handoff = nodes.get("current_handoff")
+    if current_handoff is not None:
+        if current_handoff.kind != "scalar":
+            issues.append(
+                _issue(
+                    "state.schema.wrong-kind",
+                    "error",
+                    "State key current_handoff must be a scalar",
+                    current_handoff.kind,
+                    current_handoff.line,
+                )
+            )
+        elif not is_normalized_relative_posix_path(current_handoff.scalar or ""):
+            issues.append(
+                _issue(
+                    "path.invalid",
+                    "error",
+                    "current_handoff must be a normalized repository-relative POSIX path",
+                    current_handoff.scalar or "",
+                    current_handoff.line,
+                )
+            )
+
+    for key, expected in STATE_COLLECTION_KINDS.items():
+        node = nodes.get(key)
+        if node is None or node.kind == expected:
+            continue
+        issues.append(
+            _issue(
+                "state.schema.wrong-kind",
+                "error",
+                f"State key {key} must be a {expected}",
+                node.kind,
+                node.line,
+            )
+        )
+
+    packet_node = nodes.get("active_packet")
+    if packet_node is not None and packet_node.kind == "mapping":
+        packet_grouped = _by_key(packet_node.mapping)
+        packet_nodes = _last_nodes(packet_node.mapping)
+        issues.extend(_duplicate_issues(packet_grouped, "active_packet", None))
+        for key in ACTIVE_PACKET_KEYS:
+            node = packet_nodes.get(key)
+            if node is None:
+                issues.append(
+                    _issue(
+                        "state.packet.missing-field",
+                        "error",
+                        f"active_packet is missing {key}",
+                        key,
+                        packet_node.line,
+                    )
+                )
+            elif node.kind == "empty" or (
+                node.kind == "scalar" and not (node.scalar or "").strip()
+            ):
+                issues.append(
+                    _issue(
+                        "state.packet.blank-field",
+                        "error",
+                        f"active_packet {key} must not be blank",
+                        key,
+                        node.line,
+                    )
+                )
+            elif node.kind != "scalar":
+                issues.append(
+                    _issue(
+                        "state.schema.wrong-kind",
+                        "error",
+                        f"active_packet {key} must be a scalar",
+                        node.kind,
+                        node.line,
+                    )
+                )
+
+        packet_id_node = packet_nodes.get("id")
+        packet_id = (
+            packet_id_node.scalar
+            if packet_id_node is not None and packet_id_node.kind == "scalar"
+            else None
+        )
+        if packet_id is not None and packet_id.strip() and not is_valid_v2_packet_id(packet_id):
+            issues.append(
+                _issue(
+                    "state.schema.unsupported-value",
+                    "error",
+                    f"Unsupported active_packet id: {packet_id}",
+                    packet_id,
+                    packet_id_node.line,
+                )
+            )
+
+        status_node = packet_nodes.get("status")
+        status = (
+            status_node.scalar
+            if status_node is not None and status_node.kind == "scalar"
+            else None
+        )
+        if status is not None and status.strip() and status not in ACTIVE_PACKET_STATUSES:
+            issues.append(
+                _issue(
+                    "state.schema.unsupported-value",
+                    "error",
+                    f"Unsupported active_packet status: {status}",
+                    status,
+                    status_node.line,
+                )
+            )
+    return issues
+
+
+def _unversioned_duplicate_issues(
+    top_level: tuple[_MappingItem, ...],
+) -> list[StateIssue]:
+    issues = _duplicate_issues(_by_key(top_level), "top-level", None)
+    nodes = _last_nodes(top_level)
+
+    packet = nodes.get("active_packet")
+    if packet is not None and packet.kind == "mapping":
+        issues.extend(
+            _duplicate_issues(_by_key(packet.mapping), "active_packet", None)
+        )
+
+    validation = nodes.get("validation")
+    if validation is not None and validation.kind == "list":
+        for entry in validation.items:
+            if entry.kind == "mapping":
+                issues.extend(
+                    _duplicate_issues(
+                        _by_key(entry.mapping),
+                        "validation entry",
+                        None,
+                    )
+                )
+    return issues
+
+
 def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
     issues: list[StateIssue] = []
     grouped = _by_key(top_level)
@@ -440,7 +736,7 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
         )
     )
 
-    for key in STATE_KEYS:
+    for key in V1_STATE_KEYS:
         if key not in grouped:
             legacy = f"sdad-state.yaml missing top-level key: {key}"
             issues.append(
@@ -454,7 +750,7 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
                 )
             )
 
-    for key, allowed in STATE_ENUMS.items():
+    for key, allowed in STATE_ENUMS_BY_VERSION[1].items():
         if key not in grouped:
             continue
         node = nodes[key]
@@ -597,46 +893,17 @@ def _legacy_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
     return issues
 
 
-def _schema_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
+def _schema_issues(
+    top_level: tuple[_MappingItem, ...],
+    state_version: int,
+) -> list[StateIssue]:
     issues: list[StateIssue] = []
     grouped = _by_key(top_level)
     nodes = _last_nodes(top_level)
 
-    if "version" not in grouped:
-        issues.append(
-            _issue(
-                "state.schema.missing-version",
-                "warning",
-                "State version is missing; legacy version 1 compatibility is assumed",
-                "version",
-                None,
-            )
-        )
-    else:
-        version = nodes["version"]
-        if version.kind != "scalar":
-            issues.append(
-                _issue(
-                    "state.schema.wrong-kind",
-                    "error",
-                    "State version must be a scalar",
-                    version.kind,
-                    version.line,
-                )
-            )
-        elif version.scalar != "1":
-            issues.append(
-                _issue(
-                    "state.schema.unsupported-version",
-                    "error",
-                    f"Unsupported state version: {version.scalar}",
-                    version.scalar or "",
-                    version.line,
-                )
-            )
-
+    known_top_level_keys = KNOWN_TOP_LEVEL_KEYS_BY_VERSION[state_version]
     for key, values in grouped.items():
-        if key not in _KNOWN_TOP_LEVEL_KEYS:
+        if key not in known_top_level_keys:
             issues.append(
                 _issue(
                     "state.schema.unknown-key",
@@ -681,7 +948,7 @@ def _schema_issues(top_level: tuple[_MappingItem, ...]) -> list[StateIssue]:
                 continue
             if node.kind == "empty":
                 continue
-            if node.kind != "scalar":
+            if state_version == 1 and node.kind != "scalar":
                 issues.append(
                     _issue(
                         "state.schema.wrong-kind",
@@ -825,8 +1092,29 @@ def inspect_state(text: str) -> StateContractResult:
         )
         return StateContractResult(snapshot=None, issues=(issue,))
 
-    issues = (*_legacy_issues(top_level), *_schema_issues(top_level))
-    return StateContractResult(snapshot=_snapshot(top_level), issues=issues)
+    state_version, version_issues = _resolve_state_version(top_level)
+    if state_version == 1:
+        issues = (
+            *_legacy_issues(top_level),
+            *version_issues,
+            *_schema_issues(top_level, state_version),
+        )
+    elif state_version == 2:
+        issues = (
+            *_v2_contract_issues(top_level),
+            *version_issues,
+            *_schema_issues(top_level, state_version),
+        )
+    else:
+        issues = (
+            *_unversioned_duplicate_issues(top_level),
+            *version_issues,
+        )
+    return StateContractResult(
+        snapshot=_snapshot(top_level),
+        issues=issues,
+        state_version=state_version,
+    )
 
 
 def collect_template_state_violations(text: str) -> list[str]:
@@ -834,6 +1122,8 @@ def collect_template_state_violations(text: str) -> list[str]:
         return []
     result = inspect_state(text)
     if result.snapshot is None:
+        return [issue.message for issue in result.issues if issue.severity == "error"]
+    if result.state_version == 2:
         return [issue.message for issue in result.issues if issue.severity == "error"]
     return [
         issue.legacy_message

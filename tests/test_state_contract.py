@@ -14,20 +14,59 @@ from sdad_validator.state_contract import (  # noqa: E402
     collect_template_state_violations,
     inspect_state,
     is_normalized_relative_posix_path,
+    is_valid_v2_packet_id,
 )
 
 
-def read(path: str) -> str:
-    return (ROOT / path).read_text(encoding="utf-8")
+V1_STATE = """version: 1
+updated: YYYY-MM-DD
+
+# one-shot | mini | standard | full
+scale: standard
+# low | medium | high
+intensity: medium
+# 0 = ask-first, 1 = unit, 2 = work packet, 3 = session, 4 = owner-gated risk
+autonomy: 2
+
+active_spec: SPEC/SPEC-COMPLETE.md
+active_packet:
+  id: bootstrap
+  objective: Replace with the current evidence-ready objective.
+  status: not_started
+
+# Keep only gates that can stop the current packet.
+owner_gates: []
+
+# Keep commands short and runnable from the repository root.
+validation:
+  - command: Replace with the project validation command.
+    proves: Replace with the claim this command supports.
+
+# List only documents needed by the current packet.
+routed_docs:
+  - docs/TODO-Open-Items.md
+  - review-findings.md
+"""
 
 
-def valid_state() -> str:
-    return read("templates/project-control-files/sdad-state.yaml")
+def valid_v1_state() -> str:
+    return V1_STATE
+
+
+def valid_v2_state() -> str:
+    return (
+        V1_STATE.replace("version: 1", "version: 2", 1)
+        .replace(
+            "  status: not_started\n\n# Keep only gates",
+            "  status: not_started\nvalidation_for: bootstrap\n\n# Keep only gates",
+            1,
+        )
+    )
 
 
 class StateContractTests(unittest.TestCase):
     def test_parses_the_canonical_state_subset(self) -> None:
-        result = inspect_state(valid_state())
+        result = inspect_state(valid_v1_state())
 
         self.assertIsNotNone(result.snapshot)
         assert result.snapshot is not None
@@ -39,6 +78,142 @@ class StateContractTests(unittest.TestCase):
             [item.value for item in result.snapshot.routed_docs],
             ["docs/TODO-Open-Items.md", "review-findings.md"],
         )
+
+    def test_missing_version_is_effective_v1_and_declared_versions_dispatch(self) -> None:
+        missing = inspect_state(valid_v1_state().replace("version: 1\n", ""))
+        self.assertEqual(missing.state_version, 1)
+        self.assertIn("state.schema.missing-version", [issue.id for issue in missing.issues])
+
+        self.assertEqual(inspect_state(valid_v1_state()).state_version, 1)
+        self.assertEqual(inspect_state(valid_v2_state()).state_version, 2)
+
+        future = inspect_state(valid_v1_state().replace("version: 1", "version: 99"))
+        self.assertIsNone(future.state_version)
+        self.assertIn("state.schema.unsupported-version", [issue.id for issue in future.issues])
+
+    def test_v2_requires_validation_owner_and_rejects_stateless_scales(self) -> None:
+        baseline = valid_v2_state()
+        cases = {
+            "state.schema.missing-key": baseline.replace(
+                "validation_for: bootstrap\n", ""
+            ),
+            "state.schema.wrong-kind": baseline.replace(
+                "validation_for: bootstrap", "validation_for:\n  nested: value"
+            ),
+            "state.schema.unsupported-value": baseline.replace(
+                "validation_for: bootstrap", "validation_for: ''"
+            ),
+        }
+        for expected, text in cases.items():
+            with self.subTest(expected=expected):
+                self.assertIn(expected, [issue.id for issue in inspect_state(text).issues])
+
+        for scale in ("one-shot", "mini"):
+            with self.subTest(scale=scale):
+                result = inspect_state(
+                    baseline.replace("scale: standard", f"scale: {scale}")
+                )
+                self.assertIn(
+                    "state.schema.unsupported-value",
+                    [issue.id for issue in result.issues],
+                )
+
+    def test_v2_packet_identity_grammar_is_exact(self) -> None:
+        self.assertTrue(is_valid_v2_packet_id("A"))
+        self.assertTrue(is_valid_v2_packet_id("WP_https.edge-01"))
+        self.assertTrue(is_valid_v2_packet_id("A" * 64))
+        for value in (
+            "",
+            "_A",
+            "-A",
+            ".A",
+            " A",
+            "A ",
+            "A/B",
+            "A\\B",
+            "A:B",
+            "A]B",
+            "A\nB",
+            "A" * 65,
+            "한글",
+        ):
+            with self.subTest(value=value):
+                self.assertFalse(is_valid_v2_packet_id(value))
+
+    def test_v2_packet_identity_fields_use_the_exact_grammar(self) -> None:
+        baseline = valid_v2_state()
+        for text in (
+            baseline.replace("validation_for: bootstrap", "validation_for: _bootstrap"),
+            baseline.replace("  id: bootstrap", "  id: bootstrap/child"),
+        ):
+            with self.subTest(text=text):
+                issues = inspect_state(text).issues
+                invalid = [
+                    issue
+                    for issue in issues
+                    if issue.id == "state.schema.unsupported-value"
+                ]
+                self.assertEqual(len(invalid), 1)
+                self.assertIsNone(invalid[0].legacy_message)
+
+    def test_v2_current_handoff_is_optional_but_must_be_a_normalized_scalar(self) -> None:
+        baseline = valid_v2_state()
+        self.assertNotIn("current_handoff", baseline)
+        valid = baseline + "current_handoff: docs/sdad/handoffs/current.md\n"
+        valid_snapshot = inspect_state(valid).snapshot
+        self.assertIsNotNone(valid_snapshot)
+        assert valid_snapshot is not None
+        self.assertEqual(
+            valid_snapshot.scalar("current_handoff").value,
+            "docs/sdad/handoffs/current.md",
+        )
+        for replacement, expected in (
+            ("current_handoff: ''", "path.invalid"),
+            ("current_handoff: ../outside.md", "path.invalid"),
+            ("current_handoff:\n  nested: value", "state.schema.wrong-kind"),
+        ):
+            with self.subTest(replacement=replacement):
+                result = inspect_state(baseline + replacement + "\n")
+                self.assertIn(expected, [issue.id for issue in result.issues])
+
+    def test_v2_template_validation_returns_every_error_message(self) -> None:
+        text = (
+            valid_v2_state()
+            .replace("scale: standard", "scale: one-shot")
+            .replace("validation_for: bootstrap\n", "")
+            + "current_handoff: ../outside.md\n"
+        )
+        result = inspect_state(text)
+        expected = [
+            issue.message for issue in result.issues if issue.severity == "error"
+        ]
+
+        self.assertGreaterEqual(len(expected), 3)
+        self.assertTrue(all(issue.legacy_message is None for issue in result.issues))
+        self.assertEqual(collect_template_state_violations(text), expected)
+
+    def test_unsupported_version_preserves_all_duplicate_key_findings(self) -> None:
+        text = (
+            valid_v1_state()
+            .replace("version: 1", "version: 99")
+            .replace("scale: standard", "scale: standard\nscale: full")
+            .replace(
+                "  status: not_started",
+                "  status: not_started\n  status: blocked",
+            )
+            .replace(
+                "    proves: Replace with the claim this command supports.",
+                "    proves: first\n    proves: second",
+            )
+        )
+
+        result = inspect_state(text)
+        duplicates = [
+            issue for issue in result.issues if issue.id == "state.schema.duplicate-key"
+        ]
+        self.assertIsNone(result.state_version)
+        self.assertEqual([issue.evidence for issue in duplicates], ["scale", "status", "proves"])
+        self.assertTrue(all(issue.legacy_message is None for issue in duplicates))
 
     def test_rejects_unsupported_syntax_without_partial_state(self) -> None:
         result = inspect_state("scale: standard\nvalidation: &shared []\n")
@@ -111,7 +286,7 @@ class StateContractTests(unittest.TestCase):
         )
 
     def test_parses_scalar_lists_and_validation_mapping_lists(self) -> None:
-        text = valid_state().replace(
+        text = valid_v1_state().replace(
             "owner_gates: []",
             "owner_gates:\n"
             "  - owner approval\n"
@@ -134,7 +309,7 @@ class StateContractTests(unittest.TestCase):
         )
 
     def test_parses_empty_list_form_for_each_supported_list(self) -> None:
-        text = valid_state().replace(
+        text = valid_v1_state().replace(
             "validation:\n"
             "  - command: Replace with the project validation command.\n"
             "    proves: Replace with the claim this command supports.",
@@ -156,7 +331,7 @@ class StateContractTests(unittest.TestCase):
 
     def test_reports_duplicate_keys_at_the_duplicate_source_lines(self) -> None:
         text = (
-            valid_state()
+            valid_v1_state()
             .replace("scale: standard", "scale: standard\nscale: full")
             .replace(
                 "  status: not_started",
@@ -258,7 +433,9 @@ class StateContractTests(unittest.TestCase):
             "scale: standard\nscale: []",
         ):
             with self.subTest(replacement=replacement):
-                result = inspect_state(valid_state().replace("scale: standard", replacement))
+                result = inspect_state(
+                    valid_v1_state().replace("scale: standard", replacement)
+                )
                 self.assertIsNotNone(result.snapshot)
                 assert result.snapshot is not None
                 self.assertIsNone(result.snapshot.scalar("scale"))
@@ -270,7 +447,7 @@ class StateContractTests(unittest.TestCase):
         ):
             with self.subTest(replacement=replacement):
                 result = inspect_state(
-                    valid_state().replace("  status: not_started", replacement)
+                    valid_v1_state().replace("  status: not_started", replacement)
                 )
                 self.assertIsNotNone(result.snapshot)
                 assert result.snapshot is not None
@@ -283,7 +460,7 @@ class StateContractTests(unittest.TestCase):
             f"{original}\n    command: []",
         ):
             with self.subTest(replacement=replacement):
-                result = inspect_state(valid_state().replace(original, replacement))
+                result = inspect_state(valid_v1_state().replace(original, replacement))
                 self.assertIsNotNone(result.snapshot)
                 assert result.snapshot is not None
                 self.assertNotIn("command", result.snapshot.validation[0].fields)
@@ -294,7 +471,7 @@ class StateContractTests(unittest.TestCase):
             "  - command: Replace with the project validation command.\n"
             "    proves: Replace with the claim this command supports."
         )
-        result = inspect_state(valid_state().replace(original, "validation:\n  -"))
+        result = inspect_state(valid_v1_state().replace(original, "validation:\n  -"))
 
         self.assertIsNotNone(result.snapshot)
         assert result.snapshot is not None
@@ -314,7 +491,7 @@ class StateContractTests(unittest.TestCase):
 
         for old, new, expected_legacy in cases:
             with self.subTest(value=new):
-                result = inspect_state(valid_state().replace(old, new))
+                result = inspect_state(valid_v1_state().replace(old, new))
                 packet_issues = [
                     issue
                     for issue in result.issues
@@ -334,7 +511,7 @@ class StateContractTests(unittest.TestCase):
         legacy = "unsupported active_packet status: "
         for quoted_empty in ("''", '\"\"'):
             with self.subTest(value=quoted_empty):
-                text = valid_state().replace(
+                text = valid_v1_state().replace(
                     "  status: not_started",
                     f"  status: {quoted_empty}",
                 )
@@ -362,7 +539,7 @@ class StateContractTests(unittest.TestCase):
         )
         for source, value, expected_legacy in cases:
             with self.subTest(source=source):
-                text = valid_state().replace(
+                text = valid_v1_state().replace(
                     "active_spec: SPEC/SPEC-COMPLETE.md",
                     f"active_spec: {source}",
                 )
@@ -391,7 +568,7 @@ class StateContractTests(unittest.TestCase):
             ("objective", "Replace with the current evidence-ready objective."),
         ):
             with self.subTest(key=key):
-                text = valid_state().replace(
+                text = valid_v1_state().replace(
                     f"  {key}: {original}",
                     f"  {key}: '   '",
                 )
@@ -413,7 +590,7 @@ class StateContractTests(unittest.TestCase):
                 self.assertEqual(collect_template_state_violations(text), [])
 
     def test_quoted_whitespace_packet_status_is_one_blank_issue(self) -> None:
-        text = valid_state().replace(
+        text = valid_v1_state().replace(
             "  status: not_started",
             "  status: '   '",
         )
@@ -447,14 +624,14 @@ class StateContractTests(unittest.TestCase):
         cases = (
             (
                 "owner_gates",
-                valid_state().replace(
+                valid_v1_state().replace(
                     "owner_gates: []",
                     "owner_gates:\n  - '   '",
                 ),
             ),
             (
                 "routed_docs",
-                valid_state().replace(
+                valid_v1_state().replace(
                     "  - docs/TODO-Open-Items.md",
                     "  - '   '",
                 ),
@@ -498,7 +675,9 @@ class StateContractTests(unittest.TestCase):
         self.assertEqual(scale_issue.line, 1)
 
     def test_valid_subset_returns_a_snapshot_when_schema_is_invalid(self) -> None:
-        result = inspect_state(valid_state().replace("scale: standard", "scale: huge"))
+        result = inspect_state(
+            valid_v1_state().replace("scale: standard", "scale: huge")
+        )
 
         self.assertIsNotNone(result.snapshot)
         unsupported = next(
@@ -511,7 +690,7 @@ class StateContractTests(unittest.TestCase):
         self.assertEqual(unsupported.legacy_message, "unsupported scale: huge")
 
     def test_only_existing_repository_contract_issues_have_legacy_messages(self) -> None:
-        text = valid_state().replace("version: 1\n", "extra: value\n")
+        text = valid_v1_state().replace("version: 1\n", "extra: value\n")
 
         result = inspect_state(text)
 
@@ -529,8 +708,77 @@ class StateContractTests(unittest.TestCase):
         self.assertIsNone(missing_version.legacy_message)
         self.assertIsNone(unknown_key.legacy_message)
 
+    def test_v1_only_recognizes_v1_top_level_keys(self) -> None:
+        for key, value in (
+            ("validation_for", "bootstrap"),
+            ("current_handoff", "docs/sdad/handoffs/current.md"),
+        ):
+            with self.subTest(key=key):
+                result = inspect_state(valid_v1_state() + f"{key}: {value}\n")
+                unknown = [
+                    issue
+                    for issue in result.issues
+                    if issue.id == "state.schema.unknown-key"
+                ]
+                self.assertEqual(
+                    [
+                        (
+                            issue.id,
+                            issue.severity,
+                            issue.evidence,
+                            issue.legacy_message,
+                        )
+                        for issue in unknown
+                    ],
+                    [("state.schema.unknown-key", "warning", key, None)],
+                )
+
+    def test_v1_issue_ids_legacy_messages_and_order_are_stable(self) -> None:
+        text = (
+            valid_v1_state()
+            .replace("scale: standard", "scale: huge\nscale: huge")
+            .replace("intensity: medium\n", "")
+            .replace("autonomy: 2", "autonomy:\n  nested: value")
+            .replace("active_spec: SPEC/SPEC-COMPLETE.md", "active_spec: ../outside.md")
+            .replace(
+                "  objective: Replace with the current evidence-ready objective.\n",
+                "",
+            )
+            .replace("owner_gates: []", "owner_gates:\n  -")
+            + "custom_key: preserved\n"
+        )
+
+        self.assertEqual(
+            [(issue.id, issue.legacy_message) for issue in inspect_state(text).issues],
+            [
+                (
+                    "state.schema.duplicate-key",
+                    "sdad-state.yaml duplicate top-level key: scale",
+                ),
+                (
+                    "state.schema.missing-key",
+                    "sdad-state.yaml missing top-level key: intensity",
+                ),
+                ("state.schema.unsupported-value", "unsupported scale: huge"),
+                (
+                    "state.schema.wrong-kind",
+                    "sdad-state.yaml missing scalar value: autonomy",
+                ),
+                (
+                    "path.invalid",
+                    "sdad-state.yaml active_spec must be a relative path: ../outside.md",
+                ),
+                (
+                    "state.packet.missing-field",
+                    "sdad-state.yaml active_packet missing key: objective",
+                ),
+                ("state.schema.unknown-key", None),
+                ("state.collection.malformed-entry", None),
+            ],
+        )
+
     def test_preserves_existing_violation_text(self) -> None:
-        text = valid_state().replace("scale: standard", "scale: huge")
+        text = valid_v1_state().replace("scale: standard", "scale: huge")
 
         self.assertIn(
             "unsupported scale: huge",

@@ -360,7 +360,7 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
             ),
             "state.schema.missing-version": baseline.replace("version: 1\n", ""),
             "state.schema.unsupported-version": baseline.replace(
-                "version: 1", "version: 2"
+                "version: 1", "version: 99"
             ),
             "state.schema.unsupported-value": baseline.replace(
                 "scale: standard", "scale: enormous"
@@ -778,7 +778,7 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
                 )
             ),
             diagnose(baseline.replace("version: 1\n", "")),
-            diagnose(baseline.replace("version: 1", "version: 2")),
+            diagnose(baseline.replace("version: 1", "version: 99")),
             diagnose(baseline.replace("scale: standard", "scale: enormous")),
             diagnose(
                 baseline.replace(
