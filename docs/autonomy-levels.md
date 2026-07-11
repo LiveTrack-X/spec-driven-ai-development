@@ -1,130 +1,49 @@
-# Autonomy Levels
+# Execution Scope And SDAD 3.1 Migration
 
-Status: Active reference
-Scope: How much an AI agent may do before asking the owner again
+Current SDAD Protocol work separates three controls:
 
-SPEC-Driven AI Development should reduce chaos, not create approval fatigue.
-Owner control does not mean the owner must approve every edit, TODO, or small
-task. It means the owner defines the boundary, risk posture, and stop
-conditions, then reviews evidence at meaningful checkpoints.
+| Control | Owns | Does not own |
+|---|---|---|
+| Scale | Persistent control surface | Work authorization |
+| Execution scope | Current `unit` or `packet` boundary | Risk acceptance |
+| Owner gate | Permission for a protected action | Implementation quality |
 
-## Evidence-Ready Is Not Owner-Accepted
-
-Use two states:
-
-- `AI-complete / evidence-ready`: the agent believes the work is ready for
-  review and shows changed files, checks, docs updated or checked, limitations,
-  and open risks.
-- `Owner-accepted`: the owner has reviewed the checkpoint and accepted,
-  rejected, revised, or deferred the result.
-
-An agent may continue from one evidence-ready unit to the next when both units
-are inside an approved work packet. It must not call the whole packet "done"
-until the owner checkpoint has happened or the owner has explicitly delegated
-that acceptance policy.
-
-## Work Packet
-
-A work packet is a bounded container for one or more review-worthy development
-units.
-
-Define it before implementation:
+For state v2, `execution_scope` is exactly:
 
 ```text
-Work packet:
-- Goal:
-- Autonomy level:
-- Allowed scope and files:
-- Review-worthy units included:
-- Non-goals:
-- Stop conditions:
-- Evidence required:
-- Checkpoint cadence:
+unit | packet
 ```
 
-The packet should be large enough that owner review is meaningful, but small
-enough that evidence can be checked without re-reading the whole project.
-Do not use every small SPEC item as a checkpoint by default. A review-worthy
-unit is a review and evidence slice inside the packet, not a separate owner
-approval boundary unless the owner asks for that.
+`ask_first` is an approval condition, not a scope. A session is a tool or time
+boundary, not a work boundary. Multi-packet work requires an explicitly
+approved packet plan or list.
 
-## Levels
+## Current Defaults
 
-| Level | Name | Behavior | Good for |
-|---|---|---|---|
-| 0 | Ask-first | Ask before each meaningful step. | New, ambiguous, or risky setup. |
-| 1 | Unit autonomy | Complete one review-worthy unit as the approved packet, then hand off evidence. | Mini SDAD and small fixes. |
-| 2 | Work-packet autonomy | Complete multiple related units inside one approved packet, then checkpoint. | Default for Standard SDAD. |
-| 3 | Session autonomy | Work until the session goal, time box, or stop condition is reached. | Low-risk docs, tests, cleanup, or implementation passes. |
-| 4 | Release-gated autonomy | Prepare release or production work, but owner gates release, migration, destructive actions, and risk acceptance. | Full SDAD and Q5 risk projects. |
+| Scale | Default execution boundary | Owner control |
+|---|---|---|
+| One-shot | Current request only | Ask for protected actions |
+| Mini | `unit` | Ask for protected actions |
+| Standard | `packet` | Named gates as applicable |
+| Full | `packet` | Named gates for applicable risks |
 
-Recommended defaults:
+Evidence-ready means the validation contract has bounded evidence. It is not
+owner acceptance.
 
-- One-shot prompt: no persistent autonomy contract.
-- Mini SDAD: Level 1 by default, with the active unit treated as one small
-  approved packet; Level 2 only if the owner names a packet with multiple units.
-- Standard SDAD: Level 2 by default.
-- Full SDAD or Q5 risk: Level 2 for implementation, with Level 4 gates for
-  release, migration, destructive actions, data/auth/money/security decisions,
-  rollback, and production claims.
+## Migrating From SDAD 3.1
 
-## Stop Conditions
+Numeric autonomy and operating intensity are state-v1 vocabulary. Preserve
+them when reading or reporting a v1 project, but do not write them into state
+v2.
 
-At any level above 0, stop and ask the owner only when:
+| Legacy v1 term | Current interpretation |
+|---|---|
+| Level 0 Ask-first | No execution authorization yet |
+| Level 1 Unit Autonomy | `execution_scope: unit` |
+| Level 2 Work Packet Autonomy | `execution_scope: packet` |
+| Level 3 Session Autonomy | Explicitly approved multi-packet plan; never a scope enum |
+| Level 4 Release-gated Autonomy | Named owner gates, independent of execution scope |
 
-- scope would expand beyond the approved packet,
-- Q5 risk, release posture, data, auth, money, migration, security, or
-  destructive action changes,
-- an owner-controlled product, policy, budget, or tradeoff decision is required,
-- verification is blocked or impossible,
-- current evidence conflicts with the requested plan,
-- the next step would overwrite or discard existing work without owner approval.
-
-Everything else should be handled as "report later with evidence", not "ask now
-for permission".
-
-## Clarification Checkpoints
-
-Autonomy does not mean silent guessing. When scope, terminology, evidence, or a
-hard-to-reverse choice is fuzzy, run a clarification checkpoint before coding.
-
-First inspect repository evidence: current code, tests, active docs, SPEC, TODOs,
-review findings, and ADRs. If those answer the question, proceed with the answer
-and cite it later. If they do not, ask only the next blocking owner question and
-include the AI's recommended answer.
-
-Clarification checkpoints are not micro-approval. They exist to protect owner
-tradeoffs and prevent hidden assumptions while preserving flow inside the
-approved packet.
-
-## Checkpoint Summary
-
-At the end of a work packet or session, report:
-
-- SDAD scale / intensity used,
-- autonomy level used,
-- one-line status,
-- changed user-facing behavior,
-- safety boundary touched: yes/no,
-- checks summary,
-- owner decision needed: yes/no,
-- recommended next action,
-- clarification checkpoints resolved or still blocking,
-- work packet completed,
-- evidence-ready units,
-- changed files,
-- tests, builds, lint, or manual checks run,
-- docs and control files checked or updated,
-- implementation notes for spec-unstated decisions, or "none needed",
-- open findings and remaining risks,
-- partial, skipped, degraded, or unverified behavior,
-- owner decision details, when `owner decision needed` is yes,
-- next proposed work packet.
-
-For `Medium` and `High` operating intensity, show this Owner Review Compression
-summary before detailed evidence. Link or refer to detailed evidence instead of
-making the owner read every artifact first.
-
-For Standard and Full SDAD, update control files at the packet or handoff
-boundary. Do not stop after every micro-task just to update documents, but do not
-leave stale control files across a handoff.
+High, Medium, and Low remain historical v1 operating-intensity inputs only.
+Migration starts with a read-only preview and preserves the v1 contract until
+the owner accepts the v2 write.

@@ -1,535 +1,166 @@
-# Getting Started
+# Getting Started With SDAD Protocol
 
-Use this guide when you want to apply SPEC-Driven AI Development to a real
-project for the first time.
+The fastest path is the expanded
+[Copy-Paste Start Prompt](../README.md#copy-paste-start-prompt). It is identical
+to [No-Clone Option 1](no-clone-quick-install.md#option-1-give-this-to-your-ai-agent).
+Use that large prompt once for install, upgrade, migration, or repair.
 
-If you are still deciding whether SDAD fits your situation, start with
-[user-guide.md](user-guide.md).
+## Choose The Three Controls
 
-The short version:
+Scale determines which persistent control surface is installed. Execution
+scope determines how far the AI may work now. Owner gates determine which
+protected actions still require the owner.
 
-```text
-Install one instruction file, keep one compact active-state route, define one
-work packet, then require evidence before accepting completion.
-```
+| Scale | Use when | Default execution boundary |
+|---|---|---|
+| One-shot | Current disposable request | Current request |
+| Mini | One small evidence-bearing change | `unit` |
+| Standard | Durable state, multiple sessions, or reviewers | `packet` |
+| Full | Risk-bearing work needs additional controls | `packet` plus named gates |
 
-## Choose Scale First
+The AI should infer these controls from the request and repository, report its
+reason, and ask at most one question only if the answer materially changes
+scale, execution scope, a claim, or an owner gate. The owner may override it.
 
-Do not start with full SDAD automatically.
+## Install Once
 
-Ask five questions:
+### No-Clone Quick Install
 
-1. Will this take more than one AI session?
-2. Will you come back to this project later?
-3. Does "done" need evidence beyond "AI said so"?
-4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, real user data, auth, money, security, rollback,
-   destructive action, or production risk?
+Use [no-clone-quick-install.md](no-clone-quick-install.md) when the target AI can
+edit the project but you do not want to clone this repository. Keep the pinned
+revision, source path, and SHA-256 from one manifest together.
 
-Override rules beat raw yes-counts.
-
-| Trigger | Use |
-|---|---|
-| 0 yes | One-shot prompt |
-| 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | [Mini SDAD](mini-sdad.md) |
-| Q4=yes or 3 yes total | Standard SDAD |
-| Q5=yes, but the packet only inspects, documents, or tests the risk area | Standard SDAD minimum |
-| Q5=yes and the packet changes, accepts, or executes the gate | Full SDAD |
-| 4-5 yes | Full SDAD |
-
-When unsure, choose the smaller scale only if no Q5 gate is active, and
-escalate later when evidence shows the project needs it.
-
-## Maintenance Cost
-
-Standard and Full SDAD create control files that must stay current. Keep
-`sdad-state.yaml` as the compact current route. At a packet or handoff boundary,
-check and update only the SPEC, TODO, findings, notes, rules, evidence, or ADRs
-whose state changed.
-
-Update `docs/implementation-notes.md` when implementation required a
-spec-unstated assumption, change, compromise, rejected alternative,
-owner-relevant tradeoff, follow-up, or verification-impact note. Do not turn it
-into a raw thought transcript or mechanical edit log.
-
-Update `save-state.md` when a session pauses or ends, handoff is expected, owner
-direction or acceptance criteria changed, blocked/partial/unverified state
-remains, or context would be expensive to reconstruct.
-
-For long AI sessions that will be closed, replaced, restarted, or resumed in a
-fresh session, create a session handoff under
-`docs/sdad/handoffs/YYYY-MM-DD-topic.md`. See
-[session-handoff.md](session-handoff.md).
-
-Keep active live-state files short. If state, TODO, review, or handoff files
-become long journals, move old history to archive/history files and use bounded
-reads for archives, logs, generated artifacts, private data, and broad search
-output. See [context-stability.md](context-stability.md).
-Default soft trigger: bounded reads above 50 KB or 500 lines; context-stability
-check above 200 KB or 2,000 lines; no full startup read above 1 MB unless the
-owner explicitly asks for historical reconstruction.
-
-If no file needs a content change, say which files were checked and why no
-update was needed.
-Before evidence-ready or handoff, run the Documentation Record Audit in
-[maintenance-cost.md](maintenance-cost.md): state the change type and routed
-documentation surfaces, docs changed, docs checked with
-no update needed, stale docs, archive/evidence
-links, and validation commands.
-
-If you do not want that maintenance cost, choose One-shot Prompt or
-[Mini SDAD](mini-sdad.md). See [maintenance-cost.md](maintenance-cost.md).
-
-## First Packet Routine
-
-For Standard or Full SDAD, read `sdad-state.yaml`, then use `docs/INDEX.md` as
-the working router. In this source repository, the templates are under
-`templates/project-control-files/`:
-
-```text
-Adapter -> sdad-state.yaml -> docs/INDEX.md -> source/tests -> one routed path
-```
-
-Do not load the full rulebook, archives, historical SPEC sections, old
-handoffs, or optional evidence files by default. Open only the policy heading or
-playbook selected by the current trigger. Skip ADR, evidence, save-state, and
-handoff surfaces when they have no active job.
-
-After Standard or Full SDAD is installed, choose an operating intensity for each
-packet: `Standard SDAD / High`, `Standard SDAD / Medium`, `Standard SDAD / Low`,
-`Full SDAD / High`, `Full SDAD / Medium`, or `Full SDAD / Low`. Use
-[operating-intensity.md](operating-intensity.md) when a usable baseline exists
-and the project should freeze, compress evidence, or simplify owner review.
-
-## Complete Beginner Path
-
-If you are not comfortable with terminals, Git, Python, or shell scripts, use
-the no-clone path first:
-
-- Open your project in an AI coding tool that can edit files.
-- Copy the prompt from [no-clone quick install](no-clone-quick-install.md).
-- Paste it into the AI agent.
-- Let the AI choose the scale before it creates any files.
-
-Codex is optional. A Codex skill is only for Codex users.
-
-Chat-only tools such as Claude.ai, ChatGPT web, or browser chat can help plan,
-but they cannot install adapters unless they have project filesystem access.
-Claude Code means the local/CLI coding tool, not Claude.ai chat.
-
-## Who Does What
-
-- The owner decides product direction, risk tolerance, priorities, and final
-  acceptance.
-- The AI tool helps create SPECs, implement work packets and review-worthy
-  units, review work, update docs, and produce evidence.
-- Completion is accepted only when the evidence is clear enough for the owner to
-  trust the result.
-
-You do not need to write code yourself to use this workflow. You do need to make
-clear decisions and reject vague completion claims.
-
-The owner should not need to approve every micro-task or every evidence-ready
-unit. Once a work packet is approved, the AI should continue inside that
-boundary until it can hand off changed files, checks, known limits, and
-evidence at a checkpoint.
-
-Use two states:
-
-- `AI-complete / evidence-ready`: the AI has changed files, run or explained
-  checks, updated or checked docs, and named limits.
-- `Owner-accepted`: the owner accepts, rejects, revises, or defers the work at a
-  checkpoint.
-
-For most Standard SDAD work, use Level 2 Work Packet Autonomy from
-[autonomy-levels.md](autonomy-levels.md): the owner approves the packet boundary,
-then the AI works through the included units without asking after each small
-task or small SPEC item.
-
-## No-Clone Quick Install
-
-You do not need to clone this repository to start.
-
-If you want the easiest path, use [no-clone quick install](no-clone-quick-install.md).
-It includes:
-
-- scale selection,
-- a prompt you can give directly to an AI agent,
-- one-paste PowerShell installer,
-- one-paste Bash installer.
-
-## Get This Repository
-
-For prompt-only use, you can just link to this repository.
-
-Clone or download the repository only when you want the full package locally:
+### Clone Or Download
 
 ```bash
 git clone https://github.com/LiveTrack-X/spec-driven-ai-development.git
 cd spec-driven-ai-development
 ```
 
-## Diagnose With SDAD Doctor
-
-Doctor is for stateful Standard or Full SDAD projects.
-It also supports any project that adopts the `sdad-state.yaml` state contract.
-Checkout-only in 3.1.0, it is not copied into a target project by adapter
-installation.
-
-```text
-python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] [--json] [--strict]
-```
-
-Replace `<SDAD_CHECKOUT>` with the path to this repository checkout. Replace
-`[PROJECT_ROOT]` with the project to inspect, or omit it to inspect the current
-directory.
-
-- `--json` emits exactly one versioned JSON document.
-- `--strict` makes warnings fail without reclassifying them.
-
-| Exit | Meaning |
-| --- | --- |
-| 0 | Diagnosis completed and the selected policy passes: no errors, and no warnings when `--strict` is set. |
-| 1 | Diagnosis completed, but findings fail policy: errors, or warnings with `--strict`. |
-| 2 | Diagnosis did not complete because of invalid invocation, an unusable root, state I/O, or an internal failure. |
-
-At exit `1`, a missing state file is the completed `state.missing` finding, not
-an installation or invocation failure.
-
-Doctor is read-only: it never executes validation commands, mutates or fixes
-files, uses the network, or grants or claims owner acceptance. Findings are
-diagnostic evidence, not proof of correctness, effectiveness, or owner acceptance.
-
-## Choose A Setup Path
-
-### Path 1: Prompt-Only Start
-
-Use this when you are evaluating the workflow or starting with a plain chat-based
-AI coding tool.
-
-Paste this into your AI tool:
-
-```text
-Use the SPEC-driven AI development workflow from
-https://github.com/LiveTrack-X/spec-driven-ai-development.
-
-I am the owner. Help me create the first active SPEC slice and the first
-low-intervention work packet.
-
-First choose One-shot, Mini, Standard, or Full SDAD. Create only the files that
-scale needs.
-
-Start by asking for:
-1. the product pain or goal,
-2. the smallest useful version,
-3. non-goals,
-4. risks,
-5. owner-controlled decisions,
-6. the first work packet,
-7. the review-worthy units inside that packet,
-8. evidence required before I accept completion.
-
-If Standard or Full SDAD is selected, create the first project control files:
-- AGENTS.md or equivalent AI instruction file,
-- sdad-state.yaml,
-- docs/INDEX.md,
-- docs/Repository-Operating-Rules.md,
-- the on-demand files under docs/sdad/playbooks/,
-- SPEC/SPEC-COMPLETE.md,
-- docs/TODO-Open-Items.md,
-- review-findings.md,
-- docs/implementation-notes.md.
-
-If product, hardware, compatibility, packaging, remote tester, external lab, or
-release claims need evidence stronger than local software tests, also create
-only the needed product evidence templates:
-- docs/evidence-matrix.md,
-- docs/claim-registry.md,
-- docs/artifact-contracts.md,
-- docs/work-packet-state.md,
-- docs/remote-evidence-import.md.
-```
-
-This path is fastest, but the AI may forget the workflow in later sessions. Move
-to Path 2 or Path 3 when the project becomes serious.
-
-### Path 2: Install A Tool Adapter
-
-Use this when you already have a project folder and want the workflow to persist
-inside that project.
-
-For small projects, use [Mini SDAD](mini-sdad.md) first. It creates only one
-instruction file and avoids the full docs/SPEC structure.
-
-Use the no-clone installer, or clone this repository and install the adapter for
-your AI coding tool.
-
-No-clone path:
-
-- [docs/no-clone-quick-install.md](no-clone-quick-install.md)
-
-Cloned repository path:
-
-PowerShell:
+Install exactly one project adapter from the project root:
 
 ```powershell
-.\scripts\install-agent-adapter.ps1 -Adapter codex -TargetPath C:\path\to\project
-.\scripts\install-agent-adapter.ps1 -Adapter claude-code -TargetPath C:\path\to\project
-.\scripts\install-agent-adapter.ps1 -Adapter gemini-cli -TargetPath C:\path\to\project
-.\scripts\install-agent-adapter.ps1 -Adapter cursor -TargetPath C:\path\to\project
-.\scripts\install-agent-adapter.ps1 -Adapter github-copilot -TargetPath C:\path\to\project
-.\scripts\install-agent-adapter.ps1 -Adapter generic -TargetPath C:\path\to\project
+.\scripts\install-agent-adapter.ps1 codex
 ```
-
-Bash:
 
 ```bash
-./scripts/install-agent-adapter.sh codex /path/to/project
-./scripts/install-agent-adapter.sh claude-code /path/to/project
-./scripts/install-agent-adapter.sh gemini-cli /path/to/project
-./scripts/install-agent-adapter.sh cursor /path/to/project
-./scripts/install-agent-adapter.sh github-copilot /path/to/project
-./scripts/install-agent-adapter.sh generic /path/to/project
+bash ./scripts/install-agent-adapter.sh codex
 ```
 
-If your checkout lost executable bits, prefix the command with `bash`, for
-example `bash ./scripts/install-agent-adapter.sh codex /path/to/project`.
+Available targets are Codex (`AGENTS.md`), Claude Code (`CLAUDE.md`), Gemini CLI
+(`GEMINI.md`), Cursor, Copilot Chat, and a generic instruction file. Do not
+create all adapters.
 
-Adapter installers preserve existing files unless `-Force` or `--force` is
-explicitly supplied. They refuse linked destination components so a project
-path cannot silently redirect the write elsewhere.
-
-Then start your AI tool inside the target project and say:
-
-```text
-Read the installed SPEC-Driven AI Development instructions.
-Bootstrap this project into an owner-supervised, SPEC-driven workflow.
-Create the compact state -> INDEX -> on-demand route, the first active SPEC
-slice, and only the control files this scale needs.
-Define the first work packet and the review-worthy development units inside it.
-```
-
-### Path 3: Install The Codex Skill
-
-Use this when you work in Codex and want the workflow available as a reusable
-skill.
-
-PowerShell:
+The optional global Codex start skill is for install, upgrade, migration,
+Doctor, and control-file operations:
 
 ```powershell
 .\scripts\install-codex-skill.ps1
 ```
 
-Bash:
-
 ```bash
-./scripts/install-codex-skill.sh
+bash ./scripts/install-codex-skill.sh
 ```
 
-If your checkout lost executable bits, use `bash ./scripts/install-codex-skill.sh`.
+Ordinary project work follows the installed repository adapter.
 
-The skill installer also preserves an existing installation by default. Use
-`-Force` in PowerShell or `--force` in Bash only after reviewing local changes.
-Forced replacement is staged and verified before the previous installation is
-swapped out.
+## Bootstrap Standard Or Full
 
-Then start a new Codex session and say:
+New stateful projects use state `version: 2`:
+
+- `scale: standard | full`
+- `execution_scope: unit | packet`
+- one executable leaf `active_packet`
+- `validation_for` equal to `active_packet.id`
+- active TODO and review records carrying the packet ID
+- optional packet-bound `current_handoff`
+- `routed_docs` as eligible routes, not a read-all order
+
+State v2 has no `intensity` or numeric `autonomy`. It does not create or route
+`save-state.md`. Existing projects receive a read-only migration preview before
+writes, and v1 inputs remain valid until migration is accepted.
+
+After bootstrap, the fixed startup route is:
 
 ```text
-$ai-spec-project-start use this workflow to bootstrap my project.
+adapter -> sdad-state.yaml -> docs/INDEX.md
 ```
 
-The skill name is optional for advanced users, not a requirement for normal
-owners. Natural requests such as "review this repo", "implement the current
-SPEC", "prepare a release", "update the docs", or "create a handoff" should be
-routed by intent after the SDAD instructions are installed.
+Then read current source/tests and only one intent-selected path, heading,
+active section, or targeted match. Do not load the full rulebook.
 
-## First 10 Minutes
+Optional product-evidence templates such as `docs/evidence-matrix.md`,
+`docs/claim-registry.md`, `docs/artifact-contracts.md`,
+`docs/work-packet-state.md`, and `docs/remote-evidence-import.md` are
+create-on-demand. Route or create only what the current claim requires.
 
-After setup, ask the AI for the first work packet, not the whole project and not
-a tiny micro-task.
+## Work The First Packet
 
-Good first request:
+Use one loop:
 
 ```text
-Create the first work packet for the smallest useful version.
-Keep future ideas in backlog or non-goals.
-Batch related review-worthy units until the packet is meaningful to review, but
-keep it small enough to verify in one checkpoint.
-Use Level 2 Work Packet Autonomy unless a risk gate requires owner input.
-Define the evidence required before I can accept this packet as complete.
-If the plan is fuzzy, inspect repository evidence first, then ask only the next
-blocking clarification question with your recommended answer.
+Plan -> Route -> Implement -> Verify -> Report
 ```
 
-The first useful output should include:
+An owner gate and a handoff are conditional branches. A review-worthy unit is a
+small, coherent evidence slice; a packet may contain related units. Do not stop
+for every micro-task inside an approved packet.
 
-- product goal,
-- target user,
-- smallest useful version,
-- non-goals,
-- known risks,
-- owner-controlled decisions,
-- active SPEC slice,
-- first work packet and review-worthy units,
-- clarification questions resolved or still owner-blocking,
-- TODO list,
-- review and verification plan,
-- docs that must be created or updated.
+Before editing, define the validation contract and evidence limit. At the end,
+report changed files, checks, limits, documents actually read, owner decision
+needed, and evidence-ready status. Evidence-ready is not owner acceptance.
 
-For hardware, packaged product, remote tester, compatibility, or release-claim
-projects, also ask whether the optional product evidence templates are needed:
-`docs/evidence-matrix.md`, `docs/claim-registry.md`,
-`docs/artifact-contracts.md`, `docs/work-packet-state.md`, and
-`docs/remote-evidence-import.md`. See
-[product-evidence-templates.md](product-evidence-templates.md).
+## Diagnose With SDAD Doctor
 
-For lean Standard bootstraps, optional evidence templates are create-on-demand.
-If `docs/INDEX.md` routes optional evidence docs that do not exist yet, create
-only the ones needed by current product, hardware, package, remote evidence, or
-release claims.
-
-Small Project Compression Rule: for One-shot, Mini SDAD, or a small Standard
-packet, one evidence-ready summary is enough when there is one active slice, no
-Q5 gate changed, no unresolved review finding or durable spec-unstated decision
-must survive the turn, no handoff is expected, and the evidence can be shown
-compactly. Turn on SPEC, TODO, review findings, implementation notes,
-save-state, handoff, Evidence Matrix, Claim Registry, or Artifact Contract only
-when that surface has an active job.
-
-## Daily Usage Loop
-
-Use the same loop every session:
+Doctor is checkout-only for stateful Standard or Full projects and any project
+that adopts the `sdad-state.yaml` contract:
 
 ```text
-Scale/compress -> Active SPEC slice -> Work packet -> Evidence tier/gates -> Owner checkpoint -> Maintenance
+python <SDAD_CHECKOUT>/scripts/sdad.py --version
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.0 [--json] [--strict]
 ```
 
-This is the control spine. The pain loop below is the feedback cycle, not a
-separate document-read order.
+Replace `<SDAD_CHECKOUT>` with the actual checkout path. A shell-neutral wrapper
+may resolve an operator-configured checkout; do not present PowerShell `$env:`
+syntax as portable validation.
 
-Choose scale and compression before creating files. Before evidence-ready,
-check only the gates that apply: reference parity for reference-derived work,
-evidence tier for claim scope, product evidence templates for product/hardware
-claims, and Level 4 owner gates for Q5 risk. ADRs are conditional, not a
-mandatory step.
+The guard identifies Doctor version 3.2.0. Doctor version, state schema version,
+and report schema version are separate. Existing v1 JSON calls remain schema 1;
+guarded/state-v2 calls use schema 2. `root` and `state_version` may be null when
+state cannot be loaded. `--json` emits exactly one versioned JSON document.
+`--strict` makes warnings fail policy without changing their severity.
 
-```text
-Pain -> SPEC -> Work packet -> Build -> Review -> Evidence-ready -> Owner checkpoint -> Rule
-```
+Missing `sdad-state.yaml` produces the completed `state.missing` finding and
+exit `1`; fatal invocation or report-construction failure uses exit `2`.
 
-In practice, the build/review boundary should be a work packet containing one or
-more review-worthy development units. Do not stop after every micro-task inside
-the approved packet.
+Doctor never executes validation commands. Green proves structural consistency,
+not checkout provenance, product correctness, effectiveness, or owner
+acceptance.
 
-### Quick Routing Prompt
+## Owner Gates And Authorization
 
-Use this when the AI seems unsure which SDAD document to check next:
+Protected actions include release, production, migration, destructive change,
+sensitive-data access, auth, money, security, rollback, and risk acceptance.
+Execution scope does not bypass them.
 
-```text
-Use docs/INDEX.md as the working router for this packet.
-Read sdad-state.yaml first and keep its routed_docs limited to this packet.
-Identify the current moment: starting/resuming, defining scope, choosing next
-task, investigating bug/risk, making a spec-unstated choice, making a claim,
-preparing owner checkpoint, ending/handoff, or turning repeated pain into a rule.
-Then report which active docs must be checked, which optional surfaces are not
-needed, whether any long log/evidence record should be split into a timestamped
-YYYY-MM-DD-HHMM-start-topic.md file, and whether the packet is evidence-ready
-or still owner-accepted pending.
-```
+Record a conditional owner authorization with Decision, Authorized action,
+Packet, Conditions, Expires when, and Evidence required before action. Reuse it
+only while those terms and source remain unchanged.
 
-### Build Prompt
+## Daily Recovery
 
-```text
-Read the active docs and current SPEC.
-Implement the next approved work packet. You may complete multiple related
-review-worthy units inside that packet.
-Do not stop for owner approval after every micro-task or every evidence-ready
-unit. Stop only if scope would expand, Q5 risk changes, destructive or
-irreversible action is needed, an owner-controlled decision is required,
-verification is blocked, or current evidence conflicts with the plan.
-If the plan is fuzzy, inspect code, tests, active docs, SPEC, TODOs, review
-findings, and ADRs before asking me. Ask only the next blocking question and
-include your recommended answer.
-Before checkpoint handoff, show changed files, verification commands, docs
-checked, implementation notes when the SPEC did not cover a decision,
-evidence-ready units, remaining risks, and what is not complete.
-```
+For a fresh session, use adapter -> state -> INDEX. Read a handoff only when
+`current_handoff` names one for the active packet. Tool-native sessions,
+checkpoints, or memory are conveniences, not SDAD state authority.
 
-### Review Prompt
+Keep facts in their authoritative homes: requirements in SPEC, small non-spec
+decisions in implementation notes, hard-to-reverse decisions in ADRs,
+unresolved work in TODO/findings, recovery links in handoff, and current state
+in `sdad-state.yaml`.
 
-```text
-Review this project as a separate AI reviewer.
-Focus on bugs, missing tests, SPEC drift, docs drift, unsafe assumptions, and
-claims that lack evidence.
-Return findings with file paths, severity, and reproduction steps when possible.
-```
+## Migrating From SDAD 3.1
 
-### Handoff Prompt
-
-```text
-Update the project control files after this work.
-Record completed work, open TODOs, review findings, verification evidence,
-partial or unverified behavior, and any repeated pain that should become a rule.
-If no control file needs a content change, state which files were checked and why.
-```
-
-## Owner Checkpoint Checklist
-
-Before accepting a work packet as "done", check:
-
-- Is the active SPEC slice clear?
-- Was the completed work a meaningful packet, not just a micro-task?
-- Did the AI stay inside the active scope?
-- Did the AI resolve fuzzy scope from repository evidence before asking you?
-- Are code changes listed?
-- Did tests, builds, lint, or manual checks run?
-- Were docs checked or updated?
-- Were spec-unstated implementation decisions recorded in implementation notes?
-- Are skipped, partial, degraded, or unverified items named?
-- If the packet rebuilds or borrows from an existing product, repo, design, or
-  demo, did it map source behavior to implemented behavior and evidence?
-- If the packet makes a product, hardware, compatibility, release, package, or
-  remote evidence claim, is it mapped through the evidence matrix and claim
-  registry?
-- If the project uses `save-state.md`, did a pause, handoff, direction change,
-  blocked state, or expensive context trigger require an update?
-- Are review findings either fixed or tracked?
-- Did repeated pain become a rule, checklist, test, or template update?
-
-If any answer is unclear, do not accept completion yet. Ask for evidence or move
-the item into `docs/TODO-Open-Items.md` or `review-findings.md`.
-
-For Mini SDAD, a unit may be called evidence-ready when the active task, changed
-files, check evidence, and limitations or unverified behavior are shown. It is
-not finally done until owner acceptance is shown or the owner has explicitly
-delegated the acceptance policy.
-
-## Common Mistakes
-
-- Starting from old notes instead of the current active SPEC.
-- Asking AI to build the whole project at once.
-- Stopping after every micro-task instead of a work packet or review-worthy
-  development unit.
-- Treating each small SPEC item as a separate owner-approval gate.
-- Treating evidence-ready as owner-accepted.
-- Treating confident AI language as completion.
-- Passing tests while losing reference-critical behavior from the old product,
-  repo, design, or demo.
-- Letting future ideas enter the active implementation unit.
-- Forgetting to update TODOs, review findings, or docs after work.
-- Not separating builder and reviewer roles.
-
-## What Success Looks Like
-
-A healthy project using this workflow has:
-
-- one clear current SPEC,
-- a short active TODO list,
-- review findings that are tracked instead of forgotten,
-- evidence attached to every completion claim,
-- owner decisions recorded when tradeoffs matter,
-- repeated failures converted into durable rules.
-
-When the project has those properties, other AI sessions and other people can
-join the work without relying on memory or trust alone.
+See [autonomy-levels.md](autonomy-levels.md) and
+[operating-intensity.md](operating-intensity.md). Legacy numeric autonomy,
+operating intensity, Q5 wording, and `save-state.md` stay in migration history,
+not the state-v2 first-use path.

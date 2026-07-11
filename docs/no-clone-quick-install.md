@@ -1,171 +1,58 @@
 # No-Clone Quick Install
 
-Use this when you want to apply SPEC-Driven AI Development without cloning this
-repository first.
-
-The easiest option is Option 1. It does not require terminal commands, Git,
-Python, or Codex.
+Use this page to apply SDAD Protocol without cloning the repository first.
+Option 1 is the canonical path: give the expanded prompt to a file-editing AI
+agent. The README Copy-Paste Start Prompt is generated from that exact block.
 
 ## Before You Start
 
-Pick the path that matches your comfort level:
+Chat-only tools can plan with SDAD, but cannot install project files. Use Codex,
+Claude Code, Gemini CLI, Cursor, Copilot Chat, or another tool with project
+filesystem access.
 
-| Path | Best for | Requires |
+The AI should infer the controls from your request and repository before asking
+questions:
+
+| Scale | Default boundary | Persistent setup |
 |---|---|---|
-| [Give this to your AI agent](#option-1-give-this-to-your-ai-agent) | Complete beginners | An AI coding tool that can edit files |
-| [One-paste PowerShell installer](#option-2-one-paste-powershell-installer) | Windows users comfortable with terminal | PowerShell and internet access |
-| [One-paste Bash installer](#option-3-one-paste-bash-installer) | macOS/Linux/WSL users comfortable with terminal | Bash, curl, and internet access |
-| [Clone this repository](getting-started.md#get-this-repository) | Developers who want the full package locally | Git |
-| [Codex skill](../README.md#codex-skill) | Codex users only | Codex installed and configured |
+| One-shot | Current request | None |
+| Mini | `unit` | One instruction file |
+| Standard | `packet` | Compact state and routing controls |
+| Full | `packet` plus named gates | Additional risk controls as needed |
 
-Run terminal commands from the root of the project you want to control.
-
-Chat-only tools such as Claude.ai, ChatGPT web, or browser chat can discuss the
-workflow, but they cannot install adapters unless they have project filesystem
-access. Claude Code means the local/CLI coding tool, not Claude.ai chat.
-
-## Step 0: Choose Scale
-
-Before installing an adapter or creating project files, choose the smallest
-workflow scale that fits.
-
-Ask:
-
-1. Will this take more than one AI session?
-2. Will you come back to this project later?
-3. Does "done" need evidence beyond "AI said so"?
-4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, real user data, auth, money, security, rollback,
-   destructive action, or production risk?
-
-Override rules beat raw yes-counts:
-
-| Trigger | Scale | What to create |
-|---|---|---|
-| 0 yes | One-shot prompt | No project files |
-| 1-2 yes from Q1-Q3 only, with Q4=no and Q5=no | Mini SDAD | One instruction file from `templates/mini-sdad/MINI-SDAD.md` |
-| Q4=yes or 3 yes total | Standard SDAD | Adapter plus core control files |
-| Q5=yes, but the packet only inspects, documents, or tests the risk area | Standard SDAD minimum | Adapter, core control files, and explicit risk tracking |
-| Q5=yes and the packet changes, accepts, or executes the gate | Full SDAD | Adapter, core files, review, conditional ADRs, risk gates |
-| 4-5 yes | Full SDAD | Adapter, core files, review, conditional ADRs, active risk gates |
-
-When unsure, choose the smaller scale only if no Q5 gate is active. Escalate
-later when repeated pain, context loss, risk, or multiple sessions appear.
-
-Product evidence flag: ask whether product, hardware, compatibility, packaging,
-remote tester, external lab, or release claims need evidence stronger than local
-software tests. A yes is not automatically Full SDAD, but it triggers the
-relevant product evidence templates. Use Standard SDAD minimum when those
-templates must persist across sessions. Changing, accepting, or executing a Q5
-release, production, user-data, auth, money, migration, destructive-action, or
-rollback gate still requires Full SDAD.
+Scale, execution scope, and owner gates are separate. Full scale never grants a
+release, migration, deployment, destructive action, sensitive-data access, auth,
+money, security, rollback, or risk-acceptance decision.
 
 ## Maintenance Cost
 
-Do not create Standard or Full SDAD files unless you will keep them current.
+Choose Standard or Full only when the project will maintain current state,
+packet-bound validation, active TODO/findings, and conditional handoffs. Optional
+evidence records and ADRs are create-on-demand. `routed_docs` is a selection set,
+not a full-read instruction.
 
-At the end of every Standard or Full SDAD work packet, handoff, or session,
-check and update:
+The large prompt is a one-time bootstrap, upgrade, migration, or repair entry
+point. After installation, ordinary work follows:
 
-- `SPEC/SPEC-COMPLETE.md`,
-- `docs/TODO-Open-Items.md`,
-- `review-findings.md`,
-- `docs/implementation-notes.md` when implementation made a spec-unstated
-  assumption, change, compromise, rejected alternative, owner-relevant tradeoff,
-  follow-up, or verification-impact note,
-- operating rules or ADRs when decisions or repeated pain changed,
-- `save-state.md` when a session pauses or ends, handoff is expected, owner
-  direction changes, blocked/partial/unverified state remains, or context would
-  be expensive to reconstruct.
-
-Keep active live-state files short enough to read as current operating state.
-If state, TODO, review, or handoff files become long journals, preserve old
-material in archive/history files and use bounded reads for archives, logs,
-generated artifacts, authorized private data, and broad search output.
-As a default soft trigger, use bounded reads for files over 50 KB or 500 lines,
-run a context-stability check for files over 200 KB or 2,000 lines, and do not
-read files over 1 MB in full during startup unless the owner explicitly asks for
-historical reconstruction.
-
-If no file needs a content change, state which files were checked and why no
-update was needed.
-
-Mini SDAD still has a completion gate: changed files, check evidence, and
-limitations or unverified behavior must be shown before a slice is called
-evidence-ready. Owner acceptance is still required before final done unless the
-owner delegates that acceptance policy.
-
-If this cost is too high, choose One-shot Prompt or Mini SDAD instead.
+```text
+adapter -> sdad-state.yaml -> docs/INDEX.md -> current intent-selected route
+```
 
 ## What Is A Codex Skill?
 
-A Codex skill is an optional local instruction package for OpenAI Codex. It tells
-Codex how to behave when starting or managing a SPEC-driven project.
-
-You do not need the Codex skill if you use Claude Code, Cursor, GitHub Copilot,
-another AI coding agent, or Option 1 below.
-
-## How To Know It Worked
-
-After Mini, Standard, or Full setup, your project should have one of these
-instruction files:
-
-- `AGENTS.md` for Codex,
-- `CLAUDE.md` for Claude Code,
-- `.cursor/rules/mini-sdad.mdc` for Cursor Mini, or
-  `.cursor/rules/spec-driven-ai-development.mdc` for Cursor Standard/Full,
-- `.github/copilot-instructions.md` for GitHub Copilot,
-- `AI-SESSION-INSTRUCTIONS.md` for a generic AI tool.
-
-After Standard or Full bootstrap, your project should also have control files
-such as `SPEC/SPEC-COMPLETE.md`, `docs/TODO-Open-Items.md`,
-`review-findings.md`, and `docs/implementation-notes.md`.
-
-## Exact Adapter Sources
-
-For Mini SDAD, use this exact template:
-
-```text
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/templates/mini-sdad/MINI-SDAD.md
-```
-
-Expected SHA-256:
-`f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669`.
-
-Before fetching Mini SDAD, state that you are installing Mini SDAD and explain
-why this scale was chosen.
-
-For Standard or Full SDAD, do not ask an AI agent to guess adapter paths. Use
-these exact source URLs:
-
-| Tool | Source URL | Save as | SHA-256 |
-|---|---|---|---|
-| Codex | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/codex/AGENTS.md` | `AGENTS.md` | `fc1ecaf1d373c26784d5e1c6113531a16de295c1177bd2ee5ebcb7ba7b4d2bba` |
-| Claude Code | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/claude-code/CLAUDE.md` | `CLAUDE.md` | `dc14598dee6645801ca04b3802216a38c87f5ae64fefaa0275daa01e88c865f5` |
-| Gemini CLI | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/gemini-cli/GEMINI.md` | `GEMINI.md` | `a35f1210bd5f8ed688b2c7ee82d29c505b29632a8da8295fa639a6f799f1ab23` |
-| Cursor | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc` | `.cursor/rules/spec-driven-ai-development.mdc` | `371ee47e6d0712e37ce8381696cc0a5c1660d9a770157f9034ac9f2a150a0c68` |
-| GitHub Copilot | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/github-copilot/.github/copilot-instructions.md` | `.github/copilot-instructions.md` | `335209bcfee60dbb9ddce7a6c92def0d173d793680dec2e58b7f1757e788b3b4` |
-| Generic AI tool | `https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/1741b72a51bb4eb0711e8c0f188c3ddcf922eaaa/adapters/generic/AI-SESSION-INSTRUCTIONS.md` | `AI-SESSION-INSTRUCTIONS.md` | `9664f9c868e19a585fd3e64c96d79eac717ae6696c02c721d29233d287f90e75` |
+The optional global Codex skill helps install, upgrade, migrate, diagnose, or
+repair SDAD controls. It is not required for ordinary project work after a
+repository adapter is installed.
 
 ## Latest Versus Pinned Sources
 
-The URLs above use the full 40-character commit SHA for the stable v3.1.0
-baseline. A commit ID is immutable. A readable release tag can move unless the
-repository makes it immutable, while `main` intentionally changes over time.
+The installers below use one pinned commit, path, and SHA-256 set. Do not mix
+files from different revisions. A full 40-character commit SHA provides the
+stable baseline; `/main/` is only for intentionally testing changing content.
 
-Use `/main/` only when you explicitly want the latest, unpinned instructions.
-Record the chosen revision in setup notes or the project handoff. Do not mix
-`main` and a pinned revision in the same install unless the difference is
-intentional and documented.
-
-[`install-sources.json`](../install-sources.json) is the canonical
-revision/path/hash contract used by repository validation.
-
-The current stable manifest declares `progressive_control_plane=true`. Its
-v3.1.0 adapters include the `sdad-state.yaml -> docs/INDEX.md -> on-demand
-route`. Follow the installed baseline instructions and keep its pinned revision
-and hashes together; use `/main/` only when intentionally testing changing,
-unpinned content.
+[install-sources.json](../install-sources.json) is the canonical
+revision/path/hash contract. Pins remain at the stable v3.1.0 release until the
+v3.2 release metadata task rotates them.
 
 ## Option 1: Give This To Your AI Agent
 
@@ -173,7 +60,8 @@ Paste this into Codex, Claude Code, Gemini CLI, Cursor, Copilot Chat, or another
 agent:
 
 ```text
-Use SPEC-Driven AI Development as the project control method.
+Use the SDAD Protocol (SPEC-Driven AI Development) as the repository-local
+project control method.
 
 Source repository:
 https://github.com/LiveTrack-X/spec-driven-ai-development
@@ -187,82 +75,43 @@ were saved. Use this repository for planning only, then tell me to open the
 project in Codex, Claude Code, Gemini CLI, Cursor, Copilot Chat, or another file-editing AI
 coding tool.
 
-Step 0 - Choose scale before creating files.
+Step 0 - Infer the controls before creating files.
 
-Ask me these five questions:
-1. Will this take more than one AI session?
-2. Will I come back to this project later?
-3. Does "done" need evidence beyond "AI said so"?
-4. Will multiple AI tools or reviewers be involved?
-5. Is there release, migration, real user data, auth, money, security, rollback,
-   destructive action, or production risk?
+Do not make me answer a fixed questionnaire. Inspect my request and the
+repository first. Infer scale, execution scope, validation claim boundary, and
+owner gates. Ask at most one blocking question, with a recommended answer, only
+when the unresolved fact would materially change one of those controls. Report:
 
-Choose:
-- 0 yes -> One-shot prompt. Do not create project files.
-- 1-2 yes from questions 1-3 only, with Q4=no and Q5=no -> Mini SDAD.
-  Create only one instruction file.
-- Q4=yes or 3 yes total -> Standard SDAD. Create core control files.
-- Q5=yes, but this packet only inspects, documents, or tests the risk area ->
-  Standard SDAD minimum, even if it is the only yes.
-- Q5=yes and this packet changes, accepts, or executes the gate -> Full SDAD.
-- 4-5 yes -> Full SDAD. Use full workflow, review, conditional ADRs, and
-  active gates.
+- Scale and reason
+- Execution scope
+- Owner gates
+- Unresolved question, or `none`
 
-Override rules beat raw yes-counts. When unsure, choose the smaller scale only
-if no Q5 gate is active, and explain why.
+I may override the inference. Keep these three axes separate:
 
-Step 0.1 - Check product evidence flag.
-
-Ask whether product, hardware, compatibility, packaging, remote tester,
-external lab, or release claims need evidence stronger than local software
-tests. A yes is not automatically Full SDAD, but it triggers the relevant
-product evidence templates. Use Standard SDAD minimum when those templates must
-persist across sessions. Changing, accepting, or executing a Q5 release,
-production, user-data, auth, money, migration, destructive-action, or rollback
-gate still requires Full SDAD.
-
-Step 0.5 - Choose autonomy before implementation.
+- Scale determines which persistent control surface is installed.
+- Execution scope determines how far the AI may work now.
+- Owner gates determine which protected actions still require my decision.
 
 Use these defaults unless I say otherwise:
-- One-shot prompt -> no persistent autonomy contract.
-- Mini SDAD -> Level 1 Unit Autonomy, treated as one small approved packet.
-- Standard SDAD -> Level 2 Work Packet Autonomy.
-- Full SDAD or Q5 risk -> Level 2 for implementation, with Level 4 gates for
-  release, migration, destructive actions, data/auth/money/security decisions,
-  rollback, and production claims.
 
-A work packet may contain one or more review-worthy development units. Do not
-ask me to approve every micro-task, every small SPEC item, or every
-evidence-ready unit inside an approved packet. A unit is an internal review and
-evidence slice, not a separate owner-approval boundary unless I say so. Continue
-until the packet reaches a checkpoint or a stop condition appears.
+- One-shot -> current request only; create no persistent SDAD files.
+- Mini -> `unit`; create one tool instruction file.
+- Standard -> `packet`; create the compact state and routing controls.
+- Full -> `packet` plus named owner gates for the applicable risks.
 
-Step 0.6 - Choose operating intensity for Standard or Full SDAD.
+The only state-v2 execution-scope values are `unit` and `packet`. `ask_first`
+is an approval condition, not a scope. A session is not a work boundary.
+Multi-packet execution requires an explicitly approved packet plan or list.
+Release, migration, production, destructive action, real user data, auth,
+money, security, rollback, and other protected decisions remain owner gates.
 
-Use this notation:
-- Standard SDAD / High
-- Standard SDAD / Medium
-- Standard SDAD / Low
-- Full SDAD / High
-- Full SDAD / Medium
-- Full SDAD / Low
+Check whether product, hardware, compatibility, packaging, remote tester,
+external lab, or release claims need evidence stronger than local software
+tests. This chooses evidence routes; it does not by itself grant a protected
+action or force Full scale.
 
-High / Medium / Low are operating intensities, not new project scales or
-autonomy levels. Mini SDAD does not use operating intensity tiers.
-
-Use Standard SDAD / High for a non-Q5 packet with a major product or
-architecture tradeoff, a hard-to-reverse implementation choice, or an explicit
-owner checkpoint.
-
-Q5 projects do not make every packet High. Raise the current packet to
-Full SDAD / High only when it changes behavior, policy, boundary, evidence
-claim, or risk acceptance for a Q5 gate: release, production claim, migration,
-destructive action, real user data handling, auth, data, money, security,
-rollback, accepted-memory boundary, external deployment, or major
-owner-controlled risk decision. Lower intensity when control surfaces reduce
-controllability.
-
-Step 0.7 - Route natural-language requests.
+Step 0.5 - Route natural-language requests.
 
 Do not require me to know SDAD terms, adapter names, or skill names. Infer the
 work intent from my sentence and the current repository state.
@@ -270,13 +119,13 @@ work intent from my sentence and the current repository state.
 Common intents:
 - "check", "review", "audit", "find bugs" -> review or audit intent.
 - "implement", "build", "fix", "match the spec" -> SPEC implementation intent.
-- "release", "publish", "tag" -> release intent with Level 4 gates.
+- "release", "publish", "tag" -> release intent with an owner gate.
 - "document", "explain", "README", "FAQ", "guide" -> documentation intent.
-- "handoff", "continue later", "next session", "lost context" -> handoff or
-  save-state intent.
+- "handoff", "continue later", "next session", "lost context" -> handoff
+  intent.
 - "borrow from this repo", "reference this project", "adopt this idea" ->
   reference-intake intent.
-- "asks too often", "runs ahead" -> autonomy tuning intent.
+- "asks too often", "runs ahead" -> execution-scope or owner-gate tuning.
 
 Treat narrative modifiers as routing signals, not automatic scope expansion.
 "Carefully" increases inspection depth, "fully" continues to evidence-ready for
@@ -285,10 +134,10 @@ and "commit and wait" does not imply push, release, or deploy unless named.
 
 If multiple intents match, first decide whether they can be safely composed
 inside one approved packet. If one route remains dominant, proceed and briefly
-state the interpreted intent, SDAD scale/intensity, autonomy level, and expected
-evidence. If the combination changes scope, risk, claim level, owner gate, or
-durable-doc requirements, ask one blocking clarification question with your
-recommended default. Do not use natural-language routing to bypass release,
+state the interpreted intent, scale, execution scope, expected evidence, and
+owner gates. If the combination materially changes one of those controls, ask
+one blocking clarification question with your recommended default. Do not use
+natural-language routing to bypass release,
 migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
@@ -341,38 +190,68 @@ memory. Offer deterministic fallback options: retry with network access, ask me
 to paste the raw file content from the source URL, use the terminal installer, or
 clone/download the repository manually.
 
-For Standard or Full SDAD, after installing the instruction file, bootstrap this
-project:
+For Standard or Full SDAD, use this large prompt once for bootstrap, upgrade,
+migration, or repair. After installation, ordinary sessions follow only the
+installed adapter -> `sdad-state.yaml` -> `docs/INDEX.md` -> intent-selected
+source and routed section. Do not paste this bootstrap prompt every session.
 
-1. create or update sdad-state.yaml,
-2. create or update docs/INDEX.md as a routing-only file,
-3. create or update docs/Repository-Operating-Rules.md and the on-demand
+Before any write to an existing project, show a read-only migration preview.
+For a new Standard or Full bootstrap, create this compact v2 control plane:
+
+- new Standard/Full state uses version 2,
+- active_packet is one executable leaf checkpoint,
+- validation_for equals active_packet.id,
+- active TODO and review records carry the packet ID,
+- current_handoff is optional and packet-bound,
+- existing projects receive a read-only migration preview before writes.
+
+1. create or update `sdad-state.yaml` with `version: 2`, `scale` (`standard` or
+   `full`), `execution_scope` (`unit` or `packet`), `active_packet`,
+   `validation_for`, `validation`, `owner_gates`, and `routed_docs`; do not add
+   v1 `intensity` or numeric `autonomy`,
+2. make `active_packet` one executable leaf checkpoint and require
+   `validation_for` to equal `active_packet.id`,
+3. create or update docs/INDEX.md as a routing-only file,
+4. create or update docs/Repository-Operating-Rules.md and the on-demand
    docs/sdad/playbooks/ files,
-4. create or update SPEC/SPEC-COMPLETE.md,
-5. create or update docs/TODO-Open-Items.md,
-6. create or update review-findings.md,
-7. create or update docs/implementation-notes.md,
-8. if the product evidence flag is yes, create only the needed maintained
+5. create or update SPEC/SPEC-COMPLETE.md,
+6. create or update docs/TODO-Open-Items.md,
+7. create or update review-findings.md,
+8. create or update docs/implementation-notes.md,
+9. if the product evidence flag is yes, create only the needed maintained
    product evidence templates: docs/evidence-matrix.md,
    docs/claim-registry.md, docs/artifact-contracts.md,
    docs/work-packet-state.md, and docs/remote-evidence-import.md,
-9. ask me for product pain, smallest useful version, non-goals, risks,
-   owner-controlled decisions, the first work packet, the review-worthy units
-   inside it, and evidence required for completion.
+10. make every active TODO and review record carry the active packet ID,
+11. leave `current_handoff` absent unless a current packet-bound handoff exists,
+12. ask only for unresolved product pain, smallest useful version, non-goals,
+    risks, owner-controlled decisions, the first packet, its review-worthy
+    units, and evidence required for completion.
+
+State v2 does not create or route `save-state.md`. Existing state v1
+`intensity`, numeric `autonomy`, and `save-state.md` are migration inputs only;
+preserve their v1 behavior while previewing the v2 mapping before edits.
 
 Keep the fixed read path compact: adapter -> sdad-state.yaml -> docs/INDEX.md ->
-current source/tests -> only the routed policy heading or playbook. Do not load
-the whole rulebook or optional evidence set by default.
+current source/tests -> only the intent-selected route, heading, active section,
+or targeted match. `routed_docs` is an eligible selection set, not a startup
+read-all list. Report only the routed documents actually read. Do not load the
+whole rulebook or optional evidence set by default.
+
+Use one work loop: Plan -> Route -> Implement -> Verify -> Report. An owner gate
+and a handoff are conditional branches, not extra mandatory steps. A clean
+verification makes work evidence-ready; only the owner or an explicitly
+delegated policy grants owner acceptance.
 
 A review-worthy development unit may contain multiple related small tasks. It
 should be large enough that review has meaning, but small enough to verify in one
 handoff. Do not stop for owner approval after every micro-task or small SPEC
 item inside an approved work packet.
 
-Proceed autonomously inside the approved work packet until evidence is ready.
-Stop and ask me only when scope would expand, a Q5 risk changes, a destructive
-or irreversible action is needed, an owner-controlled decision is required,
-verification is blocked, or the requested work conflicts with current evidence.
+Proceed inside the declared `unit` or `packet` until evidence is ready. Stop and
+ask me only when that boundary would expand, a protected condition changes, a
+destructive or irreversible action is needed, an owner-controlled decision is
+required, verification is blocked, or the request conflicts with evidence.
 
 When the plan is fuzzy, run a clarification checkpoint before coding. Inspect
 the current code, tests, active docs, SPEC, TODOs, review findings, and ADRs
@@ -385,14 +264,19 @@ term and one short definition. For Standard or Full SDAD, create or update a
 small glossary routed from docs/INDEX.md only when terminology drift affects
 implementation, review, tests, or owner decisions.
 
-Implement from the active SPEC. When implementation requires a judgment the
-SPEC does not explicitly cover, record the assumption, change, compromise,
-alternative rejected, owner-relevant tradeoff, follow-up, and verification
-impact in implementation notes. Do not record raw internal reasoning,
-mechanical edits, or large logs. For Standard or Full SDAD, keep current notes
-in docs/implementation-notes.md; for Mini SDAD, include a short Implementation
-notes section in the evidence-ready summary only when a spec-unstated decision
-happened.
+Implement from the active SPEC. Give each fact one authoritative home:
+
+- requirement or acceptance change -> SPEC,
+- small implementation-time non-spec decision -> implementation notes,
+- hard-to-reverse architecture decision -> ADR,
+- unresolved work -> TODO or finding,
+- cross-session recovery links and results -> handoff,
+- current execution state -> `sdad-state.yaml`.
+
+Handoffs link to those authorities instead of copying them. Do not record raw
+internal reasoning, mechanical edits, or large logs. For Mini SDAD, include a
+short implementation-notes section in the evidence-ready summary only when a
+spec-unstated decision happened.
 
 Use ADRs sparingly. A decision normally deserves an ADR only when it is hard to
 reverse, would surprise a future maintainer without context, and represents a
@@ -408,13 +292,9 @@ check evidence, limitations or unverified behavior, evidence-ready status, owner
 decisions or acceptance needed, and whether to escalate.
 
 For Standard or Full SDAD at loop end, check whether SPEC-COMPLETE, TODO,
-review-findings, rules, or ADRs must be updated at the work-packet or handoff
+review-findings, rules, or ADRs must be updated at the packet or handoff
 boundary. If nothing changes, say which files were checked and why no update was
 needed.
-
-Update save-state.md when a session pauses or ends, handoff is expected, owner
-direction changes, blocked/partial/unverified state remains, or context would be
-expensive to reconstruct.
 
 Before closing, archiving, replacing, or restarting a long AI coding session,
 create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat
@@ -422,7 +302,31 @@ the chat as an execution trace, not permanent memory; a fresh session must be
 able to continue from the handoff, active spec, and current repository state.
 Reference existing SPECs, ADRs, TODOs, review findings, implementation notes,
 logs, or evidence files by path or URL instead of duplicating long content in
-the handoff.
+the handoff. Add `current_handoff` only while that handoff is current and require
+its packet marker to match `active_packet.id`; clear or replace the pointer when
+the packet changes or the handoff is retired.
+
+When I authorize a protected action conditionally, record: Decision, Authorized
+action, Packet, Conditions, Expires when, and Evidence required before action.
+Reuse that authorization only while the action, packet, conditions, source, and
+expiry remain unchanged. Ask again when any term changes or the authorization
+expires.
+
+Markdown records instructions and decisions; it does not technically prevent a
+tool from acting. Permissions, hooks, sandboxes, protected branches, and service
+controls provide enforcement. Tool-native sessions, checkpoints, and diagnostic
+commands are conveniences, not substitutes for SDAD state, handoff, or Doctor.
+
+For a stateful Standard or Full project, use a real SDAD checkout and run:
+
+python <SDAD_CHECKOUT>/scripts/sdad.py --version
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.0 [--json] [--strict]
+
+Doctor version, state schema version, and JSON report schema version are
+separate contracts. The version guard identifies the Doctor code being run.
+Doctor green proves structural consistency only; it does not execute validation
+commands, prove product correctness, grant owner acceptance, or prove that SDAD
+3.2 is more effective than another method.
 
 Sensitive data is an authorization boundary, not a size threshold. Use
 metadata-only inspection by default. Do not read, copy, transmit, summarize, or
@@ -625,17 +529,14 @@ and checksum from one manifest together.
 Open your AI coding tool in the target project and say:
 
 ```text
-Read the installed SPEC-Driven AI Development instruction file.
-Bootstrap the compact state -> INDEX -> on-demand route and the first active
-SPEC slice.
-Define the first low-intervention work packet and its review-worthy units.
-Ask me for product pain, smallest useful version, non-goals, risks,
-owner-controlled decisions, autonomy level, and evidence required for completion.
-If my request uses normal language instead of SDAD terms or skill names, infer
-the intent, state the interpreted intent briefly, then route to the smallest
-safe SDAD mode.
-When the plan is fuzzy, inspect repository evidence first, then ask only the
-next blocking clarification question with your recommended answer.
+Read the installed SDAD Protocol instruction file. Infer the smallest scale,
+`unit` or `packet` execution scope, validation claim boundary, and applicable
+owner gates from my request and this repository. Report the inference and ask
+at most one blocking question only if an unresolved fact materially changes a
+control. For Standard or Full, bootstrap state version 2 with one executable
+active packet, packet-owned validation, and the compact state -> INDEX ->
+intent-selected route. Work through Plan -> Route -> Implement -> Verify ->
+Report until evidence-ready, but stop before any unapproved owner gate.
 ```
 
 The first successful bootstrap should create or update:
@@ -648,6 +549,9 @@ The first successful bootstrap should create or update:
 - `docs/TODO-Open-Items.md`,
 - `review-findings.md`,
 - `docs/implementation-notes.md`.
+
+It should not create or route `save-state.md` for state v2. A handoff is
+conditional and becomes current only through a packet-bound `current_handoff`.
 
 When product, hardware, compatibility, packaging, remote tester, external lab,
 or release claims need evidence stronger than local software tests, it should

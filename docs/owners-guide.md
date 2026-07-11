@@ -1,167 +1,108 @@
-# Owner Quick Adoption Guide
+# SDAD Protocol Owner Guide
 
-Use this guide when you are the owner introducing SDAD to users, teammates, or
-AI coding sessions and you want them productive quickly without teaching the
-whole framework first.
-
-The owner's job is not to memorize SDAD terms. The owner's job is to keep
-direction, risk, evidence, and final acceptance visible.
+The owner does not need to memorize protocol vocabulary. The owner sets the
+outcome, keeps protected decisions explicit, and accepts or rejects evidence.
 
 ## 10-Minute Rollout
 
-1. Pick the smallest safe scale.
-2. Give the AI one clear packet, not the whole dream.
-3. Require evidence-ready output before accepting anything as done.
-4. Keep owner gates for release, data, auth, money, security, destructive work,
-   rollback, migration, and production claims.
-5. Turn repeated confusion into a rule, TODO, review finding, or handoff.
+1. Send the [Copy-Paste Start Prompt](../README.md#copy-paste-start-prompt).
+2. Let the AI inspect the request and repository before asking questions.
+3. Review its proposed scale, execution scope, owner gates, and claim boundary.
+4. Approve the first `unit` or `packet`, not every micro-task.
+5. At the checkpoint, require evidence and limits before acceptance.
 
-## Which Link To Send First
+The bootstrap prompt is one-time. Later sessions start from the installed
+adapter, `sdad-state.yaml`, and `docs/INDEX.md`.
 
-| Audience | Send this | Why |
-|---|---|---|
-| New owner | [Owner Guide](owners-guide.md) | Fast adoption and owner checkpoints |
-| AI agent during active work | [AI Work Loop](ai-work-loop.md) | Fast/Normal/Full execution loop |
-| New user who wants explanation | [User Guide](user-guide.md) | Situation-based FAQ |
-| User who wants to start immediately | [README Copy-Paste Start Prompt](../README.md#copy-paste-start-prompt) | Works in AI coding tools |
-| No clone / chat-only user | [No-Clone Quick Install](no-clone-quick-install.md) | Starts without installing the repo |
-| Tool setup user | [Getting Started](getting-started.md) | Adapter and skill install paths |
+## Fast Control Rules
 
-Do not send the full pattern catalog as the first link. Use it when a specific
-pattern question appears.
+| Control | Owner question |
+|---|---|
+| Scale | Which persistent control surface is worth maintaining? |
+| Execution scope | May the AI complete this unit or this packet now? |
+| Owner gate | Which protected action still requires my decision? |
+| Validation contract | What will be checked, and what will it prove? |
+| Acceptance | Is the evidence sufficient for me to accept the result? |
+
+Defaults are One-shot for the current request, Mini for a `unit`, Standard for
+a `packet`, and Full for a `packet` plus applicable named gates.
 
 ## Owner Decisions That Must Stay Explicit
 
-The owner controls:
+Keep owner control for release, deployment, migration, destructive action,
+sensitive data, auth, money, security, rollback, production claims, risk
+acceptance, and any scope expansion beyond the active boundary.
 
-- current product direction,
-- accepted scope and non-goals,
-- risk tolerance,
-- release or production decisions,
-- user data, auth, money, security, destructive action, migration, and rollback
-  decisions,
-- final owner acceptance.
-
-The AI can prepare work and evidence inside an approved packet. It cannot turn
-weak evidence into owner acceptance.
-
-## First Prompt For A New User
-
-```text
-Use SPEC-Driven AI Development for this project.
-
-Start with the smallest safe scale. Do not create the full SDAD structure unless
-the project needs it.
-
-First tell me:
-- interpreted intent,
-- chosen scale: One-shot, Mini, Standard, or Full,
-- autonomy level,
-- expected evidence,
-- owner gates.
-
-Then create or update only the files needed for this scale.
-For Standard or Full, keep the default path compact: adapter ->
-sdad-state.yaml -> docs/INDEX.md -> current source/tests -> one routed file or
-playbook. Do not load the full rulebook or optional evidence set by default.
-```
+Scale and execution scope never grant these actions. Evidence-ready also does
+not mean owner-accepted.
 
 ## First Prompt For Actual Work
 
 ```text
-Work inside this approved packet:
-
-Goal:
-[one user-visible outcome]
-
-Non-goals:
-[what not to change]
-
-Evidence required:
-[test, browser check, runtime check, persisted state, remote evidence, or
-production evidence]
-
-Owner gates:
-[release, data, auth, money, security, destructive action, migration, rollback,
-or none]
-
-Proceed until evidence-ready or until a real owner decision is required.
+Inspect the repository and propose the smallest SDAD scale, a unit or packet
+boundary, validation evidence, and applicable owner gates. Ask one question only
+if an unresolved fact materially changes those controls. Then work to
+evidence-ready within the approved boundary and stop before any unapproved gate.
 ```
+
+## Conditional Authorization
+
+Avoid repeated approval by recording a bounded decision:
+
+```text
+Decision:
+Authorized action:
+Packet:
+Conditions:
+Expires when:
+Evidence required before action:
+```
+
+For example, authorization to push a branch can remain valid for one packet if
+the local full gate passes and source does not change afterward. A source,
+packet, action, condition, or expiry change invalidates that authorization.
 
 ## What To Ask At The Checkpoint
 
-Ask for this short evidence-ready summary:
+- What changed?
+- Which validation commands ran, and what did they prove?
+- What remains unverified or outside the claim?
+- Which routed documents were actually read or updated?
+- Are TODOs, findings, validation, and handoff bound to this packet?
+- Is this evidence-ready, and what owner acceptance or gate remains?
 
-```text
-Report evidence-ready status.
-
-Include:
-- changed files,
-- behavior changed,
-- checks run and results,
-- evidence tier,
-- docs updated or checked,
-- limitations or unverified behavior,
-- owner decision needed,
-- whether this is evidence-ready or owner-accepted.
-```
-
-If the AI cannot show evidence, the work is not evidence-ready.
-
-## Fast Scale Rules
-
-| Situation | Use | Owner stance |
-|---|---|---|
-| Disposable question or tiny edit | One-shot | No project files |
-| Small task that needs proof | Mini SDAD | One instruction file or one evidence-ready summary |
-| Multi-session work or reviewers | Standard SDAD | SPEC, TODO, review, and current docs stay readable |
-| Release, production, user data, auth, money, security, migration, rollback, or destructive risk | Full SDAD or explicit Level 4 gates | Owner keeps risk acceptance and release decisions |
-
-Choose smaller when it still protects evidence and owner gates. Choose larger
-only when risk, continuity, or review needs it.
+Doctor green is structural evidence only. A task benchmark proves that task
+only. Require a controlled comparison before accepting a claim that a process
+or protocol version is more effective.
 
 ## Low-Friction Owner Rules
 
-- Approve the packet boundary, not every micro-task.
-- Ask for one blocking question with a recommended answer, not a menu.
-- Treat "fully" as evidence-ready for the approved scope, not owner-accepted.
-- Treat "commit and wait" as commit only, not push, release, or deploy.
-- Do not let side quests silently become scope.
-- Do not let active docs become history dumps.
-- Archive old evidence; keep active state current.
+- Approve packet boundaries, not implementation micro-steps.
+- Let the AI infer first; ask only one material question at a time.
+- Reuse a valid conditional authorization until its recorded expiry.
+- Treat `routed_docs` as selectable routes, never a full-read requirement.
+- Keep one fact in one authoritative home; handoffs link rather than copy.
+- Use technical enforcement for permissions. Markdown is guidance and record,
+  not a sandbox.
 
 ## Adoption Health Check
 
-After the first day or first packet, check:
+A healthy project can answer from adapter -> state -> INDEX:
 
-- Can a new AI session find the current packet without chat history?
-- Can the owner tell what is done, blocked, unverified, and accepted?
-- Are active docs short enough to read?
-- Did any repeated confusion become a rule or TODO?
-- Did evidence match the claim being made?
+- the active packet and next action,
+- the validation contract and claim limit,
+- the applicable owner gate,
+- which document should be read now,
+- which documents should not be loaded,
+- whether the result is evidence-ready or owner-accepted.
 
-If the answer is no, improve the routing or evidence boundary before adding more
-templates.
+Warning signs are stale handoffs, broad full-read instructions, validation that
+belongs to another packet, repeated facts across files, expired authorization,
+or effectiveness claims based only on Doctor/unit-test output.
 
-## Common Failure Signals
+## Migrating From SDAD 3.1
 
-| Signal | Owner response |
-|---|---|
-| AI asks approval after every tiny edit | Use Level 2 Work Packet Autonomy |
-| AI says done without checks | Ask for evidence-ready status |
-| AI reads huge history first | Ask for current context route and bounded reads |
-| Docs become longer than the work | Apply Small Project Compression |
-| Release or production claim appears | Require Level 4 owner gate and matching evidence tier |
-| Existing product behavior is being rebuilt | Require Reference Parity Review before evidence-ready |
-
-## The Minimum Owner Habit
-
-For every meaningful packet, ask:
-
-```text
-What changed, what proves it, what is still unverified, and what decision do I
-need to make?
-```
-
-That one question preserves the SDAD boundary: AI can write code, but evidence
-decides completion and the owner decides acceptance.
+Legacy autonomy levels, operating intensity, Q5 wording, owner checkpoints,
+recovery modes, and `save-state.md` are state-v1 migration vocabulary. Do not
+lead new users with them. Show a read-only preview, preserve v1 behavior until
+the owner approves migration, and write only state-v2 controls afterward.

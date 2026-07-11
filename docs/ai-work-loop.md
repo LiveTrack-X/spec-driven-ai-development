@@ -1,195 +1,106 @@
 # AI Work Loop
 
-Use this document while an AI agent is actively working in an SDAD-guided
-project. It is an execution loop, not a full explanation of the method.
-
-The goal is to keep SDAD control without turning every task into a full ritual.
-
-## Choose The Loop
-
-| Situation | Use | Loop |
-|---|---|---|
-| Typo, tiny docs edit, one small test fix | Fast | Recover Lite -> Evidence Contract -> Implement -> Verify -> Compact Report |
-| Normal behavior or code change | Normal | Recover Standard -> Bind Packet -> Evidence Contract -> Implement -> Verify -> Required Docs Sync -> Compact Report |
-| Multiple files, SPEC impact, review findings, or next-session continuity | Full | Recover Full -> Bind Packet -> Evidence Contract -> Implement -> Verify -> Sync -> Full Report -> Handoff if needed |
-| Release, production, data, auth, money, security, migration, rollback, or destructive risk | Full + Gate | Full loop plus owner-controlled gate and matching evidence tier |
-
-Always use the smallest loop that preserves evidence and owner gates.
-
-## Recover Modes
-
-For installed Standard/Full projects, begin with `sdad-state.yaml` and
-`docs/INDEX.md`, then load only the Recover mode's routed files. The adapter is
-already always-loaded; the full rulebook and optional evidence set are not.
-
-### Recover Lite
-
-Use for small, local changes:
-
-- relevant files,
-- relevant tests or commands,
-- active TODO/review finding search if the task mentions open work or risk.
-
-### Recover Standard
-
-Use for normal implementation:
-
-- Recover Lite,
-- relevant SPEC section,
-- relevant TODO/review finding,
-- implementation notes if the choice may be spec-unstated.
-
-### Recover Full
-
-Use for risk, release, continuity, or source-of-truth conflict:
-
-- Recover Standard,
-- source-of-truth conflict check,
-- save-state or handoff,
-- ADRs, claim registry, evidence matrix, or artifact contract when the claim
-  needs them.
-
-Do not read every historical file by default. Read only what the packet needs.
-
-## Evidence Contract
-
-Before implementation, state a one-line evidence contract:
+Use one loop for SDAD Protocol work:
 
 ```text
-This packet will be evidence-ready when [check] shows [observable result];
-claim limit: [what this does not prove].
+Plan -> Route -> Implement -> Verify -> Report
+                       |                 |
+                       +-> Owner Gate    +-> Handoff, when needed
 ```
 
-Examples:
+Owner gates and handoffs are triggered branches, not mandatory phases. Use the
+smallest loop that preserves the validation contract and owner control.
 
-- `npm test -- auth-errors` passes and invalid login maps to the expected UI
-  message; claim limit: production auth server behavior is not tested.
-- `python scripts/validate_repo.py` passes and README links resolve; claim
-  limit: external GitHub rendering is not checked.
+## Plan
 
-Do not implement first and invent the evidence standard afterward.
+Normalize the request into one executable boundary:
 
-## Bind Packet
+- outcome or objective,
+- authority or reference,
+- allowed scope and constraints,
+- validation and required evidence,
+- owner gates and stop conditions,
+- report format.
 
-Before editing, restate:
+Infer these from the request and repository first. Ask at most one blocking
+question only when the answer materially changes scale, `execution_scope`, a
+claim, or an owner gate. Recommend a default with the question.
 
-- goal,
-- non-goals,
-- active review-worthy unit,
-- evidence contract,
-- owner gates.
+## Route
 
-For Fast Loop, this can be one short sentence.
+For a stateful project, read:
 
-## Review-Worthy Unit
+```text
+adapter -> sdad-state.yaml -> docs/INDEX.md
+```
 
-A review-worthy unit should:
+Then select only the source, test, path, heading, active section, or targeted
+match needed for the current intent. `routed_docs` is an eligible selection set,
+not a read-all list. Report the routed documents actually read.
 
-- produce observable behavior, evidence, or a closed finding,
-- be reviewable in one focused diff or summary,
-- have a clear check,
-- avoid mixing unrelated concerns.
+## Implement
 
-Prefer:
+Work within `execution_scope: unit | packet`. A unit is one review-worthy
+change slice. A packet may contain related units and is the default Standard and
+Full boundary. Do not pause for micro-approval inside an authorized boundary.
 
-| Too vague | Better unit |
+Give each fact one authoritative home:
+
+| Fact | Authority |
 |---|---|
-| File edits | Map login failure to the correct user message |
-| Add tests | Add regression coverage for auth failure mapping |
-| Clean docs | Reflect the changed CLI option in README |
-| Refactor | Consolidate duplicate auth error mapping in one helper |
+| Requirement or acceptance change | SPEC |
+| Small non-spec implementation decision | implementation notes |
+| Hard-to-reverse architecture decision | ADR |
+| Unresolved work | TODO or finding |
+| Cross-session recovery links/results | handoff |
+| Current execution state | `sdad-state.yaml` |
 
-Do not split every import, formatter change, or tiny test name into a separate
-owner checkpoint.
+## Verify
 
-## Bounded Feedback Loop
+Bind validation to the packet before implementation. For state v2,
+`validation_for` must equal `active_packet.id`. Run the named checks and retain
+bounded evidence, limits, and unverified areas.
 
-For non-trivial units, repeat `inspect -> act -> observe -> update -> retry or
-stop` within a stated attempt budget. Feed each observable result back into the
-plan; do not repeat a failed action without new evidence or a changed
-hypothesis. Stop or escalate when the packet threshold or owner gate is reached.
+Evidence-ready is not owner-accepted. Doctor green proves structural
+consistency only. A successful task benchmark proves that task only. An
+improvement claim requires a controlled comparison.
 
-A valid command, tool call, JSON object, or program exit proves only structural
-success. Verify the environment change and task-specific meaning before marking
-the unit evidence-ready. The Fast Loop may compress these steps for tiny work,
-but it does not remove observation or validation.
+## Report
 
-## Docs Sync Rule
+Report findings first, then:
 
-Document impact is a check, not an automatic rewrite.
+- interpreted intent and active boundary,
+- changed files or artifacts,
+- validation evidence,
+- limits and unverified areas,
+- documents actually read or updated,
+- owner decision or acceptance needed,
+- next action.
 
-| Change type | Required sync |
-|---|---|
-| Internal implementation only | test result; implementation note only if the choice is spec-unstated |
-| User-visible behavior | README/user docs/SPEC checked or updated |
-| New unresolved defect | review-findings |
-| Next session must continue | save-state or handoff |
-| Important spec-unstated choice | implementation notes |
-| Hard-to-reverse decision | ADR |
+If a current packet-bound handoff is needed, create it and set
+`current_handoff`. Link to authorities rather than copying their content. Clear
+or replace the pointer when it is no longer current.
 
-If no document needs an update, report: `docs checked, no update needed`.
+## Owner Gate
 
-## Stop Conditions
+Stop before protected actions such as release, migration, destructive changes,
+production impact, sensitive-data access, auth, money, security, or risk
+acceptance unless a valid owner authorization covers the action.
 
-Stop and ask the owner only if:
-
-1. scope would expand,
-2. Q5 risk appears or changes,
-3. destructive or irreversible action is required,
-4. an owner-controlled decision is required,
-5. verification is blocked,
-6. evidence contradicts the plan or claim.
-
-## Do Not Stop For
-
-Do not pause for:
-
-- small implementation details inside the approved packet,
-- test name or file location choices,
-- obvious import fixes,
-- formatter or lint fixes,
-- related small tasks inside the active review-worthy unit.
-
-Proceed, verify, and report.
-
-## Report Format
-
-### Compact Report
-
-Use for Fast and Normal loops:
+Record a reusable conditional authorization with:
 
 ```text
-Outcome:
-Changed:
-Evidence:
-Limits:
-Next:
-```
-
-Example:
-
-```text
-Outcome: evidence-ready for login error message mapping.
-Changed: LoginForm.tsx, authErrors.test.ts.
-Evidence: npm test -- authErrors passed.
-Limits: production auth server not tested.
-Next: owner acceptance or move to signup error mapping.
-```
-
-### Full Report
-
-Use for Full and Full + Gate loops:
-
-```text
+Decision:
+Authorized action:
 Packet:
-Units:
-Changed files:
-Checks:
-Docs sync:
-Risks:
-Owner decisions:
-Handoff:
+Conditions:
+Expires when:
+Evidence required before action:
 ```
 
-Evidence-ready is not owner-accepted. Owner acceptance requires the owner
-checkpoint or an explicitly delegated acceptance policy.
+Reuse it only while the action, packet, conditions, source, and expiry remain
+unchanged. A changed term or expired condition requires a new owner decision.
+
+Markdown guidance and decisions do not technically prevent tools from acting.
+Permissions, hooks, sandboxes, protected branches, and service controls provide
+enforcement.
