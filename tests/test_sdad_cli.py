@@ -22,7 +22,12 @@ def _load_module(path: Path, name: str):
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Could not load {path}")
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    sys.modules[name] = module
+    try:
+        spec.loader.exec_module(module)
+    except Exception:
+        sys.modules.pop(name, None)
+        raise
     return module
 
 
@@ -44,6 +49,7 @@ def _write_project(
     root: Path,
     *,
     updated: str | None = None,
+    state_version: int | None = 1,
     routed_docs: tuple[str, ...] = (
         "docs/TODO-Open-Items.md",
         "review-findings.md",
@@ -66,9 +72,12 @@ def _write_project(
         encoding="utf-8",
     )
     route_lines = "\n".join(f"  - {path}" for path in routed_docs)
+    version_line = "" if state_version is None else f"version: {state_version}\n"
+    version_two_fields = (
+        "validation_for: cli-contract\n" if state_version == 2 else ""
+    )
     (root / "sdad-state.yaml").write_text(
-        "version: 1\n"
-        f"updated: {updated_value}\n"
+        version_line + f"updated: {updated_value}\n"
         "scale: standard\n"
         "intensity: low\n"
         "autonomy: 2\n"
@@ -77,6 +86,7 @@ def _write_project(
         "  id: cli-contract\n"
         "  objective: Keep the control plane coherent.\n"
         "  status: in_progress\n"
+        f"{version_two_fields}"
         "owner_gates: []\n"
         "validation:\n"
         "  - command: python -m unittest discover -s tests -v\n"
@@ -88,6 +98,223 @@ def _write_project(
 
 
 class DoctorCliSubprocessTests(unittest.TestCase):
+    def test_split_and_equals_version_requirements_are_equivalent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            _write_project(project)
+            for arguments in (
+                ("doctor", str(project), "--require-version", "3.2.0", "--json"),
+                ("doctor", str(project), "--require-version=3.2.0", "--json"),
+            ):
+                with self.subTest(arguments=arguments):
+                    result = _run(*arguments)
+                    payload = json.loads(result.stdout)
+                    self.assertIn(result.returncode, (0, 1))
+                    self.assertEqual(result.stderr, "")
+                    self.assertEqual(payload["schema_version"], 2)
+                    self.assertEqual(payload["doctor_version"], "3.2.0")
+                    self.assertEqual(payload["state_version"], 1)
+
+    def test_version_requirement_is_accepted_before_or_after_project_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            _write_project(project)
+            cases = (
+                (
+                    "doctor",
+                    "--require-version",
+                    "3.2.0",
+                    str(project),
+                    "--json",
+                ),
+                (
+                    "doctor",
+                    "--require-version=3.2.0",
+                    str(project),
+                    "--json",
+                ),
+                (
+                    "doctor",
+                    str(project),
+                    "--require-version",
+                    "3.2.0",
+                    "--json",
+                ),
+                (
+                    "doctor",
+                    str(project),
+                    "--require-version=3.2.0",
+                    "--json",
+                ),
+            )
+            for arguments in cases:
+                with self.subTest(arguments=arguments):
+                    result = _run(*arguments)
+                    payload = json.loads(result.stdout)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertEqual(payload["schema_version"], 2)
+                    self.assertEqual(payload["root"], project.resolve().as_posix())
+                    self.assertEqual(result.stderr, "")
+
+    def test_matching_guard_preserves_human_and_strict_behavior(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            _write_project(project, updated="2000-01-01")
+
+            human = _run(
+                "doctor",
+                str(project),
+                "--require-version",
+                "3.2.0",
+            )
+            strict_json = _run(
+                "doctor",
+                str(project),
+                "--strict",
+                "--require-version=3.2.0",
+                "--json",
+            )
+
+        self.assertEqual(human.returncode, 0)
+        self.assertTrue(
+            human.stdout.endswith(
+                "Doctor: 0 errors, 1 warning, 5 checks run, 0 skipped\n"
+            )
+        )
+        self.assertEqual(human.stderr, "")
+        payload = json.loads(strict_json.stdout)
+        self.assertEqual(strict_json.returncode, 1)
+        self.assertTrue(payload["strict"])
+        self.assertEqual(payload["schema_version"], 2)
+        self.assertEqual(payload["summary"], {"errors": 0, "warnings": 1})
+        self.assertEqual(payload["findings"][0]["severity"], "warning")
+        self.assertEqual(strict_json.stderr, "")
+
+    def test_unknown_arguments_with_matching_guard_use_schema_two(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            _write_project(project)
+            cases = (
+                (
+                    "doctor",
+                    str(project),
+                    "--require-version",
+                    "3.2.0",
+                    "--json",
+                    "--unknown",
+                ),
+                (
+                    "doctor",
+                    "--require-version=3.2.0",
+                    "--unknown",
+                    str(project),
+                    "--json",
+                ),
+            )
+            for arguments in cases:
+                with self.subTest(arguments=arguments):
+                    result = _run(*arguments)
+                    payload = json.loads(result.stdout)
+                    self.assertEqual(result.returncode, 2)
+                    self.assertEqual(payload["schema_version"], 2)
+                    self.assertIsNone(payload["root"])
+                    self.assertIsNone(payload["state_version"])
+                    self.assertEqual(
+                        payload["diagnostic_error"]["kind"],
+                        "invalid_invocation",
+                    )
+                    self.assertEqual(result.stderr, "")
+
+    def test_effective_state_v2_selects_schema_two_without_a_guard(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            _write_project(project, state_version=2)
+
+            result = _run("doctor", str(project), "--json")
+
+        payload = json.loads(result.stdout)
+        self.assertIn(result.returncode, (0, 1), result.stderr)
+        self.assertEqual(payload["schema_version"], 2)
+        self.assertEqual(payload["doctor_version"], "3.2.0")
+        self.assertEqual(payload["state_version"], 2)
+        self.assertEqual(result.stderr, "")
+
+    def test_guarded_missing_declared_version_reports_effective_v1(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            _write_project(project, state_version=None)
+
+            result = _run(
+                "doctor",
+                str(project),
+                "--require-version",
+                "3.2.0",
+                "--json",
+            )
+
+        payload = json.loads(result.stdout)
+        self.assertIn(result.returncode, (0, 1), result.stderr)
+        self.assertEqual(payload["schema_version"], 2)
+        self.assertEqual(payload["state_version"], 1)
+        self.assertEqual(result.stderr, "")
+
+    def test_guarded_missing_or_unsupported_state_reports_null_version(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            missing = base / "missing"
+            unsupported = base / "unsupported"
+            missing.mkdir()
+            unsupported.mkdir()
+            _write_project(unsupported, state_version=99)
+
+            for project in (missing, unsupported):
+                with self.subTest(project=project):
+                    result = _run(
+                        "doctor",
+                        str(project),
+                        "--require-version=3.2.0",
+                        "--json",
+                    )
+                    payload = json.loads(result.stdout)
+                    self.assertEqual(result.returncode, 1, result.stderr)
+                    self.assertEqual(payload["schema_version"], 2)
+                    self.assertIsNone(payload["state_version"])
+                    self.assertEqual(result.stderr, "")
+
+    def test_no_guard_legacy_and_pre_version_lanes_remain_schema_one(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            projects = {
+                "declared-v1": base / "declared-v1",
+                "missing-version": base / "missing-version",
+                "missing-state": base / "missing-state",
+                "unsupported": base / "unsupported",
+            }
+            for project in projects.values():
+                project.mkdir()
+            _write_project(projects["declared-v1"])
+            _write_project(projects["missing-version"], state_version=None)
+            _write_project(projects["unsupported"], state_version=99)
+
+            for lane, project in projects.items():
+                with self.subTest(lane=lane):
+                    result = _run("doctor", str(project), "--json")
+                    payload = json.loads(result.stdout)
+                    self.assertIn(result.returncode, (0, 1), result.stderr)
+                    self.assertEqual(payload["schema_version"], 1)
+                    self.assertEqual(
+                        list(payload),
+                        [
+                            "schema_version",
+                            "root",
+                            "strict",
+                            "summary",
+                            "checks",
+                            "findings",
+                        ],
+                    )
+                    self.assertEqual(result.stderr, "")
+
     def test_json_mode_emits_one_versioned_completed_document(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             project = Path(tmp)
@@ -507,6 +734,7 @@ class DoctorCliSubprocessTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("usage:", result.stdout)
         self.assertIn("PROJECT_ROOT", result.stdout)
+        self.assertIn("--require-version", result.stdout)
         self.assertEqual(result.stderr, "")
 
 
@@ -525,6 +753,492 @@ class DoctorCliBoundaryTests(unittest.TestCase):
             stderr=stderr,
         )
         return code, stdout.getvalue(), stderr.getvalue()
+
+    def run_raw(self, *arguments: str):
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        code = self.sdad.run_cli(
+            list(arguments),
+            stdout=stdout,
+            stderr=stderr,
+        )
+        return code, stdout.getvalue(), stderr.getvalue()
+
+    def test_version_domains_are_separate_named_constants(self) -> None:
+        from sdad_validator.state_contract import SUPPORTED_STATE_VERSIONS
+
+        self.assertEqual(self.sdad.DOCTOR_VERSION, "3.2.0")
+        self.assertEqual(self.sdad.LEGACY_REPORT_SCHEMA_VERSION, 1)
+        self.assertEqual(self.sdad.REPORT_SCHEMA_VERSION, 2)
+        self.assertEqual(SUPPORTED_STATE_VERSIONS, frozenset({1, 2}))
+        self.assertFalse(hasattr(self.sdad, "SCHEMA_VERSION"))
+
+    def test_top_level_version_is_exact_and_never_constructs_a_project_view(
+        self,
+    ) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with (
+            mock.patch.object(self.sdad, "FilesystemProjectView") as view,
+            mock.patch.object(
+                self.sdad,
+                "_path_text",
+                wraps=self.sdad._path_text,
+            ) as path_text,
+        ):
+            code = self.sdad.run_cli(["--version"], stdout=stdout, stderr=stderr)
+        self.assertEqual(code, 0)
+        self.assertEqual(stdout.getvalue(), "3.2.0\n")
+        self.assertEqual(stderr.getvalue(), "")
+        view.assert_not_called()
+        path_text.assert_not_called()
+
+    def test_mismatch_precedes_bad_root_and_never_constructs_a_view(self) -> None:
+        stdout = io.StringIO()
+        with (
+            mock.patch.object(self.sdad, "FilesystemProjectView") as view,
+            mock.patch.object(
+                self.sdad,
+                "_path_text",
+                wraps=self.sdad._path_text,
+            ) as path_text,
+        ):
+            code = self.sdad.run_cli(
+                [
+                    "doctor",
+                    "Z:/does-not-exist",
+                    "--json",
+                    "--require-version",
+                    "3.2.1",
+                ],
+                stdout=stdout,
+                stderr=io.StringIO(),
+            )
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(code, 2)
+        self.assertEqual(payload["schema_version"], 2)
+        self.assertIsNone(payload["root"])
+        self.assertIsNone(payload["state_version"])
+        self.assertEqual(payload["diagnostic_error"]["kind"], "version_mismatch")
+        view.assert_not_called()
+        path_text.assert_not_called()
+
+    def test_malformed_and_duplicate_guards_fail_before_project_access(self) -> None:
+        cases = (
+            ("missing", ("--require-version",)),
+            (
+                "duplicate-split",
+                (
+                    "--require-version",
+                    "3.2.0",
+                    "--require-version",
+                    "3.2.0",
+                ),
+            ),
+            (
+                "duplicate-equals",
+                ("--require-version=3.2.0", "--require-version=3.2.0"),
+            ),
+            ("major-leading-zero", ("--require-version", "01.2.3")),
+            ("minor-leading-zero", ("--require-version", "3.02.0")),
+            ("leading-whitespace", ("--require-version", " 3.2.0")),
+            ("trailing-whitespace", ("--require-version", "3.2.0 ")),
+            ("range", ("--require-version", ">=3.2.0")),
+            ("prerelease", ("--require-version", "3.2.0-rc.1")),
+            ("build", ("--require-version", "3.2.0+build.1")),
+        )
+        for name, guard in cases:
+            with self.subTest(name=name):
+                stdout = io.StringIO()
+                stderr = io.StringIO()
+                with (
+                    mock.patch.object(self.sdad, "FilesystemProjectView") as view,
+                    mock.patch.object(
+                        self.sdad,
+                        "_path_text",
+                        wraps=self.sdad._path_text,
+                    ) as path_text,
+                ):
+                    code = self.sdad.run_cli(
+                        [
+                            "doctor",
+                            "Z:/does-not-exist",
+                            *guard,
+                            "--json",
+                            "--strict",
+                        ],
+                        stdout=stdout,
+                        stderr=stderr,
+                    )
+                payload = json.loads(stdout.getvalue())
+                self.assertEqual(code, 2)
+                self.assertEqual(stderr.getvalue(), "")
+                self.assertEqual(payload["schema_version"], 2)
+                self.assertIsNone(payload["root"])
+                self.assertIsNone(payload["state_version"])
+                self.assertTrue(payload["strict"])
+                self.assertEqual(
+                    payload["diagnostic_error"]["kind"],
+                    "invalid_invocation",
+                )
+                view.assert_not_called()
+                path_text.assert_not_called()
+
+    def test_malformed_guard_human_output_is_one_exact_error_line(self) -> None:
+        code, stdout, stderr = self.run_raw(
+            "doctor",
+            "--require-version",
+            "3.2.0-rc.1",
+        )
+        self.assertEqual(code, 2)
+        self.assertEqual(stdout, "")
+        self.assertEqual(
+            stderr,
+            "Doctor error [invalid_invocation]: "
+            "--require-version requires core X.Y.Z\n",
+        )
+
+    def test_doctor_help_precedes_guard_validation_and_project_access(self) -> None:
+        canonical_code, canonical_stdout, canonical_stderr = self.run_raw(
+            "doctor",
+            "--help",
+        )
+        self.assertEqual(canonical_code, 0)
+        self.assertEqual(canonical_stderr, "")
+        self.assertIn("--require-version", canonical_stdout)
+
+        cases = (
+            ("doctor", "--require-version", "--help"),
+            ("doctor", "--require-version", "--json", "--help"),
+            ("doctor", "--require-version", "bad", "--help"),
+            ("doctor", "--help", "--require-version=bad"),
+            ("doctor", "--require-version=bad", "--json", "--help"),
+        )
+        for arguments in cases:
+            with self.subTest(arguments=arguments):
+                stdout = io.StringIO()
+                stderr = io.StringIO()
+                with (
+                    mock.patch.object(self.sdad, "FilesystemProjectView") as view,
+                    mock.patch.object(
+                        self.sdad,
+                        "_path_text",
+                        wraps=self.sdad._path_text,
+                    ) as path_text,
+                ):
+                    code = self.sdad.run_cli(
+                        list(arguments),
+                        stdout=stdout,
+                        stderr=stderr,
+                    )
+                self.assertEqual(code, 0)
+                self.assertEqual(stdout.getvalue(), canonical_stdout)
+                self.assertEqual(stderr.getvalue(), "")
+                view.assert_not_called()
+                path_text.assert_not_called()
+
+    def test_double_dash_stops_doctor_help_priority(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        error = self.sdad.DiagnosticError(
+            "unusable_root",
+            "The project root does not exist.",
+        )
+        with mock.patch.object(
+            self.sdad,
+            "FilesystemProjectView",
+            side_effect=error,
+        ) as view:
+            code = self.sdad.run_cli(
+                ["doctor", "--", "--help"],
+                stdout=stdout,
+                stderr=stderr,
+            )
+        self.assertEqual(code, 2)
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertEqual(
+            stderr.getvalue(),
+            "Doctor error [unusable_root]: The project root does not exist.\n",
+        )
+        view.assert_called_once_with("--help")
+
+    def test_version_token_combinations_are_invalid_before_help(self) -> None:
+        cases = (
+            ("--version", "--help"),
+            ("--version", "doctor"),
+            ("doctor", "--version"),
+            ("doctor", "--version", "--help"),
+        )
+        for arguments in cases:
+            with self.subTest(arguments=arguments):
+                stdout = io.StringIO()
+                stderr = io.StringIO()
+                with mock.patch.object(self.sdad, "FilesystemProjectView") as view:
+                    code = self.sdad.run_cli(
+                        list(arguments),
+                        stdout=stdout,
+                        stderr=stderr,
+                    )
+                self.assertEqual(code, 2)
+                self.assertEqual(stdout.getvalue(), "")
+                self.assertRegex(
+                    stderr.getvalue(),
+                    r"^Doctor error \[invalid_invocation\]: .+\n$",
+                )
+                view.assert_not_called()
+
+    def test_guard_outside_doctor_lane_is_never_a_version_mismatch(self) -> None:
+        cases = (
+            ("--require-version", "3.2.1", "--json"),
+            ("--require-version=3.2.1", "--json"),
+            ("--require-version", "3.2.1", "doctor", "--json"),
+            ("--help", "--require-version=3.2.1", "--json"),
+        )
+        for arguments in cases:
+            with self.subTest(arguments=arguments):
+                stdout = io.StringIO()
+                stderr = io.StringIO()
+                with mock.patch.object(self.sdad, "FilesystemProjectView") as view:
+                    code = self.sdad.run_cli(
+                        list(arguments),
+                        stdout=stdout,
+                        stderr=stderr,
+                    )
+                payload = json.loads(stdout.getvalue())
+                self.assertEqual(code, 2)
+                self.assertEqual(stderr.getvalue(), "")
+                self.assertEqual(payload["schema_version"], 1)
+                self.assertEqual(
+                    payload["diagnostic_error"]["kind"],
+                    "invalid_invocation",
+                )
+                view.assert_not_called()
+
+    def test_report_schema_selection_matrix_is_exact(self) -> None:
+        cases = (
+            (False, None, 1),
+            (False, 1, 1),
+            (False, 2, 2),
+            (True, None, 2),
+            (True, 1, 2),
+            (True, 2, 2),
+        )
+        for guard_present, state_version, expected in cases:
+            with self.subTest(
+                guard_present=guard_present,
+                state_version=state_version,
+            ):
+                self.assertEqual(
+                    self.sdad._select_report_schema(
+                        guard_present=guard_present,
+                        state_version=state_version,
+                    ),
+                    expected,
+                )
+
+    def test_schema_one_completed_shape_and_key_order_remain_exact(self) -> None:
+        report = self.sdad.DoctorReport(
+            root="C:/project",
+            findings=(),
+            checks_run=("state_schema",),
+            checks_skipped=(),
+            error_count=0,
+            warning_count=0,
+            state_version=1,
+        )
+        payload = self.sdad._completed_payload(report, False, 1)
+        self.assertEqual(
+            list(payload),
+            ["schema_version", "root", "strict", "summary", "checks", "findings"],
+        )
+        self.assertEqual(payload["schema_version"], 1)
+        self.assertNotIn("doctor_version", payload)
+        self.assertNotIn("state_version", payload)
+
+    def test_schema_two_completed_shape_and_key_order_are_exact(self) -> None:
+        report = self.sdad.DoctorReport(
+            root="C:/project",
+            findings=(),
+            checks_run=("state_schema",),
+            checks_skipped=(),
+            error_count=0,
+            warning_count=0,
+            state_version=2,
+        )
+        payload = self.sdad._completed_payload(report, False, 2)
+        self.assertEqual(
+            list(payload),
+            [
+                "schema_version",
+                "doctor_version",
+                "state_version",
+                "root",
+                "strict",
+                "summary",
+                "checks",
+                "findings",
+            ],
+        )
+        self.assertEqual(payload["schema_version"], 2)
+        self.assertEqual(payload["doctor_version"], "3.2.0")
+        self.assertEqual(payload["state_version"], 2)
+
+    def test_no_guard_error_after_effective_v2_uses_schema_two(self) -> None:
+        def fail_after_state(_view: object, _policy: object):
+            raise self.sdad.DiagnosticError(
+                "internal_error",
+                "failed",
+                state_version=2,
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            _write_project(project)
+            code, stdout, stderr = self.run_injected(
+                project,
+                fail_after_state,
+                "--json",
+            )
+        payload = json.loads(stdout)
+        self.assertEqual(code, 2)
+        self.assertEqual(stderr, "")
+        self.assertEqual(payload["schema_version"], 2)
+        self.assertEqual(payload["state_version"], 2)
+        self.assertEqual(payload["root"], project.resolve().as_posix())
+
+    def test_no_guard_error_before_v2_remains_schema_one(self) -> None:
+        for state_version in (None, 1):
+            with self.subTest(state_version=state_version):
+                def fail_before_v2(
+                    _view: object,
+                    _policy: object,
+                    *,
+                    _state_version=state_version,
+                ):
+                    raise self.sdad.DiagnosticError(
+                        "internal_error",
+                        "failed",
+                        state_version=_state_version,
+                    )
+
+                with tempfile.TemporaryDirectory() as tmp:
+                    project = Path(tmp)
+                    _write_project(project)
+                    code, stdout, stderr = self.run_injected(
+                        project,
+                        fail_before_v2,
+                        "--json",
+                    )
+                payload = json.loads(stdout)
+                self.assertEqual(code, 2)
+                self.assertEqual(stderr, "")
+                self.assertEqual(payload["schema_version"], 1)
+                self.assertEqual(
+                    list(payload),
+                    [
+                        "schema_version",
+                        "root",
+                        "strict",
+                        "summary",
+                        "checks",
+                        "findings",
+                        "diagnostic_error",
+                    ],
+                )
+
+    def test_explicit_guard_selects_schema_two_for_v1_post_acceptance_error(
+        self,
+    ) -> None:
+        def fail(_view: object, _policy: object):
+            raise self.sdad.DiagnosticError(
+                "unreadable_state",
+                "failed",
+                state_version=1,
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            _write_project(project)
+            code, stdout, stderr = self.run_injected(
+                project,
+                fail,
+                "--json",
+                "--require-version",
+                "3.2.0",
+            )
+        payload = json.loads(stdout)
+        self.assertEqual(code, 2)
+        self.assertEqual(stderr, "")
+        self.assertEqual(payload["schema_version"], 2)
+        self.assertEqual(payload["state_version"], 1)
+        self.assertEqual(payload["root"], project.resolve().as_posix())
+
+    def test_schema_two_exit_two_shape_and_nested_order_are_exact(self) -> None:
+        def fail(_view: object, _policy: object):
+            raise self.sdad.DiagnosticError(
+                "internal_error",
+                "failed",
+                state_version=2,
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            _write_project(project)
+            code, stdout, stderr = self.run_injected(project, fail, "--json")
+        payload = json.loads(stdout)
+        self.assertEqual(code, 2)
+        self.assertEqual(stderr, "")
+        self.assertEqual(
+            list(payload),
+            [
+                "schema_version",
+                "doctor_version",
+                "state_version",
+                "root",
+                "strict",
+                "summary",
+                "checks",
+                "findings",
+                "diagnostic_error",
+            ],
+        )
+        self.assertEqual(
+            list(payload["diagnostic_error"]),
+            ["kind", "message"],
+        )
+        self.assertEqual(payload["summary"], {"errors": 0, "warnings": 0})
+        self.assertEqual(payload["checks"], {"run": [], "skipped": []})
+        self.assertEqual(payload["findings"], [])
+
+    def test_guarded_unusable_root_uses_null_pre_acceptance_fields(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        error = self.sdad.DiagnosticError(
+            "unusable_root",
+            "The project root does not exist.",
+        )
+        with mock.patch.object(
+            self.sdad,
+            "FilesystemProjectView",
+            side_effect=error,
+        ):
+            code = self.sdad.run_cli(
+                [
+                    "doctor",
+                    "Z:/does-not-exist",
+                    "--require-version=3.2.0",
+                    "--json",
+                ],
+                stdout=stdout,
+                stderr=stderr,
+            )
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(code, 2)
+        self.assertEqual(stderr.getvalue(), "")
+        self.assertEqual(payload["schema_version"], 2)
+        self.assertIsNone(payload["root"])
+        self.assertIsNone(payload["state_version"])
+        self.assertEqual(payload["diagnostic_error"]["kind"], "unusable_root")
 
     def test_injected_permitted_diagnostic_errors_have_exact_json_contract(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -758,7 +1472,9 @@ class DoctorRepositoryContractTests(unittest.TestCase):
         (root / "docs").mkdir(parents=True)
         (root / "scripts" / "sdad.py").write_text(
             '"""Checkout-only, read-only SDAD doctor."""\n'
-            "SCHEMA_VERSION = 1\n",
+            'DOCTOR_VERSION = "3.2.0"\n'
+            "LEGACY_REPORT_SCHEMA_VERSION = 1\n"
+            "REPORT_SCHEMA_VERSION = 2\n",
             encoding="utf-8",
         )
         surfaces = {
@@ -777,6 +1493,32 @@ class DoctorRepositoryContractTests(unittest.TestCase):
             self.write_contract_surfaces(root)
             with mock.patch.object(self.validator, "ROOT", root):
                 self.validator.validate_doctor_checkout_contract()
+
+    def test_checkout_only_contract_rejects_missing_or_generic_version_domains(
+        self,
+    ) -> None:
+        replacements = (
+            ('DOCTOR_VERSION = "3.2.0"', 'DOCTOR_VERSION = "3.2.1"'),
+            ("LEGACY_REPORT_SCHEMA_VERSION = 1", "LEGACY_REPORT_SCHEMA_VERSION = 2"),
+            ("REPORT_SCHEMA_VERSION = 2", "REPORT_SCHEMA_VERSION = 1"),
+            (
+                "REPORT_SCHEMA_VERSION = 2",
+                "REPORT_SCHEMA_VERSION = 2\nSCHEMA_VERSION = 1",
+            ),
+        )
+        for old, new in replacements:
+            with self.subTest(replacement=new), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.write_contract_surfaces(root)
+                cli = root / "scripts" / "sdad.py"
+                cli.write_text(
+                    cli.read_text(encoding="utf-8").replace(old, new, 1),
+                    encoding="utf-8",
+                )
+                with mock.patch.object(self.validator, "ROOT", root):
+                    with contextlib.redirect_stderr(io.StringIO()):
+                        with self.assertRaises(SystemExit):
+                            self.validator.validate_doctor_checkout_contract()
 
     def test_checkout_only_contract_rejects_every_surface_and_marker(self) -> None:
         for path in (

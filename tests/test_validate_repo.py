@@ -524,6 +524,23 @@ class DoctorGeminiDocumentationContractTests(unittest.TestCase):
         )
 
 
+class DoctorSourceVersionContractTests(unittest.TestCase):
+    def test_doctor_source_uses_three_exact_named_version_domains(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        self.assertRegex(source, r'(?m)^DOCTOR_VERSION = "3\.2\.0"$')
+        self.assertRegex(source, r"(?m)^LEGACY_REPORT_SCHEMA_VERSION = 1$")
+        self.assertRegex(source, r"(?m)^REPORT_SCHEMA_VERSION = 2$")
+        self.assertNotRegex(source, r"(?m)^SCHEMA_VERSION\s*=")
+
+    def test_report_schema_selection_owns_the_only_state_v2_mapping(self) -> None:
+        source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
+        self.assertIn("def _select_report_schema(", source)
+        self.assertEqual(source.count("state_version == 2"), 1)
+
+    def test_current_doctor_source_satisfies_checkout_contract(self) -> None:
+        VALIDATE_REPO.validate_doctor_checkout_contract()
+
+
 class StableReleaseContractTests(unittest.TestCase):
     EXPECTED_SOURCES = {
         "mini": {

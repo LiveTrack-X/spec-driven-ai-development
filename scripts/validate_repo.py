@@ -578,11 +578,18 @@ def validate_doctor_gemini_documentation_contract() -> None:
 
 
 def validate_doctor_checkout_contract() -> None:
-    require_phrases(
+    doctor_source = require_phrases(
         "scripts/sdad.py",
         "SDAD doctor CLI",
-        ["Checkout-only, read-only", "SCHEMA_VERSION = 1"],
+        [
+            "Checkout-only, read-only",
+            'DOCTOR_VERSION = "3.2.0"',
+            "LEGACY_REPORT_SCHEMA_VERSION = 1",
+            "REPORT_SCHEMA_VERSION = 2",
+        ],
     )
+    if re.search(r"(?m)^SCHEMA_VERSION\s*=", doctor_source):
+        fail("SDAD doctor CLI must keep version domains explicitly named")
     for path in (
         "scripts/install-agent-adapter.ps1",
         "scripts/install-agent-adapter.sh",
