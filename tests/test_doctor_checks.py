@@ -30,6 +30,7 @@ from sdad_validator.project_view import (  # noqa: E402
     PathInspection,
     ReadResult,
 )
+from sdad_validator.state_contract import inspect_state  # noqa: E402
 
 
 STATE_PATH_FINDING_IDS = frozenset(
@@ -115,6 +116,15 @@ FIXED_CHECKS = (
     "review_state",
 )
 
+V2_INDEX_TEXT = """# Project Documentation Router
+
+## Active Catalog
+
+- Current handoff: use `../sdad-state.yaml#current_handoff` when declared.
+"""
+
+V2_ONLY_FINDING_IDS = frozenset({"validation.packet-mismatch"})
+
 
 def _scalar_list(key: str, values: tuple[str, ...]) -> list[str]:
     if not values:
@@ -167,6 +177,21 @@ def valid_state(
         lines.append("validation: []")
     lines.extend(_scalar_list("routed_docs", routed_docs))
     return "\n".join(lines) + "\n"
+
+
+def valid_v2_state(
+    *,
+    validation_for: str | None = None,
+    current_handoff: str | None = None,
+    **kwargs: object,
+) -> str:
+    packet_id = str(kwargs.get("packet_id", "WP-001"))
+    state = valid_state(**kwargs).replace("version: 1", "version: 2", 1)
+    owner = packet_id if validation_for is None else validation_for
+    insertion = f"validation_for: {owner}\n"
+    if current_handoff is not None:
+        insertion += f"current_handoff: {current_handoff}\n"
+    return state.replace("owner_gates:", insertion + "owner_gates:", 1)
 
 
 def replace_validation_block(state: str, replacement: str) -> str:
@@ -240,6 +265,8 @@ def make_view(
         payloads["sdad-state.yaml"] = (
             state.encode("utf-8") if isinstance(state, str) else state
         )
+    if isinstance(state, str) and inspect_state(state).state_version == 2:
+        payloads.setdefault("docs/INDEX.md", V2_INDEX_TEXT.encode("utf-8"))
     for path, content in (files or {}).items():
         payloads[path] = content.encode("utf-8") if isinstance(content, str) else content
     return InMemoryProjectView(
@@ -927,14 +954,18 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
         )
         self.assertEqual(
             getattr(doctor_module, "STATE_V2_ONLY_FINDING_IDS", None),
-            frozenset(),
+            V2_ONLY_FINDING_IDS,
         )
         self.assertEqual(
             getattr(doctor_module, "ALLOWED_FINDING_IDS_BY_STATE_VERSION", None),
             {
                 1: ALL_SCHEMA_V1_FINDING_IDS,
-                2: ALL_SCHEMA_V1_FINDING_IDS,
+                2: ALL_SCHEMA_V1_FINDING_IDS | V2_ONLY_FINDING_IDS,
             },
+        )
+        self.assertEqual(
+            doctor_module.FIXED_FINDING_SEVERITIES["validation.packet-mismatch"],
+            Severity.ERROR,
         )
 
     def test_engine_rejects_reordered_checks_and_fixed_severity_breaches(self) -> None:
@@ -1052,6 +1083,133 @@ class DoctorStateAndPathTests(DoctorAssertions, unittest.TestCase):
 
 
 class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):
+    def test_v2_validation_owner_must_match_packet_exactly(self) -> None:
+        matching = diagnose(valid_v2_state(packet_id="WP-EDGE"))
+        self.assertNotFinding(matching, "validation.packet-mismatch")
+
+        for owner in ("wp-edge", "WP-OLD"):
+            with self.subTest(owner=owner):
+                mismatch = diagnose(
+                    valid_v2_state(packet_id="WP-EDGE", validation_for=owner)
+                )
+                self.assertFinding(
+                    mismatch,
+                    "validation.packet-mismatch",
+                    Severity.ERROR,
+                )
+                finding = next(
+                    finding
+                    for finding in mismatch.findings
+                    if finding.id == "validation.packet-mismatch"
+                )
+                self.assertEqual(
+                    finding.evidence,
+                    f"validation_for {owner}; active packet WP-EDGE",
+                )
+
+    def test_v1_never_emits_validation_packet_mismatch(self) -> None:
+        report = diagnose(valid_state(packet_id="WP-EDGE"))
+        self.assertNotFinding(report, "validation.packet-mismatch")
+
+    def test_invalid_validation_owner_is_schema_owned_without_mismatch_cascade(
+        self,
+    ) -> None:
+        baseline = valid_v2_state(packet_id="WP-EDGE")
+        cases = (
+            (
+                "blank",
+                valid_v2_state(packet_id="WP-EDGE", validation_for="''"),
+                "state.schema.unsupported-value",
+            ),
+            (
+                "whitespace",
+                valid_v2_state(packet_id="WP-EDGE", validation_for="' WP-EDGE'"),
+                "state.schema.unsupported-value",
+            ),
+            (
+                "missing",
+                baseline.replace("validation_for: WP-EDGE\n", "", 1),
+                "state.schema.missing-key",
+            ),
+            (
+                "wrong-kind",
+                baseline.replace("validation_for: WP-EDGE", "validation_for: []", 1),
+                "state.schema.wrong-kind",
+            ),
+            (
+                "invalid-owner-id",
+                valid_v2_state(packet_id="WP-EDGE", validation_for="WP/EDGE"),
+                "state.schema.unsupported-value",
+            ),
+            (
+                "invalid-packet-id",
+                valid_v2_state(packet_id="WP/EDGE", validation_for="WP-EDGE"),
+                "state.schema.unsupported-value",
+            ),
+        )
+        for label, state, schema_finding_id in cases:
+            with self.subTest(label=label):
+                report = diagnose(state)
+                self.assertEqual(
+                    [finding.id for finding in report.findings],
+                    [schema_finding_id],
+                )
+                self.assertNotFinding(report, "validation.packet-mismatch")
+
+    def test_v1_cannot_emit_a_v2_only_validation_finding(self) -> None:
+        finding = Finding(
+            id="validation.packet-mismatch",
+            severity=Severity.ERROR,
+            message="mismatch",
+            path="sdad-state.yaml",
+            line=1,
+            evidence="test",
+            remediation="test",
+        )
+        with patch(
+            "sdad_validator.checks.packet_coherence.PacketCoherenceCheck.run",
+            return_value=(finding,),
+        ):
+            with self.assertRaises(DiagnosticError) as caught:
+                diagnose(valid_state())
+        self.assertEqual(caught.exception.kind, "internal_error")
+
+    def test_v2_validation_packet_mismatch_has_fixed_error_severity(self) -> None:
+        finding = Finding(
+            id="validation.packet-mismatch",
+            severity=Severity.WARNING,
+            message="mismatch",
+            path="sdad-state.yaml",
+            line=1,
+            evidence="test",
+            remediation="test",
+        )
+        with patch(
+            "sdad_validator.checks.packet_coherence.PacketCoherenceCheck.run",
+            return_value=(finding,),
+        ):
+            with self.assertRaises(DiagnosticError) as caught:
+                diagnose(valid_v2_state())
+        self.assertEqual(caught.exception.kind, "internal_error")
+        self.assertIn("invalid fixed severities", str(caught.exception))
+
+    def test_matching_owner_does_not_claim_semantic_validation_coverage(self) -> None:
+        report = diagnose(
+            valid_v2_state(
+                packet_id="WP-EDGE",
+                objective="Rename the internal cache key.",
+                validation=(
+                    {
+                        "command": "python -m unittest discover -s tests",
+                        "proves": "The source formatter is stable.",
+                    },
+                ),
+            )
+        )
+
+        self.assertNotFinding(report, "validation.packet-mismatch")
+        self.assertEqual(report.findings, ())
+
     def test_validation_required_status_set_controls_empty_severity_exactly(self) -> None:
         all_statuses = (
             "not_started",

@@ -77,7 +77,7 @@ STATE_V1_FINDING_IDS = frozenset(
         "packet.marker.unrepresentable",
     }
 )
-STATE_V2_ONLY_FINDING_IDS = frozenset()
+STATE_V2_ONLY_FINDING_IDS = frozenset({"validation.packet-mismatch"})
 ALLOWED_FINDING_IDS_BY_STATE_VERSION = {
     1: STATE_V1_FINDING_IDS,
     2: STATE_V1_FINDING_IDS | STATE_V2_ONLY_FINDING_IDS,

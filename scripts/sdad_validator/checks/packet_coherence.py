@@ -3,7 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ..diagnostics import Finding, Severity
-from ..state_contract import ACTIVE_PACKET_STATUSES, ValidationEntry
+from ..state_contract import (
+    ACTIVE_PACKET_STATUSES,
+    ValidationEntry,
+    is_valid_v2_packet_id,
+)
 
 if TYPE_CHECKING:
     from ..doctor import DoctorContext
@@ -135,6 +139,36 @@ class PacketCoherenceCheck:
                 and issue.message == "validation entries must be mappings"
             ):
                 malformed_whole_entries = True
+
+        if context.state_result.state_version == 2:
+            packet = snapshot.active_packet.get("id")
+            owner = snapshot.scalar("validation_for")
+            if (
+                packet is not None
+                and owner is not None
+                and is_valid_v2_packet_id(packet.value)
+                and is_valid_v2_packet_id(owner.value)
+                and packet.value != owner.value
+            ):
+                findings.append(
+                    Finding(
+                        id="validation.packet-mismatch",
+                        severity=Severity.ERROR,
+                        message=(
+                            "The validation contract belongs to a different packet."
+                        ),
+                        path=STATE_PATH,
+                        line=owner.line,
+                        evidence=(
+                            f"validation_for {owner.value}; "
+                            f"active packet {packet.value}"
+                        ),
+                        remediation=(
+                            "Review every validation command and proves claim, then "
+                            "set validation_for to the active packet ID."
+                        ),
+                    )
+                )
 
         if not snapshot.validation:
             if not validation_container_invalid and not malformed_whole_entries:
