@@ -1403,8 +1403,8 @@ class StableReleaseContractTests(unittest.TestCase):
         self.assertNotIn("<summary", readme)
 
     def test_v3_2_release_counts_distinguish_run_from_skipped(self) -> None:
-        expected = "ran 391 tests, with three"
-        overclaim = "passed 391 tests with three"
+        expected = "ran 392 tests, with three"
+        overclaim = "passed 392 tests with three"
         for relative_path in (
             "docs/releases/v3.2.0.md",
             "docs/known-limitations.md",

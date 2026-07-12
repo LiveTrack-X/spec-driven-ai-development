@@ -102,7 +102,7 @@ policy, concurrent filesystem change, path, permission, WSL, or managed-device
 edge case. Automated repository tests live under `tests/`; do not create a
 separate `test/` tree.
 
-The v3.2.0 local Windows release gate ran 391 tests, with three
+The v3.2.0 local Windows release gate ran 392 tests, with three
 privilege-dependent permission/link cases skipped. Those skips disclose
 unexercised local conditions; they are not pass evidence for those scenarios.
 
