@@ -1402,6 +1402,18 @@ class StableReleaseContractTests(unittest.TestCase):
         self.assertNotIn("<details", readme)
         self.assertNotIn("<summary", readme)
 
+    def test_v3_2_release_counts_distinguish_run_from_skipped(self) -> None:
+        expected = "ran 391 tests, with three"
+        overclaim = "passed 391 tests with three"
+        for relative_path in (
+            "docs/releases/v3.2.0.md",
+            "docs/known-limitations.md",
+        ):
+            with self.subTest(path=relative_path):
+                content = (ROOT / relative_path).read_text(encoding="utf-8")
+                self.assertIn(expected, content)
+                self.assertNotIn(overclaim, content)
+
     def test_current_stable_release_surfaces_satisfy_contract(self) -> None:
         manifest = json.loads((ROOT / "install-sources.json").read_text(encoding="utf-8"))
         VALIDATE_REPO.validate_stable_release_contract(manifest)
