@@ -7,7 +7,7 @@ implemented.
 
 Use any method. Keep scope, evidence, and owner authority clear.
 
-Status: `3.2.0` stable documentation/package release.
+Status: `3.2.1` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -28,6 +28,10 @@ coding agents.
 </p>
 
 ![SDAD Protocol infographic](assets/spec-driven-ai-development-infographic.png)
+
+The confirmed SDAD 3.0 overview artwork is preserved unchanged; its embedded
+`Spec-Driven` label is historical. Current protocol wording is SPEC-Directed
+AI Development.
 
 ## Start Here
 
@@ -158,8 +162,8 @@ migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/templates/mini-sdad/MINI-SDAD.md
-Expected SHA-256: f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/templates/mini-sdad/MINI-SDAD.md
+Expected SHA-256: f4385db320c3912456fac65db1234ca8285e5cf1ebb09d0dae8d1dca959f69dd
 
 Before fetching, state that you are installing Mini SDAD and explain why this
 scale was chosen.
@@ -188,12 +192,12 @@ Codex / Claude Code / Gemini CLI / Cursor / Copilot Chat / Generic.
 Claude Code means the local/CLI coding tool with project filesystem access. It
 does not mean Claude.ai chat.
 
-- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 93cd9e34b2ef3d2130f869559ac6b51db1acbcd68d7a7124d7ce71008d25fe15
-- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 e3e1d384c5f6678e20b200b89e3a25f2476a107a5e02289fbc5584a0e6f88daa
-- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 3772568b3df01ba7602d577f04fdce69cf23b06da65ca601180a735238998c91
-- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 0fcb1f1e42539eaef31a2662e57500ec33155558910582d956ede1c5e7e9d7bd
-- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 f82a0e645663fbf205401dfa2c48b2ba749f9af3442007cbc33d012563871a3f
-- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 5356149751afcc80595f9d4a150c074d6fc10d612efb310f2257a3aaeb524057
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 f4cb4e31c2b04c409e0caffefc8d8c5dc8de9a43df0c6a8f1e54303c50155429
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 cde5185041a0fc734fa10bccbf47c6c70470bd326bfca0aaa127f6b59d7eb1c1
+- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 84df97b0a485d69796ac3437bc5299207c84e1ea9beb85e0b48a3600c5f645bd
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 6ce4615ad48f8835a58f48c7211c5fac895e55fbdcb515ec59e0d37131001b1a
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 a91ca64420d376aca352aea3897db1f9b500476422c105a50db71a987b3a0c24
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 721654bdff0978219de7c2df5114864ffdcf1aa21300a1069d01f38fcf87634f
 
 Before saving the adapter:
 1. show me the source URL,
@@ -336,7 +340,7 @@ commands are conveniences, not substitutes for SDAD state, handoff, or Doctor.
 For a stateful Standard or Full project, use a real SDAD checkout and run:
 
 python <SDAD_CHECKOUT>/scripts/sdad.py --version
-python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.0 [--json] [--strict]
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.1 [--json] [--strict]
 
 Doctor version, state schema version, and JSON report schema version are
 separate contracts. The version guard identifies the Doctor code being run.
@@ -373,7 +377,7 @@ makes it immutable. Use `/main/` only when you explicitly want the latest,
 unpinned instructions, and record the chosen revision in setup notes. See
 [install-sources.json](install-sources.json) for the canonical revision/path/hash
 contract and [docs/known-limitations.md](docs/known-limitations.md) for its limits.
-See [the v3.2.0 release notes](docs/releases/v3.2.0.md) for the bounded change,
+See [the v3.2.1 release notes](docs/releases/v3.2.1.md) for the bounded change,
 compatibility, and verification record.
 
 ## Diagnose Stateful Projects
@@ -382,7 +386,7 @@ Use a real SDAD checkout for a stateful Standard or Full project:
 
 ```text
 python <SDAD_CHECKOUT>/scripts/sdad.py --version
-python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.0 [--json] [--strict]
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.1 [--json] [--strict]
 ```
 
 Doctor version, state schema version, and report schema version are separate
@@ -552,7 +556,8 @@ evidence or handoff records required by the current claim.
 - [Tool Adapters](docs/tool-adapters.md)
 - [Known Limitations](docs/known-limitations.md)
 - [Security](SECURITY.md)
-- [Stable v3.2.0 release notes](docs/releases/v3.2.0.md)
+- [Stable v3.2.1 release notes](docs/releases/v3.2.1.md)
+- [Historical v3.2.0 release notes](docs/releases/v3.2.0.md)
 - [Historical v3.1.0 release notes](docs/releases/v3.1.0.md)
 
 ## Validate

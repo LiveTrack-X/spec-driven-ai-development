@@ -1189,7 +1189,7 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
 
     def test_doctor_source_uses_three_exact_named_version_domains(self) -> None:
         source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
-        self.assertRegex(source, r'(?m)^DOCTOR_VERSION = "3\.2\.0"$')
+        self.assertRegex(source, r'(?m)^DOCTOR_VERSION = "3\.2\.1"$')
         self.assertRegex(source, r"(?m)^LEGACY_REPORT_SCHEMA_VERSION = 1$")
         self.assertRegex(source, r"(?m)^REPORT_SCHEMA_VERSION = 2$")
         self.assertNotRegex(source, r"(?m)^SCHEMA_VERSION\s*=")
@@ -1205,8 +1205,8 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
     def test_rejects_computed_doctor_version_hidden_by_literal_decoy(self) -> None:
         source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
         mutated = source.replace(
-            'DOCTOR_VERSION = "3.2.0"',
-            '# DOCTOR_VERSION = "3.2.0"\nDOCTOR_VERSION = "3." + "2.0"',
+            'DOCTOR_VERSION = "3.2.1"',
+            '# DOCTOR_VERSION = "3.2.1"\nDOCTOR_VERSION = "3." + "2.1"',
             1,
         )
         self.assertNotEqual(mutated, source)
@@ -1215,8 +1215,8 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
     def test_rejects_version_reassignment_after_correct_literal(self) -> None:
         source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
         mutated = source.replace(
-            'DOCTOR_VERSION = "3.2.0"',
-            'DOCTOR_VERSION = "3.2.0"\nDOCTOR_VERSION = "3.2.1"',
+            'DOCTOR_VERSION = "3.2.1"',
+            'DOCTOR_VERSION = "3.2.1"\nDOCTOR_VERSION = "3.2.2"',
             1,
         )
         self.assertNotEqual(mutated, source)
@@ -1225,8 +1225,8 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
     def test_rejects_augmented_version_reassignment(self) -> None:
         source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
         mutated = source.replace(
-            'DOCTOR_VERSION = "3.2.0"',
-            'DOCTOR_VERSION = "3.2.0"\nDOCTOR_VERSION += ".1"',
+            'DOCTOR_VERSION = "3.2.1"',
+            'DOCTOR_VERSION = "3.2.1"\nDOCTOR_VERSION += ".1"',
             1,
         )
         self.assertNotEqual(mutated, source)
@@ -1235,8 +1235,8 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
     def test_rejects_named_expression_version_reassignment(self) -> None:
         source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
         mutated = source.replace(
-            'DOCTOR_VERSION = "3.2.0"',
-            'DOCTOR_VERSION = "3.2.0"\n(DOCTOR_VERSION := "3.2.1")',
+            'DOCTOR_VERSION = "3.2.1"',
+            'DOCTOR_VERSION = "3.2.1"\n(DOCTOR_VERSION := "3.2.2")',
             1,
         )
         self.assertNotEqual(mutated, source)
@@ -1245,8 +1245,8 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
     def test_rejects_starred_version_reassignment(self) -> None:
         source = (ROOT / "scripts" / "sdad.py").read_text(encoding="utf-8")
         mutated = source.replace(
-            'DOCTOR_VERSION = "3.2.0"',
-            'DOCTOR_VERSION = "3.2.0"\n*DOCTOR_VERSION, = ["3.2.1"]',
+            'DOCTOR_VERSION = "3.2.1"',
+            'DOCTOR_VERSION = "3.2.1"\n*DOCTOR_VERSION, = ["3.2.2"]',
             1,
         )
         self.assertNotEqual(mutated, source)
@@ -1321,48 +1321,48 @@ class InternalWorkspaceIgnoreContractTests(unittest.TestCase):
 
 
 class StableReleaseContractTests(unittest.TestCase):
-    EXPECTED_BASELINE_REVISION = "b433b4cbf490bd875a40b76127abefbefed3f243"
+    EXPECTED_BASELINE_REVISION = "f173aa398562d6a9d86b941dc79f75f9381148f4"
     EXPECTED_SOURCES = {
         "mini": {
             "path": "templates/mini-sdad/MINI-SDAD.md",
-            "sha256": "f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669",
+            "sha256": "f4385db320c3912456fac65db1234ca8285e5cf1ebb09d0dae8d1dca959f69dd",
         },
         "codex": {
             "path": "adapters/codex/AGENTS.md",
             "target": "AGENTS.md",
-            "sha256": "93cd9e34b2ef3d2130f869559ac6b51db1acbcd68d7a7124d7ce71008d25fe15",
+            "sha256": "f4cb4e31c2b04c409e0caffefc8d8c5dc8de9a43df0c6a8f1e54303c50155429",
         },
         "claude-code": {
             "path": "adapters/claude-code/CLAUDE.md",
             "target": "CLAUDE.md",
-            "sha256": "e3e1d384c5f6678e20b200b89e3a25f2476a107a5e02289fbc5584a0e6f88daa",
+            "sha256": "cde5185041a0fc734fa10bccbf47c6c70470bd326bfca0aaa127f6b59d7eb1c1",
         },
         "gemini-cli": {
             "path": "adapters/gemini-cli/GEMINI.md",
             "target": "GEMINI.md",
-            "sha256": "3772568b3df01ba7602d577f04fdce69cf23b06da65ca601180a735238998c91",
+            "sha256": "84df97b0a485d69796ac3437bc5299207c84e1ea9beb85e0b48a3600c5f645bd",
         },
         "cursor": {
             "path": "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
             "target": ".cursor/rules/spec-driven-ai-development.mdc",
-            "sha256": "0fcb1f1e42539eaef31a2662e57500ec33155558910582d956ede1c5e7e9d7bd",
+            "sha256": "6ce4615ad48f8835a58f48c7211c5fac895e55fbdcb515ec59e0d37131001b1a",
         },
         "github-copilot": {
             "path": "adapters/github-copilot/.github/copilot-instructions.md",
             "target": ".github/copilot-instructions.md",
-            "sha256": "f82a0e645663fbf205401dfa2c48b2ba749f9af3442007cbc33d012563871a3f",
+            "sha256": "a91ca64420d376aca352aea3897db1f9b500476422c105a50db71a987b3a0c24",
         },
         "generic": {
             "path": "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
             "target": "AI-SESSION-INSTRUCTIONS.md",
-            "sha256": "5356149751afcc80595f9d4a150c074d6fc10d612efb310f2257a3aaeb524057",
+            "sha256": "721654bdff0978219de7c2df5114864ffdcf1aa21300a1069d01f38fcf87634f",
         },
     }
 
-    def test_manifest_has_exact_v3_2_0_identity_and_baseline_sources(self) -> None:
+    def test_manifest_has_exact_v3_2_1_identity_and_baseline_sources(self) -> None:
         manifest = json.loads((ROOT / "install-sources.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["schema_version"], 1)
-        self.assertEqual(manifest["label"], "v3.2.0 stable baseline")
+        self.assertEqual(manifest["label"], "v3.2.1 stable baseline")
         self.assertEqual(manifest["revision"], self.EXPECTED_BASELINE_REVISION)
         self.assertEqual(
             manifest["capabilities"],
@@ -1374,25 +1374,25 @@ class StableReleaseContractTests(unittest.TestCase):
         self.assertEqual(VALIDATE_REPO.STABLE_RELEASE_SOURCES, self.EXPECTED_SOURCES)
 
     def test_v3_2_release_identity_surfaces_are_present(self) -> None:
-        release = (ROOT / "docs/releases/v3.2.0.md").read_text(encoding="utf-8")
-        self.assertIn("# SDAD v3.2.0", release)
-        self.assertIn("Release date: 2026-07-12", release)
-        self.assertIn("Tag: `v3.2.0`", release)
+        release = (ROOT / "docs/releases/v3.2.1.md").read_text(encoding="utf-8")
+        self.assertIn("# SDAD v3.2.1", release)
+        self.assertIn("Release date: 2026-07-14", release)
+        self.assertIn("Tag: `v3.2.1`", release)
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
         self.assertRegex(
             changelog,
-            r"(?s)\A# Changelog\n\n## Unreleased\n\n.+?\n## 3\.2\.0 - 2026-07-12\n",
+            r"(?s)\A# Changelog\n\n## Unreleased\n\nNothing yet\.\n\n## 3\.2\.1 - 2026-07-14\n",
         )
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        self.assertIn("docs/releases/v3.2.0.md", readme)
+        self.assertIn("docs/releases/v3.2.1.md", readme)
         self.assertNotIn("<details", readme)
         self.assertNotIn("<summary", readme)
 
-    def test_v3_2_release_counts_distinguish_run_from_skipped(self) -> None:
+    def test_v3_2_1_release_counts_distinguish_run_from_skipped(self) -> None:
         expected = "ran 392 tests, with three"
         overclaim = "passed 392 tests with three"
         for relative_path in (
-            "docs/releases/v3.2.0.md",
+            "docs/releases/v3.2.1.md",
             "docs/known-limitations.md",
         ):
             with self.subTest(path=relative_path):

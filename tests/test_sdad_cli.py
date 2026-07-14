@@ -106,8 +106,8 @@ class DoctorCliSubprocessTests(unittest.TestCase):
             project = Path(tmp)
             _write_project(project)
             for arguments in (
-                ("doctor", str(project), "--require-version", "3.2.0", "--json"),
-                ("doctor", str(project), "--require-version=3.2.0", "--json"),
+                ("doctor", str(project), "--require-version", "3.2.1", "--json"),
+                ("doctor", str(project), "--require-version=3.2.1", "--json"),
             ):
                 with self.subTest(arguments=arguments):
                     result = _run(*arguments)
@@ -115,7 +115,7 @@ class DoctorCliSubprocessTests(unittest.TestCase):
                     self.assertIn(result.returncode, (0, 1))
                     self.assertEqual(result.stderr, "")
                     self.assertEqual(payload["schema_version"], 2)
-                    self.assertEqual(payload["doctor_version"], "3.2.0")
+                    self.assertEqual(payload["doctor_version"], "3.2.1")
                     self.assertEqual(payload["state_version"], 1)
 
     def test_version_requirement_is_accepted_before_or_after_project_root(self) -> None:
@@ -126,13 +126,13 @@ class DoctorCliSubprocessTests(unittest.TestCase):
                 (
                     "doctor",
                     "--require-version",
-                    "3.2.0",
+                    "3.2.1",
                     str(project),
                     "--json",
                 ),
                 (
                     "doctor",
-                    "--require-version=3.2.0",
+                    "--require-version=3.2.1",
                     str(project),
                     "--json",
                 ),
@@ -140,13 +140,13 @@ class DoctorCliSubprocessTests(unittest.TestCase):
                     "doctor",
                     str(project),
                     "--require-version",
-                    "3.2.0",
+                    "3.2.1",
                     "--json",
                 ),
                 (
                     "doctor",
                     str(project),
-                    "--require-version=3.2.0",
+                    "--require-version=3.2.1",
                     "--json",
                 ),
             )
@@ -168,13 +168,13 @@ class DoctorCliSubprocessTests(unittest.TestCase):
                 "doctor",
                 str(project),
                 "--require-version",
-                "3.2.0",
+                "3.2.1",
             )
             strict_json = _run(
                 "doctor",
                 str(project),
                 "--strict",
-                "--require-version=3.2.0",
+                "--require-version=3.2.1",
                 "--json",
             )
 
@@ -202,13 +202,13 @@ class DoctorCliSubprocessTests(unittest.TestCase):
                     "doctor",
                     str(project),
                     "--require-version",
-                    "3.2.0",
+                    "3.2.1",
                     "--json",
                     "--unknown",
                 ),
                 (
                     "doctor",
-                    "--require-version=3.2.0",
+                    "--require-version=3.2.1",
                     "--unknown",
                     str(project),
                     "--json",
@@ -238,7 +238,7 @@ class DoctorCliSubprocessTests(unittest.TestCase):
         payload = json.loads(result.stdout)
         self.assertIn(result.returncode, (0, 1), result.stderr)
         self.assertEqual(payload["schema_version"], 2)
-        self.assertEqual(payload["doctor_version"], "3.2.0")
+        self.assertEqual(payload["doctor_version"], "3.2.1")
         self.assertEqual(payload["state_version"], 2)
         self.assertFalse(
             {"state.schema.missing-key", "state.schema.unknown-key"}
@@ -256,7 +256,7 @@ class DoctorCliSubprocessTests(unittest.TestCase):
                 "doctor",
                 str(project),
                 "--require-version",
-                "3.2.0",
+                "3.2.1",
                 "--json",
             )
 
@@ -280,7 +280,7 @@ class DoctorCliSubprocessTests(unittest.TestCase):
                     result = _run(
                         "doctor",
                         str(project),
-                        "--require-version=3.2.0",
+                        "--require-version=3.2.1",
                         "--json",
                     )
                     payload = json.loads(result.stdout)
@@ -775,7 +775,7 @@ class DoctorCliBoundaryTests(unittest.TestCase):
     def test_version_domains_are_separate_named_constants(self) -> None:
         from sdad_validator.state_contract import SUPPORTED_STATE_VERSIONS
 
-        self.assertEqual(self.sdad.DOCTOR_VERSION, "3.2.0")
+        self.assertEqual(self.sdad.DOCTOR_VERSION, "3.2.1")
         self.assertEqual(self.sdad.LEGACY_REPORT_SCHEMA_VERSION, 1)
         self.assertEqual(self.sdad.REPORT_SCHEMA_VERSION, 2)
         self.assertEqual(SUPPORTED_STATE_VERSIONS, frozenset({1, 2}))
@@ -796,7 +796,7 @@ class DoctorCliBoundaryTests(unittest.TestCase):
         ):
             code = self.sdad.run_cli(["--version"], stdout=stdout, stderr=stderr)
         self.assertEqual(code, 0)
-        self.assertEqual(stdout.getvalue(), "3.2.0\n")
+        self.assertEqual(stdout.getvalue(), "3.2.1\n")
         self.assertEqual(stderr.getvalue(), "")
         view.assert_not_called()
         path_text.assert_not_called()
@@ -817,7 +817,7 @@ class DoctorCliBoundaryTests(unittest.TestCase):
                     "Z:/does-not-exist",
                     "--json",
                     "--require-version",
-                    "3.2.1",
+                    "3.2.2",
                 ],
                 stdout=stdout,
                 stderr=io.StringIO(),
@@ -838,22 +838,22 @@ class DoctorCliBoundaryTests(unittest.TestCase):
                 "duplicate-split",
                 (
                     "--require-version",
-                    "3.2.0",
+                    "3.2.1",
                     "--require-version",
-                    "3.2.0",
+                    "3.2.1",
                 ),
             ),
             (
                 "duplicate-equals",
-                ("--require-version=3.2.0", "--require-version=3.2.0"),
+                ("--require-version=3.2.1", "--require-version=3.2.1"),
             ),
             ("major-leading-zero", ("--require-version", "01.2.3")),
             ("minor-leading-zero", ("--require-version", "3.02.0")),
-            ("leading-whitespace", ("--require-version", " 3.2.0")),
-            ("trailing-whitespace", ("--require-version", "3.2.0 ")),
-            ("range", ("--require-version", ">=3.2.0")),
-            ("prerelease", ("--require-version", "3.2.0-rc.1")),
-            ("build", ("--require-version", "3.2.0+build.1")),
+            ("leading-whitespace", ("--require-version", " 3.2.1")),
+            ("trailing-whitespace", ("--require-version", "3.2.1 ")),
+            ("range", ("--require-version", ">=3.2.1")),
+            ("prerelease", ("--require-version", "3.2.1-rc.1")),
+            ("build", ("--require-version", "3.2.1+build.1")),
         )
         for name, guard in cases:
             with self.subTest(name=name):
@@ -896,7 +896,7 @@ class DoctorCliBoundaryTests(unittest.TestCase):
         code, stdout, stderr = self.run_raw(
             "doctor",
             "--require-version",
-            "3.2.0-rc.1",
+            "3.2.1-rc.1",
         )
         self.assertEqual(code, 2)
         self.assertEqual(stdout, "")
@@ -1088,7 +1088,7 @@ class DoctorCliBoundaryTests(unittest.TestCase):
             ],
         )
         self.assertEqual(payload["schema_version"], 2)
-        self.assertEqual(payload["doctor_version"], "3.2.0")
+        self.assertEqual(payload["doctor_version"], "3.2.1")
         self.assertEqual(payload["state_version"], 2)
 
     def test_no_guard_error_after_effective_v2_uses_schema_two(self) -> None:
@@ -1172,7 +1172,7 @@ class DoctorCliBoundaryTests(unittest.TestCase):
                 fail,
                 "--json",
                 "--require-version",
-                "3.2.0",
+                "3.2.1",
             )
         payload = json.loads(stdout)
         self.assertEqual(code, 2)
@@ -1234,7 +1234,7 @@ class DoctorCliBoundaryTests(unittest.TestCase):
                 [
                     "doctor",
                     "Z:/does-not-exist",
-                    "--require-version=3.2.0",
+                    "--require-version=3.2.1",
                     "--json",
                 ],
                 stdout=stdout,
@@ -1480,7 +1480,7 @@ class DoctorRepositoryContractTests(unittest.TestCase):
         (root / "docs").mkdir(parents=True)
         (root / "scripts" / "sdad.py").write_text(
             '"""Checkout-only, read-only SDAD doctor."""\n'
-            'DOCTOR_VERSION = "3.2.0"\n'
+            'DOCTOR_VERSION = "3.2.1"\n'
             "LEGACY_REPORT_SCHEMA_VERSION = 1\n"
             "REPORT_SCHEMA_VERSION = 2\n",
             encoding="utf-8",
@@ -1506,7 +1506,7 @@ class DoctorRepositoryContractTests(unittest.TestCase):
         self,
     ) -> None:
         replacements = (
-            ('DOCTOR_VERSION = "3.2.0"', 'DOCTOR_VERSION = "3.2.1"'),
+            ('DOCTOR_VERSION = "3.2.1"', 'DOCTOR_VERSION = "3.2.2"'),
             ("LEGACY_REPORT_SCHEMA_VERSION = 1", "LEGACY_REPORT_SCHEMA_VERSION = 2"),
             ("REPORT_SCHEMA_VERSION = 2", "REPORT_SCHEMA_VERSION = 1"),
             (

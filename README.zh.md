@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
-状态：`3.2.0` 稳定文档/软件包版本。
+状态：`3.2.1` 稳定文档/软件包版本。
 
 实际效果取决于 project fit、Owner 的执行纪律与 evidence quality。
 

@@ -26,21 +26,21 @@ Markdown does not technically block tools.
 
 ## Doctor Diagnostic Boundary
 
-`sdad doctor` remains checkout-only in 3.2.0. Adapter and no-clone installation
+`sdad doctor` remains checkout-only in 3.2.1. Adapter and no-clone installation
 do not install a standalone Doctor into downstream projects. An operator must
 resolve a trusted checkout and run:
 
 ```text
 python <SDAD_CHECKOUT>/scripts/sdad.py --version
-python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.0 [--json] [--strict]
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.1 [--json] [--strict]
 ```
 
-`--require-version 3.2.0` proves only that the invoked program reports the exact
+`--require-version 3.2.1` proves only that the invoked program reports the exact
 required Doctor version. It does not prove a clean checkout, hash provenance,
 command execution, or product correctness. A fork or dirty checkout may retain
 the same version string. Use a shell-neutral wrapper that resolves an
 operator-configured checkout and always supplies `--strict --require-version
-3.2.0` when a repeatable local command is needed.
+3.2.1` when a repeatable local command is needed.
 
 Doctor is a read-only structural diagnostic. It checks the declared state and
 selected control-plane coherence. It does not execute validation commands,
@@ -105,15 +105,15 @@ policy, concurrent filesystem change, path, permission, WSL, or managed-device
 edge case. Automated repository tests live under `tests/`; do not create a
 separate `test/` tree.
 
-The v3.2.0 local Windows release gate ran 392 tests, with three
+The v3.2.1 local Windows release gate ran 392 tests, with three
 privilege-dependent permission/link cases skipped. Those skips disclose
 unexercised local conditions; they are not pass evidence for those scenarios.
 
 ## Raw URL Reproducibility
 
-The executable no-clone instructions are pinned to the stable v3.2.0 baseline
+The executable no-clone instructions are pinned to the stable v3.2.1 baseline
 at full 40-character commit SHA
-`b433b4cbf490bd875a40b76127abefbefed3f243`. Each downloaded adapter is verified
+`f173aa398562d6a9d86b941dc79f75f9381148f4`. Each downloaded adapter is verified
 with SHA-256. `install-sources.json` is the revision/path/hash contract.
 
 A commit ID is immutable; a tag is readable but may move unless repository

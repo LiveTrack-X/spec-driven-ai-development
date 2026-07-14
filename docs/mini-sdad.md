@@ -60,15 +60,15 @@ Evidence-ready is not owner-accepted.
 
 ## What Mini SDAD Creates
 
-Mini creates one instruction file for the active tool. Use the stable v3.2.0
+Mini creates one instruction file for the active tool. Use the stable v3.2.1
 source pinned to the immutable release baseline:
 
 ```text
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/templates/mini-sdad/MINI-SDAD.md
 ```
 
 Expected SHA-256:
-`f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669`.
+`f4385db320c3912456fac65db1234ca8285e5cf1ebb09d0dae8d1dca959f69dd`.
 
 Use `main` only when changing, unpinned instructions are intentional.
 
@@ -98,8 +98,8 @@ alwaysApply: true
 Use Mini SDAD for this project. The default execution boundary is one unit.
 
 Fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/b433b4cbf490bd875a40b76127abefbefed3f243/templates/mini-sdad/MINI-SDAD.md
-Expected SHA-256: f5370ba6539ab55b88fc10a7589ca7f42fa6714072830620aad7dab60d21f669
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/templates/mini-sdad/MINI-SDAD.md
+Expected SHA-256: f4385db320c3912456fac65db1234ca8285e5cf1ebb09d0dae8d1dca959f69dd
 
 Before fetching, state that you are installing Mini SDAD and why Mini fits.
 Save it at the correct tool-native path. For Cursor, prepend the documented MDC

@@ -113,8 +113,10 @@ flowchart TD
 
 Use these when a static or interactive visual is more useful than Mermaid:
 
-- `assets/spec-driven-ai-development-infographic.png`: current SDAD Protocol 3.2
-  public overview used by the README.
+- `assets/spec-driven-ai-development-infographic.png`: confirmed SDAD 3.0
+  artwork used as the current SDAD Protocol 3.2 public overview in the README.
+  Its embedded `Spec-Driven` label is historical; current protocol wording is
+  SPEC-Directed AI Development.
 - `assets/spec-driven-ai-development-infographic.svg`: separate legacy,
   versionless progressive-control-plane companion visual; it is not the
   editable source for the README PNG.
