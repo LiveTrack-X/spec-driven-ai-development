@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-Nothing yet.
+- Added repository-logical `HNNNN` identifiers to new handoff filenames
+  (`YYYY-MM-DD-HNNNN-topic.md`) so device clock differences cannot define
+  sequence. Existing unnumbered handoffs remain valid, and `current_handoff`
+  remains the sole currentness authority.
 
 ## 3.2.1 - 2026-07-14
 

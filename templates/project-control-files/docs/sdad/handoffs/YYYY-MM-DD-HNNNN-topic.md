@@ -6,6 +6,7 @@ implementation notes, or long command/file logs into the handoff.
 
 ## 1. Session Identity
 
+- Handoff ID: H0001
 - Active packet: [packet:bootstrap]
 - Repository / worktree:
 - Branch / HEAD:

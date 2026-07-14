@@ -158,7 +158,7 @@ REQUIRED_FILES = [
     "templates/project-control-files/docs/sdad/playbooks/evidence-and-risk-gates.md",
     "templates/project-control-files/docs/sdad/playbooks/documentation-and-handoff.md",
     "templates/project-control-files/docs/sdad/playbooks/advanced-extensions.md",
-    "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+    "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md",
     "templates/project-control-files/docs/TODO-Open-Items.md",
     "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
     "templates/project-control-files/SPEC/adr/ADR-0001-template.md",
@@ -924,10 +924,14 @@ def validate_public_v3_2_documentation_contract() -> None:
         lifecycle,
         "Session handoff pointer lifecycle",
         [
-            ("docs/sdad/handoffs/yyyy-mm-dd-topic.md",),
+            ("docs/sdad/handoffs/yyyy-mm-dd-hnnnn-topic.md",),
+            ("hnnnn", "repository-logical"),
+            ("date", "descriptive"),
+            ("device clock", "cannot override"),
             ("## 1. session identity",),
+            ("- handoff id: h0001", "matching", "filename"),
             ("- active packet: [packet:wp-example]",),
-            ("replace", "wp-example", "active_packet.id"),
+            ("replace", "active_packet.id"),
             ("current_handoff",),
             ("current handoff: use ../sdad-state.yaml#current_handoff",),
             ("on resume",),
@@ -935,6 +939,9 @@ def validate_public_v3_2_documentation_contract() -> None:
             ("remove or replace",),
             ("same coherence update",),
             ("another packet", "cannot remain current"),
+            ("existing", "remain valid", "legacy"),
+            ("parallel", "collision", "before merge"),
+            ("greatest id", "never", "current"),
         ],
     )
     _require_concept_groups(
@@ -1889,7 +1896,7 @@ def validate_canonical_template_contract() -> None:
             "execution_scope: packet",
             "  id: bootstrap",
             "validation_for: bootstrap",
-            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md",
         ],
     )
     minimal_state = require_phrases(
@@ -1919,7 +1926,7 @@ def validate_canonical_template_contract() -> None:
         "skills/ai-spec-project-start/references/starter-templates.md",
         "Installed-skill fallback templates",
         [
-            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md",
         ],
     )
     open_finding_forms = (
@@ -1943,6 +1950,7 @@ def validate_canonical_template_contract() -> None:
     expected_handoff = (
         "markdown",
         "## 1. Session Identity\n\n"
+        "- Handoff ID: H0001\n"
         "- Active packet: [packet:bootstrap]",
     )
     if handoff_blocks != [expected_handoff]:
@@ -2006,12 +2014,13 @@ def validate_canonical_template_contract() -> None:
             fail(f"{label} has a malformed active record")
 
     handoff = read(
-        "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
+        "templates/project-control-files/docs/sdad/handoffs/"
+        "YYYY-MM-DD-HNNNN-topic.md"
     )
     if not _canonical_handoff_identity_is_valid(handoff):
         fail(
             "Canonical handoff first Session Identity section must contain "
-            "exactly one bootstrap marker"
+            "exactly one H0001 identity and bootstrap marker"
         )
 
     save_state = read("templates/project-control-files/save-state.md").lower()
@@ -2058,7 +2067,8 @@ def validate_canonical_template_contract() -> None:
         "templates/project-control-files/docs/sdad/playbooks/documentation-and-handoff.md",
         "templates/project-control-files/docs/sdad/playbooks/evidence-and-risk-gates.md",
         "templates/project-control-files/docs/work-packet-state.md",
-        "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+        "templates/project-control-files/docs/sdad/handoffs/"
+        "YYYY-MM-DD-HNNNN-topic.md",
         "skills/ai-spec-project-start/references/starter-templates.md",
     )
     forbidden_terms = (
@@ -2728,10 +2738,14 @@ def validate_templates() -> None:
     ]:
         if phrase not in project_readme:
             fail(f"Project control README template missing: {phrase}")
-    handoff_template = read("templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md")
+    handoff_template = read(
+        "templates/project-control-files/docs/sdad/handoffs/"
+        "YYYY-MM-DD-HNNNN-topic.md"
+    )
     for phrase in [
         "SDAD Session Handoff",
         "Session Identity",
+        "Handoff ID: H0001",
         "Active packet: [packet:bootstrap]",
         "Resume Checkpoint",
         "Authority Pointers",

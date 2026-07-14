@@ -95,9 +95,12 @@ New state-v2 projects do not create or route `save-state.md`. The optional
 save-state remains state-v1 migration input only.
 
 Declare a current handoff only when another session needs recovery. The file's
-first exact `## 1. Session Identity` section must contain exactly one marker
-matching the active packet. On packet switch, completion, archive, or replacement,
-remove or replace the pointer in the same coherence update.
+canonical name is `YYYY-MM-DD-HNNNN-topic.md`, where `HNNNN` is the next
+repository-logical ID and the date is descriptive only. Its first exact
+`## 1. Session Identity` section must contain the matching handoff ID and exactly
+one marker matching the active packet. Existing unnumbered handoffs remain valid.
+On packet switch, completion, archive, or replacement, remove or replace the
+pointer in the same coherence update.
 
 Read the handoff only for continuity intent, after adapter -> state -> INDEX,
 and only as deeply as needed for the next decision.

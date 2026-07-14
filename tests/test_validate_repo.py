@@ -534,6 +534,7 @@ class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
         handoff_block = (
             "```markdown\n"
             "## 1. Session Identity\n\n"
+            "- Handoff ID: H0001\n"
             "- Active packet: [packet:bootstrap]\n"
             "```"
         )
@@ -644,9 +645,13 @@ class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
                 self.assertIn(expected, output)
 
     def test_handoff_rejects_comment_fence_and_wrong_section_decoys(self) -> None:
-        path = "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
+        path = (
+            "templates/project-control-files/docs/sdad/handoffs/"
+            "YYYY-MM-DD-HNNNN-topic.md"
+        )
         identity = (
             "## 1. Session Identity\n\n"
+            "- Handoff ID: H0001\n"
             "- Active packet: [packet:bootstrap]\n"
         )
         replacements = (
@@ -666,10 +671,33 @@ class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
                 )
                 self.assertIn("first Session Identity section", output)
 
+    def test_handoff_rejects_wrong_or_duplicate_logical_id(self) -> None:
+        path = (
+            "templates/project-control-files/docs/sdad/handoffs/"
+            "YYYY-MM-DD-HNNNN-topic.md"
+        )
+        mutations = (
+            lambda text: text.replace(
+                "- Handoff ID: H0001",
+                "- Handoff ID: H0002",
+                1,
+            ),
+            lambda text: text.replace(
+                "- Handoff ID: H0001",
+                "- Handoff ID: H0001\n- Handoff ID: H0001",
+                1,
+            ),
+        )
+        for mutate in mutations:
+            with self.subTest(mutate=mutate):
+                output = self.assert_mutation_rejected(path, mutate)
+                self.assertIn("H0001 identity and bootstrap marker", output)
+
     def test_starter_handoff_requires_the_optional_subsection_block(self) -> None:
         path = "skills/ai-spec-project-start/references/starter-templates.md"
         identity = (
             "## 1. Session Identity\n\n"
+            "- Handoff ID: H0001\n"
             "- Active packet: [packet:bootstrap]\n"
         )
         block = f"```markdown\n{identity}```"
@@ -1018,10 +1046,10 @@ class PublicV32DocumentationContractTests(unittest.TestCase):
     def test_rejects_removed_handoff_pointer_marker_lifecycle(self) -> None:
         self.assert_mutation_rejected(
             "docs/session-handoff.md",
-            "6. On packet switch, completion, archive, or replacement, remove or replace the\n"
+            "7. On packet switch, completion, archive, or replacement, remove or replace the\n"
             "   state pointer in the same coherence update. A handoff for another packet\n"
             "   cannot remain current.",
-            "6. Keep the previous pointer for later reference.",
+            "7. Keep the previous pointer for later reference.",
         )
 
     def test_rejects_removed_one_time_bootstrap_boundary(self) -> None:
@@ -1381,7 +1409,8 @@ class StableReleaseContractTests(unittest.TestCase):
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
         self.assertRegex(
             changelog,
-            r"(?s)\A# Changelog\n\n## Unreleased\n\nNothing yet\.\n\n## 3\.2\.1 - 2026-07-14\n",
+            r"(?s)\A# Changelog\n\n## Unreleased\n\n.+?\n\n"
+            r"## 3\.2\.1 - 2026-07-14\n",
         )
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("docs/releases/v3.2.1.md", readme)

@@ -218,8 +218,14 @@ def _canonical_handoff_identity_is_valid(text: str) -> bool:
     section = _first_visible_section(text, "## 1. Session Identity")
     if section is None:
         return False
-    candidates = [line for line in section if line.startswith("- Active packet:")]
-    return candidates == ["- Active packet: [packet:bootstrap]"]
+    handoff_ids = [line for line in section if line.startswith("- Handoff ID:")]
+    packet_markers = [
+        line for line in section if line.startswith("- Active packet:")
+    ]
+    return (
+        handoff_ids == ["- Handoff ID: H0001"]
+        and packet_markers == ["- Active packet: [packet:bootstrap]"]
+    )
 
 
 def _active_ledger_records_are_valid(
@@ -283,7 +289,7 @@ def _validate_task8_templates(
                 "execution_scope: packet",
                 "  id: bootstrap",
                 "validation_for: bootstrap",
-                "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+                "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md",
             ),
             violations,
         )
@@ -334,13 +340,14 @@ def _validate_task8_templates(
                 violations.append(message)
 
     handoff_path = (
-        "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
+        "templates/project-control-files/docs/sdad/handoffs/"
+        "YYYY-MM-DD-HNNNN-topic.md"
     )
     handoff = _read(root, handoff_path, violations)
     if handoff and not _canonical_handoff_identity_is_valid(handoff):
         violations.append(
             "canonical handoff first Session Identity section must contain "
-            "exactly one bootstrap marker"
+            "exactly one H0001 identity and bootstrap marker"
         )
 
     index_path = "templates/project-control-files/docs/INDEX.md"

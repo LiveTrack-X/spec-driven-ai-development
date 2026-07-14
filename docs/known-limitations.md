@@ -64,6 +64,20 @@ repository state disagree, inspect current source/tests and the repository
 authority chain before proceeding.
 Tool-native session and checkpoint diagnostics are not SDAD authority.
 
+## Logical Handoff Sequence Boundary
+
+New handoffs use `YYYY-MM-DD-HNNNN-topic.md`. The zero-padded `HNNNN` is a
+repository-logical sequence; the date is descriptive and cannot establish
+order or currentness. Existing unnumbered handoffs remain valid, and only
+`sdad-state.yaml#current_handoff` declares the current checkpoint.
+
+This naming contract is not a centralized allocator. Doctor validates the
+state-declared handoff's path, readability, size, and packet marker, but it does
+not allocate IDs, validate filename-to-ID agreement, scan handoff history, or
+detect duplicate sequence IDs. Parallel branches can therefore choose the same
+next ID; resolve that collision before merge by changing the filename, internal
+ID, and state pointer together.
+
 ## Evidence Claim Ladder
 
 - Doctor green supports only the claim that its structural checks passed.

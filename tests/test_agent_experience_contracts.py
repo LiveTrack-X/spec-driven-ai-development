@@ -109,7 +109,7 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
                 self.assertNotIn("save-state.md", state)
 
         self.assertIn(
-            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md",
             canonical,
         )
         self.assertIn("eligible current-packet", canonical.lower())
@@ -122,6 +122,7 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         )
         handoff_shape = (
             "## 1. Session Identity\n\n"
+            "- Handoff ID: H0001\n"
             "- Active packet: [packet:bootstrap]"
         )
 
@@ -157,7 +158,8 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         self.assertNotRegex(review, r"(?m)^- \[[ xX]\].*None currently tracked")
 
         handoff = read(
-            "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
+            "templates/project-control-files/docs/sdad/handoffs/"
+            "YYYY-MM-DD-HNNNN-topic.md"
         )
         starter = read("skills/ai-spec-project-start/references/starter-templates.md")
         self.assertEqual(handoff.count(handoff_shape), 1)
@@ -687,7 +689,8 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
             "templates/project-control-files/README.md",
             "templates/project-control-files/docs/INDEX.md",
             "templates/project-control-files/docs/Repository-Operating-Rules.md",
-            "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            "templates/project-control-files/docs/sdad/handoffs/"
+            "YYYY-MM-DD-HNNNN-topic.md",
         )
 
         for path in surfaces:
@@ -695,7 +698,8 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
                 self.assertIn("installed tool adapter", read(path).lower())
 
         handoff = read(
-            "templates/project-control-files/docs/sdad/handoffs/YYYY-MM-DD-topic.md"
+            "templates/project-control-files/docs/sdad/handoffs/"
+            "YYYY-MM-DD-HNNNN-topic.md"
         )
         self.assertIn("## 3. Authority Pointers", handoff)
         self.assertIn("## 4. Last Observed Validation", handoff)
@@ -1134,7 +1138,7 @@ class AgentExperienceValidatorTests(unittest.TestCase):
             "  objective: Validate the compact control plane.\n"
             "  status: not_started\n"
             "validation_for: bootstrap\n"
-            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md\n"
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md\n"
             "owner_gates: []\n"
             "validation: []\n"
             "routed_docs: []\n",
@@ -1152,8 +1156,9 @@ class AgentExperienceValidatorTests(unittest.TestCase):
                 "## Recently Closed\n"
             ),
             "templates/project-control-files/docs/sdad/handoffs/"
-            "YYYY-MM-DD-topic.md": (
+            "YYYY-MM-DD-HNNNN-topic.md": (
                 "## 1. Session Identity\n\n"
+                "- Handoff ID: H0001\n"
                 "- Active packet: [packet:bootstrap]\n"
             ),
         }
@@ -1512,6 +1517,7 @@ class AgentExperienceValidatorTests(unittest.TestCase):
     ) -> None:
         identity = (
             "## 1. Session Identity\n\n"
+            "- Handoff ID: H0001\n"
             "- Active packet: [packet:bootstrap]\n"
         )
         cases = (
@@ -1530,13 +1536,13 @@ class AgentExperienceValidatorTests(unittest.TestCase):
                 path = (
                     root
                     / "templates/project-control-files/docs/sdad/handoffs/"
-                    "YYYY-MM-DD-topic.md"
+                    "YYYY-MM-DD-HNNNN-topic.md"
                 )
                 path.write_text(handoff, encoding="utf-8")
 
                 self.assertIn(
                     "canonical handoff first Session Identity section must contain "
-                    "exactly one bootstrap marker",
+                    "exactly one H0001 identity and bootstrap marker",
                     self.collect(root),
                 )
 

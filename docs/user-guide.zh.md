@@ -99,7 +99,9 @@ findings、ADR、evidence 的路径，并记录下一步操作。
 
 `save-state.md` 是 v3.1 migration 时读取的 legacy input。迁移到 v2 后，不要继续把它当作
 第二份当前 state 更新。仅在需要时创建
-`docs/sdad/handoffs/YYYY-MM-DD-topic.md`。
+`docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md`。`HNNNN` 是仓库逻辑顺序，
+不是设备时间；日期仅用于说明。保留已有的无编号 handoff，只有
+`current_handoff` 决定哪个 handoff 是当前 handoff。
 
 ## 复用 Owner gate 批准
 

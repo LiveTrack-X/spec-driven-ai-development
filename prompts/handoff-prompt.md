@@ -11,8 +11,14 @@ startup context or `routed_docs` merely because it exists.
 Write the handoff under:
 
 ```text
-docs/sdad/handoffs/YYYY-MM-DD-topic.md
+docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md
 ```
+
+Use `HNNNN` as a zero-padded repository-logical sequence. Select an ID greater
+than every repository-known numbered handoff, including archived numbered
+handoffs; never reuse, fill a gap, or renumber an ID. The date is descriptive
+only and does not establish order or currentness. Legacy `YYYY-MM-DD-topic.md`
+handoffs remain valid and need no mass rename.
 
 Use this exact structure:
 
@@ -21,6 +27,7 @@ Use this exact structure:
 
 ## 1. Session Identity
 
+- Handoff ID: H0001
 - Active packet: [packet:WP-EXAMPLE]
 - Repository / worktree:
 - Branch / HEAD:
@@ -65,10 +72,11 @@ Use this exact structure:
 - Repository truth overrides this checkpoint.
 ```
 
-The first exact `## 1. Session Identity` section must contain exactly one valid
-marker. Start from the copyable example `- Active packet: [packet:WP-EXAMPLE]`,
-then replace `WP-EXAMPLE` with the exact
-`sdad-state.yaml#active_packet.id` value.
+The first exact `## 1. Session Identity` section must contain exactly one
+handoff ID matching the filename and exactly one valid packet marker. Start
+from `- Handoff ID: H0001` and
+`- Active packet: [packet:WP-EXAMPLE]`; replace `H0001` with the allocated ID
+and `WP-EXAMPLE` with the exact `sdad-state.yaml#active_packet.id` value.
 
 ## Authority And Compression Rules
 
@@ -103,7 +111,12 @@ real current resume checkpoint. Keep INDEX sourced from the state pointer:
 
 On packet switch, completion, archive, or replacement, remove or replace the
 pointer in the same coherence update. Never leave a handoff for another packet
-declared current.
+declared current. Never infer currentness from the date or greatest handoff ID.
+
+A small correction updates the same checkpoint. A materially new recovery
+checkpoint gets the next ID. If parallel branches allocate the same ID, resolve
+the collision before merge by updating the filename, internal ID, and state
+pointer together.
 
 ## Bounded-Read Instructions
 

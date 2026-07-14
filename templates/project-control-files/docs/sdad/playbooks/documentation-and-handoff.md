@@ -60,10 +60,14 @@ truth.
 On a packet switch, the old pointer must be removed or replaced in the same
 coherence transaction. A handoff for another packet cannot remain current.
 
-Use `docs/sdad/handoffs/YYYY-MM-DD-topic.md`. Include only repository/branch/
-worktree/HEAD/dirty state, current goal and next action, authority paths, last
-observed validation with claim limits, open constraints/gates, and bounded
-resume instructions.
+Use `docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md`, where `HNNNN` is the next
+zero-padded repository-logical ID. The date is descriptive; only the ID records
+sequence, and only `current_handoff` records currentness. Never reuse or
+renumber IDs. Existing unnumbered handoffs remain valid. Resolve parallel ID
+collisions before merge by changing the filename, internal ID, and state pointer
+together. Include only repository/branch/worktree/HEAD/dirty state, current goal
+and next action, authority paths, last observed validation with claim limits,
+open constraints/gates, and bounded resume instructions.
 
 ## Close-Loop Gate
 

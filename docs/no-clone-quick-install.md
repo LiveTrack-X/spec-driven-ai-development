@@ -305,9 +305,14 @@ boundary. If nothing changes, say which files were checked and why no update was
 needed.
 
 Before closing, archiving, replacing, or restarting a long AI coding session,
-create a session handoff under docs/sdad/handoffs/YYYY-MM-DD-topic.md. Treat
-the chat as an execution trace, not permanent memory; a fresh session must be
-able to continue from the handoff, active spec, and current repository state.
+create a session handoff under
+docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md. Allocate HNNNN as the next
+zero-padded repository-logical ID; treat the date as descriptive and
+current_handoff as the sole currentness signal. Existing unnumbered handoffs
+remain valid. Write the same ID in the first Session Identity as
+`- Handoff ID: HNNNN`. Treat the chat as an execution trace, not permanent
+memory; a fresh session must be able to continue from the handoff, active spec,
+and current repository state.
 Reference existing SPECs, ADRs, TODOs, review findings, implementation notes,
 logs, or evidence files by path or URL instead of duplicating long content in
 the handoff. Add `current_handoff` only while that handoff is current and require

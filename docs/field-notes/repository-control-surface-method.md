@@ -117,8 +117,10 @@ project/
   review-findings.md
 ```
 
-Create `docs/sdad/handoffs/YYYY-MM-DD-topic.md` only when state v2 declares it
-through optional `current_handoff` for a real continuity need.
+Create `docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md` only for a real continuity
+need. Use the next repository-logical `HNNNN`; the date is descriptive and only
+state v2's optional `current_handoff` declares currentness. Existing unnumbered
+handoffs remain valid.
 
 Add routed rules, skills, hooks, CI jobs, or agent workflows only when repeated
 pain proves the need. For One-shot or Mini SDAD, keep the same principle but

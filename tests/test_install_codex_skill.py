@@ -119,9 +119,10 @@ class InstallCodexSkillSmokeTests(unittest.TestCase):
             "version: 2",
             "execution_scope: packet",
             "validation_for: bootstrap",
-            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md",
+            "# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md",
             "## Optional Current Handoff",
             "## 1. Session Identity\n\n"
+            "- Handoff ID: H0001\n"
             "- Active packet: [packet:bootstrap]",
         ):
             with self.subTest(fallback_phrase=phrase):

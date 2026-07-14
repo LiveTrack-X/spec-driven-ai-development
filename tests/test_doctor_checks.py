@@ -1434,6 +1434,33 @@ class DoctorV2ContinuityTests(DoctorAssertions, unittest.TestCase):
         self.assertEqual(report.error_count, 0)
         self.assertEqual(view.read_counts[path], 1)
 
+    def test_numbered_and_legacy_handoff_names_are_both_accepted(self) -> None:
+        cases = (
+            (
+                "docs/sdad/handoffs/2026-07-14-H0002-neural-engine-fix.md",
+                "- Handoff ID: H0002\n",
+            ),
+            (
+                "docs/sdad/handoffs/2026-07-14-neural-engine-fix.md",
+                "",
+            ),
+        )
+        for path, identity in cases:
+            with self.subTest(path=path):
+                report = diagnose(
+                    valid_v2_state(current_handoff=path),
+                    files={
+                        path: (
+                            "## 1. Session Identity\n\n"
+                            f"{identity}"
+                            "- Active packet: [packet:WP-001]\n"
+                        )
+                    },
+                )
+
+                self.assertEqual(report.error_count, 0)
+                self.assertNoHandoffSemanticFindings(report)
+
     def test_handoff_marker_precedence_emits_one_finding(self) -> None:
         path = "docs/sdad/handoffs/current.md"
         cases = (

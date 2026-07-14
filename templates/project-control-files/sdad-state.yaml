@@ -16,7 +16,7 @@ active_packet:
 validation_for: bootstrap
 
 # Optional. Uncomment only when a current resume checkpoint actually exists.
-# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md
+# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md
 
 # Keep only gates that can stop the current packet.
 owner_gates: []

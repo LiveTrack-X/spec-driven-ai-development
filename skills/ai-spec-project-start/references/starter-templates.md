@@ -65,7 +65,7 @@ active_packet:
   objective: Replace with the current evidence-ready objective.
   status: not_started
 validation_for: bootstrap
-# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-topic.md
+# current_handoff: docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md
 owner_gates: []
 validation:
   - command: Replace with the project validation command.
@@ -164,17 +164,22 @@ Both legal open-finding forms are shown here outside the active ledger section:
 
 Create a compact recovery checkpoint only when work pauses, changes hands,
 remains blocked/partial, or would be expensive to reconstruct. Declare its path
-as `current_handoff` in state. Its exact identity start is:
+as `current_handoff` in state. Name each new checkpoint
+`YYYY-MM-DD-HNNNN-topic.md`; use `HNNNN` as the never-reused, zero-padded
+repository-logical sequence and treat the date as descriptive only. Existing
+unnumbered handoffs remain valid. Its exact identity start is:
 
 ```markdown
 ## 1. Session Identity
 
+- Handoff ID: H0001
 - Active packet: [packet:bootstrap]
 ```
 
 The handoff links to state, SPEC, TODO/findings, notes/ADRs, and bounded evidence;
-it does not duplicate those authorities. Remove or replace the pointer when the
-packet changes.
+it does not duplicate those authorities. The ID must match the filename; only
+the state pointer declares currentness. Remove or replace the pointer when the
+packet changes, and resolve parallel ID collisions before merge.
 
 ## Optional Evidence Files
 

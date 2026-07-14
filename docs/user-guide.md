@@ -183,7 +183,10 @@ create all of them.
 ### The next session keeps losing context
 
 Require a current packet-bound handoff, set `current_handoff`, and verify its
-packet marker matches `active_packet.id`. Retire the pointer when it is stale.
+packet marker matches `active_packet.id`. Name new checkpoints
+`YYYY-MM-DD-HNNNN-topic.md`, using `HNNNN` as repository-logical order rather
+than device time. Retire the pointer when it is stale; never infer currentness
+from the greatest ID.
 
 ### A chat-only tool says it installed SDAD
 

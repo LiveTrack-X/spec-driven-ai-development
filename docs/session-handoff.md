@@ -45,19 +45,33 @@ authority pointers needed for the next decision.
 
 ## Current Pointer Lifecycle
 
-1. Write the handoff under `docs/sdad/handoffs/YYYY-MM-DD-topic.md`.
-2. In its first exact `## 1. Session Identity` section, include exactly one
-   canonical example marker: `- Active packet: [packet:WP-EXAMPLE]`. When
-   writing the handoff, replace `WP-EXAMPLE` with the exact
+1. Write each new checkpoint under
+   `docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md`, where `HNNNN` is a
+   zero-padded repository-logical sequence such as `H0001`.
+2. Choose an ID greater than every repository-known numbered handoff, including
+   archived numbered handoffs. Never reuse, fill a gap, or renumber an ID. The
+   date is descriptive only: it does not establish order or currentness, so
+   device clock differences cannot override the handoff sequence.
+3. In its first exact `## 1. Session Identity` section, include exactly one
+   `- Handoff ID: H0001` line matching the filename and exactly one canonical
+   packet marker: `- Active packet: [packet:WP-EXAMPLE]`. Replace both example
+   values when writing the handoff: use the allocated handoff ID and the exact
    `sdad-state.yaml#active_packet.id` value.
-3. Set optional `current_handoff` in `sdad-state.yaml` to that in-root path.
-4. Keep the exact INDEX source line:
+4. Set optional `current_handoff` in `sdad-state.yaml` to that in-root path.
+5. Keep the exact INDEX source line:
    `- Current handoff: use ../sdad-state.yaml#current_handoff when declared.`
-5. On resume, confirm the state pointer, marker, current packet, source, tests,
+6. On resume, confirm the state pointer, ID, marker, current packet, source, tests,
    and repository status still agree before relying on the handoff.
-6. On packet switch, completion, archive, or replacement, remove or replace the
+7. On packet switch, completion, archive, or replacement, remove or replace the
    state pointer in the same coherence update. A handoff for another packet
    cannot remain current.
+
+Existing `YYYY-MM-DD-topic.md` handoffs remain valid legacy checkpoints and do
+not need a mass rename. A small correction updates the same checkpoint; a new
+material recovery checkpoint gets the next ID. Parallel branches may select the
+same next ID, so resolve that collision before merge by changing the filename,
+internal ID, and state pointer together. The greatest ID is never implicitly
+current: only `sdad-state.yaml#current_handoff` declares currentness.
 
 Do not add the handoff path to `routed_docs` merely because it exists.
 
@@ -68,6 +82,7 @@ Do not add the handoff path to `routed_docs` merely because it exists.
 
 ## 1. Session Identity
 
+- Handoff ID: H0001
 - Active packet: [packet:WP-EXAMPLE]
 - Repository / worktree:
 - Branch / HEAD:
