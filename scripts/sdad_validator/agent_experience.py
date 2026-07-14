@@ -59,6 +59,34 @@ TARGETED_ROUTE_CONTRACT = (
     "does not mean read the whole file",
 )
 
+CORE_RULES = (
+    "Current beats historical",
+    "Evidence beats confidence",
+    "Active beats interesting",
+    "Owner decision beats AI momentum",
+    "Repeated pain becomes a rule",
+)
+CORE_RULE_TAGLINE = "Compression first. Gates stay real."
+
+RUNTIME_AUTHORITY_CONCEPTS = (
+    ("evidence before asking", "one blocking question"),
+    ("review/audit", "read-only", "owner", "authorizes changes"),
+    ("preserve", "unrelated/dirty owner"),
+    ("commit", "never authorizes", "push", "release"),
+    ("current owner instruction", "stop", "delegated", "plan/route", "spec/state"),
+    ("restriction", "cancellation", "revocation", "authorization", "protected action"),
+    (
+        "repeated pain",
+        "root cause",
+        "smallest durable control",
+        "regression evidence",
+        "keep/refine/merge/retire",
+        "within scope",
+        "bounded follow-up",
+        "never expand",
+    ),
+)
+
 FORBIDDEN_KERNEL_WORDING = (
     "@sdad-state.yaml",
     "@docs/INDEX.md",
@@ -147,12 +175,36 @@ def _require_phrases(
             violations.append(f"{relative_path} missing canonical phrase: {phrase}")
 
 
+def _require_concept_groups(
+    relative_path: str,
+    text: str,
+    groups: tuple[tuple[str, ...], ...],
+    violations: list[str],
+) -> None:
+    normalized = " ".join(text.lower().split())
+    for group in groups:
+        missing = [concept for concept in group if concept.lower() not in normalized]
+        if missing:
+            violations.append(
+                f"{relative_path} missing runtime concepts: {', '.join(missing)}"
+            )
+
+
 def _validate_startup_kernel(
     relative_path: str,
     text: str,
     violations: list[str],
 ) -> None:
-    positions = [text.find(token) for token in TARGETED_ROUTE_CONTRACT]
+    _validate_core_rules(relative_path, text, violations)
+    _require_concept_groups(
+        relative_path,
+        text,
+        RUNTIME_AUTHORITY_CONCEPTS,
+        violations,
+    )
+
+    normalized = " ".join(text.lower().split())
+    positions = [normalized.find(token.lower()) for token in TARGETED_ROUTE_CONTRACT]
     if any(position < 0 for position in positions) or positions != sorted(positions):
         violations.append(
             f"{relative_path} must route current intent to one targeted path, "
@@ -167,6 +219,24 @@ def _validate_startup_kernel(
                 f"{relative_path} contains forbidden always-loaded kernel "
                 f"wording: {phrase}"
             )
+
+
+def _validate_core_rules(
+    relative_path: str,
+    text: str,
+    violations: list[str],
+) -> None:
+    visible = "\n".join(_visible_markdown_lines(text))
+    sequence = ".*?".join(re.escape(rule) for rule in CORE_RULES)
+    match = re.search(sequence, visible, flags=re.IGNORECASE | re.DOTALL)
+    if match is None:
+        violations.append(
+            f"{relative_path} must carry the Core 5 in canonical order"
+        )
+    if CORE_RULE_TAGLINE.lower() not in visible.lower():
+        violations.append(
+            f"{relative_path} missing Core 5 tagline: {CORE_RULE_TAGLINE}"
+        )
 
 
 def _visible_markdown_lines(text: str) -> list[str]:
@@ -401,11 +471,17 @@ def collect_agent_experience_violations(root: Path) -> list[str]:
         violations,
     )
 
-    _read(
+    rules = _read(
         root,
         "templates/project-control-files/docs/Repository-Operating-Rules.md",
         violations,
     )
+    if rules:
+        _validate_core_rules(
+            "templates/project-control-files/docs/Repository-Operating-Rules.md",
+            rules,
+            violations,
+        )
     for relative_path in STARTUP_SURFACES:
         text = content.get(relative_path, "")
         if text:
@@ -427,6 +503,7 @@ def collect_agent_experience_violations(root: Path) -> list[str]:
 
     readme = _read(root, "README.md", violations)
     if readme:
+        _validate_core_rules("README.md", readme, violations)
         headings = re.findall(r"^## Start Here(?:\:.*)?$", readme, re.MULTILINE)
         if headings != ["## Start Here"]:
             violations.append(

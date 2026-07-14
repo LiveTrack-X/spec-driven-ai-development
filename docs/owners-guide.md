@@ -90,9 +90,16 @@ or protocol version is more effective.
 - Let the AI infer first; ask only one material question at a time.
 - Reuse a valid conditional authorization until its recorded expiry.
 - Treat `routed_docs` as selectable routes, never a full-read requirement.
+- Let a current owner-named input enter Plan/Route even if a stale route omits it;
+  update routes before implementation when it is adopted.
 - Keep one fact in one authoritative home; handoffs link rather than copy.
-- Require one state-declared active SPEC; treat other SPECs as proposals until
-  an explicit incorporation or packet pointer switch.
+- Require one state-declared active SPEC. Treat owner-directed adoption or
+  implementation as a change request that must be reconciled before work;
+  only non-authoritative, nonconflicting SPECs remain proposals.
+- A cancellation without replacement leaves a `deferred` packet that resumes
+  only after explicit owner reactivation.
+- Turn repeated pain into the smallest durable control plus regression evidence,
+  then Keep/Refine/Merge/Retire it instead of accumulating instructions.
 - Use technical enforcement for permissions. Markdown is guidance and record,
   not a sandbox.
 

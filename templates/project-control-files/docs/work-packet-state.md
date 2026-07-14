@@ -29,16 +29,24 @@ and owner acceptance cannot strengthen missing evidence.
 
 ### AUTH-EXAMPLE
 
-- Decision:
+- Decision: authorized | revoked | superseded
+- Revises/supersedes authorizations:
+  - None | path/URL/ID
 - Authorized action:
 - Packet:
 - Conditions:
 - Source/artifact identity:
 - Expires when:
 - Evidence required before action:
+- Owner or decision source:
+- Decided at:
 
 Reuse this authorization only while its packet, action, conditions, expiry,
-evidence prerequisite, and recorded source/artifact identity remain unchanged. An expired or failed condition is a stop.
+evidence prerequisite, and recorded source/artifact identity remain unchanged.
+An expired/failed condition or current owner revocation is an immediate stop.
+Never edit the old AUTH record to express a later restriction or revocation;
+append a unique record with a predecessor link. Keep or restore the affected
+gate in state `owner_gates` as unsatisfied before any further protected action.
 Keep currently unsatisfied gates in the simple
 state `owner_gates` list; do not create a second registry here.
 

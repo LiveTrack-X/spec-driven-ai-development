@@ -25,9 +25,9 @@ Read references only when their trigger applies:
 - Read [references/field-patterns.md](references/field-patterns.md) when
   translating lessons from another project, release/migration practice, or a
   reference implementation.
-- Read [references/implicit-rules.md](references/implicit-rules.md) when repeated
-  confusion or failure should become a rule, playbook, test, validator, or
-  template.
+- Read [references/implicit-rules.md](references/implicit-rules.md) when creating
+  or repairing Core 5/control rules, or when repeated confusion or failure
+  should become a rule, playbook, test, validator, or template.
 
 Do not load every reference by default.
 
@@ -140,12 +140,14 @@ for the optional Delivery Readiness Model; it is not current packet authority.
 
 For stateful work, normalize `active_spec` as the single normative SPEC
 entrypoint. `SPEC-COMPLETE.md` is an integrated baseline, not an immutable or
-automatically active document. Classify another SPEC as a proposal, amendment,
-bounded supplement, or replacement; record its baseline, effective packet, and
-baseline revision plus exact superseded scope before incorporating it or
-switching the pointer. Reject lineage cycles and implicit overlapping scope. A
-material change after owner acceptance starts a new, never-reused packet ID and
-fresh validation instead of rewriting the accepted packet.
+automatically active document. Treat a SPEC supplied as current requirements as
+a change request unless the owner limits it to review/draft/reference; hold affected work and compare
+its acceptance boundary before classification. A merely discovered SPEC gains
+no authority from metadata and remains a proposal only when nonconflicting.
+Record the accepted amendment, bounded supplement, or replacement with its
+baseline, effective packet, revision, and exact superseded scope before work.
+Reject lineage cycles and implicit overlap. A material post-acceptance change
+starts a new, never-reused packet ID and fresh validation.
 
 Before replacing terminal state, require one durable owner-decision record that
 pins the packet, active SPEC revision, source/artifact identity, evidence/claim
@@ -280,9 +282,10 @@ Return a compact checkpoint:
 - remaining risk and owner decisions;
 - acceptance state and next step.
 
-Create or update `current_handoff` only when work pauses, changes hands, remains
-blocked/partial/unverified, owner direction changes, or context would be
-expensive to reconstruct. Link authorities instead of copying their contents.
+Create or update `current_handoff` only when another session, tool, person, or
+machine needs actual continuity and reconstruction would be costly. Reconcile
+direction first; a stop, redirect, block, or partial result alone does not
+require a handoff. Link authorities instead of copying their contents.
 
 ## Existing-Project Rules
 

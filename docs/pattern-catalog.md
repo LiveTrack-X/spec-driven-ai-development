@@ -144,7 +144,12 @@ Route ordinary requests by intent:
 - documentation: "docs", "README", "FAQ", "guide", "explain",
 - handoff: "continue later", "handoff", "next session", "lost context",
 - reference intake: "borrow from this repo", "can we adopt this idea",
+- current change request: "adopt this", "use this", "implement this",
 - execution control: "asks too often", "runs ahead".
+
+Classify the whole utterance. A clear imperative authorizes only its named
+action and boundary; a question, hypothetical, quotation, negation, or
+review/reference-only request does not authorize the action it mentions.
 
 Treat narrative modifiers as routing signals, not automatic scope expansion.
 "Carefully", "thoroughly", or "audit the whole flow" increases inspection depth
@@ -240,8 +245,10 @@ Use startup order for routing, not as one universal precedence list:
 - an owner-decision record establishes authorization or acceptance only for its
   declared packet, action, conditions, and expiry;
 - a handoff establishes continuity pointers only;
-- planned SPECs, references, archives, filenames, dates, and chat cannot
-  activate requirements.
+- a current applicable owner instruction can interrupt or redirect work and is
+  persisted before affected stateful implementation;
+- planned SPECs, references, archives, filenames, dates, and old/provider chat
+  memory cannot activate requirements.
 
 Read order is routing, not authority. Owner decisions control scope, risk
 tolerance, protected actions, and result acceptance only for their recorded boundary.

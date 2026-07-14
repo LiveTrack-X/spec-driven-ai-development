@@ -1209,7 +1209,9 @@ class LongRunningLifecycleContractTests(unittest.TestCase):
         "templates/project-control-files/docs/work-packet-state.md",
         "templates/project-control-files/docs/INDEX.md",
         "docs/ai-work-loop.md",
+        "docs/implicit-rules.md",
         "docs/known-limitations.md",
+        "docs/session-handoff.md",
     )
 
     def write_fixture(self, root: Path) -> None:
@@ -1348,11 +1350,74 @@ class LongRunningLifecycleContractTests(unittest.TestCase):
             "- Expires when:",
         )
 
-    def test_rejects_packet_switch_on_candidate_spec_arrival(self) -> None:
+    def test_rejects_revocation_without_authorization_predecessor(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/work-packet-state.md",
+            "- Revises/supersedes authorizations:\n  - None | path/URL/ID",
+            "- Prior authorization was overwritten: yes",
+        )
+
+    def test_rejects_revocation_that_leaves_the_gate_satisfied(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/work-packet-state.md",
+            "Keep or restore the affected\ngate in state `owner_gates` as unsatisfied",
+            "Keep the affected\ngate satisfied",
+        )
+
+    def test_rejects_global_handoff_sequence_instead_of_date_scoped_ids(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/session-handoff.md",
+            "Start a\n   new date at `H0001`",
+            "Continue the\n   global sequence across every date",
+        )
+
+    def test_rejects_handoff_next_action_before_current_owner_redirect(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/session-handoff.md",
+            "Apply any\n   current owner redirect before the recorded next action",
+            "Follow the recorded next action before any\n   current owner redirect",
+        )
+
+    def test_rejects_rule5_without_enforcement_and_regression_evidence(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/implicit-rules.md",
+            "-> enforcement plus regression evidence",
+            "-> another reminder in chat",
+        )
+
+    def test_rejects_rule5_without_retirement_route(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/implicit-rules.md",
+            "-> Keep / Refine / Merge / Retire",
+            "-> Keep forever",
+        )
+
+    def test_rejects_continuing_old_work_after_owner_spec_adoption(self) -> None:
         self.assert_mutation_rejected(
             "docs/ai-work-loop.md",
-            "do not change packet",
-            "create a new packet immediately",
+            "treat it as a current change request; hold affected work",
+            "treat it as a current change request; continue old work",
+        )
+
+    def test_rejects_implementing_a_review_only_spec(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/ai-work-loop.md",
+            "keep the request read-only; report conflicts without incorporating",
+            "implement the request; report conflicts after incorporating",
+        )
+
+    def test_rejects_automatic_authority_for_a_discovered_spec(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/ai-work-loop.md",
+            "it gains no authority from filename, date, or status",
+            "it becomes authoritative from filename, date, or status",
+        )
+
+    def test_rejects_ignoring_a_current_owner_redirect(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "Stop affected local and delegated work",
+            "Continue affected local and delegated work",
         )
 
     def test_rejects_packet_switch_when_an_existing_gate_is_satisfied(self) -> None:

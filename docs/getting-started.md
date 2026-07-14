@@ -164,9 +164,10 @@ For a fresh session, use adapter -> state -> INDEX. Read a handoff only when
 `current_handoff` names one for the active packet. Tool-native sessions,
 checkpoints, or memory are conveniences, not SDAD state authority.
 
-Name new handoffs `YYYY-MM-DD-HNNNN-topic.md`. `HNNNN` is repository-logical
-order, the date is descriptive only, and the state pointer alone declares the
-current checkpoint. Existing unnumbered handoffs remain valid.
+Name new handoffs `YYYY-MM-DD-HNNNN-topic.md`. `HNNNN` is the date-scoped
+sequence: use the next ID for that date and restart at `H0001` on a new date.
+The full date-plus-ID path identifies the checkpoint; only the state pointer
+declares it current. Existing unnumbered handoffs remain valid.
 
 Keep facts in their authoritative homes: requirements in SPEC, small non-spec
 decisions in implementation notes, hard-to-reverse decisions in ADRs,

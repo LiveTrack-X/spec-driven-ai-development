@@ -15,23 +15,36 @@ Do not read the whole file merely because it exists. Procedures, examples, and
 large checklists belong in `docs/sdad/playbooks/`; current facts belong in
 state, SPEC, TODO, findings, notes, or evidence files.
 
+## Core 5
+
+1. Current beats historical.
+2. Evidence beats confidence.
+3. Active beats interesting.
+4. Owner decision beats AI momentum.
+5. Repeated pain becomes a rule.
+
+Compression first. Gates stay real.
+
 ## Source Of Truth
 
 Resolve conflicts by fact type before freshness:
 
-1. current source code, migrations, tests, runtime state, and reproducible
+1. the current applicable owner instruction controls requested direction and
+   change intent; when it redirects work, reconcile it into the appropriate
+   repository authority before stateful implementation resumes;
+2. current source code, migrations, tests, runtime state, and reproducible
    commands establish observed behavior;
-2. active runtime and operating documents establish current controlled state;
-3. `sdad-state.yaml#active_spec` names the single normative entrypoint for
+3. active runtime and operating documents establish current controlled state;
+4. `sdad-state.yaml#active_spec` names the single normative entrypoint for
    intended scope, behavior, non-goals, and acceptance criteria;
-4. another SPEC applies only where that entrypoint incorporates its exact path
+5. another SPEC applies only where that entrypoint incorporates its exact path
    and bounded scope; the entrypoint controls conflicts in that scope;
-5. `sdad-state.yaml` owns the current packet, validation, gates, routes, and
+6. `sdad-state.yaml` owns the current packet, validation, gates, routes, and
    dominant checkpoint, not cumulative evidence or acceptance history;
-6. the state-declared current handoff provides cross-session continuity only;
-7. unincorporated SPECs, product notes, and external references are proposals or
+7. the state-declared current handoff provides cross-session continuity only;
+8. unincorporated SPECs, product notes, and external references are proposals or
    input, not implementation authority;
-8. archives and historical records provide rationale; chat memory and AI
+9. archives and historical records provide rationale; old chat memory and AI
    confidence are hints only.
 
 If a SPEC spans past-to-present history, current active sections override older
@@ -44,10 +57,12 @@ control direction, risk tolerance, irreversible actions, and acceptance. Record
 durable owner decisions in the appropriate active source of truth.
 
 `SPEC-COMPLETE.md` is the default integrated baseline, not a frozen artifact.
-Another SPEC becomes active only through explicit incorporation or an
-`active_spec` switch transaction. An ADR records rationale and cannot override
-normative SPEC content alone. Filenames, dates, sequence numbers, and provider
-session state do not establish authority or currentness.
+A SPEC supplied as current requirements is a change request unless the owner
+limits it to review/draft/reference. Hold affected work and reconcile it through incorporation or
+an `active_spec` switch transaction. A merely discovered file gains no authority
+from its filename, date, sequence, status label, or provider session. Continue
+only after confirming it is non-authoritative and nonconflicting. An ADR records
+rationale and cannot override normative SPEC content alone.
 
 A handoff-only decision is continuity until routed to one authoritative home.
 Before implementation, put scope, behavior, and acceptance-criteria changes in
@@ -71,10 +86,11 @@ Owner acceptance cannot upgrade weak evidence. A passing evaluator cannot
 approve scope. A successful commit cannot authorize push, release, deploy,
 migration, destructive action, or risk acceptance.
 
-Work may continue inside an approved packet. It must stop when
-scope expands, a protected-action or claim gate changes, an irreversible action is
-required, an owner-controlled tradeoff remains unresolved, verification is
-blocked, or evidence conflicts with the requested plan.
+Work may continue inside an approved packet. Obey a current owner stop/redirect.
+Pause for input when scope expansion is unrequested or ambiguous, a protected
+action/claim gate changes, an irreversible action remains unauthorized, an
+owner-controlled tradeoff is unresolved, verification is blocked, or evidence
+conflicts with the requested plan.
 
 ## Non-Negotiable Boundaries
 
@@ -134,8 +150,10 @@ Write each decision once:
 - handoff: cross-session recovery pointers/results only.
 
 Do not store raw internal reasoning, mechanical edit journals, or copied logs in
-active control files. Repeated pain becomes a concise rule, playbook, test,
-validator, hook, or template change at the cheapest enforceable layer.
+active controls. For repeated pain or one high-risk control failure, record the
+finding/root cause, choose the smallest durable control plus regression evidence,
+then Keep/Refine/Merge/Retire it after use. Prefer refining an existing rule,
+flow, check, or template before adding a new global rule.
 
 ## Review And Verification
 
@@ -150,7 +168,10 @@ A packet is evidence-ready only when:
 6. remaining risk, unverified behavior, owner decisions, and acceptance state are
    explicit.
 
-Review findings outrank feature expansion unless the owner accepts the risk.
+Review findings gate intersecting packet, artifact, safety, or claim work unless
+the owner accepts that bounded risk. They do not choose the next objective.
+Unrelated findings may be deferred with packet links and revisit triggers; they
+do not globally veto owner-selected work.
 Reference-derived work requires a source-to-implementation-to-evidence parity
 map. Package or release work requires smoke testing outside the source tree
 when the installed artifact is part of the claim.

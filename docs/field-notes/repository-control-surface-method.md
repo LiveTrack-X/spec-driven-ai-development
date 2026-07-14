@@ -118,9 +118,9 @@ project/
 ```
 
 Create `docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md` only for a real continuity
-need. Use the next repository-logical `HNNNN`; the date is descriptive and only
-state v2's optional `current_handoff` declares currentness. Existing unnumbered
-handoffs remain valid.
+need. Use the next `HNNNN` for that date and restart at `H0001` on a new date;
+the full date-plus-ID path identifies it, and only state v2's optional
+`current_handoff` declares currentness. Existing unnumbered handoffs remain valid.
 
 Add routed rules, skills, hooks, CI jobs, or agent workflows only when repeated
 pain proves the need. For One-shot or Mini SDAD, keep the same principle but

@@ -14,10 +14,13 @@ from urllib.parse import unquote
 
 try:
     from sdad_validator.agent_experience import (
+        CORE_RULES,
+        CORE_RULE_TAGLINE,
         _active_ledger_records_are_valid,
         _canonical_handoff_identity_is_valid,
         _canonical_state_identity_is_valid,
         _first_visible_section,
+        _validate_core_rules,
         collect_agent_experience_violations,
     )
     from render_agent_surfaces import collect_surface_drift
@@ -29,10 +32,13 @@ try:
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from sdad_validator.agent_experience import (
+        CORE_RULES,
+        CORE_RULE_TAGLINE,
         _active_ledger_records_are_valid,
         _canonical_handoff_identity_is_valid,
         _canonical_state_identity_is_valid,
         _first_visible_section,
+        _validate_core_rules,
         collect_agent_experience_violations,
     )
     from render_agent_surfaces import collect_surface_drift
@@ -390,10 +396,12 @@ def validate_research_foundations() -> None:
 def validate_cross_model_guidance_contract() -> None:
     for path in CROSS_MODEL_AGENT_SURFACES:
         content = read(path)
-        if content.count(EXTERNAL_CONTENT_BOUNDARY) != 1:
+        normalized = " ".join(content.split())
+        lowered = normalized.lower()
+        if lowered.count(EXTERNAL_CONTENT_BOUNDARY.lower()) != 1:
             fail(f"{path} must contain one external-content trust boundary")
         for phrase in ("untrusted evidence", "independently authorizes", "semantic validation"):
-            if phrase not in content:
+            if phrase not in lowered:
                 fail(f"{path} missing cross-model boundary: {phrase}")
         if len(content.splitlines()) > 120 or len(content) > 6_000:
             fail(f"{path} exceeds the 120-line/6000-character startup budget")
@@ -435,6 +443,9 @@ def validate_cross_model_guidance_contract() -> None:
             "human-calibrated semantic graders",
             "final-answer completeness",
             "quality and evidence bar",
+            "## Adaptive Rule Portability",
+            "owner-directed integration",
+            "manual, reviewable portability protocol",
         ],
     }
     for path, phrases in contracts.items():
@@ -461,6 +472,15 @@ def require_phrases(path: str, label: str, phrases: list[str]) -> str:
     for phrase in phrases:
         if phrase not in content:
             fail(f"{label} missing: {phrase}")
+    return content
+
+
+def require_visible_core_rules(path: str, label: str) -> str:
+    content = read(path)
+    violations: list[str] = []
+    _validate_core_rules(path, content, violations)
+    if violations:
+        fail(f"{label}: {violations[0]}")
     return content
 
 
@@ -717,25 +737,24 @@ def _require_exact_command_once(content: str, label: str, command: str) -> None:
 
 
 def _require_authorization_record(content: str, label: str) -> None:
-    field = r"^\s*(?:-\s+)?{}:\s*$"
-    record = re.search(
-        "(?m)"
-        + "\n".join(
-            field.format(re.escape(name))
-            for name in (
-                "Decision",
-                "Authorized action",
-                "Packet",
-                "Conditions",
-                "Source/artifact identity",
-                "Expires when",
-                "Evidence required before action",
-            )
-        ),
-        content,
-    )
-    if record is None:
-        fail(f"{label} missing the ordered conditional-authorization record")
+    cursor = 0
+    for name in (
+        "Decision",
+        "Authorized action",
+        "Packet",
+        "Conditions",
+        "Source/artifact identity",
+        "Expires when",
+        "Evidence required before action",
+    ):
+        match = re.search(
+            rf"(?m)^[ \t]*(?:-[ \t]+)?{re.escape(name)}:[ \t]*[^\n]*$",
+            content[cursor:],
+        )
+        if match is None:
+            fail(f"{label} missing the ordered conditional-authorization record")
+            return
+        cursor += match.end()
 
 
 def _require_table_relationship(
@@ -831,6 +850,15 @@ def validate_public_v3_2_documentation_contract() -> None:
             ("Naming The Protocol", "SDAD Protocol", "SPEC-Directed AI Development"),
             ("repository-local operating protocol", "AI-assisted development"),
             ("Use any method", "scope", "evidence", "owner authority"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(readme, "## Optional Advanced Patterns", 2),
+        "README optional advanced-pattern route",
+        [
+            ("does not require a harness", "fixed execution method"),
+            ("fit assessment", "pattern catalog", "meta-harness method"),
+            ("held-out evidence", "concrete budget", "stop rules", "owner adoption gate"),
         ],
     )
 
@@ -955,9 +983,10 @@ def validate_public_v3_2_documentation_contract() -> None:
         "Session handoff pointer lifecycle",
         [
             ("docs/sdad/handoffs/yyyy-mm-dd-hnnnn-topic.md",),
-            ("hnnnn", "repository-logical"),
-            ("date", "descriptive"),
-            ("device clock", "cannot override"),
+            ("hnnnn", "sequence", "scoped", "filename date"),
+            ("new date", "h0001", "never reuse", "within that date"),
+            ("full date-plus-id pair", "identity"),
+            ("device clock", "cannot override", "state pointer"),
             ("## 1. session identity",),
             ("- handoff id: h0001", "matching", "filename"),
             ("- active packet: [packet:wp-example]",),
@@ -970,9 +999,15 @@ def validate_public_v3_2_documentation_contract() -> None:
             ("same coherence update",),
             ("another packet", "cannot remain current"),
             ("existing", "remain valid", "legacy"),
-            ("parallel", "collision", "before merge"),
-            ("greatest id", "never", "current"),
+            ("new date", "restarts", "h0001"),
+            ("parallel", "date-scoped id", "collision", "before merge"),
+            ("neither date nor greatest id", "current"),
         ],
+    )
+    _require_concept_groups(
+        lifecycle,
+        "Session handoff resume redirect boundary",
+        [("on resume", "current owner redirect", "before the recorded next action")],
     )
     _require_concept_groups(
         _markdown_section(session_handoff, "## Authority And Continuity", 2),
@@ -1045,11 +1080,28 @@ def validate_long_running_lifecycle_contract() -> None:
         "Agent kernel active-SPEC authority",
         [
             ("active_spec", "single normative spec entrypoint"),
-            ("another spec", "proposal/reference", "exact scope", "pointer"),
-            ("filename", "date", "never grants authority"),
+            ("owner", "directs adoption/implementation", "change request", "before affected work"),
+            ("review/draft/reference", "non-implementing"),
+            ("discovered spec", "no authority", "name", "date", "status"),
+            ("confirmed non-authoritative", "nonconflicting", "otherwise", "switch packets"),
+            ("current owner instruction", "stop", "delegated", "plan/route", "spec/state"),
+            ("restriction", "cancellation", "revocation", "authorization", "protected action"),
+            ("cancellation", "deferred", "explicit owner reactivation", "never auto-resume"),
+            ("current owner-named input", "routed_docs", "reconcile state/routes"),
+            ("question", "hypothetical", "quotation", "negation", "not authorization"),
             ("observed behavior", "source", "tests", "runtime"),
             ("intended scope", "acceptance"),
             ("read-only", "planning", "phase n/a", "never claim evidence"),
+            (
+                "repeated pain",
+                "root cause",
+                "smallest durable control",
+                "regression evidence",
+                "keep/refine/merge/retire",
+                "within scope",
+                "bounded follow-up",
+                "never expand",
+            ),
         ],
     )
 
@@ -1076,6 +1128,8 @@ def validate_long_running_lifecycle_contract() -> None:
         "SPEC lineage template",
         [
             ("integrated baseline", "not immutable", "not automatically active"),
+            ("requested action", "current requirements", "review/draft/reference-only"),
+            ("hold affected implementation", "same objective", "new packet"),
             ("amendment", "bounded supplement", "replacement", "proposal"),
             ("status", "baseline revision", "effective packet", "supersedes"),
             ("effective packet", "first packet", "do not rewrite"),
@@ -1125,6 +1179,16 @@ def validate_long_running_lifecycle_contract() -> None:
         "Work-packet SPEC lineage transaction",
         [
             ("single normative", "active_spec"),
+            ("spec supplied as current requirements", "change request", "do not demote"),
+            ("hold affected work", "same unfinished acceptance boundary", "keep the packet", "new packet"),
+            ("review/compare/explain", "read-only", "without incorporating"),
+            (
+                "spec only discovered",
+                "not automatically authoritative",
+                "unrequested",
+                "nonconflicting",
+                "non-authoritative",
+            ),
             ("never-reused", "packet id"),
             ("owner-accepted", "history"),
             ("queued", "recheck", "activation"),
@@ -1149,8 +1213,11 @@ def validate_long_running_lifecycle_contract() -> None:
         "Long-running re-entry contract",
         [
             ("dominant checkpoint", "not", "cumulative"),
+            ("owner changes", "cancels", "delegated work", "stale", "revalidated"),
             ("same unfinished", "same packet", "invalidate"),
-            ("candidate", "proposal/reference", "do not change packet"),
+            ("owner directs adoption/implementation", "current change request", "same non-terminal packet", "new packet"),
+            ("review/compare/explain", "read-only", "without incorporating"),
+            ("unrequested additional spec", "no authority", "non-authoritative", "nonconflicting"),
             ("existing declared gate", "continue the same packet"),
             ("never move a terminal", "new packet", "historical evidence"),
             ("accepted claim boundary", "unrelated repository edits"),
@@ -1399,8 +1466,11 @@ def validate_long_running_lifecycle_contract() -> None:
         ),
         "Public long-running loop contract",
         [
-            ("candidate", "conflicting spec", "proposal/reference", "do not change packet"),
-            ("owner promotes", "material spec change", "new packet"),
+            ("owner changes", "cancels", "delegated work", "stale", "revalidated"),
+            ("adoption/implementation", "current change request", "same non-terminal packet", "new packet"),
+            ("review/compare/explain", "read-only", "without incorporating"),
+            ("unrequested additional spec", "no authority", "non-authoritative", "nonconflicting"),
+            ("owner directs", "material spec change", "new packet"),
             ("accepted packet", "revision-bound decision history", "new", "revalidation packet"),
             ("defect", "contradictory evidence", "finding", "bugfix/revalidation packet", "do not rewrite acceptance"),
             ("merge", "rebase", "cherry-pick", "final artifact"),
@@ -1428,6 +1498,8 @@ def validate_long_running_lifecycle_contract() -> None:
         "Semantic lifecycle limitations",
         [
             ("does not understand spec prose", "contradictions", "reaccepted"),
+            ("does not discover", "undeclared spec", "clean report", "conflicting spec"),
+            ("cannot observe live owner messages", "cancels", "delegated work", "authorization record"),
             ("current dominant checkpoint", "not a cumulative ledger"),
             ("does not scan every archive", "unresolved item", "duplicate"),
             ("spec lineage cycles", "overlapping supplement precedence"),
@@ -2388,6 +2460,11 @@ def validate_canonical_template_contract() -> None:
         if "save-state.md" in state:
             fail(f"{label} must not route legacy save-state.md")
 
+    require_visible_core_rules(
+        "examples/minimal-project/AGENTS.md",
+        "Minimal state-v2 agent rules",
+    )
+
     starter = require_phrases(
         "skills/ai-spec-project-start/references/starter-templates.md",
         "Installed-skill fallback templates",
@@ -2513,13 +2590,17 @@ def validate_canonical_template_contract() -> None:
             "Status: Optional, on demand",
             "## Conditional Owner Authorization",
             "### AUTH-EXAMPLE",
-            "- Decision:",
+            "- Decision: authorized | revoked | superseded",
+            "- Revises/supersedes authorizations:",
+            "  - None | path/URL/ID",
             "- Authorized action:",
             "- Packet:",
             "- Conditions:",
             "- Source/artifact identity:",
             "- Expires when:",
             "- Evidence required before action:",
+            "- Owner or decision source:",
+            "- Decided at:",
             "## Terminal Packet Decision Record",
             "- Decision ID: DEC-EXAMPLE",
             "- Revises/supersedes decisions:",
@@ -2538,16 +2619,29 @@ def validate_canonical_template_contract() -> None:
         2,
     )
     for field in (
-        "- Decision:",
+        "- Decision: authorized | revoked | superseded",
+        "- Revises/supersedes authorizations:",
         "- Authorized action:",
         "- Packet:",
         "- Conditions:",
         "- Source/artifact identity:",
         "- Expires when:",
         "- Evidence required before action:",
+        "- Owner or decision source:",
+        "- Decided at:",
     ):
         if readiness_authorization.count(field) != 1:
             fail(f"Delivery readiness authorization field must occur once: {field}")
+    _require_concept_groups(
+        readiness_authorization,
+        "Delivery readiness authorization lifecycle",
+        [
+            ("revoked", "superseded", "revises/supersedes authorizations"),
+            ("never edit", "append", "predecessor link"),
+            ("current owner revocation", "immediate stop"),
+            ("restore", "owner_gates", "unsatisfied", "protected action"),
+        ],
+    )
 
     current_surfaces = (
         "templates/project-control-files/README.md",
@@ -2591,11 +2685,24 @@ def validate_canonical_template_contract() -> None:
     for phrase in (
         "## Implement And Verify",
         "### Bounded Iteration",
-        "one blocking question only when the answer changes scale, execution scope, "
-        "a claim boundary, or an owner gate",
     ):
         if phrase not in packets_text:
             fail(f"Work-packets playbook missing current contract: {phrase}")
+    _require_concept_groups(
+        packets_text,
+        "Work-packets blocking-question boundary",
+        [
+            (
+                "one blocking question",
+                "unresolved",
+                "objective/direction",
+                "authority/reference role",
+                "execution boundary",
+                "protected action/gate",
+                "claim boundary",
+            ),
+        ],
+    )
 
     transition = _first_visible_section(
         packets_text,
@@ -3196,6 +3303,8 @@ def validate_templates() -> None:
         "docs/user-guide.zh.md",
         "docs/user-guide.ja.md",
     )
+    for path in ("README.ko.md", "README.zh.md", "README.ja.md"):
+        require_visible_core_rules(path, f"Localized Core 5 guidance {path}")
     for path in localized_surfaces:
         content = read(path)
         _require_concept_groups(
@@ -3278,6 +3387,18 @@ def validate_templates() -> None:
     ]:
         if phrase not in handoff_template:
             fail(f"Session handoff template missing: {phrase}")
+    _require_concept_groups(
+        handoff_template,
+        "Session handoff template redirect boundary",
+        [
+            (
+                "before `next concrete action`",
+                "current owner stop/redirect",
+                "hold the old action",
+                "reconcile spec/state",
+            ),
+        ],
+    )
     save_state = read("templates/project-control-files/save-state.md")
     for phrase in [
         "Legacy Save State",
@@ -3445,11 +3566,15 @@ def validate_templates() -> None:
         "Evidence references and claim limits",
         "Affected current-claim pointers",
         "expired authorization is non-reusable",
-        "expired or failed condition is a stop",
         "`sdad-state.yaml` remains the",
     ]:
         if phrase not in work_packet_state:
             fail(f"Work packet state template missing: {phrase}")
+    _require_concept_groups(
+        work_packet_state,
+        "Work packet authorization stop boundary",
+        [("expired/failed condition", "current owner revocation", "immediate stop")],
+    )
     remote_import = read("templates/project-control-files/docs/remote-evidence-import.md")
     for phrase in [
         "Remote Evidence Import / Quarantine Pattern",
@@ -3532,8 +3657,26 @@ def validate_templates() -> None:
         "Extended Rules",
         "Current Beats Historical",
         "Evidence Beats Confidence",
+        "Active Beats Interesting",
         "Owner Decision Beats AI Momentum",
         "Repeated Pain Becomes A Rule",
+        "Compression first. Gates stay real.",
+        "Small Verified Slices Beat Large Unverified Progress",
+        "Implementation Discipline Makes Bounded Execution Safe",
+        "Open Findings Beat New Features",
+        "Explicit Non-Goals Beat Assumptions",
+        "Stated Uncertainty Beats Silent Guessing",
+        "Degraded Or Partial Means Label It",
+        "Docs Drift Is A Bug",
+        "Handoff Is Context, Not Authority",
+        "Archive Preserves Memory, Not Active Work",
+        "Version Lanes Beat Copy-Paste Sync",
+        "Release Readiness Beats Feature Count",
+        "Environment Limits Beat Overclaiming",
+        "Cross-Review Beats Single-Agent Finality",
+        "Scope-Specific Percent Beats Global Percent",
+        "Failing Or Missing Tests Beat Narrative",
+        "Risk Gates Beat Convenience",
         "Context Budget Beats Full Transcript",
         "Implementation Memory Beats Hidden Rationale",
         "Natural Language Intent Beats Skill Names",
@@ -3544,6 +3687,77 @@ def validate_templates() -> None:
     ]:
         if phrase not in implicit:
             fail(f"Implicit rules doc missing: {phrase}")
+    _require_concept_groups(
+        _markdown_section(implicit, "### 1. Current Beats Historical", 3),
+        "Core rule 1 meaning",
+        [
+            ("current applicable owner instruction", "current active code", "tests", "docs", "spec sections"),
+            ("older owner directions", "spec history", "handoffs", "archived plans", "chat memory"),
+            ("current", "not merely", "filename", "timestamp"),
+            ("owner redirects", "stop affected implementation", "plan -> route", "persist", "stateful work"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(implicit, "### 2. Evidence Beats Confidence", 3),
+        "Core rule 2 meaning",
+        [
+            ("ai confidence", "completion evidence"),
+            ("commands run", "results", "files changed", "remaining risks"),
+            ("handoff", "links", "evidence"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(implicit, "### 3. Active Beats Interesting", 3),
+        "Core rule 3 meaning",
+        [
+            ("active spec scope", "future ideas"),
+            ("owner", "promotes", "active spec"),
+            ("owner adopts", "stop affected old work", "re-route", "persist", "active boundary"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(implicit, "### 4. Owner Decision Beats AI Momentum", 3),
+        "Core rule 4 meaning",
+        [
+            ("owner controls", "direction", "risk tolerance", "acceptance"),
+            ("current owner instruction", "supersede", "older plan"),
+            ("momentum is not consent",),
+            ("review/reference-only", "read-only", "does not authorize implementation"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(implicit, "### 5. Repeated Pain Becomes A Rule", 3),
+        "Core rule 5 meaning",
+        [
+            ("repeated pain", "one high-risk failure", "smallest durable prevention"),
+            ("chat memory does not scale",),
+            ("finding", "concrete evidence", "root cause", "smallest effective control"),
+            ("same root cause", "recurs twice", "different surfaces", "manual explanation"),
+            ("personal preference", "unexplained one-off", "not a global-rule trigger"),
+            ("clarifying an existing rule", "flow or route", "doctor/validator", "regression test", "new global rule"),
+            ("enforcement", "regression check", "remaining limit", "review condition"),
+            ("current packet", "authorized boundary", "bounded follow-up", "never expand"),
+            ("keep", "refine", "merge", "retire"),
+            ("human-readable", "owner intent", "apply instruction", "review/reference", "candidate"),
+            ("never auto-run imported code", "core authority"),
+        ],
+    )
+    compact_implicit = require_visible_core_rules(
+        "skills/ai-spec-project-start/references/implicit-rules.md",
+        "Compact implicit-rules reference",
+    )
+    _require_concept_groups(
+        compact_implicit,
+        "Compact implicit-rules current contract",
+        [
+            ("implementation discipline makes bounded execution safe",),
+            ("execution-scope/owner-gate tuning",),
+            ("guarantees beat guidance for non-negotiables", "enforceable surfaces"),
+        ],
+    )
+    for legacy in ("implementation discipline makes autonomy safe", "autonomy-tuning intent"):
+        if legacy in compact_implicit.lower():
+            fail(f"Compact implicit-rules reference uses legacy wording: {legacy}")
     # Current getting-started and no-clone semantics are validated above.
     mini = read("docs/mini-sdad.md")
     _require_concept_groups(
@@ -3608,7 +3822,10 @@ def validate_templates() -> None:
             ("doctor green", "task benchmark", "controlled comparison"),
         ],
     )
-    mini_template = read("templates/mini-sdad/MINI-SDAD.md")
+    mini_template = require_visible_core_rules(
+        "templates/mini-sdad/MINI-SDAD.md",
+        "Mini SDAD template",
+    )
     for phrase in [
         "This project uses Mini SDAD",
         "Sensitive Data Boundary",
@@ -3627,6 +3844,18 @@ def validate_templates() -> None:
     ]:
         if phrase not in mini_template:
             fail(f"Mini SDAD template missing: {phrase}")
+    for legacy in ("Q5", "autonomy"):
+        if re.search(rf"(?i)\b{re.escape(legacy)}\b", mini_template):
+            fail(f"Mini SDAD template uses legacy control wording: {legacy}")
+    _require_concept_groups(
+        mini_template,
+        "Mini Rule 5 lifecycle",
+        [
+            ("repeated pain", "root cause", "smallest durable control"),
+            ("regression evidence", "keep/refine/merge/retire"),
+            ("question", "hypothetical", "quotation", "negation", "does not"),
+        ],
+    )
     cursor_mini_template = read("templates/mini-sdad/cursor-mini-sdad.mdc")
     cursor_frontmatter = re.match(r"---\n(.*?)\n---\n(.*)", cursor_mini_template, flags=re.S)
     if not cursor_frontmatter:
@@ -3654,6 +3883,7 @@ def validate_templates() -> None:
         "Owner Rubber Stamp",
         "Speculative Complexity",
         "Drive-By Refactor",
+        "Rule Accumulation Without Feedback",
     ]:
         if phrase not in anti_patterns:
             fail(f"Anti-patterns doc missing: {phrase}")
@@ -3912,6 +4142,9 @@ def validate_templates() -> None:
             ("state", "index", "ledger", "handoff", "public-doc drift"),
             ("evidence overclaim", "owner acceptance"),
             ("owner gate", "authorization"),
+            ("owner-direction drift", "cancellation", "revocation", "old-direction"),
+            ("rule 5 drift", "root cause", "regression evidence", "keep/refine/merge/retire"),
+            ("imported guidance", "apply/review/reference intent"),
         ],
     )
     _require_ordered_concepts(

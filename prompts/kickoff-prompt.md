@@ -38,8 +38,13 @@ Unresolved question: none
 
 This report is not an approval step. Proceed when it matches my intent and no
 gate blocks action. I may override it. Ask at most one unresolved blocking
-question only when the answer changes scale, execution scope, protected action
-or owner gate, claim boundary, or authority. Include your recommended default.
+question only when the answer changes objective/direction, authority/reference
+role, execution boundary, protected action/gate, or claim boundary. Include your recommended default.
+
+My explicit current command authorizes only its named direction, acceptance, or
+protected action for the stated boundary. Persist it and do not ask for the same
+decision again. It does not waive evidence, prerequisites, tool policy, or a
+different protected action. A current stop/redirect overrides old work immediately.
 
 ## Scale And Tool Gate
 
@@ -139,8 +144,8 @@ handoffs, or optional evidence files by default.
   micro-task.
 - Work in review-worthy development units, not micro-approval steps.
 - Continue inside the approved work packet until evidence is ready.
-- Stop for owner input only when scope expands, a protected-action risk changes, destructive or
-  irreversible action is needed, an owner-controlled decision is required,
+- Pause for owner input when scope expansion is unrequested or ambiguous, a
+  protected-action risk changes, destructive or irreversible action remains unauthorized, an owner-controlled decision is required,
   verification is blocked, or evidence conflicts with the plan.
 - Surface assumptions, prefer the simplest working design, make surgical
   changes, and tie each step to verification.

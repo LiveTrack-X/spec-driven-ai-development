@@ -17,13 +17,30 @@ repository-local 运行协议。它不规定具体实现方法，也不运行 ag
 的一致性。Markdown 记录权限与预期，但不会在技术上阻止工具操作；真正的强制执行由
 permissions、hooks、sandbox、branch protection 等运行环境负责。
 
-核心区别如下：
+主要控制关系如下：
 
 - Scale 决定需要长期维护哪些 control surface。
 - `execution_scope` 决定 AI 现在可以执行到哪里。
 - owner gate 决定哪些受保护操作必须停下等待 Owner。
 - validation contract 决定每项检查能证明什么、不能证明什么。
 - `evidence-ready` 是可评审的 AI 结果，`owner-accepted` 是 Owner 的最终验收。
+
+## Core 5 原则
+
+1. Current beats historical — 当前有效信息优先于历史记录。
+2. Evidence beats confidence — 可观察证据优先于 AI 的自信判断。
+3. Active beats interesting — 已批准的当前范围优先于有趣的新想法。
+4. Owner decision beats AI momentum — Owner 决策优先于 AI 的推进惯性。
+5. Repeated pain becomes a rule — 重复问题应转化为规则、测试或验证。
+
+Compression first. Gates stay real.
+
+这里的 **Current** 不是最新文件或时间，而是当前适用的 Owner 指令与明确 active 的 repository
+authority。Owner 改变方向时，agent 应停止受影响的旧工作，返回 Plan -> Route，记录变更后再恢复
+stateful implementation。Rule 5 也不是不断增加规则，而是从 root cause 选择最小的 enforceable
+change 与 regression evidence，并在实际使用后作出 Keep/Refine/Merge/Retire 判断。
+
+详细含义见 [Implicit Rules Made Explicit](docs/implicit-rules.md)。
 
 ## 快速选择
 

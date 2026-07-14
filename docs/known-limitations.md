@@ -63,6 +63,25 @@ material. It also cannot prove that a validation command ran on the current
 commit, integrated branch, environment, or final artifact. These are review,
 evidence-freshness, and owner-decision responsibilities.
 
+Doctor also does not discover arbitrary undeclared SPEC files. A clean report
+can therefore coexist with a newly supplied or conflicting SPEC that state does
+not reference. The agent must distinguish an owner-directed change request from
+a merely discovered file, hold affected implementation while authority or
+overlap is unresolved, and persist the resulting amendment or packet switch
+before resuming. Doctor green cannot make that semantic decision.
+
+Doctor cannot observe live owner messages or determine whether a later message
+adds to, narrows, cancels, or replaces prior direction. It therefore cannot
+prove that state, delegated work, validation, or an authorization record reflects
+the current applicable owner instruction.
+
+SDAD prose also cannot preempt an already running blocking tool, remote job, or
+delegated worker. At the next observable boundary, attempt safe cancellation
+when the host supports it, launch no follow-up action on the old boundary, and
+treat any late result as stale until it is rerouted and revalidated. Report when
+the host could not interrupt the work; SDAD does not become an orchestrator by
+describing this response.
+
 An accepted boundary is reconstructible only when its durable decision record
 pins the packet, active SPEC path and revision, source/artifact identity,
 bounded evidence and claim limits, unresolved risk, and final owner decision.
@@ -104,19 +123,20 @@ repository state disagree, inspect current source/tests and the repository
 authority chain before proceeding.
 Tool-native session and checkpoint diagnostics are not SDAD authority.
 
-## Logical Handoff Sequence Boundary
+## Date-Scoped Handoff Sequence Boundary
 
-New handoffs use `YYYY-MM-DD-HNNNN-topic.md`. The zero-padded `HNNNN` is a
-repository-logical sequence; the date is descriptive and cannot establish
-order or currentness. Existing unnumbered handoffs remain valid, and only
+New handoffs use `YYYY-MM-DD-HNNNN-topic.md`. The zero-padded `HNNNN` is scoped
+to that date: use the next known ID for the date and restart at `H0001` on a new
+date. The full date-plus-ID path is the identity; neither date nor ID establishes
+currentness. Existing unnumbered handoffs remain valid, and only
 `sdad-state.yaml#current_handoff` declares the current checkpoint.
 
 This naming contract is not a centralized allocator. Doctor validates the
 state-declared handoff's path, readability, size, and packet marker, but it does
 not allocate IDs, validate filename-to-ID agreement, scan handoff history, or
-detect duplicate sequence IDs. Parallel branches can therefore choose the same
-next ID; resolve that collision before merge by changing the filename, internal
-ID, and state pointer together.
+detect duplicate date-plus-ID pairs. Parallel branches can therefore choose the
+same date-scoped ID; resolve that collision before merge by changing the
+filename, internal ID, and state pointer together.
 
 ## Evidence Claim Ladder
 

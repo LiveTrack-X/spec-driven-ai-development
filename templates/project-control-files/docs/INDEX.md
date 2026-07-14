@@ -1,7 +1,6 @@
 # Project Documentation Router
 
 Status: Active
-Purpose: routing only; explanations/procedures live in targets.
 
 ## First Read
 
@@ -11,15 +10,15 @@ Purpose: routing only; explanations/procedures live in targets.
 4. Let intent select one eligible path, heading, section, or match; membership
    is not a read-all instruction.
 
-Do not load full rules, archives, old SPEC/handoffs, or optional evidence by default.
+Do not load full rules/history/evidence by default.
 
 ## Working Route
 
 | Intent or trigger | Read now | Load on demand |
 | --- | --- | --- |
-| Any active packet | state, current source/tests | intent-selected route |
+| Any active packet | state, source/tests | intent-selected route |
 | Implement or fix | active SPEC, `TODO-Open-Items.md`, `../review-findings.md` | implementation notes; ADR for durable tradeoff |
-| New/additional/conflicting SPEC | state `active_spec`, source/tests | candidate SPEC; work-packets playbook |
+| New/additional/conflicting SPEC | current owner request, state `active_spec`, source/tests | supplied/discovered SPEC; work-packets playbook |
 | Review or audit | source/tests, active SPEC, active findings | relevant operating-rule heading |
 | Docs or behavior change | affected docs and active SPEC | documentation-and-handoff playbook |
 | Protected action/owner decision | active SPEC, gates, decision record, intersecting deferred findings | risk/version policy; readiness |
@@ -34,7 +33,8 @@ Do not load full rules, archives, old SPEC/handoffs, or optional evidence by def
 - scale/scope/packet/delegation: `sdad/playbooks/work-packets.md`;
 - owner gate, claim, parity, or release: `sdad/playbooks/evidence-and-risk-gates.md`;
 - docs/state/handoff: `sdad/playbooks/documentation-and-handoff.md`;
-- harness/eval/memory loops: `sdad/playbooks/advanced-extensions.md`.
+- adaptive-rule portability or harness/eval/memory loops:
+  `sdad/playbooks/advanced-extensions.md`.
 
 ## Write Route
 
@@ -54,9 +54,11 @@ Do not load full rules, archives, old SPEC/handoffs, or optional evidence by def
 
 Source/tests/runtime establish observed behavior. The state-declared active SPEC
 establishes intended scope and acceptance criteria; another SPEC controls only
-incorporated scope. State owns execution; handoff owns continuity. References,
-archives, names, dates, and chat cannot activate scope. Record owner decisions
-in their authoritative home.
+incorporated scope. State owns execution; handoff owns continuity. A current
+applicable owner instruction can interrupt or redirect work immediately and is
+persisted before affected stateful implementation. References, archives, names,
+dates, and old/provider-retained chat memory cannot activate scope. Record owner
+decisions in their authoritative home.
 
 ## Active Catalog
 

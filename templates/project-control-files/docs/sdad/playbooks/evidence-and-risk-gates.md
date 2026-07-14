@@ -20,6 +20,10 @@ When a routed readiness record contains a conditional authorization, reuse it
 only while the packet, action, conditions, expiry, evidence prerequisite, and
 recorded source/artifact identity remain unchanged. An expired or failed
 condition is a stop.
+A current owner restriction or revocation ends reuse immediately. Preserve the
+old authorization, append a uniquely identified revising/superseding record,
+and keep or restore the affected state gate as unsatisfied before another
+protected action.
 Do not copy the authorization into state or invent a gate registry.
 
 ## Fresh-Context Review

@@ -20,13 +20,14 @@ only when continuity is needed, and make it point to the evidence authority.
 
 ## 2. Historical SPEC Override
 
-Symptom: an older SPEC section, handoff, or archived plan overrides current code,
-tests, active docs, or newer SPEC sections.
+Symptom: an older direction, SPEC section, handoff, or archived plan overrides a
+current applicable owner instruction, current code/tests, or active authority.
 
 Why it fails: AI sessions often treat every written plan as active.
 
-Replace with: current-over-historical precedence. Older material is rationale
-unless reaffirmed in the active path.
+Replace with: current-over-historical precedence. A current owner redirect stops
+affected old work and re-enters Plan -> Route; older material is rationale unless
+reaffirmed in the active path.
 
 ## 3. Future Ideas In Active SPEC
 
@@ -68,9 +69,10 @@ substance to be useful, and implementation flow collapses.
 
 Replace with: define `execution_scope: unit | packet`, use review-worthy units
 for review and evidence, and let the AI proceed inside that boundary until changed
-files, checks, limits, and evidence are ready. Stop early only for scope
-expansion, owner-gate changes, destructive actions, owner-controlled decisions,
-blocked verification, or evidence conflicts.
+files, checks, limits, and evidence are ready. Obey a current owner stop/redirect;
+otherwise pause early for unrequested/ambiguous scope expansion, owner-gate
+changes, unauthorized destructive actions, unresolved owner decisions, blocked
+verification, or evidence conflicts.
 
 ## 5b. Trigger Word Dependency
 
@@ -354,3 +356,16 @@ Why it fails: late evidence may use stale scope, source, environment, or gates.
 
 Replace with: route it through Plan -> Route, verify identity and freshness, and
 never let it retroactively authorize an action or expand an approved queue.
+
+## 28. Rule Accumulation Without Feedback
+
+Symptom: every repeated complaint adds another global instruction, but no root
+cause, enforcement, regression evidence, or later review is recorded.
+
+Why it fails: rules grow while the failure still recurs, overlapping guidance
+drifts, and every agent pays the context cost.
+
+Replace with: record the finding and root cause, choose the smallest durable
+control, attach regression evidence, then field-review it as
+Keep/Refine/Merge/Retire. Add a new global rule only when existing rule, flow,
+metadata, check, test, or template refinement cannot prevent the recurrence.

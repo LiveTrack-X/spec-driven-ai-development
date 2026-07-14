@@ -14,6 +14,20 @@ repository-local operating protocol that leaves the implementation method open.
 - Claims require code, tests, docs, artifacts, or runtime evidence at the tier
   named by the active packet.
 
+The Core 5:
+
+1. Current beats historical.
+2. Evidence beats confidence.
+3. Active beats interesting.
+4. Owner decision beats AI momentum.
+5. Repeated pain becomes a rule.
+
+Compression first. Gates stay real.
+
+For repeated pain or one high-risk control failure, record the root cause,
+choose the smallest durable control plus regression evidence, and later
+Keep/Refine/Merge/Retire it; refine existing controls before adding rules.
+
 ## Start Here
 
 Use the compact control plane:
@@ -29,6 +43,9 @@ Use the compact control plane:
 Route membership permits selection; it never means a full-file read of every
 route. Do not read the complete rulebook, archives, old handoffs, or optional
 evidence files by default.
+A current owner-named input may still be inspected within the request when a
+stale route omits it; if adopted, reconcile authority and routes before stateful
+implementation.
 
 ## Load On Demand
 
@@ -38,7 +55,8 @@ evidence files by default.
 - owner gates, claims, parity, or release:
   `docs/sdad/playbooks/evidence-and-risk-gates.md`;
 - docs/state/handoff: `docs/sdad/playbooks/documentation-and-handoff.md`;
-- harness/eval/memory loops: `docs/sdad/playbooks/advanced-extensions.md`;
+- adaptive-rule portability or harness/eval/memory loops:
+  `docs/sdad/playbooks/advanced-extensions.md`;
 - durable policy: the relevant heading in
   `docs/Repository-Operating-Rules.md`.
 
@@ -65,9 +83,10 @@ declare its path once as `current_handoff` in `sdad-state.yaml`. Remove or
 replace that pointer on a packet switch.
 
 For stateful work, `sdad-state.yaml#active_spec` is the single normative SPEC
-entrypoint. Treat `SPEC-COMPLETE.md` as an integrated baseline and any later or
-conflicting SPEC as a proposal until exact incorporation or an explicit packet
-pointer switch. A material post-acceptance change uses a new packet ID and fresh
-validation. When ledgers or implementation notes grow, promote each fact to its
+entrypoint. Treat `SPEC-COMPLETE.md` as an integrated baseline. A SPEC supplied
+as current requirements is a change request unless the owner limits it to review/draft/reference;
+reconcile it before affected work. A merely discovered file remains a proposal
+only when non-authoritative and nonconflicting. A material post-acceptance
+change uses a new packet ID and fresh validation. When ledgers or implementation notes grow, promote each fact to its
 authoritative home, split remaining current records by topic, and keep the main
 file as a compact router.

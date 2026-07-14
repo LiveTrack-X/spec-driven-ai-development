@@ -61,6 +61,9 @@ Unresolved question: none
 
 “carefully”“fully”“quickly”等修饰词只改变评审深度或压缩程度，不会扩大 scope。
 即使达到 `evidence-ready`，在 Owner 验收前也不是最终完成。
+当前适用的 Owner 指令优先于旧方向。方向改变时，应停止受影响的工作，返回 Plan -> Route，
+并重新对齐 SPEC/state。明确的祈使命令只授权其点名的 action 与 boundary；问题、假设、引用、
+否定句或 review/reference-only 请求，不授权其中提到的 action。
 
 ## 一个工作循环
 
@@ -84,6 +87,8 @@ tool adapter -> sdad-state.yaml -> docs/INDEX.md -> current source/tests -> sele
 `routed_docs` 是当前 packet 可以选择的文档集合，不是 startup 时全部读取的命令。只打开当前
 intent 所需的文档，并在 final report 中记录实际读取的路径。archive、大型 log、generated
 report、private data 不应默认进入 context。
+即使旧 `routed_docs` 未列出当前 Owner 直接指定的 input，也可在请求范围内检查；若采用，
+必须在 stateful implementation 前更新 authority 与 route。
 
 大型 Copy-Paste/bootstrap prompt 只在安装或升级时使用一次。安装后不要在每个会话重新阅读或
 粘贴，而应遵循 adapter -> state -> INDEX。
@@ -99,9 +104,9 @@ findings、ADR、evidence 的路径，并记录下一步操作。
 
 `save-state.md` 是 v3.1 migration 时读取的 legacy input。迁移到 v2 后，不要继续把它当作
 第二份当前 state 更新。仅在需要时创建
-`docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md`。`HNNNN` 是仓库逻辑顺序，
-不是设备时间；日期仅用于说明。保留已有的无编号 handoff，只有
-`current_handoff` 决定哪个 handoff 是当前 handoff。
+`docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md`。`HNNNN` 只在同一日期内递增，
+新日期的第一个 handoff 重新从 `H0001` 开始。不同日期可以出现相同 `HNNNN`，因此应使用
+完整 path 引用。保留已有的无编号 handoff，只有 `current_handoff` 决定当前 handoff。
 
 ## 复用 Owner gate 批准
 
@@ -120,6 +125,8 @@ Evidence required before action:
 当 `Authorized action`、`Packet`、`Conditions`、`Source/artifact identity`、
 `Evidence required before action` 均未变化且尚未达到 `Expires when` 时，不要重复请求同一批准。其中任何一项
 发生变化，授权即过期，必须取得新的 Owner 决定。
+后续限制、取消或撤销会立即终止受影响的 authorization。若没有替代 packet，则记录为
+`deferred`，将 resume trigger 固定为 Owner 明确重新激活，并且不得自动恢复。
 
 ## 一个事实只记录在一个位置
 
@@ -136,10 +143,12 @@ Evidence required before action:
 
 handoff 不复制这些文档的内容，只链接路径和关键结果。
 `SPEC-COMPLETE.md` 中的 COMPLETE 表示已集成 baseline，而不是不可变的最终版本。
-在 stateful project 中，`active_spec` 是唯一 normative SPEC entrypoint。新增或冲突
-SPEC 在其准确范围被纳入该入口，或 packet transaction 显式切换 pointer 前，只是
-proposal。accepted packet 之后的重大变更应使用新的 packet ID 与 validation，不应
-改写已接受的历史。
+在 stateful project 中，`active_spec` 是唯一 normative SPEC entrypoint。文件的存在、名称、
+日期或 status 本身不会产生 SPEC authority。Owner 指示采用、纳入或实现时，它是当前 change
+request；应停止受影响的工作并与 active boundary 对齐。review、compare、explain、
+draft/reference-only 请求保持 read-only，仅被发现的 SPEC 也没有自动 authority。同一未完成的
+acceptance boundary 可 amend 当前 packet；重大变更或 accepted packet 之后的变更使用新的
+packet ID 与 validation。
 
 state 离开 terminal packet 之前，一个 durable decision record 必须同时固定 packet ID、
 active SPEC path 与 exact revision、source/artifact identity、evidence 与 claim limits、

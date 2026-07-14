@@ -20,6 +20,24 @@ flowchart LR
 
 Owner gate and handoff are triggered branches, not extra loop modes.
 
+## Rule 5 Feedback Loop
+
+```mermaid
+flowchart LR
+    P["Pain / failure"] --> F["Finding + evidence"]
+    F --> R["Root cause"]
+    R --> T{"Repeated or high-risk?"}
+    T -- "No" --> L["Keep local finding"]
+    T -- "Yes" --> C["Smallest durable control"]
+    C --> E["Enforcement + regression evidence"]
+    E --> V["Field validation"]
+    V --> D{"Keep / Refine / Merge / Retire"}
+    D -- "Refine" --> C
+```
+
+Prefer repairing an existing rule, flow, metadata, check, test, or template
+before adding a new global rule.
+
 ## Fresh Context Route
 
 ```mermaid
@@ -42,17 +60,19 @@ to read every listed file.
 ```mermaid
 flowchart TD
     F{"Fact type"}
+    OI["Current applicable owner instruction\ninterrupt/redirect authority"] --> F
     F -->|"Observed behavior"| E["Current source, tests, runtime,\nreproducible commands"]
     F -->|"Intended scope and acceptance criteria"| AS["state-declared active_spec\nsingle normative entrypoint"]
     F -->|"Current execution"| ST["sdad-state.yaml and active ledgers"]
     F -->|"Authorization or acceptance"| OD["One owner-decision record\nfor declared scope"]
     F -->|"Continuity"| CH["Optional current handoff\npointers only"]
-    P["Other SPECs, references, archives,\nfilenames, dates, chat"] -. "proposal or context only" .-> F
+    P["Unadopted/discovered SPECs, references,\narchives, filenames, dates, old/provider chat"] -. "proposal or context only" .-> F
 ```
 
 `SPEC-COMPLETE.md` is an integrated baseline, not an automatic override. Owner
 acceptance does not upgrade weak evidence. A new state-v2 project does not use
 `save-state.md`; an existing copy is state-v1 migration input only.
+Persist accepted owner redirects in SPEC/state before affected stateful work.
 
 ## One Fact, One Home
 

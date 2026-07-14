@@ -46,10 +46,11 @@ matches the packet.
    docs checked with no update needed, and validation commands run.
 9. Context, secret, private-data, generated-artifact, archive, or log handling
    that exceeds its declared authorization or bounded-read need.
-10. SPEC lineage drift: more than one claimed normative entrypoint, an
-    additional/conflicting SPEC used without explicit incorporation or pointer
-    switch, accepted history rewritten, or a material terminal-state change
-    kept under a reused packet ID.
+10. SPEC lineage drift: more than one claimed normative entrypoint;
+    owner-directed SPEC adoption bypassed while affected work continues;
+    review-only SPEC intake used as implementation authority; an additional/conflicting SPEC used without incorporation or
+    pointer switch; accepted history rewritten; or a material terminal-state
+    change kept under a reused packet ID.
 11. Lifecycle laundering: unresolved text moved to closed/history without
     evidence, owner decision, or a named superseding packet; deferral without a
     reason and revisit trigger; implementation notes split by age while current
@@ -57,6 +58,13 @@ matches the packet.
 12. Stale evidence after source, SPEC, dependency, environment, artifact,
     authorization, merge, rebase, or cherry-pick changes. Integration and
     release claims require validation on the final tree and artifact.
+13. Owner-direction drift: a current owner change, narrowing, cancellation, or
+    revocation was not propagated to state, active workers, validation, or
+    protected-action authorization before old-direction work continued.
+14. Rule 5 drift: repeated pain became another instruction without a finding,
+    root cause, smallest durable control, regression evidence, or later
+    Keep/Refine/Merge/Retire condition; imported guidance was activated contrary
+    to the current owner's apply/review/reference intent.
 
 Markdown records guidance/authority but does not technically block tools.
 Doctor, tests, and CI are deterministic validation; permissions, hooks,
@@ -79,8 +87,10 @@ Use one authoritative home per fact:
 - cross-session recovery links/results -> current handoff.
 
 Treat `SPEC-COMPLETE.md` as an integrated baseline, not immutable or
-automatically active. Another SPEC is a proposal unless the active entrypoint
-incorporates its exact scope or a packet transaction switches the pointer.
+automatically active. Treat owner-directed adoption/implementation as a current
+change request; keep review/draft/reference-only intake read-only. Hold affected work until a change request is reconciled.
+A merely discovered SPEC remains a proposal only when non-authoritative and
+nonconflicting. Persist any amendment or packet switch before implementation.
 `active_packet.status` is the current dominant checkpoint, not a cumulative
 history. Review a skipped loop phase as N/A only when its omission and resulting
 claim boundary are explicit.

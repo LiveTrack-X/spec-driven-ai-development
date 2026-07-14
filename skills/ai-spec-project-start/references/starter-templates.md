@@ -50,7 +50,8 @@ Handoffs and evidence files are create-on-demand.
 When a source checkout is available, use the exact files under
 `templates/project-control-files/`. When only the installed skill is
 available, render the compact schemas below and the semantic clauses from
-`references/runtime-contract.md`.
+`references/runtime-contract.md`; also read `references/implicit-rules.md` for
+the canonical Core 5.
 
 ## Active State Schema
 
@@ -122,6 +123,17 @@ Use the canonical files under
 `templates/project-control-files/docs/Repository-Operating-Rules.md` and
 `templates/project-control-files/docs/sdad/playbooks/`.
 
+For installed-skill fallback, keep this exact compact block in the adapter and
+operating rulebook while leaving Extended Rules on demand:
+
+1. Current beats historical.
+2. Evidence beats confidence.
+3. Active beats interesting.
+4. Owner decision beats AI momentum.
+5. Repeated pain becomes a rule.
+
+Compression first. Gates stay real.
+
 The rulebook owns durable policy only. Playbooks own:
 
 - large/private context handling;
@@ -143,11 +155,13 @@ Create short current-state files:
 
 For stateful work, `active_spec` is the single normative SPEC entrypoint and
 `SPEC-COMPLETE.md` is an integrated baseline rather than immutable final truth.
-A later amendment, bounded supplement, or replacement stays a proposal until
-its exact scope is incorporated or a packet transaction switches the pointer.
-Record baseline revision and effective packet, reject lineage cycles or
-implicit overlapping precedence, and keep normative supplements repository-local.
-Material changes after owner acceptance use a new packet ID and validation.
+A SPEC supplied as current requirements is a change request unless the owner
+limits it to review/draft/reference; reconcile it before affected work. A merely discovered SPEC
+remains a proposal only when non-authoritative and nonconflicting. Record the
+accepted amendment, supplement, or replacement with baseline revision and
+effective packet; reject lineage cycles or implicit overlapping precedence and
+keep normative supplements repository-local. Material or post-acceptance
+changes use a new packet ID and validation.
 
 Give new durable implementation notes never-reused `IMPL-NNNN` IDs. When the
 file grows, classify entries by current effect, promote normative facts to SPEC,
@@ -178,12 +192,13 @@ Both legal open-finding forms are shown here outside the active ledger section:
 
 ## Optional Current Handoff
 
-Create a compact recovery checkpoint only when work pauses, changes hands,
-remains blocked/partial, or would be expensive to reconstruct. Declare its path
-as `current_handoff` in state. Name each new checkpoint
-`YYYY-MM-DD-HNNNN-topic.md`; use `HNNNN` as the never-reused, zero-padded
-repository-logical sequence and treat the date as descriptive only. Existing
-unnumbered handoffs remain valid. Its exact identity start is:
+Create a compact recovery checkpoint only for actual cross-session/tool/person
+continuity that would be expensive to reconstruct. Declare its path as
+`current_handoff` in state. Name it `YYYY-MM-DD-HNNNN-topic.md`; use the next
+never-reused, zero-padded `HNNNN` for that same date, restarting at `H0001` on a
+new date. The full date-plus-ID pair is the identity; only `current_handoff`
+declares currentness. Existing unnumbered handoffs remain valid. Its exact
+identity start is:
 
 ```markdown
 ## 1. Session Identity

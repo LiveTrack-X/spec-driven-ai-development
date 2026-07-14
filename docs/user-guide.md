@@ -23,8 +23,8 @@ Full does not mean permission to release, migrate, deploy, read sensitive data,
 or accept risk. Those remain owner gates. The AI should inspect the request and
 repository first, infer and report scale, execution scope, claim boundary, owner
 gates, and explicit assumptions. It asks at most one question only when an
-unresolved fact would change the scale or an owner gate; otherwise it proceeds
-with the stated assumptions.
+unresolved fact would change objective/direction, authority/reference role,
+execution boundary, protected action/gate, or claim boundary; otherwise it proceeds.
 
 ```text
 Scale: Standard
@@ -63,6 +63,9 @@ The AI then reads current source/tests and only the route, heading, active
 section, or targeted match required by the current intent. `routed_docs` is an
 eligible selection set, not an instruction to read every listed file. The
 report should name only routed documents actually read.
+An owner-named current input may still be inspected within the request when a
+stale route omits it; if adopted, update the active authority and routes before
+stateful implementation.
 
 The large copy-paste bootstrap prompt is for one-time install, upgrade,
 migration, or repair. Once installed, use the repository adapter and current
@@ -83,6 +86,16 @@ You do not need SDAD command or skill names. Action words choose the route:
 
 Modifiers do not silently expand authority. For example, `commit and wait` does
 not imply push, tag, release, or deployment.
+
+A current owner instruction that redirects the work overrides an older owner
+direction. The AI should stop affected old work, re-enter Plan -> Route, and
+persist the new direction before resuming a stateful implementation. A request
+to review, compare, explain, or use a SPEC only as reference stays read-only.
+An explicit command authorizes only the named direction, acceptance, or
+protected action for its stated boundary; it should not be asked again. It does
+not waive evidence, prerequisites, tool policy, or a different protected action.
+A question, hypothetical, quotation, negation, or review/reference-only request
+does not authorize the action it mentions.
 
 ## State V2 At A Glance
 
@@ -117,6 +130,9 @@ Evidence required before action:
 The AI may reuse it only while the action, packet, conditions,
 source/artifact identity, and expiry remain unchanged. A changed term or expiry
 requires a new decision.
+A later restriction, cancellation, or revocation ends affected authorization
+immediately. If a packet is cancelled without replacement, record it as
+`deferred` with an explicit-owner-reactivation resume trigger; do not auto-resume.
 
 ## One Fact, One Home
 
@@ -133,11 +149,13 @@ requires a new decision.
 
 Handoffs link to these authorities instead of duplicating their contents.
 `SPEC-COMPLETE.md` means integrated baseline, not immutable final truth. In a
-stateful project, `active_spec` is the single normative SPEC entrypoint. A new
-or conflicting SPEC remains a proposal until its exact scope is incorporated
-there or a packet transaction switches the pointer. Material change after an
-accepted packet uses a new packet ID and fresh validation instead of rewriting
-the accepted history.
+stateful project, `active_spec` is the single normative SPEC entrypoint. A SPEC
+supplied as current requirements is a change request unless the owner limits it
+to review/draft/reference; hold affected work and reconcile it with the active boundary.
+A merely discovered file is not authoritative by name, date, or status and may
+remain a proposal only when nonconflicting. A same-boundary change may amend a
+non-terminal packet; a material or post-acceptance change uses a new packet ID
+and fresh validation instead of rewriting accepted history.
 
 Before state moves past a terminal packet, one durable decision record pins the
 packet ID, active SPEC path and exact revision, source/artifact identity,
@@ -219,9 +237,9 @@ create all of them.
 
 Require a current packet-bound handoff, set `current_handoff`, and verify its
 packet marker matches `active_packet.id`. Name new checkpoints
-`YYYY-MM-DD-HNNNN-topic.md`, using `HNNNN` as repository-logical order rather
-than device time. Retire the pointer when it is stale; never infer currentness
-from the greatest ID.
+`YYYY-MM-DD-HNNNN-topic.md`, using the next `HNNNN` for that date and restarting
+at `H0001` on a new date. Cite the full path because `HNNNN` may repeat across
+dates. Retire a stale pointer; never infer currentness from date or greatest ID.
 
 ### A chat-only tool says it installed SDAD
 

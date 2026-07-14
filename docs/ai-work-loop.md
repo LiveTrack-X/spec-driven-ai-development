@@ -27,11 +27,19 @@ Normalize the request into one executable boundary:
 - owner gates and stop conditions,
 - report format.
 
+The current applicable owner instruction overrides an older owner direction.
+If it redirects affected work, stop the old direction, re-enter Plan -> Route,
+and reconcile the new intent into SPEC/state before stateful implementation
+resumes. An explicit current owner command authorizes only its named direction,
+acceptance, or protected action for the stated boundary; persist it and do not
+ask for the same decision again. It does not waive evidence, prerequisites,
+tool policy, or a different protected action. Review/reference-only intent remains read-only.
+
 Infer and report scale, execution scope, claim boundary, owner gates, and the
 assumptions behind them from the request and repository first. Ask at most one
-blocking question only when an unresolved fact would change the scale or an
-owner gate. Recommend a default with the question; otherwise proceed with the
-explicit assumptions.
+blocking question only when an unresolved fact would change objective/direction,
+authority/reference role, execution boundary, protected action/gate, or claim
+boundary. Recommend a default with the question; otherwise proceed.
 
 ## Route
 
@@ -44,6 +52,9 @@ adapter -> sdad-state.yaml -> docs/INDEX.md
 Then select only the source, test, path, heading, active section, or targeted
 match needed for the current intent. `routed_docs` is an eligible selection set,
 not a read-all list. Report the routed documents actually read.
+An owner-named current input may be inspected within the request even when a
+stale route omits it. If adopted, update the active authority and routes before
+stateful implementation.
 
 ## Implement
 
@@ -67,11 +78,13 @@ Give each fact one authoritative home:
 
 `SPEC-COMPLETE.md` is an integrated baseline, not an immutable or automatically
 active document. For stateful work, `active_spec` is the single normative SPEC
-entrypoint. A later amendment, supplement, or replacement is a proposal until
-the active entrypoint incorporates its exact scope or a packet transaction
-switches the pointer. A material requirement or gate change after owner
-acceptance starts a new, never-reused packet ID; it does not rewrite the
-accepted packet's history.
+entrypoint. A SPEC supplied as current requirements is a change request unless
+the owner limits it to review/draft/reference; reconcile it before affected work.
+A merely discovered file gains no authority from its name, date, or status.
+Keep a non-terminal packet only for a change inside the same unfinished
+acceptance boundary, and invalidate affected evidence. A material change or a
+change after owner acceptance starts a new, never-reused packet ID; it does not
+rewrite the accepted packet's history.
 
 ## Verify
 
@@ -92,9 +105,13 @@ scope, evidence, gates, or the next action:
 
 | Event | Required decision |
 |---|---|
+| Owner changes, narrows, or replaces the current direction | stop affected local and delegated work; classify the instruction as additive or replacing, re-plan/re-route, and treat old-boundary outputs as stale until reconciled and revalidated |
+| Owner cancels the packet without replacement | stop affected work; mark the packet `deferred`, preserve partial evidence and the cancellation reason in a packet-linked record, set the resume trigger to explicit owner reactivation, and never auto-resume |
 | Clarification within the same unfinished acceptance boundary | keep the packet; amend the active SPEC only for intended behavior or acceptance criteria, otherwise use implementation notes; invalidate affected evidence |
-| Candidate additional/conflicting SPEC appears | classify it as proposal/reference; do not change packet or scope until explicit incorporation/pointer switch |
-| Owner promotes a material SPEC change, or accepted scope changes after terminal status | create a new packet and switch/incorporate the SPEC explicitly |
+| Owner directs adoption/implementation of a new or conflicting SPEC | treat it as a current change request; hold affected work, then amend the same non-terminal packet or switch to a new packet according to the acceptance boundary |
+| Owner asks to review/compare/explain a SPEC | keep the request read-only; report conflicts without incorporating, switching packets, or implementing |
+| Unrequested additional SPEC is discovered | it gains no authority from filename, date, or status; continue only after confirming it is non-authoritative and nonconflicting, otherwise hold and reconcile |
+| Owner directs a material SPEC change, or accepted scope changes after terminal status | create a new packet and switch/incorporate the SPEC explicitly |
 | Source, dependency, environment, SPEC, or artifact changes after validation | hold the affected claim and rerun the checks that depend on the change |
 | Accepted packet's SPEC, source, or artifact changes inside its accepted claim boundary | preserve the revision-bound decision history and use a new implementation/revalidation packet |
 | Defect or contradictory evidence appears after acceptance | link a finding to the revision-bound decision and create a new bugfix/revalidation packet; do not rewrite acceptance |
@@ -139,31 +156,45 @@ Report findings first, then:
 - owner decision or acceptance needed,
 - next action.
 
-If a current packet-bound handoff is needed, create it and set
-`current_handoff`. Link to authorities rather than copying their content. Clear
-or replace the pointer when it is no longer current.
+If this run confirms repeated pain or one high-risk missing control, record the
+finding/evidence and root cause, choose the smallest durable control plus
+regression evidence, and later Keep/Refine/Merge/Retire it after field use.
+Prefer refining an existing rule, flow, check, or template. Apply it now only
+inside the active boundary; otherwise record a bounded follow-up.
+
+Only when another session, tool, person, or machine needs actual continuity,
+create a packet-bound handoff and set `current_handoff`. A stop, redirect,
+block, or partial result alone does not require one. Link authorities rather
+than copying them; clear or replace a stale pointer.
 
 ## Owner Gate
 
 Stop before protected actions such as release, migration, destructive changes,
 production impact, sensitive-data access, auth, money, security, or risk
-acceptance unless a valid owner authorization covers the action.
+acceptance unless a valid owner authorization, including an explicit current
+command, covers that exact action and its conditions.
 
 Record a reusable conditional authorization with:
 
 ```text
-Decision:
+Decision: authorized | revoked | superseded
+Revises/supersedes authorizations:
 Authorized action:
 Packet:
 Conditions:
 Source/artifact identity:
 Expires when:
 Evidence required before action:
+Owner or decision source:
+Decided at:
 ```
 
 Reuse it only while the action, packet, conditions, source/artifact identity,
 and expiry remain unchanged. A changed term or expired condition requires a new
-owner decision.
+owner decision. A current owner restriction, cancellation, or revocation ends
+reuse immediately. Append a revising/superseding record rather than editing
+history, and restore the affected gate as unsatisfied before another protected
+action.
 
 Markdown guidance and decisions do not technically prevent tools from acting.
 Permissions, hooks, sandboxes, protected branches, and service controls provide

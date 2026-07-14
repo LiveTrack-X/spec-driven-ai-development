@@ -33,6 +33,29 @@ The confirmed SDAD 3.0 overview artwork is preserved unchanged; its embedded
 `Spec-Driven` label is historical. Current protocol wording is SPEC-Directed
 AI Development.
 
+## Core Rules
+
+The Core 5 are SDAD's five named operating principles:
+
+1. Current beats historical.
+2. Evidence beats confidence.
+3. Active beats interesting.
+4. Owner decision beats AI momentum.
+5. Repeated pain becomes a rule.
+
+Compression first. Gates stay real.
+
+Here, **current** means the latest applicable owner instruction and explicitly
+active repository authority, not the newest filename or timestamp. When the
+owner redirects the work, the agent stops the affected old direction, re-enters
+Plan -> Route, and persists the change before resuming stateful implementation.
+Rule 5 is a closed feedback loop, not permission to accumulate rules: find the
+root cause, choose the smallest durable control plus regression evidence, then
+Keep, Refine, Merge, or Retire it after use.
+
+See [Implicit Rules Made Explicit](docs/implicit-rules.md) for their operational
+meaning and the on-demand extended rules.
+
 ## Start Here
 
 If you are introducing SDAD to users or a team, start with
@@ -96,8 +119,9 @@ Do not make me answer a fixed questionnaire. Inspect my request and the
 repository first. Infer scale, execution scope, validation claim boundary, and
 owner gates, and make the assumptions behind the inference explicit. Ask at
 most one blocking question, with a recommended answer, only when the unresolved
-fact would materially change the scale or an owner gate. Otherwise proceed with
-the explicit assumptions. Report:
+fact would materially change objective/direction, authority/reference role,
+execution boundary, protected action/gate, or claim boundary. Otherwise proceed.
+Report:
 
 - Scale and reason
 - Execution scope
@@ -107,6 +131,11 @@ the explicit assumptions. Report:
 - Unresolved question, or `none`
 
 I may override the inference. Keep these three axes separate:
+
+My explicit current command authorizes only its named direction, acceptance, or
+protected action for the stated boundary. Persist it and do not ask for the same
+decision again. It does not waive evidence, prerequisites, tool policy, or a
+different protected action. Obey a current stop/redirect immediately.
 
 - Scale determines which persistent control surface is installed.
 - Execution scope determines how far the AI may work now.
@@ -142,9 +171,14 @@ Common intents:
 - "document", "explain", "README", "FAQ", "guide" -> documentation intent.
 - "handoff", "continue later", "next session", "lost context" -> handoff
   intent.
-- "borrow from this repo", "reference this project", "adopt this idea" ->
+- "borrow from this repo", "reference this project", "can we adopt this?" ->
   reference-intake intent.
+- "adopt this", "use this", "implement this" -> current change-request intent.
 - "asks too often", "runs ahead" -> execution-scope or owner-gate tuning.
+
+Classify the whole utterance: a clear imperative authorizes only its named
+action and boundary; a question, hypothetical, quotation, negation, or
+review/reference-only request does not authorize the action it mentions.
 
 Treat narrative modifiers as routing signals, not automatic scope expansion.
 "Carefully" increases inspection depth, "fully" continues to evidence-ready for
@@ -155,8 +189,9 @@ If multiple intents match, first decide whether they can be safely composed
 inside one approved packet. If one route remains dominant, proceed and briefly
 state the interpreted intent, scale, execution scope, expected evidence, and
 owner gates. Ask one blocking clarification question with your recommended
-default only when an unresolved fact would change the scale or an owner gate;
-otherwise state the assumptions and proceed. Do not use natural-language
+default only when an unresolved fact would change objective/direction,
+authority/reference role, execution boundary, protected action/gate, or claim
+boundary; otherwise state assumptions and proceed. Do not use natural-language
 routing to bypass release,
 migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
@@ -257,6 +292,9 @@ current source/tests -> only the intent-selected route, heading, active section,
 or targeted match. `routed_docs` is an eligible selection set, not a startup
 read-all list. Report only the routed documents actually read. Do not load the
 whole rulebook or optional evidence set by default.
+Inspect a current owner-named input within the request even when stale
+`routed_docs` omits it; if it is adopted, reconcile authority and routes before
+stateful implementation.
 
 Use one work loop: Plan -> Route -> Implement -> Verify -> Report. An owner gate
 and a handoff are conditional branches, not extra mandatory steps. A clean
@@ -268,10 +306,14 @@ should be large enough that review has meaning, but small enough to verify in on
 handoff. Do not stop for owner approval after every micro-task or small SPEC
 item inside an approved work packet.
 
-Proceed inside the declared `unit` or `packet` until evidence is ready. Stop and
-ask me only when that boundary would expand, a protected condition changes, a
-destructive or irreversible action is needed, an owner-controlled decision is
-required, verification is blocked, or the request conflicts with evidence.
+Proceed inside the declared `unit` or `packet` until evidence is ready. Obey my
+current stop/redirect immediately. Pause for input when scope expansion is
+unrequested or ambiguous, a protected condition changes, a destructive or
+irreversible action remains unauthorized, an owner-controlled decision is
+unresolved, verification is blocked, or the request conflicts with evidence.
+If I cancel the packet without a replacement, use `status: deferred`, preserve
+the cancellation reason and partial evidence in a packet-linked record, set the
+resume trigger to explicit owner reactivation, and never auto-resume it.
 
 When the plan is fuzzy, run a clarification checkpoint before coding. Inspect
 the current code, tests, active docs, SPEC, TODOs, review findings, and ADRs
@@ -297,11 +339,12 @@ Implement from the active SPEC. Give each fact one authoritative home:
 
 For a stateful project, `sdad-state.yaml#active_spec` is the single normative
 SPEC entrypoint. `SPEC-COMPLETE.md` is an integrated baseline, not immutable or
-automatically active. Treat an additional or conflicting SPEC as a proposal
-until its exact scope is incorporated by the active entrypoint or a packet
-transaction switches the pointer. Reconcile conflicts before implementation;
-filenames, dates, and chat order cannot activate requirements. A material
-change after owner acceptance requires a new packet ID and fresh validation.
+automatically active. A SPEC supplied as current requirements is a change
+request unless the owner limits it to review/draft/reference; reconcile it
+before affected work. A
+merely discovered SPEC gains no authority from filename, date, status, or chat
+order. Keep the packet only for a same-boundary non-terminal amendment; a
+material change or post-acceptance change requires a new packet and validation.
 
 Handoffs link to those authorities instead of copying them. Do not record raw
 internal reasoning, mechanical edits, or large logs. For Mini SDAD, include a
@@ -326,12 +369,15 @@ review-findings, rules, or ADRs must be updated at the packet or handoff
 boundary. If nothing changes, say which files were checked and why no update was
 needed.
 
-Before closing, archiving, replacing, or restarting a long AI coding session,
-create a session handoff under
+Create a session handoff only when another session, tool, person, or machine
+actually needs continuity and reconstruction would otherwise be costly. A stop,
+redirect, block, or partial result alone does not require one. When triggered,
+write it under
 docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md. Allocate HNNNN as the next
-zero-padded repository-logical ID; treat the date as descriptive and
-current_handoff as the sole currentness signal. Existing unnumbered handoffs
-remain valid. Write the same ID in the first Session Identity as
+zero-padded ID among handoffs with that same date; restart at H0001 on a new
+date, and treat current_handoff as the sole currentness signal. Cite the full
+date-plus-ID path because HNNNN may repeat across dates. Existing unnumbered
+handoffs remain valid. Write the same ID in the first Session Identity as
 `- Handoff ID: HNNNN`. Treat the chat as an execution trace, not permanent
 memory; a fresh session must be able to continue from the handoff, active spec,
 and current repository state.
@@ -513,8 +559,10 @@ are conveniences, not substitutes for SDAD state, handoff, or Doctor.
 
 Handoffs link to these authorities rather than duplicating their contents.
 `SPEC-COMPLETE.md` is an integrated baseline, not immutable or automatically
-active. Another SPEC remains a proposal until the state-declared entrypoint
-incorporates its exact scope or a packet transaction switches the pointer.
+active. A SPEC supplied as current requirements is a change request unless the
+owner limits it to review/draft/reference; a merely discovered nonconflicting
+file remains a proposal.
+Reconcile and persist the amendment or packet switch before affected work.
 
 ## Use It When
 
@@ -527,6 +575,17 @@ incorporates its exact scope or a packet transaction switches the pointer.
 
 Use the smallest scale that preserves the needed evidence and owner control.
 Optional evidence records and ADRs are create-on-demand.
+
+## Optional Advanced Patterns
+
+SDAD does not require a harness or a fixed execution method. When a project is
+deliberately optimizing prompts, retrieval, memory, context construction, tools,
+or evaluation loops, start with the [Fit Assessment](docs/fit-assessment.md),
+then select an on-demand pattern from the
+[Pattern Catalog](docs/pattern-catalog.md). Repeated harness search uses the
+[Meta-Harness Method](docs/field-notes/meta-harness-method.md) with a fixed
+model/tool surface, held-out evidence, a concrete budget, stop rules, and an
+owner adoption gate.
 
 ## Languages
 
@@ -574,6 +633,10 @@ evidence or handoff records required by the current claim.
 - [No-Clone Quick Install](docs/no-clone-quick-install.md)
 - [Mini SDAD](docs/mini-sdad.md)
 - [Tool Adapters](docs/tool-adapters.md)
+- [Implicit Rules Made Explicit](docs/implicit-rules.md)
+- [Pattern Catalog](docs/pattern-catalog.md)
+- [Fit Assessment](docs/fit-assessment.md)
+- [Meta-Harness Method](docs/field-notes/meta-harness-method.md)
 - [Known Limitations](docs/known-limitations.md)
 - [Security](SECURITY.md)
 - [Stable v3.2.1 release notes](docs/releases/v3.2.1.md)

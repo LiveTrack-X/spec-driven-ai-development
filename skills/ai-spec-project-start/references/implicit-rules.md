@@ -6,23 +6,33 @@ files.
 
 ## Core 5
 
-- Current beats historical: current code, tests, active docs, and active SPEC
-  sections override older SPEC history, archives, old handoffs, and chat memory.
+- Current beats historical: the current applicable owner instruction plus
+  current code, tests, active docs, and active SPEC sections override older
+  directions, history, archives, handoffs, and chat memory; current does not
+  mean newest filename or timestamp.
 - Evidence beats confidence: no completion claim without commands, results,
   changed files, docs checked, and remaining risks.
 - Active beats interesting: future ideas and external references are not active
   scope until promoted.
-- Owner decision beats AI momentum: mark owner decisions before scope, risk, or
-  release posture changes.
-- Repeated pain becomes a rule, checklist, test, or template update.
+- Owner decision beats AI momentum: when the owner redirects work, stop the
+  affected old direction and reconcile state before resuming; review/reference
+  intent remains read-only.
+- Repeated pain becomes a rule: repeated pain or one high-risk control failure
+  becomes a finding/root cause, the smallest durable control plus regression
+  evidence, and later a Keep/Refine/Merge/Retire decision; prefer refining
+  existing controls.
+
+Compression first. Gates stay real.
 
 ## Extended Rules
 
 - Work packets and review-worthy units beat micro-approval and large unverified
   progress.
-- Implementation discipline makes autonomy safe: surface assumptions, prefer
+- Implementation discipline makes bounded execution safe: surface assumptions, prefer
   simple designs, make surgical changes, and verify goals.
-- Open critical findings beat new feature work unless the owner accepts the risk.
+- Open critical findings gate intersecting feature/claim work unless the owner
+  accepts that bounded risk; unrelated findings may be explicitly deferred with
+  packet links and revisit triggers.
 - Explicit non-goals beat assumptions.
 - Stated uncertainty beats silent guessing.
 - Repository evidence beats unnecessary questions: inspect current code, tests,
@@ -46,8 +56,11 @@ files.
 - Implementation memory beats hidden rationale: record spec-unstated
   implementation decisions in implementation notes, not only in chat memory.
 - Natural language intent beats skill names: infer review, implementation,
-  release, docs, handoff, reference-intake, or autonomy-tuning intent from
-  ordinary user wording and current repo state.
+  release, docs, handoff, reference-intake, or execution-scope/owner-gate tuning
+  intent from ordinary user wording and current repo state.
+- Guarantees beat guidance for non-negotiables: keep judgment in guidance and
+  put deterministic requirements in tests, validators, hooks, permissions, or
+  other enforceable surfaces.
 
 ## How To Apply
 

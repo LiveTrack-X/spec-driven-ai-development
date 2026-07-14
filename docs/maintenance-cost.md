@@ -95,10 +95,11 @@ New state-v2 projects do not create or route `save-state.md`. The optional
 save-state remains state-v1 migration input only.
 
 Declare a current handoff only when another session needs recovery. The file's
-canonical name is `YYYY-MM-DD-HNNNN-topic.md`, where `HNNNN` is the next
-repository-logical ID and the date is descriptive only. Its first exact
+canonical name is `YYYY-MM-DD-HNNNN-topic.md`, where `HNNNN` is the next ID for
+that date and restarts at `H0001` on a new date. Its first exact
 `## 1. Session Identity` section must contain the matching handoff ID and exactly
-one marker matching the active packet. Existing unnumbered handoffs remain valid.
+one marker matching the active packet. Cite the full date-plus-ID path because
+`HNNNN` may repeat on another date. Existing unnumbered handoffs remain valid.
 On packet switch, completion, archive, or replacement, remove or replace the
 pointer in the same coherence update.
 

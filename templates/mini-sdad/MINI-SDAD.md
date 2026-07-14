@@ -4,6 +4,19 @@ Use this file when the project is too small for the full SDAD Protocol
 but still needs basic protection against scope drift, vague completion, or
 session context loss.
 
+## Core 5
+
+Current beats historical. Evidence beats confidence. Active beats interesting.
+Owner decision beats AI momentum. Repeated pain becomes a rule.
+Compression first. Gates stay real.
+
+For repeated pain or one high-risk control failure, capture the root cause and
+smallest durable control plus regression evidence; later Keep/Refine/Merge/Retire
+it. Prefer refining an existing rule, flow, check, or template.
+
+A current applicable owner instruction overrides older direction. Stop affected
+work and restate the unit before continuing; review/reference intent stays read-only.
+
 ## Scale
 
 This project uses Mini SDAD.
@@ -41,7 +54,10 @@ ordinary wording and the current project state.
 - "implement", "fix", or "match the spec" -> implementation intent.
 - "docs", "README", "FAQ", or "guide" -> documentation intent.
 - "handoff", "continue later", or "lost context" -> handoff intent.
-- "asks too often" or "runs ahead" -> autonomy tuning intent.
+- "asks too often" or "runs ahead" -> execution-scope or owner-gate tuning intent.
+
+A clear imperative authorizes only its named action/boundary. A question,
+hypothetical, quotation, negation, or review/reference-only request does not.
 
 If the request implies release, migration, real user data, auth, money,
 security, destructive action, rollback, production claim, or owner risk
@@ -53,27 +69,27 @@ owner gates.
 Implement only the requested task or the current review-worthy unit.
 
 A review-worthy unit may contain multiple related small tasks. It should be large
-enough that review has meaning, but small enough to verify in one handoff.
+enough that review has meaning, but small enough for one evidence cycle.
 
-Default autonomy is Level 1 Unit Autonomy, with the active unit treated as one
-small approved packet: complete that boundary, report evidence-ready status, and
-ask only at the checkpoint or when a stop condition appears. Do not turn each
-small SPEC item into a separate approval gate. Use Level 2 Work Packet Autonomy
-only when the owner names a packet with multiple related units.
+The default execution boundary is the current `unit`. Treat it as one small
+approved boundary: complete it, report evidence-ready status, and ask only at
+the report boundary or when a stop condition appears. Do not turn each small
+SPEC item into a separate approval gate. Use a broader `packet` only when the
+owner explicitly names its related units.
 
 Do not expand into future ideas, rewrites, broad cleanup, or unrelated refactors
 unless the owner explicitly promotes them into active scope.
 
 Do not stop for owner approval after every micro-task or small SPEC item inside
-the approved unit. Proceed until the unit has evidence, unless a stop condition
-appears.
+the approved unit. Obey a current owner stop/redirect immediately; otherwise
+proceed until the unit has evidence unless another stop condition appears.
 
 Stop and ask the owner only when:
 
-- scope would expand beyond the active unit's approved boundary,
-- Q5-style risk, release posture, data, auth, money, migration, or destructive
-  action changes,
-- an owner-controlled decision is required,
+- an unresolved fact changes objective/direction, authority/reference role,
+  execution boundary, protected action/gate, or claim boundary,
+- expansion is unrequested or ambiguous, or an irreversible action remains
+  unauthorized,
 - verification is blocked or impossible,
 - current evidence conflicts with the requested plan.
 

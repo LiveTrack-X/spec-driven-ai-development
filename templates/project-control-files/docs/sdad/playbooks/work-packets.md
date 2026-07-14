@@ -28,7 +28,13 @@ State v2 execution scope is `unit` or `packet`. It controls the current work
 boundary, not risk acceptance. Multi-packet execution requires an explicitly
 approved packet plan or list. Infer scale and gates from the request and
 repository first.
-Ask at most one blocking question only when the answer changes scale, execution scope, a claim boundary, or an owner gate.
+Ask at most one blocking question only when the answer changes objective/direction,
+authority/reference role, execution boundary, protected action/gate, or claim boundary.
+An explicit current owner command authorizes only its named direction/action and
+stated boundary; persist it and do not ask for the same decision again. It does
+not waive evidence, prerequisites, tool policy, or another protected action.
+Classify the whole utterance: questions, hypotheticals, quotations, negations,
+and review/reference-only requests do not authorize their mentioned actions.
 
 ## Packet And Delegation Envelope
 
@@ -91,12 +97,30 @@ then run aggregate validation before an owner decision.
 
 ## SPEC Lineage Transaction
 
-`active_spec` names the single normative entrypoint for the current leaf packet. A new
-SPEC file is proposal/reference until the active SPEC incorporates its exact
-path and bounded scope or a packet-switch transaction replaces the pointer.
-`FINAL`, `COMPLETE`, dates, and larger sequence numbers do not grant authority.
+`active_spec` names the single normative entrypoint for the current leaf packet.
+A filename, `FINAL`/`COMPLETE` label, date, sequence number, or `Status: Active`
+line does not grant authority by itself. A SPEC supplied as current requirements
+is a change request unless the owner limits it to review/draft/reference; do not
+demote it merely because the state pointer still names the old SPEC. A SPEC only
+discovered in the repository is not automatically authoritative. A
+review/compare/explain request stays read-only without incorporating it.
 
-Categorize each incoming SPEC before implementation:
+Before affected implementation continues, hold affected work and classify owner
+intent and overlap with the active objective, acceptance, protected boundary,
+and authorization terms:
+
+- owner-requested change inside the same unfinished acceptance boundary ->
+  incorporate it as an amendment or bounded supplement, keep the packet, and
+  invalidate affected evidence;
+- owner-requested material change, or any change to a terminal accepted
+  boundary -> create a new packet and perform the switch transaction;
+- explicitly draft/reference or unrequested, nonconflicting input -> retain it
+  as proposal/reference and continue the current packet;
+- conflicting or possibly authoritative input whose intent/overlap is unknown
+  -> hold affected implementation and ask one blocking question if repository
+  evidence cannot resolve it.
+
+For an accepted change, record its lineage before implementation:
 
 - amendment inside the existing acceptance boundary -> update the active SPEC;
 - bounded supplement -> record baseline, effective packet, and exact overridden
@@ -156,8 +180,12 @@ revalidation/occurrence packet.
 
 | Re-entry event | Required action |
 | --- | --- |
+| Owner changes, narrows, or replaces the current direction | Stop affected local and delegated work; classify the instruction as additive or replacing, re-plan/re-route, and treat old-boundary outputs as stale until reconciled and revalidated. |
+| Owner cancels the current packet without a replacement | Stop affected work; set the current packet to `deferred`, preserve partial evidence and the cancellation reason in a packet-linked record, and set the resume trigger to explicit owner reactivation. Never auto-resume it or create a handoff unless actual continuity is required. |
 | Same unfinished objective and unchanged acceptance/gates | Continue the same packet; invalidate and rerun only affected evidence. |
-| Candidate additional/conflicting SPEC arrives | Categorize it as proposal/reference; do not change packet or scope until explicit incorporation/pointer switch. |
+| Owner directs adoption/implementation of a new or conflicting SPEC | Treat it as a current change request; hold affected work, then amend the same non-terminal packet or switch to a new packet according to the acceptance boundary. |
+| Owner asks to review/compare/explain a SPEC | Keep the request read-only; report conflicts without incorporating, switching packets, or implementing. |
+| Unrequested additional SPEC is discovered | It gains no authority from filename, date, or status; continue only after confirming it is non-authoritative and nonconflicting, otherwise hold and reconcile. |
 | Material objective, acceptance, protected boundary, or authorization-term change | Create a new unique packet and run the switch transaction. |
 | Existing declared gate becomes authorized/satisfied | Continue the same packet when action, conditions, source/artifact identity, and expiry still match. |
 | Non-terminal source, SPEC, validation, generator input, artifact, or environment changes after evidence | Hold the claim, move status back to the applicable checkpoint, and revalidate the affected surface. |
@@ -169,7 +197,7 @@ revalidation/occurrence packet.
 | Late external/hardware result for terminal or changed scope | Preserve history or use a named revalidation packet; never rewrite accepted scope. |
 | Repeated/flaky check | Record attempts, skips, instability, and a bounded retry budget; do not select one green run as proof. |
 | New recurring maintenance occurrence | Use a new occurrence packet and evidence identity; the prior run does not authorize or validate the next. |
-| Blocked or deferred packet | Record the blocker/deferral, partial evidence, and explicit resume trigger in a packet-linked TODO, finding, or owner gate; switch packets before unrelated work. |
+| Blocked or deferred packet | Record the blocker/deferral, partial evidence, and explicit resume trigger in a packet-linked TODO, finding, or owner gate; only that trigger can reactivate it, and unrelated work first switches packets. |
 | Owner requests changes after Report | Keep the packet only when it is non-terminal and acceptance/protected boundary/authorization terms are unchanged; otherwise allocate a new packet. |
 | Owner revises or revokes a terminal decision | Preserve the old decision; create a new decision/revalidation packet and unique decision record that revises/supersedes it, then update affected current-claim pointers. |
 | Validation command or test surface is weakened | Reassess the `proves` claim; a greener but weaker check cannot preserve the prior evidence tier. |
@@ -207,6 +235,8 @@ inside the Implement and Verify phases of the one work loop.
 
 ## Stop Conditions
 
-Stop for owner input when scope expands, a claim or owner gate changes, an
-irreversible or external action is required, an owner-controlled tradeoff
-remains, verification is blocked, or evidence conflicts with the plan.
+Obey an explicit stop or redirect. Ask only when an unresolved fact changes
+objective/direction, authority/reference role, execution boundary, protected
+action/gate, or claim boundary; also stop for blocked verification or conflicting
+evidence. Do not treat a clear owner expansion as ambiguity or silently cross an
+unrequested boundary.

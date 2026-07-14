@@ -14,8 +14,12 @@ Use these when the project has many docs, SPEC revisions, or AI sessions:
 - Define authority by fact type: source/tests/runtime establish observed
   behavior; state-declared `active_spec` establishes intended scope and
   acceptance criteria; state owns execution; handoff owns continuity.
-- Treat other SPECs as proposals until exact incorporation or a packet pointer
-  switch; names, dates, and document order do not activate scope.
+- A current applicable owner instruction can interrupt or redirect work; persist
+  accepted intent before affected stateful implementation resumes. Old/provider
+  chat is context only.
+- Treat an owner-directed SPEC adoption as a change request. Other SPECs stay
+  proposals only when non-authoritative and nonconflicting; names, dates, and
+  document order do not activate scope.
 - Prefer current active SPEC sections over older timeline/history sections when
   a SPEC spans past to present.
 - Separate active implementation gaps from review findings.
@@ -27,6 +31,10 @@ Use these when the project has many docs, SPEC revisions, or AI sessions:
   implementation, review, tests, or owner decisions.
 - Keep product notes and archives out of the active implementation path until
   deliberately promoted.
+- Route repeated pain through finding -> root cause -> smallest durable control
+  plus regression evidence -> Keep/Refine/Merge/Retire. Imported experience
+  follows the current owner's apply/review/reference intent; origin alone does
+  not grant or reduce authority.
 - Treat production readiness as a named hardening gate.
 
 ## Release-Governance-Derived Rules

@@ -29,8 +29,21 @@ Infer intent from plain language and repository state:
 - release/publish/tag/deploy/migrate: protected-action route with owner gates;
 - docs/README/FAQ/guide: affected documentation route;
 - handoff/continue later/lost context: continuity route;
-- borrow/reference/adopt an idea: reference-intake and parity route;
+- borrow/reference/can we adopt an idea: reference-intake and parity route;
+- adopt/use/implement this: current change-request route;
 - asks too often/runs ahead: execution-scope and packet-boundary tuning.
+
+The current applicable owner instruction supersedes an older owner direction.
+On redirect, stop affected local/delegated work, re-enter Plan -> Route, and
+reconcile SPEC/state before stateful implementation. Old-boundary outputs stay
+stale until revalidated. Review/compare/explain/reference-only intent is read-only;
+a draft request may write only the draft, not activate implementation scope.
+
+An explicit current owner command authorizes only its named direction, acceptance,
+or protected action for the stated boundary; persist it without re-asking. It
+does not waive evidence, prerequisites, tool policy, or another protected action.
+A question, hypothetical, quotation, negation, or review/reference-only request
+does not authorize the action it mentions; classify the whole utterance.
 
 Treat carefully/thoroughly as inspection depth, fully/end-to-end as continuing
 to evidence-ready inside approved scope, minimal/quickly as compression, and
@@ -74,10 +87,16 @@ Execution scope does not grant permission for release, migration, destructive
 actions, sensitive data, auth, money, security, rollback, or production claims.
 Those remain owner gates.
 
-Do not stop after every micro-task or internal review-worthy unit. Stop only
-when scope expands, a risk or claim gate changes, an irreversible action is
-required, an owner-controlled tradeoff remains unresolved, verification is
+Do not pause for owner input after every micro-task or internal review-worthy
+unit. Obey a current owner stop/redirect. Pause for input when scope expansion
+is unrequested or ambiguous, a risk/claim gate or irreversible action remains
+unauthorized, an owner-controlled tradeoff is unresolved, verification is
 blocked, or evidence conflicts with the requested plan.
+
+A later owner restriction, cancellation, or revocation immediately ends the affected
+authorization/execution boundary. Persist it before any further protected action;
+an older record cannot keep authorization. Without replacement, use `deferred`,
+record `resume only by explicit owner reactivation`, and never auto-resume it.
 
 ## Progressive Control Plane
 
@@ -97,8 +116,9 @@ or optional evidence files by default. Keep the fixed startup plane below the
 budgets enforced by repository tests.
 
 `routed_docs` is an eligible selection set, not a read-all list. Current intent
-selects the routed path, heading, active section, or targeted match actually
-read. Reports name only routed documents actually read.
+selects the routed path, heading, active section, or targeted match; reports name
+only documents actually read. Inspect current owner-named input even if stale
+routes omit it; if adopted, reconcile authority/routes before implementation.
 
 ## Sensitive Data Boundary
 
@@ -126,14 +146,18 @@ commands establish observed behavior. The state-declared `active_spec` is the
 single normative entrypoint for intended scope, behavior, and acceptance criteria. State
 and active ledgers own current execution and unresolved work. Owner-decision
 records control only their declared authorization or acceptance. Handoffs own
-continuity pointers only. Planned SPECs, references, archives, filenames,
-dates, and chat cannot activate requirements.
+continuity pointers only. A current applicable owner instruction can interrupt
+or redirect work immediately; persist accepted intent in SPEC/state before
+affected stateful implementation. Planned SPECs, references, archives,
+filenames, dates, and old/provider-retained chat memory cannot activate requirements.
 
 `SPEC-COMPLETE.md` is an integrated baseline, not immutable or automatically
-active. A later amendment, bounded supplement, or replacement is a proposal
-until its exact scope is incorporated by the active entrypoint or a packet
-transaction switches the pointer. A material change after owner acceptance
-requires a new, never-reused packet ID and fresh validation. An ADR records
+active. A SPEC supplied as current requirements is a change request unless the
+owner limits it to review/draft/reference; reconcile it before affected work. A merely
+discovered SPEC gains no authority from metadata and remains a proposal only
+when nonconflicting. Incorporate a same-boundary change into a non-terminal
+packet and invalidate affected evidence; use a new, never-reused packet and
+fresh validation for a material or post-acceptance change. An ADR records
 rationale and tradeoffs; it cannot silently override normative SPEC content.
 
 If a SPEC spans past-to-present history, current active sections override older
@@ -190,6 +214,7 @@ behavior, checks, claim limits, routed documents actually read, open findings,
 remaining risk, owner gates, acceptance status, and next step. Update only
 control files whose state changed.
 
-Create a handoff when work pauses, changes hands, remains blocked, partial, or
-unverified, owner direction changes, or reconstruction would be expensive. Link
-existing authorities instead of copying their contents.
+Create a handoff only when another session, tool, person, or machine needs actual
+continuity and reconstruction would otherwise be costly. Reconcile direction
+first; a stop, redirect, block, or partial result alone does not require a
+handoff. Link existing authorities instead of copying their contents.

@@ -12,9 +12,15 @@ normative SPEC entrypoint.
 This integrated baseline is not immutable, and it is not automatically active;
 state selects the normative entrypoint.
 
-An additional SPEC does not become authority because it is newer, has `FINAL`
-or `COMPLETE` in its name, or exists under `SPEC/`. Before implementation,
-classify it as an amendment, bounded supplement, replacement, or proposal.
+An additional SPEC does not become authority merely because it is newer, has
+`FINAL` or `COMPLETE` in its name, or exists under `SPEC/`. Requested action and
+owner intent matter: a SPEC supplied as current requirements is a change
+request, while review/draft/reference-only intent is not. Hold affected
+implementation while comparing it with the active acceptance boundary; do not
+demote it to proposal/reference merely because state has not been updated yet.
+A SPEC only discovered in the repository may remain non-authoritative, but the
+packet may continue only after it is confirmed nonconflicting. Then classify
+the result as an amendment, bounded supplement, replacement, or proposal.
 
 - Amendment: update the current active SPEC inside the existing acceptance
   boundary.
@@ -24,6 +30,13 @@ classify it as an amendment, bounded supplement, replacement, or proposal.
 - Replacement: record owner scope/acceptance, name the superseded path or exact
   headings, and switch `active_spec` in the packet transaction.
 - Proposal/reference: retain it as non-authoritative input until promoted.
+
+For a non-terminal packet, an owner-requested change inside the same objective
+and acceptance boundary may amend or supplement the active SPEC in the same
+packet; invalidate and rerun affected evidence. A material objective,
+acceptance, protected-boundary, or authorization-term change uses a new packet.
+If intent or overlap cannot be determined, ask one blocking question before
+affected implementation. A terminal accepted boundary is never reopened.
 
 New additional or replacement SPECs start with this exact metadata block:
 

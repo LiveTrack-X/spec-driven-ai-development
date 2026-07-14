@@ -10,24 +10,30 @@ Korean summary:
 
 ```text
 당연해 보이지만 안 적으면 AI가 놓치기 쉬운 규칙들을 명시한다.
-핵심 5개는 모든 프로젝트에서 적용하고, 확장 15개는 프로젝트 규모와 위험에 따라 적용한다.
+핵심 5개는 모든 프로젝트에서 적용하고, 확장 규칙은 프로젝트 규모와 위험에 따라 적용한다.
 ```
 
 ## Core 5
 
 These five rules should appear in every stateful SDAD project.
 
+Compression first. Gates stay real.
+
 ### 1. Current Beats Historical
 
-Rule: current active code, tests, docs, and SPEC sections beat older SPEC
-history, old handoffs, archived plans, and chat memory.
+Rule: the current applicable owner instruction and current active code, tests,
+docs, and SPEC sections beat older owner directions, SPEC history, handoffs,
+archived plans, and chat memory. "Current" means applicable now, not merely the
+newest filename or timestamp.
 
 Why it matters: AI can read a long timeline and treat every historical idea as
 still active. That creates regressions, scope creep, and repeated old decisions.
 
-Operational form: before implementation or review, identify which SPEC section
-is current. Treat older sections as rationale unless reaffirmed in the active
-path.
+Operational form: before implementation or review, identify which owner request
+and SPEC section are current. When the owner redirects the work, stop affected
+implementation, re-enter Plan -> Route, and persist the new direction in the
+appropriate repository authority before resuming stateful work. Treat older
+directions as rationale unless reaffirmed.
 
 ### 2. Evidence Beats Confidence
 
@@ -51,27 +57,71 @@ Why it matters: AI tends to expand toward useful-looking ideas. That can turn a
 small verified slice into an unreviewable rewrite.
 
 Operational form: future ideas stay in backlog or product notes until the owner
-promotes them into active SPEC.
+promotes them into active SPEC. Once the owner adopts one as current direction,
+it is no longer merely interesting input: stop affected old work, re-route, and
+persist the new active boundary before implementation resumes.
 
 ### 4. Owner Decision Beats AI Momentum
 
 Rule: the owner controls direction, priority, risk tolerance, and acceptance.
+A current owner instruction can supersede an older plan; work already in motion
+does not preserve the old direction.
 
 Why it matters: AI can keep moving because it can generate plausible next steps.
 Momentum is not consent.
 
-Operational form: mark decisions that require owner approval and do not silently
-convert suggestions into active scope.
+Operational form: mark decisions that require owner approval, do not silently
+convert suggestions into active scope, and do not continue an old packet after
+the owner has redirected affected work. A review/reference-only instruction
+remains read-only and does not authorize implementation.
 
 ### 5. Repeated Pain Becomes A Rule
 
-Rule: when the same confusion or bug pattern happens twice, convert it into a
-repository rule, review checklist, test, or template.
+Rule: repeated pain, or one high-risk failure that exposes a missing control,
+must become the smallest durable prevention rather than another chat reminder.
 
 Why it matters: chat memory does not scale across sessions.
 
-Operational form: update `docs/Repository-Operating-Rules.md`,
-`docs/INDEX.md`, prompts, tests, or templates so the lesson persists.
+Operational form: use this closed loop:
+
+```text
+pain / failure / friction
+-> finding and concrete evidence
+-> root cause
+-> repeated or single high-risk?
+-> smallest effective control
+-> enforcement plus regression evidence
+-> field validation
+-> Keep / Refine / Merge / Retire
+```
+
+Promotion is justified when the same root cause recurs twice, appears through
+different surfaces, needs repeated manual explanation, or one event threatens
+security, data, owner authority, release, or another protected boundary. A
+personal preference, unexplained one-off, repository-specific accident, or
+problem already prevented by a working control is not a global-rule trigger.
+
+Prefer, in order, clarifying an existing rule; repairing a flow or route; adding
+explicit metadata; adding a Doctor/validator check; adding a regression test;
+then changing a template or prompt. Add a new global rule only when the smaller
+controls cannot express or prevent the root cause. The promotion record names
+the failure/evidence, root cause, affected authority, chosen control, enforcement,
+regression check, remaining limit, and review condition.
+
+Apply the control in the current packet only when it fits the authorized
+boundary. Otherwise create a bounded follow-up; never expand scope silently.
+After real use, Keep it when effective and cheap, Refine it for gaps or false
+stops, Merge overlapping rules around one invariant, or Retire it when a stronger
+control replaces it or its maintenance/context cost exceeds its value.
+
+Project-specific promoted rules stay human-readable in one existing authority,
+not hidden memory or an opaque database. When cross-project reuse is requested,
+export a readable proposal with provenance, triggers, exceptions, enforcement,
+evidence, and limits. Import authority follows current owner intent: an explicit
+apply instruction enters integration without duplicate approval; review/reference
+intent stays non-authoritative; automatic or agent-discovered input is only a
+candidate. Never auto-run imported code or let an imported rule silently replace
+Core authority.
 
 ## Extended Rules
 
@@ -92,9 +142,10 @@ acceptance evidence, and rollback or deferral path before implementation
 expands. The packet may batch multiple related units when they belong to one
 reviewable objective.
 
-Stop for the owner only when scope expands, risk posture changes, a destructive
-or irreversible action is needed, an owner-controlled decision is required,
-verification is blocked, or evidence conflicts with the plan.
+Obey a current owner stop/redirect immediately. Pause for owner input when scope
+expansion is unrequested or ambiguous, risk posture changes, a destructive or
+irreversible action remains unauthorized, an owner-controlled decision is
+unresolved, verification is blocked, or evidence conflicts with the plan.
 
 ### 6a. Implementation Discipline Makes Bounded Execution Safe
 
@@ -112,13 +163,18 @@ assumptions require owner input.
 ### 7. Open Findings Beat New Features
 
 Rule: critical review findings, failing tests, security regressions, and
-production-readiness blockers take priority over feature expansion.
+production-readiness blockers that intersect the active packet, shared safety
+boundary, artifact, or intended claim take priority over feature expansion.
 
 Why it matters: AI can keep adding capability while known defects become
 normalized.
 
-Operational form: if `review-findings.md` has critical or blocking items, do not
-start broad feature work until the owner explicitly accepts the risk.
+Operational form: stop affected old work and preserve the finding. If it
+intersects the new owner direction, ask for the one unresolved risk decision;
+the finding is a gate, not authority to keep the old objective. An unrelated
+finding may be deferred with its packet link, reason, and revisit trigger while
+the owner selects an independent packet. It does not silently disappear or
+globally veto unrelated work.
 
 ### 8. Explicit Non-Goals Beat Assumptions
 
@@ -327,13 +383,15 @@ Why it matters: real owners usually say "check this", "fix it", "release it",
 "make the docs easier", or "create a handoff". If SDAD only works when users
 name the exact skill, the workflow is brittle.
 
-Operational form: infer matching intents from the user's wording and current
-repository state. If multiple intents match, first decide whether they can be
-safely composed inside one approved packet. State the interpreted intent, SDAD
-scale, `execution_scope`, applicable owner gates, and expected evidence. If the combination
-changes scope, risk, claim level, owner gate, or durable-doc requirements, ask
-one blocking clarification question with a recommended default. Do not use
-intent routing to bypass owner gates.
+Operational form: classify the whole utterance, not isolated action words. A
+clear imperative authorizes only its named action and boundary; a question,
+hypothetical, quotation, negation, or reference-only request does not. Infer
+matching intents from the wording and current repository, then decide whether
+multiple intents fit one approved packet. State the interpreted intent, scale,
+`execution_scope`, gates, and expected evidence. Ask one blocking question with
+a recommended default only when an unresolved fact changes objective/direction,
+authority/reference role, execution boundary, protected action/gate, or claim
+boundary. Do not use intent routing to bypass owner gates.
 
 ### 24. Guarantees Beat Guidance For Non-Negotiables
 

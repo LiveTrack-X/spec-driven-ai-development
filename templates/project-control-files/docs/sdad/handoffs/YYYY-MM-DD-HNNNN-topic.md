@@ -45,5 +45,7 @@ First load the installed tool adapter, `sdad-state.yaml`, and `docs/INDEX.md`.
 Confirm that this handoff is still the state-declared current checkpoint, then
 inspect current source/tests and only the targeted authorities above. Use
 bounded reads for archives, old handoffs, generated artifacts, logs, and
-authorized private data. If repository truth conflicts with this checkpoint,
-follow repository truth and update the authoritative record before continuing.
+authorized private data. Before `Next concrete action`, apply any current owner
+stop/redirect, hold the old action, and reconcile SPEC/state. If repository truth
+conflicts with this checkpoint, follow repository truth and update the
+authoritative record before continuing.

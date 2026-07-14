@@ -19,13 +19,31 @@ AI 도구와 세션에서 범위, validation, evidence, unresolved state, 오너
 기술적으로 차단하지는 않습니다. 실제 강제는 permissions, hooks, sandbox,
 branch protection 같은 실행 환경이 담당합니다.
 
-핵심 원칙은 간단합니다.
+핵심 제어 구분은 간단합니다.
 
 - Scale은 유지할 제어 표면을 정합니다.
 - `execution_scope`는 AI가 지금 어디까지 실행할 수 있는지 정합니다.
 - owner gate는 어떤 보호 행동에서 반드시 멈춰야 하는지 정합니다.
 - validation contract는 어떤 검사가 무엇을 증명하고 무엇을 증명하지 않는지 정합니다.
 - `evidence-ready`는 검토 가능한 AI 결과이고, `owner-accepted`는 오너의 최종 수락입니다.
+
+## Core 5 원칙
+
+1. Current beats historical — 현재의 활성 정보가 과거 기록보다 우선합니다.
+2. Evidence beats confidence — AI의 확신보다 관찰 가능한 증거가 우선합니다.
+3. Active beats interesting — 흥미로운 아이디어보다 승인된 활성 범위가 우선합니다.
+4. Owner decision beats AI momentum — AI의 진행 관성보다 오너 결정이 우선합니다.
+5. Repeated pain becomes a rule — 반복되는 문제는 규칙·테스트·검증으로 남깁니다.
+
+Compression first. Gates stay real.
+
+여기서 **Current**는 최신 파일이나 시간이 아니라 현재 적용 가능한 Owner 지시와 명시적으로
+활성인 저장소 권위를 뜻합니다. Owner가 방향을 바꾸면 에이전트는 영향받은 이전 작업을 멈추고
+Plan -> Route로 돌아가 변경을 기록한 뒤 stateful implementation을 재개합니다. Rule 5는 단순히
+규칙을 늘리는 뜻이 아니라, 원인을 찾아 가장 작은 강제 가능한 변경과 회귀 증거로 재발을 막고
+나중에 Keep/Refine/Merge/Retire하는 피드백 루프입니다.
+
+자세한 실행 의미는 [Implicit Rules Made Explicit](docs/implicit-rules.md)를 참고하세요.
 
 ## 빠른 선택
 

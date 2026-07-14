@@ -14,11 +14,12 @@ Write the handoff under:
 docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md
 ```
 
-Use `HNNNN` as a zero-padded repository-logical sequence. Select an ID greater
-than every repository-known numbered handoff, including archived numbered
-handoffs; never reuse, fill a gap, or renumber an ID. The date is descriptive
-only and does not establish order or currentness. Legacy `YYYY-MM-DD-topic.md`
-handoffs remain valid and need no mass rename.
+Use `HNNNN` as a zero-padded sequence scoped to the filename date. For that
+date, select an ID greater than every repository-known numbered handoff,
+including archived handoffs; start each new date at `H0001`, and never reuse,
+fill a gap, or renumber within a date. The full date-plus-ID pair is the identity,
+so cite the path rather than `HNNNN` alone. Neither date nor ID establishes
+currentness. Legacy `YYYY-MM-DD-topic.md` handoffs remain valid.
 
 Use this exact structure:
 
@@ -69,6 +70,8 @@ Use this exact structure:
   active packet.
 - Inspect current source/tests and only the targeted Authority Pointers needed
   for the next decision.
+- Before `Next concrete action`, apply any current owner stop/redirect, hold the
+  old action, and reconcile SPEC/state.
 - Repository truth overrides this checkpoint.
 ```
 
@@ -115,15 +118,16 @@ pointer in the same coherence update. Never leave a handoff for another packet
 declared current. Never infer currentness from the date or greatest handoff ID.
 
 A small correction updates the same checkpoint. A materially new recovery
-checkpoint gets the next ID. If parallel branches allocate the same ID, resolve
-the collision before merge by updating the filename, internal ID, and state
-pointer together.
+checkpoint gets the next ID for its date; the first checkpoint on a new date is
+`H0001`. If parallel branches allocate the same date-plus-ID pair, resolve the
+collision before merge by updating the filename, internal ID, and state pointer.
 
 ## Bounded-Read Instructions
 
 The next session must not assume previous chat context. It should read the
 adapter, state, and INDEX first; inspect current source/tests; then select only
-the handoff pointers needed for its intent. Use bounded reads for archives, old
+the handoff pointers needed for its intent. It must apply a current owner
+stop/redirect before the recorded next action. Use bounded reads for archives, old
 handoffs, generated artifacts, logs, databases, and authorized private data.
 Report only routed documents actually read.
 

@@ -30,7 +30,10 @@ one reviewable outcome. Do not stop for approval after every micro-task.
 The owner can say “check this,” “fix it,” “make the README clearer,” or “create
 a tiny handoff” without knowing a skill name. The AI infers intent and the unit
 from repository evidence, reports the interpretation, and asks at most the next
-blocking question when its answer would change scale or an owner gate.
+blocking question when its answer would change objective/direction,
+authority/reference role, execution boundary, protected action/gate, or claim boundary.
+A clear imperative authorizes only its named action/boundary; a question,
+hypothetical, quotation, negation, or review/reference-only request does not.
 
 Examples:
 
