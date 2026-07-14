@@ -1,8 +1,11 @@
 # Known Limitations And Adoption Notes
 
-SDAD Protocol is a repository-local operating protocol. It improves the
-visibility and structural consistency of state, validation, owner control,
-decisions, and continuity; it does not make AI output correct by itself.
+SDAD expands to SPEC-Directed AI Development. It is a method-agnostic,
+tool- and model-neutral, repository-local operating protocol for AI-assisted
+development. It improves the visibility and structural consistency of scope,
+state, validation, evidence, unresolved work, owner authority, and continuity;
+it does not run or schedule agents, prescribe an implementation method, or make
+AI output correct by itself.
 
 ## Four Control Layers
 

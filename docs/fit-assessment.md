@@ -1,7 +1,7 @@
 # Fit Assessment
 
 Status: Active reference
-Scope: Decide whether SPEC-driven AI development is appropriate for a project
+Scope: Decide whether the SPEC-directed SDAD Protocol is appropriate for a project
 
 Use this assessment before bootstrapping a new project. The AI should infer the
 conditions from the request and repository first. Ask at most one question only

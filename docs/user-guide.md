@@ -1,6 +1,8 @@
 # SDAD Protocol User Guide
 
-SDAD Protocol is a repository-local operating protocol for AI-assisted work.
+SDAD expands to SPEC-Directed AI Development. It is a repository-local
+operating protocol for AI-assisted development: use any implementation method
+while keeping scope, evidence, unresolved state, and owner authority clear.
 It organizes state, evidence, owner control, decisions, and handoffs; it does
 not make model output correct or replace technical enforcement.
 

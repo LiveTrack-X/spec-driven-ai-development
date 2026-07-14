@@ -1,7 +1,7 @@
 # Implicit Rules Made Explicit
 
 Status: Active reference
-Scope: Obvious-but-dangerous rules for SPEC-driven AI development
+Scope: Obvious-but-dangerous rules for SPEC-directed AI development
 
 Some rules feel obvious to a human owner but are easy for an AI session to miss.
 This document turns those assumptions into explicit project rules.
@@ -15,7 +15,7 @@ Korean summary:
 
 ## Core 5
 
-These five rules should appear in every SPEC-driven AI project.
+These five rules should appear in every stateful SDAD project.
 
 ### 1. Current Beats Historical
 

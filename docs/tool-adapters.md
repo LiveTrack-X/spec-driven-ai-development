@@ -2,8 +2,9 @@
 
 Status: Active reference
 
-SDAD Protocol is tool-neutral. An adapter is a compact rendering of the same
-repository runtime kernel, not the whole method and not technical enforcement.
+SDAD Protocol (SPEC-Directed AI Development) is tool- and model-neutral. An
+adapter is a compact rendering of the same repository runtime kernel, not an
+implementation method, agent runtime, orchestrator, or technical enforcement.
 After installation, ordinary work follows the adapter -> `sdad-state.yaml` ->
 `docs/INDEX.md` route and selects only the source/tests and routed content needed
 for the current intent.

@@ -1,7 +1,7 @@
 # Anti-Patterns
 
 Status: Active reference
-Scope: Failure modes to avoid in SPEC-driven AI development
+Scope: Failure modes to avoid in SPEC-directed AI development
 
 Anti-patterns are recurring ways an AI-assisted project can look productive
 while losing owner control, evidence quality, or current context. Use this file

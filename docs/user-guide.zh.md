@@ -5,8 +5,10 @@
 本文是中文导览版。英文 [user-guide.md](user-guide.md)、`docs/`、`templates/`、
 `scripts/` 是英文规范文档。如有差异，以英文规范为准。
 
-SDAD Protocol 不保证 AI 一定正确。它会明确当前 scope、source of truth、validation、
-Owner control 与 handoff，让错误和夸大的完成声明更容易被发现。
+SDAD Protocol（SPEC-Directed AI Development）是一套用于 AI 辅助开发的
+repository-local 运行协议。它不规定实现方法或 AI 工具，而是持续保持当前 scope、
+validation、evidence、unresolved state 与 Owner authority 的一致性。它不保证 AI
+一定正确，也不取代 tests、CI、permissions 或 review。
 
 ## 先区分三个轴
 

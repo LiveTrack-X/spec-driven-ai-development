@@ -1,5 +1,9 @@
 # Getting Started With SDAD Protocol
 
+SDAD expands to SPEC-Directed AI Development: a repository-local operating
+protocol for AI-assisted development, not a prescribed implementation method or
+agent runtime.
+
 The fastest path is the expanded
 [Copy-Paste Start Prompt](../README.md#copy-paste-start-prompt). It is identical
 to [No-Clone Option 1](no-clone-quick-install.md#option-1-give-this-to-your-ai-agent).

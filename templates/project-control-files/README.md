@@ -4,7 +4,8 @@ One paragraph explaining what this project is and who it is for.
 
 ## Development Workflow
 
-This project uses owner-supervised, SPEC-driven AI development.
+This project uses SDAD Protocol (SPEC-Directed AI Development), a
+repository-local operating protocol that leaves the implementation method open.
 
 - The owner controls direction and final acceptance.
 - AI agents use Plan -> Route -> Implement -> Verify -> Report inside the

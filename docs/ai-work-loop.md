@@ -1,5 +1,10 @@
 # AI Work Loop
 
+SDAD expands to SPEC-Directed AI Development. It is a repository-local
+operating protocol around the work, not a prescribed implementation method.
+TDD, direct implementation, external planning workflows, and tool-native
+features may all operate inside the declared boundary.
+
 Use one loop for SDAD Protocol work:
 
 ```text

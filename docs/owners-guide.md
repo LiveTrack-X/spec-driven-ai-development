@@ -1,5 +1,10 @@
 # SDAD Protocol Owner Guide
 
+SDAD expands to SPEC-Directed AI Development: a repository-local operating
+protocol for AI-assisted development. It keeps scope, evidence, unresolved
+state, and owner authority explicit without prescribing the implementation
+method or running agents.
+
 The owner does not need to memorize protocol vocabulary. The owner sets the
 outcome, keeps protected decisions explicit, and accepts or rejects evidence.
 

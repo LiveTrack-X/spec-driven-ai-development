@@ -1,7 +1,8 @@
 # Tool Adapters
 
-These files render the same compact SDAD Protocol runtime kernel for supported
-AI coding tools:
+These files render the same compact SDAD Protocol (SPEC-Directed AI Development)
+runtime kernel for supported AI coding tools. The protocol is tool- and
+model-neutral; an adapter does not turn it into a harness or orchestrator:
 
 - `codex/AGENTS.md`
 - `claude-code/CLAUDE.md`

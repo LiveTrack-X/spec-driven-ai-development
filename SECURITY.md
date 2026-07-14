@@ -1,8 +1,8 @@
 # Security Policy
 
-SPEC-Driven AI Development is a documentation, template, adapter, and
-installer package. It does not ship an application runtime, but it does publish
-instructions that AI coding tools may copy into other projects. Treat install
+SDAD Protocol (SPEC-Directed AI Development) is a documentation, template,
+adapter, and installer package. It does not ship an application runtime, but it
+does publish instructions that AI coding tools may copy into other projects. Treat install
 paths, raw fetch URLs, adapter content, and security-boundary wording as
 security-sensitive surfaces.
 

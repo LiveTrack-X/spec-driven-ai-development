@@ -3,8 +3,8 @@
 Status: Active
 Scope: Generic AI coding-agent instructions
 
-SDAD expands to SPEC-Driven AI Development. It is a repository-local operating
-protocol, not a substitute for owner authority or observed evidence.
+SDAD expands to SPEC-Directed AI Development. It is a method-agnostic,
+repository-local operating protocol for AI-assisted development, not a coding method, agent runtime, or substitute for owner authority or observed evidence.
 
 ## Fast Start
 

@@ -62,8 +62,9 @@ Paste this into Codex, Claude Code, Gemini CLI, Cursor, Copilot Chat, or another
 agent:
 
 ```text
-Use the SDAD Protocol (SPEC-Driven AI Development) as the repository-local
-project control method.
+Use the SDAD Protocol (SPEC-Directed AI Development) as a repository-local
+operating protocol for AI-assisted development. It does not prescribe the
+implementation method or act as an agent runtime, harness, or orchestrator.
 
 Source repository:
 https://github.com/LiveTrack-X/spec-driven-ai-development
@@ -415,7 +416,7 @@ try {
   if (Test-Path -LiteralPath $tempPath) { Remove-Item -LiteralPath $tempPath -Force }
 }
 Write-Host "Installed $adapter instructions to $targetPath"
-Write-Host "Next prompt: Read $targetPath and bootstrap this project into SPEC-Driven AI Development."
+Write-Host "Next prompt: Read $targetPath and bootstrap this project with the SDAD Protocol (SPEC-Directed AI Development)."
 ```
 
 ## Option 3: One-Paste Bash Installer
@@ -523,7 +524,7 @@ fi
 rm -- "$temp_path"
 trap - EXIT
 echo "Installed $adapter instructions to $target_path"
-echo "Next prompt: Read $target_path and bootstrap this project into SPEC-Driven AI Development."
+echo "Next prompt: Read $target_path and bootstrap this project with the SDAD Protocol (SPEC-Directed AI Development)."
 ```
 
 ## After The Installer

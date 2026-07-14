@@ -5,8 +5,10 @@
 이 문서는 한국어 안내용입니다. 영어 [user-guide.md](user-guide.md), `docs/`,
 `templates/`, `scripts/`가 영어 기준 문서입니다. 내용이 다르면 영어 기준을 우선하세요.
 
-SDAD Protocol은 AI가 맞다고 보장하지 않습니다. 대신 현재 범위, source of truth,
-validation, owner control, handoff를 명시해 오류와 과장된 완료 주장을 발견하기 쉽게 합니다.
+SDAD Protocol(SPEC-Directed AI Development)은 AI 보조 개발을 위한 저장소 기반
+운영 프로토콜입니다. 구현 방법이나 AI 도구를 정하지 않고 현재 범위, validation,
+evidence, unresolved state, owner authority를 일관되게 유지합니다. AI가 맞다고
+보장하거나 tests, CI, permissions, review를 대체하지 않습니다.
 
 ## 먼저 구분할 세 가지
 

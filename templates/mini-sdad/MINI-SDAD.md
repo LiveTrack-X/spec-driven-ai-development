@@ -1,6 +1,6 @@
 # Mini SDAD Agent Rules
 
-Use this file when the project is too small for full SPEC-Driven AI Development
+Use this file when the project is too small for the full SDAD Protocol
 but still needs basic protection against scope drift, vague completion, or
 session context loss.
 

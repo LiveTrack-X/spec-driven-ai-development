@@ -3,7 +3,7 @@
   "diagram_type": "workflow",
   "meta": {
     "title": "SDAD Control Loop",
-    "subtitle": "How SPEC-driven AI development routes intent into bounded work, evidence, and owner decisions",
+    "subtitle": "How SPEC-directed AI development keeps scope, evidence, and owner decisions explicit",
     "output": "assets/sdad-control-loop.archify.html"
   },
   "lanes": [

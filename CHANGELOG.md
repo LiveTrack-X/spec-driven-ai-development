@@ -2,7 +2,18 @@
 
 ## Unreleased
 
-Nothing yet.
+- Changed the expanded public name from `SPEC-Driven AI Development` to
+  `SPEC-Directed AI Development` so the name describes direction and boundary
+  rather than a prescribed implementation methodology.
+- Standardized the public descriptor as "a repository-local operating protocol
+  for AI-assisted development" and made its method-, tool-, model-, harness-,
+  and orchestration-neutral boundary explicit across current documentation and
+  agent surfaces.
+- Kept the repository slug, file paths, pinned v3.2 sources, release notes, and
+  historical records unchanged for compatibility and provenance.
+- Removed internal Superpowers SDD plans, specifications, and task reports from
+  the distributed tree, and ignored `/.superpowers/` and `/docs/superpowers/`
+  so implementation coordination artifacts do not leak into future releases.
 
 ## 3.2.0 - 2026-07-12
 

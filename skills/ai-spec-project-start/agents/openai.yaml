@@ -1,4 +1,4 @@
 interface:
   display_name: "AI-SPEC Project Start"
-  short_description: "Start, review, release, or hand off owner-supervised AI projects."
-  default_prompt: "Use this skill for natural-language requests like start this project, review this repo, implement the SPEC, release this, update the docs, tune autonomy, or create a handoff using an owner-supervised, SPEC-driven workflow."
+  short_description: "Install, migrate, repair, or diagnose the SDAD Protocol."
+  default_prompt: "Use this skill to install, migrate, repair, or diagnose SDAD Protocol (SPEC-Directed AI Development), a repository-local operating protocol for AI-assisted development."

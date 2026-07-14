@@ -4,7 +4,9 @@ Status: Active reference
 Scope: Combined workflow patterns distilled from anonymized field projects
 
 This catalog turns field governance practice and compatible clarification
-patterns into a reusable operating system for SPEC-driven AI development.
+patterns into an optional pattern set for SPEC-directed AI development. The
+catalog does not turn SDAD into an operating system or prescribe the method used
+inside a work boundary.
 
 - Documentation-governance field practice contributes documentation routing,
   source-of-truth discipline, backlog separation, and production-readiness
@@ -609,7 +611,7 @@ A project using this pattern should be able to show the owner:
 12. next decision required from the owner,
 13. expected risk before release or production use.
 
-## Naming The Method
+## Naming The Protocol
 
 Recommended public name:
 
@@ -617,16 +619,26 @@ Recommended public name:
 SDAD Protocol
 ```
 
+Expanded name:
+
+```text
+SPEC-Directed AI Development
+```
+
 Precise description:
 
 ```text
-Repository-local AI work protocol for state, evidence, owner control, decisions,
-and handoffs across coding agents and sessions.
+A repository-local operating protocol for AI-assisted development.
 ```
 
 Korean description:
 
 ```text
-코딩 에이전트와 세션 전반의 상태, 증거, 소유자 통제, 결정, 인계를
-저장소 안에서 관리하는 AI 작업 프로토콜.
+저장소 기반 AI 보조 개발 운영 프로토콜.
+```
+
+Main slogan:
+
+```text
+Use any method. Keep scope, evidence, and owner authority clear.
 ```

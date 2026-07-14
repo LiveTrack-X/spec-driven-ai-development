@@ -1,8 +1,11 @@
 # SDAD Protocol
 
-SPEC-Driven AI Development: a repository-local operating protocol for state,
-evidence, owner control, decisions, and handoffs across coding agents and
-sessions.
+SPEC-Directed AI Development: a repository-local operating protocol for
+AI-assisted development. It keeps scope, validation, evidence, unresolved
+state, and owner authority consistent without prescribing how work is
+implemented.
+
+Use any method. Keep scope, evidence, and owner authority clear.
 
 Status: `3.2.0` stable documentation/package release.
 
@@ -67,8 +70,9 @@ main explanation of SDAD.
 3. Let the AI choose the scale and create only the files that scale needs.
 
 ```text
-Use the SDAD Protocol (SPEC-Driven AI Development) as the repository-local
-project control method.
+Use the SDAD Protocol (SPEC-Directed AI Development) as a repository-local
+operating protocol for AI-assisted development. It does not prescribe the
+implementation method or act as an agent runtime, harness, or orchestrator.
 
 Source repository:
 https://github.com/LiveTrack-X/spec-driven-ai-development

@@ -904,9 +904,12 @@ class PublicV32DocumentationContractTests(unittest.TestCase):
         "docs/getting-started.md",
         "docs/user-guide.md",
         "docs/owners-guide.md",
+        "docs/ai-work-loop.md",
         "docs/session-handoff.md",
         "docs/known-limitations.md",
+        "docs/pattern-catalog.md",
         "prompts/handoff-prompt.md",
+        "templates/project-control-files/AGENTS.md",
     )
 
     def write_fixture(self, root: Path) -> None:
@@ -1042,13 +1045,35 @@ class PublicV32DocumentationContractTests(unittest.TestCase):
         cases = (
             ("## Copy-Paste Start Prompt", "<details>\n## Copy-Paste Start Prompt"),
             (
-                "Use the SDAD Protocol (SPEC-Driven AI Development)",
-                "Use a modified SDAD Protocol (SPEC-Driven AI Development)",
+                "Use the SDAD Protocol (SPEC-Directed AI Development)",
+                "Use a modified SDAD Protocol (SPEC-Directed AI Development)",
             ),
         )
         for old, new in cases:
             with self.subTest(new=new):
                 self.assert_mutation_rejected("README.md", old, new)
+
+    def test_rejects_current_positioning_drift(self) -> None:
+        cases = (
+            (
+                "README.md",
+                "SPEC-Directed AI Development: a repository-local operating protocol",
+                "SPEC-Driven AI Development: a development methodology",
+            ),
+            (
+                "docs/known-limitations.md",
+                "method-agnostic,\ntool- and model-neutral",
+                "model-specific,\ntool-dependent",
+            ),
+            (
+                "docs/ai-work-loop.md",
+                "not a prescribed implementation method",
+                "the prescribed implementation method",
+            ),
+        )
+        for path, old, new in cases:
+            with self.subTest(path=path):
+                self.assert_mutation_rejected(path, old, new)
 
     def test_rejects_current_legacy_vocabulary_before_migration(self) -> None:
         self.assert_mutation_rejected(
@@ -1284,52 +1309,15 @@ class DoctorSourceVersionContractTests(unittest.TestCase):
                 self.assert_source_rejected(source + "\n" + binding + "\n")
 
 
-class OwnerAmendmentSourceContractTests(unittest.TestCase):
-    DESIGN = "docs/superpowers/specs/2026-07-11-sdad-3.2-packet-consistency-design.md"
-    PLAN = "docs/superpowers/plans/2026-07-11-sdad-3.2.0-implementation.md"
-    HEADING = "## Owner-Approved Terminology And User-Control Amendment"
-
-    def test_design_and_plan_append_the_exact_owner_amendment_contract(self) -> None:
-        for relative_path in (self.DESIGN, self.PLAN):
-            with self.subTest(relative_path=relative_path):
-                content = (ROOT / relative_path).read_text(encoding="utf-8")
-                self.assertEqual(content.count(self.HEADING), 1)
-                for contract in (
-                    "Display name: `SDAD Protocol`",
-                    "Plan -> Route -> Implement -> Verify -> Report",
-                    "`execution_scope`: exactly `unit | packet`",
-                    "`intensity` and `autonomy` are not state-v2 keys",
-                    "`routed_docs` is an eligible selection set",
-                    "`current_handoff` is the sole current handoff pointer",
-                    "`docs/work-packet-state.md`",
-                    "Delivery Readiness Model",
-                    "Guidance, validation, technical enforcement, and owner decision",
-                    "### Task 7A Corrective Delta",
-                ):
-                    self.assertIn(contract, content)
-
-    def test_plan_records_remaining_task_and_release_order_deltas(self) -> None:
-        content = (ROOT / self.PLAN).read_text(encoding="utf-8")
-        ordered_markers = (
-            "#### Task 8 delta",
-            "#### Task 9 delta",
-            "#### Task 10 delta",
-            "#### Task 11 delta",
-            "#### Task 12 delta",
-            "fresh-context smoke",
-            "new infographic",
-            "final whole-branch review",
-            "remote release",
-            "published-hash verification",
-            "global skill update and smoke",
-        )
-        positions = [content.find(marker) for marker in ordered_markers]
-        self.assertNotIn(-1, positions)
-        self.assertEqual(positions, sorted(positions))
-        self.assertIn(
-            "conditional on green local, branch-CI, tag-CI, and published-hash gates with unchanged source",
-            content,
-        )
+class InternalWorkspaceIgnoreContractTests(unittest.TestCase):
+    def test_internal_superpowers_workspaces_are_root_ignored(self) -> None:
+        entries = {
+            line.strip()
+            for line in (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        }
+        self.assertIn("/.superpowers/", entries)
+        self.assertIn("/docs/superpowers/", entries)
 
 
 class StableReleaseContractTests(unittest.TestCase):
@@ -1391,11 +1379,9 @@ class StableReleaseContractTests(unittest.TestCase):
         self.assertIn("Release date: 2026-07-12", release)
         self.assertIn("Tag: `v3.2.0`", release)
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-        self.assertTrue(
-            changelog.startswith(
-                "# Changelog\n\n## Unreleased\n\nNothing yet.\n\n"
-                "## 3.2.0 - 2026-07-12\n"
-            )
+        self.assertRegex(
+            changelog,
+            r"(?s)\A# Changelog\n\n## Unreleased\n\n.+?\n## 3\.2\.0 - 2026-07-12\n",
         )
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("docs/releases/v3.2.0.md", readme)

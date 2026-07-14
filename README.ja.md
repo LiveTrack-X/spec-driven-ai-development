@@ -12,9 +12,10 @@
 
 ## これは何か
 
-SDAD Protocol（SPEC-Driven AI Development）は、複数の AI ツールやセッションが
-リポジトリで作業するときに、state、scope、evidence、Owner 権限、decision、handoff の
-ずれを防ぐ repository-local な作業プロトコルです。Markdown は権限と期待を記録しますが、
+SDAD Protocol（SPEC-Directed AI Development）は、AI 支援開発のための
+repository-local な運用プロトコルです。特定の実装手法を規定したり、エージェントを
+実行したりせず、複数の AI ツールやセッションにわたって scope、validation、evidence、
+unresolved state、Owner 権限を一貫して維持します。Markdown は権限と期待を記録しますが、
 ツール利用を技術的に遮断するものではありません。実際の強制は permissions、hooks、
 sandbox、branch protection などの実行環境が担います。
 

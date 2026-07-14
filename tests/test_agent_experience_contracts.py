@@ -804,7 +804,7 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
     def test_task9_kernel_uses_compact_current_protocol_vocabulary(self) -> None:
         required = (
             "SDAD Protocol",
-            "SDAD expands to SPEC-Driven AI Development",
+            "SDAD expands to SPEC-Directed AI Development",
             "Plan -> Route -> Implement -> Verify -> Report",
             "execution_scope: unit | packet",
             "Standard defaults to the current packet",

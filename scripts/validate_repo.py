@@ -750,9 +750,58 @@ def validate_public_v3_2_documentation_contract() -> None:
     getting_started = read("docs/getting-started.md")
     user_guide = read("docs/user-guide.md")
     owners_guide = read("docs/owners-guide.md")
+    ai_work_loop = read("docs/ai-work-loop.md")
     session_handoff = read("docs/session-handoff.md")
     known_limitations = read("docs/known-limitations.md")
+    pattern_catalog = read("docs/pattern-catalog.md")
+    canonical_kernel = read("templates/project-control-files/AGENTS.md")
     handoff_prompt = read("prompts/handoff-prompt.md")
+
+    readme_intro = readme.split("\n## ", 1)[0]
+    _require_concept_groups(
+        readme_intro,
+        "README public positioning",
+        [
+            ("SPEC-Directed AI Development", "repository-local operating protocol", "AI-assisted development"),
+            ("scope", "validation", "evidence", "unresolved state", "owner authority"),
+            ("without prescribing", "implemented"),
+            ("Use any method", "scope", "evidence", "owner authority"),
+        ],
+    )
+    _require_concept_groups(
+        canonical_kernel,
+        "Canonical kernel positioning",
+        [
+            ("SPEC-Directed AI Development", "method-agnostic"),
+            ("repository-local operating protocol", "AI-assisted development"),
+            ("not a coding method", "agent runtime"),
+        ],
+    )
+    _require_concept_groups(
+        ai_work_loop,
+        "AI Work Loop method-neutral boundary",
+        [
+            ("not a prescribed implementation method",),
+            ("TDD", "direct implementation", "external planning workflows", "tool-native features"),
+        ],
+    )
+    _require_concept_groups(
+        known_limitations,
+        "Known limitations positioning boundary",
+        [
+            ("method-agnostic", "tool- and model-neutral"),
+            ("does not run or schedule agents", "prescribe an implementation method"),
+        ],
+    )
+    _require_concept_groups(
+        pattern_catalog,
+        "Pattern Catalog naming contract",
+        [
+            ("Naming The Protocol", "SDAD Protocol", "SPEC-Directed AI Development"),
+            ("repository-local operating protocol", "AI-assisted development"),
+            ("Use any method", "scope", "evidence", "owner authority"),
+        ],
+    )
 
     try:
         canonical_prompt = prompt_content(no_clone, CANONICAL_HEADING)
@@ -1414,11 +1463,15 @@ def validate_stable_release_contract(manifest: dict[str, object]) -> None:
     )
 
     changelog = read("CHANGELOG.md")
-    expected_changelog_prefix = (
-        "# Changelog\n\n## Unreleased\n\nNothing yet.\n\n"
-        f"## {STABLE_RELEASE_VERSION} - {STABLE_RELEASE_DATE}\n"
-    )
-    if not changelog.startswith(expected_changelog_prefix):
+    unreleased_prefix = "# Changelog\n\n## Unreleased\n\n"
+    if not changelog.startswith(unreleased_prefix):
+        fail("CHANGELOG must start with an Unreleased section")
+    next_heading = re.search(r"(?m)^##\s+", changelog[len(unreleased_prefix) :])
+    if next_heading is None:
+        fail("CHANGELOG must retain the current stable release after Unreleased")
+    stable_heading_start = len(unreleased_prefix) + next_heading.start()
+    stable_heading = f"## {STABLE_RELEASE_VERSION} - {STABLE_RELEASE_DATE}\n"
+    if not changelog.startswith(stable_heading, stable_heading_start):
         fail(
             "CHANGELOG must place the current stable release entry directly "
             "after Unreleased"
@@ -2384,8 +2437,9 @@ def validate_skill() -> None:
         "Skill UI metadata",
         [
             'display_name: "AI-SPEC Project Start"',
-            "Start, review, release, or hand off",
-            "owner-supervised, SPEC-driven workflow",
+            "Install, migrate, repair, or diagnose",
+            "SPEC-Directed AI Development",
+            "repository-local operating protocol",
         ],
     )
 
