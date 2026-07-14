@@ -6,6 +6,13 @@
   (`YYYY-MM-DD-HNNNN-topic.md`) so device clock differences cannot define
   sequence. Existing unnumbered handoffs remain valid, and `current_handoff`
   remains the sole currentness authority.
+- Hardened long-running lifecycle guidance around one normative `active_spec`,
+  additional-SPEC lineage, post-acceptance packet replacement, revision-bound
+  terminal decisions, conditional-authorization identity, evidence invalidation,
+  Doctor-safe parent/child packet splitting, parallel leaf IDs, legitimate
+  skipped loop phases, record closure/deferral, implementation-note compaction,
+  and logical archive IDs without changing state/report schemas or Doctor
+  finding IDs.
 
 ## 3.2.1 - 2026-07-14
 

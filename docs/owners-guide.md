@@ -62,6 +62,7 @@ Decision:
 Authorized action:
 Packet:
 Conditions:
+Source/artifact identity:
 Expires when:
 Evidence required before action:
 ```
@@ -90,6 +91,8 @@ or protocol version is more effective.
 - Reuse a valid conditional authorization until its recorded expiry.
 - Treat `routed_docs` as selectable routes, never a full-read requirement.
 - Keep one fact in one authoritative home; handoffs link rather than copy.
+- Require one state-declared active SPEC; treat other SPECs as proposals until
+  an explicit incorporation or packet pointer switch.
 - Use technical enforcement for permissions. Markdown is guidance and record,
   not a sandbox.
 
@@ -106,7 +109,8 @@ A healthy project can answer from adapter -> state -> INDEX:
 
 Warning signs are stale handoffs, broad full-read instructions, validation that
 belongs to another packet, repeated facts across files, expired authorization,
-or effectiveness claims based only on Doctor/unit-test output.
+competing SPECs with no lineage decision, closed work with no evidence, or
+effectiveness claims based only on Doctor/unit-test output.
 
 ## Migrating From SDAD 3.1
 

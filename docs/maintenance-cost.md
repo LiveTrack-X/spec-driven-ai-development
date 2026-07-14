@@ -39,7 +39,7 @@ does not mean owner-accepted.
 
 | Fact | Record in |
 | --- | --- |
-| Requirement, behavior, non-goal, acceptance change | active SPEC |
+| Requirement, behavior, non-goal, acceptance-criteria change | active SPEC |
 | Small spec-unstated implementation choice | `docs/implementation-notes.md` |
 | Hard-to-reverse architecture decision | ADR |
 | Unresolved work | TODO or review finding |
@@ -114,12 +114,14 @@ Decision:
 Authorized action:
 Packet:
 Conditions:
+Source/artifact identity:
 Expires when:
 Evidence required before action:
 ```
 
 Reuse it only while the packet, action, conditions, expiry, evidence prerequisite,
-and recorded source remain unchanged. A source change after approval, expired
+and recorded source/artifact identity remain unchanged. A recorded identity
+change after approval, expired
 condition, or failed prerequisite requires re-approval. Do not repeatedly ask
 for the same still-valid authorization.
 
@@ -131,14 +133,15 @@ matches, explicit excludes, and output limits. Follow
 [`context-stability.md`](context-stability.md) for private data and bounded-read
 rules.
 
-If evidence history must be split, prefer timestamped names such as:
+If evidence history must be split, prefer names with stable record IDs:
 
 ```text
-docs/archive/evidence/YYYY-MM-DD-HHMM-start-topic.md
-Start: YYYY-MM-DD HH:MM
+docs/archive/evidence/YYYY-MM-DD-EVID-0001-ART-0001-run-01.md
 ```
 
-Link the archive from the active record. Do not leave both copies active.
+The date is descriptive; packet/evidence/artifact IDs provide identity. Link
+the archive from the active record. Do not leave both copies active or
+overwrite a parallel-branch collision.
 
 ## Documentation Record Audit
 

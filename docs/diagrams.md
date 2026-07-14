@@ -41,28 +41,30 @@ to read every listed file.
 
 ```mermaid
 flowchart TD
-    E["Current source, tests, runtime evidence"] --> RD["Active runtime docs"]
-    RD --> CS["Canonical SPEC"]
-    CS --> AS["Active SPEC"]
-    AS --> ST["sdad-state.yaml\ncurrent execution declaration"]
-    ST --> CH["Optional current handoff\ncontinuity only"]
-    CH --> REF["References and archives"]
-    REF --> CHAT["Chat confidence"]
-    OD["Owner decisions\nscope, protected actions, acceptance"] -. "record in authoritative home" .-> RD
+    F{"Fact type"}
+    F -->|"Observed behavior"| E["Current source, tests, runtime,\nreproducible commands"]
+    F -->|"Intended scope and acceptance criteria"| AS["state-declared active_spec\nsingle normative entrypoint"]
+    F -->|"Current execution"| ST["sdad-state.yaml and active ledgers"]
+    F -->|"Authorization or acceptance"| OD["One owner-decision record\nfor declared scope"]
+    F -->|"Continuity"| CH["Optional current handoff\npointers only"]
+    P["Other SPECs, references, archives,\nfilenames, dates, chat"] -. "proposal or context only" .-> F
 ```
 
-Owner acceptance does not upgrade weak evidence. A new state-v2 project does not
-use `save-state.md`; an existing copy is state-v1 migration input only.
+`SPEC-COMPLETE.md` is an integrated baseline, not an automatic override. Owner
+acceptance does not upgrade weak evidence. A new state-v2 project does not use
+`save-state.md`; an existing copy is state-v1 migration input only.
 
 ## One Fact, One Home
 
 ```mermaid
 flowchart TD
     F{"New durable fact"}
-    F -->|"Requirement or acceptance"| S["SPEC"]
+    F -->|"Intended scope or acceptance criteria"| S["state-declared active_spec"]
+    F -->|"Observed behavior"| O["Source, tests, runtime evidence"]
     F -->|"Small spec-unstated choice"| N["Implementation notes"]
     F -->|"Hard-to-reverse architecture"| A["ADR"]
     F -->|"Unresolved work"| T["TODO or finding"]
+    F -->|"Authorization or acceptance"| D["Owner-decision record"]
     F -->|"Current execution"| Y["sdad-state.yaml"]
     F -->|"Cross-session links/results"| H["Current handoff"]
 ```

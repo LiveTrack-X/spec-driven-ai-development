@@ -49,28 +49,30 @@ Use local soft triggers such as 50 KB or 500 lines for bounded reads, 200 KB or
 2,000 lines for a context-stability check, and avoid full startup reads above
 1 MB unless the owner asks for historical reconstruction.
 
-### 3. Define Source Of Truth Order
+### 3. Define Authority By Fact Type
 
-This pattern explicitly ranks evidence:
+This pattern separates facts that a single precedence list would conflate:
 
-1. source code, migrations, and tests,
-2. active runtime docs,
-3. canonical integrated SPEC,
-4. active or planned SPEC files,
-5. current execution declaration and active ledgers,
-6. recorded owner decisions and authorizations for their declared scope,
-7. product notes and external references,
-8. historical or archived records, including state-v1 save-state files,
-9. optional handoff continuity hints,
-10. chat memory or AI confidence.
+- source, migrations, tests, runtime, and repeatable commands establish observed
+  behavior and implementation status;
+- the state-declared `active_spec` establishes intended scope, behavior, and
+  acceptance criteria;
+- state and active ledgers establish current execution and unresolved work;
+- an authoritative owner-decision record controls its declared authorization or
+  acceptance;
+- handoffs carry continuity pointers only;
+- proposed SPECs, references, archives, filenames, dates, and chat are not
+  current authority.
 
-Reusable rule: SPECs can define intent, but implementation status must come from
-code, tests, migrations, and repeatable commands.
 Read order is routing, not authority. Owner decisions control scope, risk
-tolerance, and acceptance; durable owner decisions belong in active docs, SPEC,
-ADR, claim registry, or the authoritative authorization record. A current
-handoff may point to those authorities and record last-observed status, but it
-cannot carry or replace the decision. Owner acceptance does not upgrade weak
+tolerance, protected actions, and acceptance only for their recorded boundary.
+Provider chat memory or AI confidence remains context only, never current authority.
+
+`SPEC-COMPLETE.md` is an integrated baseline rather than an automatic override.
+A second SPEC is normative only where the active entrypoint incorporates it or
+after a packet transaction changes that pointer. ADRs record rationale, not a
+hidden replacement for normative acceptance. Read order is routing, not
+authority. Owner acceptance does not upgrade weak
 evidence.
 
 If a SPEC spans past-to-present history, current active sections override older

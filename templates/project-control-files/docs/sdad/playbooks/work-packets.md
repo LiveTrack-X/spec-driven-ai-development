@@ -35,7 +35,7 @@ Ask at most one blocking question only when the answer changes scale, execution 
 Every packet or delegated assignment records:
 
 - the desired outcome or objective and its acceptance boundary;
-- authority and reference paths;
+- the exact state-declared active SPEC, baseline, authority, and reference paths;
 - constraints, allowed scope and non-goals;
 - validation commands and the claims each check supports;
 - expected evidence, required evidence, and claim limits;
@@ -47,32 +47,156 @@ enough to verify. Delegated workers receive the full envelope because they may
 not inherit parent context. Continue inside the declared boundary until an
 evidence checkpoint unless a stop condition fires.
 
+## Packet Split Decision
+
+Split implementation when any boundary becomes independently reviewable:
+
+- acceptance or validation contract;
+- owner gate or version/release lane;
+- rollback, blocker, retry, or cost budget;
+- subsystem, reviewer, environment, or evidence source.
+
+Line count alone is not a split rule. Never shrink an original packet's
+acceptance boundary after work starts merely to make a completed subset green.
+If independent unit boundaries were declared before execution, each may become
+its own packet. If a split is discovered later, keep the original unaccepted,
+record one durable split decision, then switch to one child. The record pins:
+
+- parent packet ID, objective, active SPEC path and revision;
+- original acceptance criteria and non-goals;
+- validation commands, proves claims, and required aggregate checks;
+- owner gates plus authorization references and conditions;
+- carried evidence and its freshness limits;
+- child packet IDs, split reason, reciprocal TODO/finding links, and resume trigger.
+
+Use one implementation-note decision by default or an ADR only for a
+hard-to-reverse architecture split; other records link it. While a child is
+current, keep the parent and inactive siblings under `Future / Deferred` with
+their original IDs, split-decision links, and resume triggers; only the current
+leaf belongs in Active Work. Move their unresolved findings intact to
+`Future / Deferred Findings`, preserving severity, packet marker, evidence, and
+revisit trigger; only current-leaf findings stay active. If the units remain inseparable, keep the packet
+blocked and record partial evidence. State declares one current leaf; discovery
+never expands the approved future-packet list.
+After the children finish, reconcile their outcomes against the original
+boundary. Close the original only after aggregate validation and an owner
+decision, or record an explicitly accepted replacement that retires it; an
+individually green child cannot close the parent by itself. Reselect the
+non-terminal parent for aggregation or declare one integration packet; failed,
+cancelled, or incomplete children remain reciprocal unresolved records. When
+the parent becomes current again, reconstruct state from the split-decision
+envelope, review SPEC/source/evidence/authorization freshness, move only its
+record back to Active Work, restore its deferred findings to Active Findings,
+then run aggregate validation before an owner decision.
+
+## SPEC Lineage Transaction
+
+`active_spec` names the single normative entrypoint for the current leaf packet. A new
+SPEC file is proposal/reference until the active SPEC incorporates its exact
+path and bounded scope or a packet-switch transaction replaces the pointer.
+`FINAL`, `COMPLETE`, dates, and larger sequence numbers do not grant authority.
+
+Categorize each incoming SPEC before implementation:
+
+- amendment inside the existing acceptance boundary -> update the active SPEC;
+- bounded supplement -> record baseline, effective packet, and exact overridden
+  paths/headings; the active entrypoint controls conflicts in that scope;
+- full replacement -> record the superseded SPEC and switch `active_spec` in
+  the same coherence transaction;
+- draft/reference -> retain as non-authoritative input.
+
+Normative supplements must be readable repository-local paths. Reject
+self-supersession and lineage cycles. When supplements overlap, the active
+entrypoint must name exact precedence before implementation; filename order or
+the newest edit cannot resolve the conflict.
+
+If scope, acceptance, a protected boundary, or authorization action/conditions
+materially change, stop and create a new, never-reused packet ID. Satisfying an
+already-declared gate does not itself change the packet. An owner-accepted or
+production-ready packet is immutable history: later requirements use a new
+packet rather than rewriting its accepted boundary. On activation, recheck every
+pre-approved queued packet against the active SPEC before it becomes the leaf.
+
 ## Packet Switch Transaction
 
 Treat a packet switch as one coherence transaction:
 
 1. Select next leaf packet and outcome without changing live state.
-2. Classify old active records: move closed history, defer future work, and
-   relink deliberately carried work to the selected packet.
-3. Review validation entries; remove stale checks, revise claim text, and add
+2. If the old packet is terminal, first confirm one durable decision record
+   binds its packet ID, active SPEC path and exact revision, source/artifact
+   identity, evidence and claim limits, unresolved risk, and final owner
+   decision. Link an existing project decision surface or the Delivery
+   Readiness fallback; do not reconstruct this boundary from a mutable path.
+3. Classify old active records: move closed history, defer future work, and
+   relink deliberately carried work to the selected packet. Closure requires
+   evidence, an authoritative owner decision, or a named superseding packet.
+4. Review validation entries; remove stale checks, revise claim text, and add
    the smallest task-specific check.
-4. Update state as one bundle: date, SPEC, packet identity/objective/status,
+5. Update state as one bundle: date, `active_spec`, packet identity/objective/status,
    `validation_for`, gates, validation, and eligible routes.
-5. Remove or replace the old `current_handoff`; never carry it across
+6. Remove or replace the old `current_handoff`; never carry it across
    mechanically.
-6. Run Doctor strict on the coherent declaration and active ledgers.
-7. Run project checks separately and record their bounded evidence.
-8. Advance status only after the required evidence exists.
-9. Rerun Doctor because status-sensitive severity may have changed.
+7. Run Doctor strict on the coherent declaration and active ledgers.
+8. Run project checks separately and record their bounded evidence.
+9. Advance status only after the required evidence exists.
+10. Rerun Doctor because status-sensitive severity may have changed.
+
+## Long-Running Re-entry And Invalidation
+
+State v2 `active_packet.status` is the current dominant checkpoint, not a
+cumulative evidence or acceptance ledger. Preserve prior evidence and owner
+decisions in their authoritative records when status moves backward or forward.
+Apply the first matching rule below. Keeping a packet always requires the same
+unfinished objective, acceptance, protected boundary, and authorization terms.
+Never move a terminal `owner_accepted`/`production_ready` packet backward: a change
+to its accepted SPEC, source, or artifact inside the accepted claim boundary
+starts a new packet, while unrelated repository edits do not. A late
+observation of the unchanged result stays historical evidence or uses a named
+revalidation/occurrence packet.
+
+| Re-entry event | Required action |
+| --- | --- |
+| Same unfinished objective and unchanged acceptance/gates | Continue the same packet; invalidate and rerun only affected evidence. |
+| Candidate additional/conflicting SPEC arrives | Categorize it as proposal/reference; do not change packet or scope until explicit incorporation/pointer switch. |
+| Material objective, acceptance, protected boundary, or authorization-term change | Create a new unique packet and run the switch transaction. |
+| Existing declared gate becomes authorized/satisfied | Continue the same packet when action, conditions, source/artifact identity, and expiry still match. |
+| Non-terminal source, SPEC, validation, generator input, artifact, or environment changes after evidence | Hold the claim, move status back to the applicable checkpoint, and revalidate the affected surface. |
+| Terminal packet's accepted SPEC, source, or artifact changes inside its accepted claim boundary | Preserve revision-bound history and create a new implementation/revalidation packet. |
+| Defect or contradictory evidence appears after acceptance | Link a finding to the revision-bound decision and open a new bugfix/revalidation packet; do not rewrite the accepted record. |
+| Merge, rebase, cherry-pick, or conflict resolution | Reconcile SPEC/state/ledger/ID changes; never choose incoming state wholesale; validate the final integrated worktree/tree, and bind release evidence to the exact commit/HEAD and artifact. |
+| Crash, missing handoff, or stale provider session | Re-enter through adapter -> state -> INDEX and reconstruct from repository truth. |
+| Result from a background job launched by the same unfinished packet | Return through Plan/Route; keep the packet only if identity/acceptance/gates match, and never upgrade status retroactively. |
+| Late external/hardware result for terminal or changed scope | Preserve history or use a named revalidation packet; never rewrite accepted scope. |
+| Repeated/flaky check | Record attempts, skips, instability, and a bounded retry budget; do not select one green run as proof. |
+| New recurring maintenance occurrence | Use a new occurrence packet and evidence identity; the prior run does not authorize or validate the next. |
+| Blocked or deferred packet | Record the blocker/deferral, partial evidence, and explicit resume trigger in a packet-linked TODO, finding, or owner gate; switch packets before unrelated work. |
+| Owner requests changes after Report | Keep the packet only when it is non-terminal and acceptance/protected boundary/authorization terms are unchanged; otherwise allocate a new packet. |
+| Owner revises or revokes a terminal decision | Preserve the old decision; create a new decision/revalidation packet and unique decision record that revises/supersedes it, then update affected current-claim pointers. |
+| Validation command or test surface is weakened | Reassess the `proves` claim; a greener but weaker check cannot preserve the prior evidence tier. |
+| Version or release lane changes | Use the exact lane SPEC and a new packet unless the existing acceptance explicitly covers both lanes. |
+
+Parallel independent write branches/worktrees use distinct child leaf packet IDs;
+read-only reviewers may reference the same packet without claiming a write
+leaf. Before merge, compare base/HEAD, active SPEC, objective, authorizations,
+record IDs, decision predecessor edges, current-claim pointers, and handoffs;
+resolve collisions/forks and rerun integration/release checks on the final
+integrated worktree/tree. Bind release evidence to the exact commit/HEAD and
+artifact. An approved multi-packet list never expands when a queue discovers
+work outside that list.
 
 ## Implementation Memory
 
 Record a small spec-unstated implementation decision in
 `docs/implementation-notes.md`. Use an ADR only for a hard-to-reverse,
 surprising architectural tradeoff. Put unresolved work in TODO or findings,
-not in the handoff.
+not in the handoff. Split implementation notes by current effect and topic, not
+age; promote or supersede a note before archiving it.
 
 ## Implement And Verify
+
+Read-only review or planning may mark Implement N/A; a blocked packet may mark
+Verify blocked. Report every omission and never claim evidence the skipped
+phase would have produced.
 
 ### Bounded Iteration
 

@@ -108,15 +108,22 @@ path.
 
 Common split routes:
 
-- completed TODOs -> `docs/archive/todo-history/YYYY-MM-DD-topic.md`,
-- closed findings -> `docs/review/archive/YYYY-MM-DD-topic.md`,
-- old implementation notes -> `docs/archive/implementation-notes/YYYY-MM-DD-topic.md`,
+- completed TODOs -> `docs/archive/todo-history/YYYY-MM-DD-<packet-id>-topic.md`,
+- closed findings -> `docs/review/archive/YYYY-MM-DD-<packet-id>-topic.md`,
+- old implementation notes ->
+  `docs/archive/implementation-notes/YYYY-MM-DD-IMPL-0001--IMPL-0010.md`,
 - legacy state-v1 save-state history ->
   `docs/archive/migration/save-state-v1/YYYY-MM-DD-topic.md`,
 - long command output, screenshots, imports, or traces ->
-  `docs/archive/evidence/YYYY-MM-DD-HHMM-start-topic.md`,
+  `docs/archive/evidence/YYYY-MM-DD-EVID-0001-ART-0001-run-01.md`,
 - remote evidence import records ->
-  `docs/archive/evidence-imports/YYYY-MM-DD-HHMM-source.md`.
+  `docs/archive/evidence-imports/YYYY-MM-DD-EVID-0001-source.md`.
+
+Dates and times are descriptive metadata, not identity, lifecycle order, or
+currentness. Prefer a stable packet or record-family logical ID for durable
+cross-references. Never overwrite a collision; resolve duplicate IDs before
+merge. Existing date/time-only archive names remain valid. Do not scan every
+archive at startup merely to calculate current state.
 
 Keep the active file as the router and status summary. Put the long record in
 the split file and link it back from the active file.
@@ -149,9 +156,10 @@ Use project-appropriate archive paths. Common patterns:
 ```text
 docs/archive/migration/save-state-v1/YYYY-MM-DD-topic.md
 docs/state/next-task-history/YYYY-MM-DD-topic.md
-docs/review/archive/YYYY-MM-DD-topic.md
-docs/archive/todo-history/YYYY-MM-DD-topic.md
-docs/archive/YYYY-MM-DD-topic.md
+docs/review/archive/YYYY-MM-DD-<packet-id>-topic.md
+docs/archive/todo-history/YYYY-MM-DD-<packet-id>-topic.md
+docs/archive/implementation-notes/YYYY-MM-DD-IMPL-0001--IMPL-0010.md
+docs/archive/evidence/YYYY-MM-DD-EVID-0001-ART-0001-run-01.md
 ```
 
 ## Handoff Requirements

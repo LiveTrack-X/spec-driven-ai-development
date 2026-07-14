@@ -21,8 +21,9 @@ by evidence ID.
 - `reviewed_warn`: evidence supports part of the requirement with named limits.
 - `reviewed_fail`: evidence contradicts the requirement or exposes a blocker.
 
-Evidence status stops at review. Owner acceptance is tracked separately so
-evidence-ready does not collapse into final done.
+Evidence status stops at review. Owner authorization and acceptance live in one
+authoritative owner-decision record; this matrix may reference that record but
+does not copy its mutable decision fields.
 
 ## Reproducibility Tiers
 
@@ -47,10 +48,10 @@ Define when evidence becomes stale:
 
 ## Matrix
 
-| ID | Requirement or claim | Required evidence | Current evidence | Evidence status | Tier | Scope | Freshness rule | Acceptance | Gaps / next action |
+| ID | Requirement or claim | Required evidence | Current evidence | Evidence status | Tier | Scope | Freshness rule | Owner decision reference | Gaps / next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| EVID-001 | Example protocol rejects invalid packets | Unit tests and invalid fixtures | `cargo test -p protocol` | software_only | tier0_deterministic | Protocol only | Related parser changes | not_requested | Hardware path not covered |
-| EVID-002 | Example device enumerates on target OS | Remote support bundle and device log | None | missing | tier3_remote_tester | Target hardware | Firmware, OS, or driver changes | not_requested | Send tester-ready package |
+| EVID-001 | Example protocol rejects invalid packets | Unit tests and invalid fixtures | `cargo test -p protocol` | software_only | tier0_deterministic | Protocol only | Related parser changes | None | Hardware path not covered |
+| EVID-002 | Example device enumerates on target OS | Remote support bundle and device log | None | missing | tier3_remote_tester | Target hardware | Firmware, OS, or driver changes | None | Send tester-ready package |
 
 ## Negative Results
 
@@ -67,23 +68,15 @@ Failed, missing, skipped, or contradicted evidence is still evidence.
 - `evidence_received` is not done. It must pass import, privacy, lineage, and
   review checks before it can become `reviewed_pass`.
 - `reviewed_pass` makes a requirement evidence-ready only for the stated scope.
-- Owner acceptance must name the accepted scope and unresolved gaps.
+- An owner decision must name accepted scope and unresolved gaps in its
+  authoritative record; reference it here without copying the decision.
 - Stale evidence must be downgraded or marked with a revalidation action.
 
-## Acceptance Tracking
+## Owner Decision References
 
-Use this table only for owner decisions. Do not treat acceptance as an evidence
-status.
+Use this table only as last-observed pointers. The referenced owner-decision
+record remains authoritative and must be rechecked before reuse.
 
-| Evidence ID | Claim or packet | Acceptance status | Accepted by | Accepted at | Accepted scope | Unresolved gaps |
-| --- | --- | --- | --- | --- | --- | --- |
-| EVID-001 | Example software alpha claim | not_requested |  |  |  | Hardware evidence pending |
-
-Acceptance status values:
-
-- `not_requested`
-- `pending_owner`
-- `accepted`
-- `rejected`
-- `revised`
-- `deferred`
+| Evidence ID | Claim or packet | Authoritative decision path / ID | Last observed status | Evidence scope / unresolved evidence gaps |
+| --- | --- | --- | --- | --- |
+| EVID-001 | Example software alpha claim | None | not_requested | Hardware evidence pending |

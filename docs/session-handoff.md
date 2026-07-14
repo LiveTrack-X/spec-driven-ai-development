@@ -11,7 +11,10 @@ the read-only migration preview, but do not use it as current v2 authority.
 ## Authority And Continuity
 
 - Chats are execution traces, not durable authority.
-- Source, tests, runtime evidence, and the active SPEC establish product truth.
+- Source, tests, runtime evidence, and reproducible commands establish observed
+  behavior.
+- The state-declared `active_spec` is the single normative entrypoint for
+  intended scope, behavior, and acceptance criteria.
 - `sdad-state.yaml` declares the current executable packet and validation
   contract.
 - A handoff links to authorities and last observed results for recovery.
@@ -21,13 +24,19 @@ Handoff-only decisions are continuity hints. Put each durable fact in one home:
 
 | Fact | Authoritative home |
 | --- | --- |
-| Requirement or acceptance change | active SPEC |
+| Intended scope, behavior, or acceptance criteria | state-declared `active_spec` |
+| Observed behavior | current source, tests, runtime, and commands |
 | Small spec-unstated implementation decision | `docs/implementation-notes.md` |
 | Hard-to-reverse architecture decision | ADR |
 | Unresolved work | TODO or review finding |
 | Current execution declaration | `sdad-state.yaml` |
 | Protected-action authorization | authoritative owner-decision record |
 | Cross-session recovery links/results | current handoff |
+
+`SPEC-COMPLETE.md` is an integrated baseline, not immutable or automatically
+active. An additional or conflicting SPEC stays a proposal until its exact
+scope is incorporated by the active entrypoint or a packet transaction switches
+the pointer. A handoff cannot perform that switch.
 
 Use an `## 3. Authority Pointers` section rather than copying SPEC text, ADR
 rationale, TODOs, findings, implementation notes, or long command output.
@@ -98,7 +107,7 @@ Do not add the handoff path to `routed_docs` merely because it exists.
 ## 3. Authority Pointers
 
 - Current state: `sdad-state.yaml`
-- Active SPEC / acceptance:
+- Active SPEC / acceptance criteria:
 - Relevant TODO or finding:
 - Implementation note or ADR, if any:
 
@@ -127,7 +136,7 @@ checkpoint.
 
 The handoff's last-observed status is not reusable authority. Follow its pointer
 to the single authoritative authorization record and verify that the packet,
-action, conditions, expiry, evidence prerequisite, and recorded source remain
+action, conditions, expiry, evidence prerequisite, and recorded source/artifact identity remain
 unchanged. Re-approval is required after expiry, a failed condition, or relevant
 source change.
 

@@ -2302,6 +2302,22 @@ class DoctorPacketAndGateTests(DoctorAssertions, unittest.TestCase):
 
 
 class DoctorV2LedgerTests(DoctorAssertions, unittest.TestCase):
+    def test_deferred_noncurrent_finding_is_outside_active_ledger(self) -> None:
+        report = diagnose(
+            valid_v2_state(packet_id="WP-CHILD"),
+            files={
+                "review-findings.md": (
+                    "## Active Findings\n\nNone currently tracked.\n\n"
+                    "## Future / Deferred Findings\n\n"
+                    "- [Critical] [packet:WP-PARENT] Preserve this blocker.\n"
+                    "  Revisit trigger: parent packet resumes.\n\n"
+                    "## Recently Closed\n"
+                )
+            },
+        )
+        self.assertNotFinding(report, "ledger.open-item-packet-mismatch")
+        self.assertNotFinding(report, "packet.open-critical-finding")
+
     def test_open_record_classification_order_is_exact(self) -> None:
         cases = (
             ("- prose without marker", "ledger.open-item-missing-marker"),

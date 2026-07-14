@@ -121,10 +121,20 @@ is requested.
 
 ## Source Of Truth
 
-Prefer current source/tests/runtime/reproducible commands, then active docs,
-canonical and active SPECs, current handoff/state, references, archives, and
-finally chat confidence. Read order is routing, not authority. Owner decisions
-control scope, risk tolerance, irreversible actions, and acceptance.
+Assign authority by fact type. Current source/tests/runtime/reproducible
+commands establish observed behavior. The state-declared `active_spec` is the
+single normative entrypoint for intended scope, behavior, and acceptance criteria. State
+and active ledgers own current execution and unresolved work. Owner-decision
+records control only their declared authorization or acceptance. Handoffs own
+continuity pointers only. Planned SPECs, references, archives, filenames,
+dates, and chat cannot activate requirements.
+
+`SPEC-COMPLETE.md` is an integrated baseline, not immutable or automatically
+active. A later amendment, bounded supplement, or replacement is a proposal
+until its exact scope is incorporated by the active entrypoint or a packet
+transaction switches the pointer. A material change after owner acceptance
+requires a new, never-reused packet ID and fresh validation. An ADR records
+rationale and tradeoffs; it cannot silently override normative SPEC content.
 
 If a SPEC spans past-to-present history, current active sections override older
 background, roadmap, and archived material. This does not promote an unapproved
@@ -132,8 +142,16 @@ draft or let current evidence choose future product scope.
 
 Handoffs provide continuity and link to authorities; they do not replace live
 state or behavior authority. Legacy v1 save-state is migration input only.
-Promote any decision affecting scope, behavior, acceptance, risk, evidence, or
-public claims into SPEC, ADR, claim registry, TODO, or findings before using it.
+Route scope, behavior, and acceptance-criteria changes to the active SPEC;
+durable architecture rationale to an ADR; claim/evidence status to its ledger;
+unresolved work to TODO/findings; and owner authorization or result acceptance
+to one durable owner-decision record. Link these authorities elsewhere.
+
+`active_packet.status` is the current dominant checkpoint, not a cumulative
+ledger. Re-enter Plan -> Route when source, SPEC, dependency, environment,
+artifact, owner gate, merge result, or external evidence changes. Keep the same
+packet only for the same unfinished objective and acceptance boundary;
+otherwise create a new packet. Validate the integrated tree and final artifact.
 
 ## Evidence And Completion
 

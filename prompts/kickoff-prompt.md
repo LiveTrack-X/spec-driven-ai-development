@@ -128,7 +128,9 @@ handoffs, or optional evidence files by default.
 ## Operating Rules
 
 - Do not start from archived docs, old plans, or product notes.
-- Do not implement from older SPEC history when newer active SPEC sections, current code, or current tests supersede it.
+- Use the state-declared `active_spec` as the single normative SPEC entrypoint.
+  Current source/tests establish observed behavior but cannot silently choose
+  product scope; another SPEC cannot activate scope by being newer.
 - Do not rely on obvious-but-unwritten assumptions.
 - Do not let future ideas become active implementation unless promoted into SPEC.
 - Do not treat AI confidence as completion.

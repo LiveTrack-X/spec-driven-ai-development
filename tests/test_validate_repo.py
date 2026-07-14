@@ -732,15 +732,15 @@ class CanonicalTemplateRepositoryContractTests(unittest.TestCase):
         )
         mutations = (
             lambda text: text.replace(
-                "7. Run project checks separately and record their bounded evidence.\n",
+                "8. Run project checks separately and record their bounded evidence.\n",
                 "Project checks remain relevant.\n",
                 1,
             ),
             lambda text: text.replace(
-                "7. Run project checks separately and record their bounded evidence.\n"
-                "8. Advance status only after the required evidence exists.\n",
                 "8. Run project checks separately and record their bounded evidence.\n"
-                "7. Advance status only after the required evidence exists.\n",
+                "9. Advance status only after the required evidence exists.\n",
+                "9. Run project checks separately and record their bounded evidence.\n"
+                "8. Advance status only after the required evidence exists.\n",
                 1,
             ),
             lambda text: ordered_decoy
@@ -1064,9 +1064,10 @@ class PublicV32DocumentationContractTests(unittest.TestCase):
     def test_rejects_removed_authorization_action_reuse_and_expiry(self) -> None:
         self.assert_mutation_rejected(
             "docs/user-guide.md",
-            "Authorized action:\nPacket:\nConditions:\nExpires when:\n"
+            "Authorized action:\nPacket:\nConditions:\nSource/artifact identity:\nExpires when:\n"
             "Evidence required before action:",
-            "Packet:\nConditions:\nEvidence required before action:",
+            "Packet:\nConditions:\nSource/artifact identity:\n"
+            "Evidence required before action:",
         )
 
     def test_rejects_collapsed_or_divergent_readme_copy_prompt(self) -> None:
@@ -1188,6 +1189,268 @@ class PublicRelationshipHelperTests(unittest.TestCase):
             "routed_docs is an eligible selection set that requires reading every file "
             "as a read-all route.",
             "reversed routed-docs relation",
+        )
+
+
+class LongRunningLifecycleContractTests(unittest.TestCase):
+    CONTRACT_PATHS = (
+        "templates/project-control-files/sdad-state.yaml",
+        "templates/project-control-files/AGENTS.md",
+        "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
+        "templates/project-control-files/SPEC/adr/ADR-0001-template.md",
+        "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+        "templates/project-control-files/docs/sdad/playbooks/documentation-and-handoff.md",
+        "templates/project-control-files/docs/sdad/playbooks/evidence-and-risk-gates.md",
+        "templates/project-control-files/docs/implementation-notes.md",
+        "templates/project-control-files/docs/TODO-Open-Items.md",
+        "templates/project-control-files/review-findings.md",
+        "templates/project-control-files/docs/evidence-matrix.md",
+        "templates/project-control-files/docs/claim-registry.md",
+        "templates/project-control-files/docs/work-packet-state.md",
+        "templates/project-control-files/docs/INDEX.md",
+        "docs/ai-work-loop.md",
+        "docs/known-limitations.md",
+    )
+
+    def write_fixture(self, root: Path) -> None:
+        for relative_path in self.CONTRACT_PATHS:
+            source = ROOT / relative_path
+            target = root / relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+
+    def validate(self, root: Path) -> None:
+        validator = getattr(
+            VALIDATE_REPO,
+            "validate_long_running_lifecycle_contract",
+            None,
+        )
+        self.assertIsNotNone(validator, "long-running lifecycle validator is missing")
+        with mock.patch.object(VALIDATE_REPO, "ROOT", root):
+            validator()
+
+    def assert_mutation_rejected(
+        self,
+        path: str,
+        old: str,
+        new: str,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_fixture(root)
+            target = root / path
+            content = target.read_text(encoding="utf-8")
+            mutated = content.replace(old, new, 1)
+            self.assertNotEqual(mutated, content, f"fixture mutation did not match {path}")
+            target.write_text(mutated, encoding="utf-8")
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    self.validate(root)
+
+    def test_current_long_running_contract_is_coherent(self) -> None:
+        self.validate(ROOT)
+
+    def test_rejects_loss_of_the_single_active_spec_entrypoint(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/AGENTS.md",
+            "single normative SPEC entrypoint",
+            "one optional SPEC hint",
+        )
+
+    def test_rejects_reuse_of_an_accepted_packet_for_material_change(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
+            "new, never-reused packet ID",
+            "existing accepted packet ID",
+        )
+
+    def test_rejects_cyclic_or_implicit_spec_precedence(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/SPEC/SPEC-COMPLETE.md",
+            "Keep lineage acyclic",
+            "Allow lineage cycles",
+        )
+
+    def test_rejects_line_count_as_the_only_packet_split_rule(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "Line count alone",
+            "Line count",
+        )
+
+    def test_rejects_child_only_closure_of_a_split_parent(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "After the children finish, reconcile",
+            "After one child finishes, close",
+        )
+
+    def test_rejects_split_without_a_durable_parent_envelope(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "parent packet ID, objective, active SPEC path and revision",
+            "parent summary",
+        )
+
+    def test_rejects_inactive_split_parent_in_active_work(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "under `Future / Deferred`",
+            "under `Active Work`",
+        )
+
+    def test_rejects_loss_of_deferred_finding_lane(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/review-findings.md",
+            "## Future / Deferred Findings",
+            "## Recently Hidden Findings",
+        )
+
+    def test_rejects_release_without_deferred_finding_scan(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/evidence-and-risk-gates.md",
+            "## Deferred Finding Gate",
+            "## Deferred Finding Notes",
+        )
+
+    def test_rejects_loss_of_terminal_revision_bound_decision(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/work-packet-state.md",
+            "## Terminal Packet Decision Record",
+            "## Optional Historical Note",
+        )
+
+    def test_rejects_overwriting_a_revised_terminal_decision(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/work-packet-state.md",
+            "- Revises/supersedes decisions:\n  - None | path/URL/ID",
+            "- Replace prior decision in place: yes",
+        )
+
+    def test_rejects_automatic_winner_for_parallel_owner_decisions(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/work-packet-state.md",
+            "neither is\nautomatically current: hold the affected claim",
+            "the newest is\nautomatically current: release the affected claim",
+        )
+
+    def test_rejects_deleting_expired_authorization_history(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/work-packet-state.md",
+            "retain the immutable record in history",
+            "delete the record permanently",
+        )
+
+    def test_rejects_authorization_without_source_identity(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/work-packet-state.md",
+            "- Source/artifact identity:\n- Expires when:",
+            "- Expires when:",
+        )
+
+    def test_rejects_packet_switch_on_candidate_spec_arrival(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/ai-work-loop.md",
+            "do not change packet",
+            "create a new packet immediately",
+        )
+
+    def test_rejects_packet_switch_when_an_existing_gate_is_satisfied(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "Continue the same packet when action",
+            "Create a new packet when action",
+        )
+
+    def test_rejects_reopening_terminal_history_under_the_same_packet(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "Never move a terminal",
+            "Move a terminal",
+        )
+
+    def test_rejects_shared_write_leaf_across_independent_worktrees(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "use distinct child leaf packet IDs",
+            "share one leaf packet ID",
+        )
+
+    def test_rejects_rewriting_acceptance_for_a_post_acceptance_defect(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/ai-work-loop.md",
+            "do not rewrite acceptance",
+            "rewrite acceptance",
+        )
+
+    def test_rejects_new_packet_for_matching_current_background_result(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md",
+            "keep the packet only if identity/acceptance/gates match",
+            "create a new packet even if identity/acceptance/gates match",
+        )
+
+    def test_rejects_owner_deferral_as_recently_closed(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/TODO-Open-Items.md",
+            "owner resolution/acceptance decision",
+            "owner deferral decision",
+        )
+
+    def test_rejects_closure_without_evidence_decision_or_supersession(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/documentation-and-handoff.md",
+            "bounded completion evidence",
+            "text relocation",
+        )
+
+    def test_rejects_duplicated_owner_acceptance_in_evidence_ledgers(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/evidence-matrix.md",
+            "## Owner Decision References",
+            "## Local Owner Acceptance Copy",
+        )
+
+    def test_rejects_undefined_owner_decision_authority(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/documentation-and-handoff.md",
+            "one authority per decision",
+            "one mutable copy per ledger",
+        )
+
+    def test_rejects_pre_integration_release_evidence(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/sdad/playbooks/evidence-and-risk-gates.md",
+            "final integrated",
+            "pre-merge",
+        )
+
+    def test_rejects_age_only_implementation_note_compaction(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/implementation-notes.md",
+            "current effect rather than age",
+            "file age alone",
+        )
+
+    def test_rejects_forcing_implement_into_read_only_packets(self) -> None:
+        self.assert_mutation_rejected(
+            "docs/ai-work-loop.md",
+            "not applicable",
+            "mandatory",
+        )
+
+    def test_rejects_missing_phase_skip_rule_from_installed_kernel(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/AGENTS.md",
+            "phase N/A",
+            "phase mandatory",
+        )
+
+    def test_rejects_missing_blocked_packet_route_without_handoff(self) -> None:
+        self.assert_mutation_rejected(
+            "templates/project-control-files/docs/INDEX.md",
+            "blocked/deferred",
+            "unrelated status",
         )
 
 

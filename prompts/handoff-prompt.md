@@ -43,7 +43,7 @@ Use this exact structure:
 ## 3. Authority Pointers
 
 - Current state: `sdad-state.yaml`
-- Active SPEC / acceptance:
+- Active SPEC / acceptance criteria:
 - Relevant TODO or finding:
 - Implementation note or ADR, if any:
 
@@ -80,7 +80,8 @@ and `WP-EXAMPLE` with the exact `sdad-state.yaml#active_packet.id` value.
 
 ## Authority And Compression Rules
 
-- Requirement or acceptance change -> active SPEC.
+- Intended scope, behavior, or acceptance criteria -> state-declared `active_spec`.
+- Observed behavior -> current source, tests, runtime, and reproducible commands.
 - Small spec-unstated implementation decision -> implementation notes.
 - Hard-to-reverse architecture decision -> ADR.
 - Unresolved work -> TODO or review finding.
@@ -96,7 +97,7 @@ Evidence-ready is not owner-accepted.
 Point to the single authoritative owner-authorization record and include only
 its last-observed status in the handoff. The handoff itself is never reusable
 authority. Reuse the authorization only after verifying that its recorded
-packet, action, conditions, expiry, required evidence, and source remain
+packet, action, conditions, expiry, required evidence, and source/artifact identity remain
 unchanged. An expired or failed condition, or a relevant source change, requires
 re-approval.
 

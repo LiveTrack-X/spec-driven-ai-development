@@ -127,9 +127,10 @@ current controls needed for the intent, load continuity only when needed, open
 on-demand references when a question requires them, and handle archive/evidence
 through bounded reads and path references.
 
-This is a context-stability rule, not a new source-of-truth order. Current code,
-tests, runtime docs, and the active SPEC still outrank old handoffs, archives,
-external references, and AI memory.
+This is a context-stability rule, not a new authority model. Current source,
+tests, and runtime establish observed behavior; the state-declared active SPEC
+establishes intended scope and acceptance criteria. Old handoffs, archives, external
+references, and AI memory establish neither.
 
 ### 3b. Route Natural-Language Intent
 
@@ -227,27 +228,29 @@ permission, hook, or tool-version changes requires the appropriate owner gate.
 See
 [field-notes/repository-control-surface-method.md](field-notes/repository-control-surface-method.md).
 
-### 4. Define Source Of Truth Order
+### 4. Define Authority By Fact Type
 
-Use this default order:
+Use startup order for routing, not as one universal precedence list:
 
-1. source code, migrations, tests, reproducible commands,
-2. active runtime docs,
-3. canonical integrated SPEC,
-4. active or planned SPEC files,
-5. current execution declaration and active ledgers,
-6. recorded owner decisions and authorizations for their declared scope,
-7. product notes and external references,
-8. historical or archived records, including state-v1 save-state files,
-9. optional handoff continuity hints,
-10. chat memory or AI confidence.
+- current source, tests, runtime, and reproducible commands establish observed
+  behavior;
+- `sdad-state.yaml#active_spec` establishes intended scope, behavior, and
+  acceptance criteria;
+- state and active ledgers establish current execution and unresolved work;
+- an owner-decision record establishes authorization or acceptance only for its
+  declared packet, action, conditions, and expiry;
+- a handoff establishes continuity pointers only;
+- planned SPECs, references, archives, filenames, dates, and chat cannot
+  activate requirements.
 
-Read order is routing, not authority: startup docs help find current files, but
-this order decides conflicts. Owner decisions control scope, risk tolerance, and
-acceptance. They become durable source of truth only when recorded in the
-applicable active SPEC, ADR, claim registry, or authoritative authorization
-record. A current handoff may link to that record and preserve last-observed
-status; it cannot become or replace the authorization.
+Read order is routing, not authority. Owner decisions control scope, risk
+tolerance, protected actions, and result acceptance only for their recorded boundary.
+
+`SPEC-COMPLETE.md` is an integrated baseline, not an automatic override of the
+state-declared active SPEC. Another SPEC is normative only for the exact scope
+incorporated by the active entrypoint or after a packet transaction switches
+that pointer. ADRs explain durable rationale; they cannot silently override
+normative scope or acceptance criteria.
 
 Apply current-over-historical precedence inside SPECs: when a SPEC contains a
 timeline from past to present, the newest active/current section wins over older
@@ -448,7 +451,7 @@ Add an Orchestrator-Worker pattern when independent units can run with isolated
 context, parallelism, or specialization. Each worker needs a task boundary,
 non-goals, output contract, evidence requirement, and escalation rule. Worker
 completion is candidate evidence until the orchestrator integrates conflicts
-against the active SPEC and source-of-truth order.
+against each fact's authority and the state-declared active SPEC.
 
 Use Loop Engineering only when the next run has a clear trigger and stop rule:
 turn-based, goal-based, time-based, or event-based. Every loop must declare its

@@ -17,18 +17,22 @@ state, SPEC, TODO, findings, notes, or evidence files.
 
 ## Source Of Truth
 
-When sources conflict, prefer:
+Resolve conflicts by fact type before freshness:
 
 1. current source code, migrations, tests, runtime state, and reproducible
-   commands for observed behavior;
-2. active runtime and operating documents for current controlled state;
-3. canonical SPEC for the integrated product baseline;
-4. active SPEC files for the approved slice;
-5. `sdad-state.yaml` for the current execution declaration;
-6. the state-declared current handoff for cross-session recovery;
-7. product notes and external references as unpromoted input;
-8. archives and historical records as rationale;
-9. chat memory and AI confidence as hints only.
+   commands establish observed behavior;
+2. active runtime and operating documents establish current controlled state;
+3. `sdad-state.yaml#active_spec` names the single normative entrypoint for
+   intended scope, behavior, non-goals, and acceptance criteria;
+4. another SPEC applies only where that entrypoint incorporates its exact path
+   and bounded scope; the entrypoint controls conflicts in that scope;
+5. `sdad-state.yaml` owns the current packet, validation, gates, routes, and
+   dominant checkpoint, not cumulative evidence or acceptance history;
+6. the state-declared current handoff provides cross-session continuity only;
+7. unincorporated SPECs, product notes, and external references are proposals or
+   input, not implementation authority;
+8. archives and historical records provide rationale; chat memory and AI
+   confidence are hints only.
 
 If a SPEC spans past-to-present history, current active sections override older
 background, roadmap, and archived material. This exception resolves chronology
@@ -39,10 +43,18 @@ documentation, but it cannot choose future product scope. Owner decisions
 control direction, risk tolerance, irreversible actions, and acceptance. Record
 durable owner decisions in the appropriate active source of truth.
 
-A handoff-only decision is continuity until promoted. Before
-implementation, promote anything that changes scope, acceptance criteria,
-behavior, public claims, risk, evidence, or owner acceptance to SPEC, ADR,
-claim registry, TODO, or findings.
+`SPEC-COMPLETE.md` is the default integrated baseline, not a frozen artifact.
+Another SPEC becomes active only through explicit incorporation or an
+`active_spec` switch transaction. An ADR records rationale and cannot override
+normative SPEC content alone. Filenames, dates, sequence numbers, and provider
+session state do not establish authority or currentness.
+
+A handoff-only decision is continuity until routed to one authoritative home.
+Before implementation, put scope, behavior, and acceptance-criteria changes in
+the active SPEC; durable architectural rationale in an ADR; claim/evidence
+status in its ledger; unresolved work in TODO/findings; and owner authorization
+or result acceptance in one durable owner-decision record. Link it elsewhere
+instead of choosing several homes.
 
 ## Owner Authority And Evidence States
 

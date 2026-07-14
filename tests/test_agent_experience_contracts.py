@@ -154,6 +154,7 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         review = read("templates/project-control-files/review-findings.md")
         self.assertIn("## Active Findings", review)
         self.assertIn("None currently tracked.", review)
+        self.assertIn("## Future / Deferred Findings", review)
         self.assertIn("## Recently Closed", review)
         self.assertNotRegex(review, r"(?m)^- \[[ xX]\].*None currently tracked")
 
@@ -192,16 +193,24 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
         self.assertIn("optional", readiness.lower())
         self.assertIn("on demand", readiness.lower())
         self.assertIn("## Conditional Owner Authorization", readiness)
+        authorization = readiness.split("## Terminal Packet Decision Record", 1)[0]
         for field in (
             "- Decision:",
             "- Authorized action:",
             "- Packet:",
             "- Conditions:",
+            "- Source/artifact identity:",
             "- Expires when:",
             "- Evidence required before action:",
         ):
             with self.subTest(field=field):
-                self.assertEqual(readiness.count(field), 1)
+                self.assertEqual(authorization.count(field), 1)
+        self.assertIn("## Terminal Packet Decision Record", readiness)
+        self.assertIn("Decision ID: DEC-EXAMPLE", readiness)
+        self.assertIn("Revises/supersedes decisions", readiness)
+        self.assertIn("Decision claim scope", readiness)
+        self.assertIn("Active SPEC path and revision identity", readiness)
+        self.assertIn("Affected current-claim pointers", readiness)
         for duplicate_authority in (
             "active_packet:",
             "execution_scope:",
@@ -286,6 +295,64 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
             packets,
         )
         self.assertNotIn("autonomously", rules)
+
+    def test_long_running_authority_reentry_and_compaction_are_explicit(self) -> None:
+        kernel = read("templates/project-control-files/AGENTS.md")
+        spec = read("templates/project-control-files/SPEC/SPEC-COMPLETE.md")
+        packets = read(
+            "templates/project-control-files/docs/sdad/playbooks/work-packets.md"
+        )
+        documentation = read(
+            "templates/project-control-files/docs/sdad/playbooks/"
+            "documentation-and-handoff.md"
+        )
+        evidence = read(
+            "templates/project-control-files/docs/sdad/playbooks/"
+            "evidence-and-risk-gates.md"
+        )
+        notes = read("templates/project-control-files/docs/implementation-notes.md")
+        loop = read("docs/ai-work-loop.md")
+
+        require_concept_groups(
+            kernel,
+            (
+                ("single", "normative SPEC", "entrypoint"),
+                ("another SPEC", "proposal/reference", "pointer"),
+            ),
+        )
+        self.assertIn("## SPEC Authority And Lineage", spec)
+        require_concept_groups(
+            spec,
+            (
+                ("new", "never-reused", "packet ID"),
+                ("targeted reads", "practical", "split"),
+            ),
+        )
+        self.assertIn("## Packet Split Decision", packets)
+        require_concept_groups(packets, (("line count", "not", "split rule"),))
+        self.assertIn("## Long-Running Re-entry And Invalidation", packets)
+        require_concept_groups(
+            packets,
+            (
+                ("current", "dominant checkpoint"),
+                ("final integrated", "worktree/tree"),
+            ),
+        )
+        self.assertIn("## Active Record Compaction And Closure", documentation)
+        require_concept_groups(
+            documentation,
+            (
+                ("revisit trigger", "deferral"),
+                ("split", "topic", "route map"),
+                ("one authority", "decision", "not", "global file"),
+            ),
+        )
+        self.assertIn("## Evidence Freshness And Invalidation", evidence)
+        require_concept_groups(evidence, (("final integrated", "exact artifact"),))
+        self.assertIn("IMPL-NNNN", notes)
+        require_concept_groups(notes, (("current effect", "age"),))
+        self.assertIn("## Long-Running Re-entry And Loop Exceptions", loop)
+        require_concept_groups(loop, (("read-only review", "Implement", "not applicable"),))
 
     def test_starter_fallback_shows_both_open_finding_wire_forms(self) -> None:
         starter = read("skills/ai-spec-project-start/references/starter-templates.md")
@@ -479,6 +546,10 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
                     "conditional owner authorization", "conditions", "expiry",
                     "evidence", "source", "without automatic deletion",
                 ),
+                (
+                    "terminal state", "owner-decision record", "active SPEC revision",
+                    "source/artifact identity", "revising/superseding", "current-claim pointers",
+                ),
             ),
         )
         require_ordered_concepts(
@@ -510,6 +581,15 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
                     "convenience", "diagnostics", "not sdad", "state",
                     "handoff", "doctor authority",
                 ),
+            ),
+        )
+        source = markdown_section(runtime, "## Source Of Truth")
+        require_concept_groups(
+            source,
+            (
+                ("active_spec", "scope", "behavior", "acceptance criteria"),
+                ("claim/evidence status", "ledger"),
+                ("owner authorization", "result acceptance", "owner-decision record"),
             ),
         )
 
@@ -1153,6 +1233,7 @@ class AgentExperienceValidatorTests(unittest.TestCase):
             ),
             "templates/project-control-files/review-findings.md": (
                 "## Active Findings\n\nNone currently tracked.\n\n"
+                "## Future / Deferred Findings\n\nNone currently deferred.\n\n"
                 "## Recently Closed\n"
             ),
             "templates/project-control-files/docs/sdad/handoffs/"

@@ -54,6 +54,46 @@ caller opts into the guarded/new report lane; guarded state-v2 calls use report
 schema 2. JSON `root` and `state_version` may be null when project or state
 identity is unavailable.
 
+## Semantic Authority And Lifecycle Boundary
+
+Doctor can verify that `active_spec` names a readable in-repository path. It
+does not understand SPEC prose, detect contradictions between multiple SPECs,
+prove that a changed SPEC was reaccepted, or decide whether an amendment was
+material. It also cannot prove that a validation command ran on the current
+commit, integrated branch, environment, or final artifact. These are review,
+evidence-freshness, and owner-decision responsibilities.
+
+An accepted boundary is reconstructible only when its durable decision record
+pins the packet, active SPEC path and revision, source/artifact identity,
+bounded evidence and claim limits, unresolved risk, and final owner decision.
+Doctor does not verify that historical revision binding or decide whether a
+later edit falls inside the accepted claim boundary.
+
+State v2's `active_packet.status` is one current dominant checkpoint, not a
+cumulative ledger for implementation progress, evidence freshness, owner
+authorization, and acceptance. Those facts stay in their separate authorities.
+Changing the meaning or required axes of state v2 after release would require a
+new schema version rather than silently overloading this field.
+
+Doctor deliberately does not scan every archive or interpret arbitrary prose.
+It therefore cannot detect an unresolved item merely moved outside an active
+section, a closure entry without adequate evidence, stale or contradictory
+historical text, SPEC lineage cycles or overlapping supplement precedence,
+duplicate `IMPL`/evidence/archive IDs on parallel branches, or
+an implementation-notes file that has become semantically overloaded. The
+review contract must inspect affected records before closure and integration;
+startup routing must not load all history just to compensate for that limit.
+`Future / Deferred Findings` is intentionally outside Doctor's active-ledger
+parse. It preserves noncurrent split-packet findings without a packet-mismatch;
+review must restore them to Active Findings before that packet resumes or is
+accepted. A release, production, integration, or public/package-claim route
+must also scan deferred findings that intersect its artifact or claim scope;
+Doctor green does not perform that semantic gate.
+Doctor also does not interpret owner-decision lineage, detect self/cyclic
+revision, or reconcile parallel successors for overlapping claim scope. The
+review contract must hold affected claims until an owner reconciliation record
+resolves the fork and current pointers are updated.
+
 ## Tool-Native Features Are Not Protocol Authority
 
 Provider session history, checkpoints, plans, memory displays, task status, and

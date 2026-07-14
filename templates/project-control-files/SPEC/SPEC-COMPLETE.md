@@ -3,6 +3,61 @@
 Status: Canonical integrated SPEC
 Scope: Current product and implementation baseline
 
+`COMPLETE` means integrated baseline, not immutable or automatically active.
+For a stateful packet, `sdad-state.yaml#active_spec` selects the single
+normative SPEC entrypoint.
+
+## SPEC Authority And Lineage
+
+This integrated baseline is not immutable, and it is not automatically active;
+state selects the normative entrypoint.
+
+An additional SPEC does not become authority because it is newer, has `FINAL`
+or `COMPLETE` in its name, or exists under `SPEC/`. Before implementation,
+classify it as an amendment, bounded supplement, replacement, or proposal.
+
+- Amendment: update the current active SPEC inside the existing acceptance
+  boundary.
+- Bounded supplement: the active SPEC links its exact path and scope; this
+  active entrypoint controls conflicts and the baseline controls everything
+  outside the declared override.
+- Replacement: record owner scope/acceptance, name the superseded path or exact
+  headings, and switch `active_spec` in the packet transaction.
+- Proposal/reference: retain it as non-authoritative input until promoted.
+
+New additional or replacement SPECs start with this exact metadata block:
+
+```markdown
+Status: Proposal | Active | Superseded | Reference
+Baseline: SPEC/path.md
+Baseline revision: commit/tree/digest | Unpinned proposal
+Effective packet: WP-EXAMPLE | Unassigned
+Supersedes:
+- SPEC/path.md#exact-heading | None (additive)
+```
+
+`Effective packet` records the first packet that activates this SPEC revision;
+do not rewrite it to follow the current packet. Use `Active` only after exact
+incorporation or pointer switch. Existing
+single-SPEC projects remain valid without retrofitting metadata. A material
+requirement change after owner acceptance uses a new, never-reused packet ID
+and new validation; it does not rewrite old acceptance to cover new scope.
+Pin the baseline revision when a supplement participates in a terminal packet;
+an unpinned proposal remains non-authoritative.
+
+`Active` on a supplement means the state-declared entrypoint incorporated it;
+it does not create a second normative entrypoint. Normative supplements must be
+readable repository-local paths. Keep lineage acyclic: a SPEC cannot supersede
+itself, and overlapping supplements require explicit precedence in the active
+entrypoint before implementation. External documents remain references until
+their accepted requirements are incorporated repository-locally.
+
+Do not split a SPEC merely because work continues after `COMPLETE`. Split when
+targeted reads are no longer practical, independent domains need different
+packets, or parallel edits repeatedly conflict. Keep `active_spec` as the short
+normative entrypoint and link bounded supplements with exact inherited and
+overridden scope; do not duplicate shared acceptance across leaf files.
+
 ## Product Definition
 
 Describe what this project is in one paragraph.
@@ -19,7 +74,7 @@ Describe which decisions remain human-owned.
 
 - The owner controls direction and final acceptance.
 - AI output is not completion evidence by itself.
-- Active SPECs drive implementation.
+- The state-declared active SPEC entrypoint drives implementation.
 - Tests, docs, and reproducible commands prove behavior.
 - Future ideas stay out of active work until promoted.
 - Current active SPEC sections override older historical sections.

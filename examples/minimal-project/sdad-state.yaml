@@ -6,6 +6,7 @@ active_spec: SPEC/SPEC-COMPLETE.md
 active_packet:
   id: example
   objective: Keep the minimal example internally consistent.
+  # Current dominant checkpoint only; evidence and acceptance history live elsewhere.
   status: not_started
 validation_for: example
 owner_gates: []

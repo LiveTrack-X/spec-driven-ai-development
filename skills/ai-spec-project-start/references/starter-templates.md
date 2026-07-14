@@ -63,6 +63,7 @@ active_spec: SPEC/SPEC-COMPLETE.md
 active_packet:
   id: bootstrap
   objective: Replace with the current evidence-ready objective.
+  # Current dominant checkpoint only; keep evidence and acceptance history elsewhere.
   status: not_started
 validation_for: bootstrap
 # current_handoff: docs/sdad/handoffs/YYYY-MM-DD-HNNNN-topic.md
@@ -88,7 +89,7 @@ Keep INDEX below 80 lines and 4,000 characters. Include:
    handoff, and historical/reference triggers;
 3. an on-demand policy/playbook route;
 4. a write route for SPEC, TODO, findings, notes, ADR, evidence, and continuity;
-5. a compact source-of-truth order;
+5. a compact authority-by-fact-type map;
 6. an active catalog and maintenance budget.
 
 The first `## Active Catalog` contains exactly once:
@@ -140,6 +141,20 @@ Create short current-state files:
 - `review-findings.md`: unresolved defects, failed checks, and risk only;
 - `docs/implementation-notes.md`: durable spec-unstated choices only.
 
+For stateful work, `active_spec` is the single normative SPEC entrypoint and
+`SPEC-COMPLETE.md` is an integrated baseline rather than immutable final truth.
+A later amendment, bounded supplement, or replacement stays a proposal until
+its exact scope is incorporated or a packet transaction switches the pointer.
+Record baseline revision and effective packet, reject lineage cycles or
+implicit overlapping precedence, and keep normative supplements repository-local.
+Material changes after owner acceptance use a new packet ID and validation.
+
+Give new durable implementation notes never-reused `IMPL-NNNN` IDs. When the
+file grows, classify entries by current effect, promote normative facts to SPEC,
+hard-to-reverse rationale to ADR, and unresolved work to TODO/findings. Split
+remaining notes by topic, leaving the main file as a compact router; existing
+unnumbered entries remain valid.
+
 Use ADRs sparingly. Archive closed history rather than growing active journals.
 
 Use exact active-ledger forms. The TODO template contains `## Active Work`,
@@ -151,7 +166,8 @@ checkbox carries the packet marker:
 ```
 
 Review keeps `## Active Findings` with prose `None currently tracked.` when
-empty, plus `## Recently Closed` outside the active section.
+empty, `## Future / Deferred Findings` for intact noncurrent-packet findings
+with revisit triggers, and `## Recently Closed` for resolved history.
 
 Both legal open-finding forms are shown here outside the active ledger section:
 

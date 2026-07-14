@@ -417,11 +417,15 @@ def validate_cross_model_guidance_contract() -> None:
             "## Implement And Verify",
             "### Bounded Iteration",
             "bounded attempts",
+            "## SPEC Lineage Transaction",
+            "## Packet Split Decision",
+            "## Long-Running Re-entry And Invalidation",
         ],
         "templates/project-control-files/docs/sdad/playbooks/evidence-and-risk-gates.md": [
             "## Fresh-Context Review",
             "fresh context",
             "review evidence, not owner acceptance",
+            "## Evidence Freshness And Invalidation",
         ],
         "templates/project-control-files/docs/sdad/playbooks/advanced-extensions.md": [
             "representative task and environment",
@@ -723,6 +727,7 @@ def _require_authorization_record(content: str, label: str) -> None:
                 "Authorized action",
                 "Packet",
                 "Conditions",
+                "Source/artifact identity",
                 "Expires when",
                 "Evidence required before action",
             )
@@ -731,6 +736,31 @@ def _require_authorization_record(content: str, label: str) -> None:
     )
     if record is None:
         fail(f"{label} missing the ordered conditional-authorization record")
+
+
+def _require_table_relationship(
+    content: str,
+    label: str,
+    event_terms: tuple[str, ...],
+    action_terms: tuple[str, ...],
+    forbidden_action_terms: tuple[str, ...] = (),
+) -> None:
+    matches: list[tuple[str, str]] = []
+    for line in content.splitlines():
+        if not line.lstrip().startswith("|"):
+            continue
+        cells = [cell.strip().lower() for cell in line.strip().strip("|").split("|")]
+        if len(cells) < 2:
+            continue
+        if all(term.lower() in cells[0] for term in event_terms):
+            matches.append((cells[0], cells[1]))
+    if len(matches) != 1:
+        fail(f"{label} must have exactly one matching event row")
+    action = matches[0][1]
+    if any(term.lower() not in action for term in action_terms):
+        fail(f"{label} action is missing its required relationship")
+    if any(term.lower() in action for term in forbidden_action_terms):
+        fail(f"{label} action contains a forbidden relationship")
 
 
 def _require_no_current_legacy_levels(content: str, label: str) -> None:
@@ -1001,6 +1031,442 @@ def validate_public_v3_2_documentation_contract() -> None:
             ("unit/regression tests", "do not establish", "productivity"),
         ],
     )
+
+
+def validate_long_running_lifecycle_contract() -> None:
+    _require_concept_groups(
+        read("templates/project-control-files/sdad-state.yaml"),
+        "State dominant-checkpoint boundary",
+        [("current dominant checkpoint", "evidence", "acceptance", "elsewhere")],
+    )
+    kernel = read("templates/project-control-files/AGENTS.md")
+    _require_concept_groups(
+        kernel,
+        "Agent kernel active-SPEC authority",
+        [
+            ("active_spec", "single normative spec entrypoint"),
+            ("another spec", "proposal/reference", "exact scope", "pointer"),
+            ("filename", "date", "never grants authority"),
+            ("observed behavior", "source", "tests", "runtime"),
+            ("intended scope", "acceptance"),
+            ("read-only", "planning", "phase n/a", "never claim evidence"),
+        ],
+    )
+
+    spec_content = read("templates/project-control-files/SPEC/SPEC-COMPLETE.md")
+    spec_lineage = _markdown_section(
+        spec_content,
+        "## SPEC Authority And Lineage",
+        2,
+    )
+    metadata_block = (
+        "```markdown\n"
+        "Status: Proposal | Active | Superseded | Reference\n"
+        "Baseline: SPEC/path.md\n"
+        "Baseline revision: commit/tree/digest | Unpinned proposal\n"
+        "Effective packet: WP-EXAMPLE | Unassigned\n"
+        "Supersedes:\n"
+        "- SPEC/path.md#exact-heading | None (additive)\n"
+        "```"
+    )
+    if spec_content.count(metadata_block) != 1:
+        fail("SPEC lineage template must contain one exact additional-SPEC metadata block")
+    _require_concept_groups(
+        spec_lineage,
+        "SPEC lineage template",
+        [
+            ("integrated baseline", "not immutable", "not automatically active"),
+            ("amendment", "bounded supplement", "replacement", "proposal"),
+            ("status", "baseline revision", "effective packet", "supersedes"),
+            ("effective packet", "first packet", "do not rewrite"),
+            ("material requirement change", "owner acceptance", "never-reused packet id"),
+            ("does not rewrite", "old acceptance"),
+            ("targeted reads", "independent domains", "active_spec", "short"),
+            ("do not duplicate", "acceptance", "leaf files"),
+            ("second normative entrypoint", "repository-local paths"),
+            ("acyclic", "cannot supersede itself", "overlapping supplements", "precedence"),
+            ("external documents", "references", "incorporated repository-locally"),
+        ],
+    )
+
+    work_packets = read(
+        "templates/project-control-files/docs/sdad/playbooks/work-packets.md"
+    )
+    _require_concept_groups(
+        _markdown_section(work_packets, "## Packet Split Decision", 2),
+        "Packet split decision contract",
+        [
+            ("acceptance", "validation contract", "owner gate", "release lane"),
+            ("rollback", "blocker", "retry", "cost budget"),
+            ("line count alone", "not a split rule"),
+            ("never shrink", "original", "acceptance boundary", "subset green"),
+            ("original unaccepted", "parent packet id", "child packet ids", "split reason"),
+            ("active spec path", "revision", "acceptance criteria", "non-goals"),
+            ("validation commands", "proves claims", "aggregate checks"),
+            ("owner gates", "authorization references", "conditions"),
+            ("carried evidence", "freshness limits", "reciprocal todo/finding links"),
+            ("implementation-note decision", "adr", "hard-to-reverse", "other records link"),
+            ("parent", "inactive siblings", "future / deferred", "resume triggers"),
+            ("only the current leaf", "active work"),
+            ("future / deferred findings", "severity", "packet marker", "revisit trigger"),
+            ("inseparable", "blocked", "partial evidence"),
+            ("one current leaf", "never expands", "approved future-packet list"),
+            ("children finish", "original boundary", "aggregate validation", "owner decision"),
+            ("accepted replacement", "retires", "green child", "cannot close"),
+            ("reselect", "non-terminal parent", "integration packet"),
+            ("failed", "cancelled", "incomplete", "unresolved"),
+            ("parent becomes current again", "reconstruct state", "split-decision envelope"),
+            ("spec/source/evidence/authorization freshness", "active work", "aggregate validation"),
+            ("restore", "deferred findings", "active findings"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(work_packets, "## SPEC Lineage Transaction", 2),
+        "Work-packet SPEC lineage transaction",
+        [
+            ("single normative", "active_spec"),
+            ("never-reused", "packet id"),
+            ("owner-accepted", "history"),
+            ("queued", "recheck", "activation"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(work_packets, "## Packet Switch Transaction", 2),
+        "Terminal packet history transaction",
+        [
+            ("terminal", "durable decision record", "packet id"),
+            ("active spec path", "exact revision", "source/artifact identity"),
+            ("evidence", "claim limits", "unresolved risk", "final owner decision"),
+            ("do not reconstruct", "mutable path"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(
+            work_packets,
+            "## Long-Running Re-entry And Invalidation",
+            2,
+        ),
+        "Long-running re-entry contract",
+        [
+            ("dominant checkpoint", "not", "cumulative"),
+            ("same unfinished", "same packet", "invalidate"),
+            ("candidate", "proposal/reference", "do not change packet"),
+            ("existing declared gate", "continue the same packet"),
+            ("never move a terminal", "new packet", "historical evidence"),
+            ("accepted claim boundary", "unrelated repository edits"),
+            ("defect", "contradictory evidence", "finding", "bugfix/revalidation packet", "do not rewrite"),
+            ("merge", "rebase", "cherry-pick", "integrated"),
+            ("late", "plan/route", "retroactively"),
+            ("background job", "same unfinished packet", "keep the packet only"),
+            ("new recurring", "new occurrence packet"),
+            ("blocked or deferred", "resume trigger", "packet-linked"),
+            ("owner requests changes", "non-terminal", "new packet"),
+            ("owner revises", "revokes", "new decision/revalidation packet"),
+            ("revises/supersedes", "current-claim pointers"),
+            ("weakened", "proves", "weaker check"),
+            ("independent write", "distinct child leaf packet ids", "read-only reviewers"),
+            ("parallel", "worktrees", "reconcile", "final integrated"),
+        ],
+    )
+    long_running = _markdown_section(
+        work_packets,
+        "## Long-Running Re-entry And Invalidation",
+        2,
+    )
+    _require_table_relationship(
+        long_running,
+        "Existing-gate same-packet rule",
+        ("existing declared gate", "authorized/satisfied"),
+        ("continue", "same packet"),
+        ("create", "new packet"),
+    )
+    _require_table_relationship(
+        long_running,
+        "Current background-result re-entry rule",
+        ("background job", "same unfinished packet"),
+        ("keep", "packet", "identity"),
+        ("always create", "always new"),
+    )
+    _require_concept_groups(
+        _markdown_section(work_packets, "## Implement And Verify", 2),
+        "Installed phase-omission contract",
+        [("read-only review", "planning", "implement n/a", "never claim evidence")],
+    )
+
+    documentation = read(
+        "templates/project-control-files/docs/sdad/playbooks/"
+        "documentation-and-handoff.md"
+    )
+    _require_concept_groups(
+        _markdown_section(
+            documentation,
+            "## One Fact, One Authoritative Home",
+            2,
+        ),
+        "Owner-decision authority contract",
+        [
+            ("one authority per decision", "not one global file"),
+            ("path/url/id", "last-observed status"),
+            ("authorization", "future action", "acceptance", "delivered result"),
+            ("without a durable decision reference", "evidence-ready only"),
+            ("terminal packet", "active spec path", "exact revision"),
+            ("source/artifact identity", "evidence", "claim limits", "final owner decision"),
+            ("corrects", "revokes", "unique decision record", "revises/supersedes"),
+            ("current-claim pointers", "prior record", "historical authority"),
+            ("cannot cycle", "revise itself", "parallel successors"),
+            ("hold the claim", "owner reconciliation", "time", "id order"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(
+            documentation,
+            "## Active Record Compaction And Closure",
+            2,
+        ),
+        "Active-record compaction and closure",
+        [
+            ("resolution kind", "completion evidence", "owner", "resolution/acceptance"),
+            ("superseding packet", "reciprocal", "active-item link"),
+            ("deferral stays", "future/deferred", "reason", "revisit trigger"),
+            ("future / deferred findings", "identity", "severity", "restore trigger"),
+            ("back to active findings", "packet becomes current"),
+            ("promote requirements", "spec", "rationale", "adr"),
+            ("split by topic", "route map"),
+            ("dates and times", "descriptive", "logical ids", "before merge"),
+            ("v3.1 project", "preserve existing rows", "durable record", "no mass rewrite"),
+        ],
+    )
+
+    readiness = read("templates/project-control-files/docs/work-packet-state.md")
+    _require_authorization_record(
+        _markdown_section(readiness, "## Conditional Owner Authorization", 2),
+        "Lifecycle conditional authorization",
+    )
+    _require_concept_groups(
+        _markdown_section(readiness, "## Terminal Packet Decision Record", 2),
+        "Terminal packet decision record",
+        [
+            ("owner_accepted", "production_ready", "authoritative record"),
+            ("decision id", "revoked", "revises/supersedes decisions"),
+            ("decision claim scope",),
+            ("packet", "active spec path", "revision identity"),
+            ("source/artifact identity", "evidence references", "claim limits"),
+            ("unresolved work", "residual risk", "owner", "decision source"),
+            ("link", "path", "url", "id", "do not copy"),
+            ("never edit", "append", "uniquely identified record"),
+            ("current-claim pointers", "newest applicable", "history"),
+            ("acyclic", "cannot revise itself"),
+            ("parallel", "same predecessor", "overlapping claim scope"),
+            ("hold", "owner reconciliation record", "competing successor"),
+            ("dates", "filenames", "larger ids", "cannot choose"),
+            ("every direct predecessor", "once", "list order", "descriptive"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(readiness, "## Close Or Archive", 2),
+        "Authorization history retention",
+        [
+            ("expired authorization", "non-reusable", "active routed view"),
+            ("retain", "immutable record", "history"),
+            ("archive", "rather than deleting", "authority provenance"),
+        ],
+    )
+
+    evidence = read(
+        "templates/project-control-files/docs/sdad/playbooks/"
+        "evidence-and-risk-gates.md"
+    )
+    _require_concept_groups(
+        _markdown_section(
+            evidence,
+            "## Evidence Freshness And Invalidation",
+            2,
+        ),
+        "Evidence freshness contract",
+        [
+            ("packet", "spec", "source", "artifact", "environment"),
+            ("invalidate", "affected claim"),
+            ("final integrated", "exact artifact"),
+            ("skips", "retries", "flaky", "unverified"),
+            ("late", "external evidence", "plan/route", "retroactively"),
+        ],
+    )
+    _require_concept_groups(
+        _markdown_section(evidence, "## Deferred Finding Gate", 2),
+        "Deferred-finding release gate",
+        [
+            ("release", "production", "integration", "public/package claim"),
+            ("future / deferred findings", "artifact", "dependency", "claim scope"),
+            ("restore", "current packet", "active findings"),
+            ("critical", "blocks", "owner risk decision"),
+            ("unrelated", "inactive", "do not load all history"),
+            ("doctor green", "does not perform", "semantic intersection"),
+        ],
+    )
+
+    notes = read("templates/project-control-files/docs/implementation-notes.md")
+    _require_concept_groups(
+        notes,
+        "Implementation-note compaction contract",
+        [
+            ("impl-nnnn", "never-reused", "date", "descriptive"),
+            ("current effect", "rather than age"),
+            ("promote", "spec", "adr", "todo", "findings"),
+            ("pointer", "two mutable copies"),
+            ("split by topic", "small current router"),
+        ],
+    )
+
+    todo = read("templates/project-control-files/docs/TODO-Open-Items.md")
+    _require_concept_groups(
+        todo,
+        "TODO deferral and closure contract",
+        [
+            ("future / deferred", "original packet", "defer reason", "revisit trigger"),
+            ("recently closed", "resolution kind", "completion evidence", "owner"),
+            ("superseding packet", "reciprocal active-item link"),
+            ("moving the text", "not itself closure"),
+        ],
+    )
+    todo_recent = _markdown_section(todo, "## Recently Closed", 2).lower()
+    if "owner deferral" in todo_recent:
+        fail("TODO Recently Closed cannot treat owner deferral as closure")
+    review = read("templates/project-control-files/review-findings.md")
+    _require_concept_groups(
+        review,
+        "Finding closure contract",
+        [
+            ("recently closed", "resolution kind", "evidence", "owner decision"),
+            ("unresolved finding", "not closure"),
+            ("future / deferred findings", "noncurrent", "severity", "packet marker"),
+            ("revisit trigger", "back to", "active findings", "do not keep two copies"),
+        ],
+    )
+    adr = read(
+        "templates/project-control-files/SPEC/adr/ADR-0001-template.md"
+    )
+    _require_concept_groups(
+        adr,
+        "ADR authority boundary",
+        [
+            ("rationale", "tradeoffs", "does not override", "normative"),
+            ("accepted adr", "normative behavior", "active spec", "same coherence transaction"),
+        ],
+    )
+
+    for path, heading in (
+        ("templates/project-control-files/docs/evidence-matrix.md", "## Owner Decision References"),
+        ("templates/project-control-files/docs/claim-registry.md", "## Owner Decision References"),
+    ):
+        _require_concept_groups(
+            _markdown_section(read(path), heading, 2),
+            f"Owner-decision pointer contract {path}",
+            [("authoritative", "owner-decision record", "last-observed", "recheck")],
+        )
+
+    claim_registry = read("templates/project-control-files/docs/claim-registry.md")
+    _require_concept_groups(
+        _markdown_section(claim_registry, "## Owner Decision References", 2),
+        "Claim wording versus owner-decision scope",
+        [("claim wording scope", "authoritative decision", "last observed")],
+    )
+    if "| Accepted scope |" in claim_registry:
+        fail("Claim Registry must not duplicate accepted owner-decision scope")
+
+    index = read("templates/project-control-files/docs/INDEX.md")
+    _require_concept_groups(
+        _markdown_section(index, "## Write Route", 2),
+        "INDEX owner-decision write route",
+        [("owner authorization/result acceptance", "durable decision path/url/id")],
+    )
+    _require_concept_groups(
+        _markdown_section(index, "## Working Route", 2),
+        "INDEX blocked and late-result route",
+        [("blocked/deferred", "late result", "packet todo/finding/gate", "work/evidence playbook")],
+    )
+    _require_concept_groups(
+        _markdown_section(index, "## Working Route", 2),
+        "INDEX protected-action deferred-finding route",
+        [("protected action/owner decision", "intersecting deferred findings")],
+    )
+
+    ai_loop = read("docs/ai-work-loop.md")
+    _require_concept_groups(
+        _markdown_section(
+            ai_loop,
+            "## Long-Running Re-entry And Loop Exceptions",
+            2,
+        ),
+        "Public long-running loop contract",
+        [
+            ("candidate", "conflicting spec", "proposal/reference", "do not change packet"),
+            ("owner promotes", "material spec change", "new packet"),
+            ("accepted packet", "revision-bound decision history", "new", "revalidation packet"),
+            ("defect", "contradictory evidence", "finding", "bugfix/revalidation packet", "do not rewrite acceptance"),
+            ("merge", "rebase", "cherry-pick", "final artifact"),
+            ("background job", "same unfinished packet", "reuse only"),
+            ("new recurring", "new occurrence packet"),
+            ("one unit blocked", "partial evidence", "new packet"),
+            ("noncurrent todo", "findings", "deferred sections", "restore triggers"),
+            ("owner requests changes", "non-terminal", "new packet"),
+            ("owner revises", "revokes", "new decision/revalidation packet"),
+            ("revising/superseding record", "current-claim pointers"),
+            ("terminal packet", "exact revision", "source/artifact identity", "final decision"),
+            ("split children", "aggregate validation", "owner decision", "retires"),
+            ("read-only review", "implement", "not applicable"),
+            ("skipping a phase", "explains why", "does not claim"),
+        ],
+    )
+
+    limitations = _markdown_section(
+        read("docs/known-limitations.md"),
+        "## Semantic Authority And Lifecycle Boundary",
+        2,
+    )
+    _require_concept_groups(
+        limitations,
+        "Semantic lifecycle limitations",
+        [
+            ("does not understand spec prose", "contradictions", "reaccepted"),
+            ("current dominant checkpoint", "not a cumulative ledger"),
+            ("does not scan every archive", "unresolved item", "duplicate"),
+            ("spec lineage cycles", "overlapping supplement precedence"),
+            ("startup routing", "not load all history"),
+            ("future / deferred findings", "outside doctor", "restore", "active findings"),
+            ("release", "production", "integration", "scan deferred findings"),
+            ("intersect", "artifact", "claim scope", "doctor green"),
+            ("owner-decision lineage", "cyclic", "parallel successors", "owner reconciliation"),
+            ("accepted boundary", "decision record", "revision", "source/artifact identity"),
+            ("does not verify", "historical revision", "accepted claim boundary"),
+        ],
+    )
+    _require_concept_groups(
+        read("docs/user-guide.md"),
+        "User guide owner-decision fork",
+        [
+            ("parallel decisions", "same predecessor", "overlapping claim scope"),
+            ("hold the claim", "owner reconciliation record", "competitors"),
+            ("newer date", "larger id", "does not choose authority"),
+        ],
+    )
+    for localized_guide in (
+        "docs/user-guide.ko.md",
+        "docs/user-guide.ja.md",
+        "docs/user-guide.zh.md",
+    ):
+        _require_concept_groups(
+            read(localized_guide),
+            f"Legacy decision-record migration {localized_guide}",
+            [
+                ("v3.1", "owner-acceptance", "durable decision record", "link"),
+                ("terminal packet", "packet id", "active spec path", "exact revision"),
+                ("source/artifact identity", "evidence", "claim limits"),
+                ("unresolved risk", "final owner decision"),
+                ("terminal", "revises/supersedes", "current-claim", "record"),
+                ("parallel decision", "predecessor", "claim scope", "hold"),
+                ("owner reconciliation record", "competing successor", "date", "id"),
+            ],
+        )
 
 
 def validate_doctor_gemini_documentation_contract() -> None:
@@ -1999,10 +2465,17 @@ def validate_canonical_template_contract() -> None:
         ("Canonical review", "templates/project-control-files/review-findings.md"),
         ("Minimal review", "examples/minimal-project/review-findings.md"),
     ):
+        review_phrases = [
+            "## Active Findings",
+            "None currently tracked.",
+            "## Recently Closed",
+        ]
+        if label == "Canonical review":
+            review_phrases.insert(2, "## Future / Deferred Findings")
         review = require_phrases(
             path,
             label,
-            ["## Active Findings", "None currently tracked.", "## Recently Closed"],
+            review_phrases,
         )
         if not _active_ledger_records_are_valid(
             review,
@@ -2044,19 +2517,36 @@ def validate_canonical_template_contract() -> None:
             "- Authorized action:",
             "- Packet:",
             "- Conditions:",
+            "- Source/artifact identity:",
             "- Expires when:",
             "- Evidence required before action:",
+            "## Terminal Packet Decision Record",
+            "- Decision ID: DEC-EXAMPLE",
+            "- Revises/supersedes decisions:",
+            "  - None | path/URL/ID",
+            "- Decision claim scope:",
+            "- Active SPEC path and revision identity:",
+            "- Evidence references and claim limits:",
+            "- Unresolved work and residual risk:",
+            "- Affected current-claim pointers:",
+            "- Owner or decision source:",
         ],
+    )
+    readiness_authorization = _markdown_section(
+        readiness,
+        "## Conditional Owner Authorization",
+        2,
     )
     for field in (
         "- Decision:",
         "- Authorized action:",
         "- Packet:",
         "- Conditions:",
+        "- Source/artifact identity:",
         "- Expires when:",
         "- Evidence required before action:",
     ):
-        if readiness.count(field) != 1:
+        if readiness_authorization.count(field) != 1:
             fail(f"Delivery readiness authorization field must occur once: {field}")
 
     current_surfaces = (
@@ -2123,6 +2613,7 @@ def validate_canonical_template_contract() -> None:
             numbered_steps[-1] = (number, f"{text} {line.strip()}")
     concepts = (
         "select next leaf",
+        "terminal",
         "classify",
         "review validation",
         "update state",
@@ -2132,11 +2623,11 @@ def validate_canonical_template_contract() -> None:
         "advance status",
         "rerun doctor",
     )
-    if [number for number, _ in numbered_steps] != list(range(1, 10)) or any(
+    if [number for number, _ in numbered_steps] != list(range(1, 11)) or any(
         concept not in numbered_steps[index][1].lower()
         for index, concept in enumerate(concepts)
     ):
-        fail("## Packet Switch Transaction must contain numbered steps 1-9 in order")
+        fail("## Packet Switch Transaction must contain numbered steps 1-10 in order")
 
 
 def validate_skill() -> None:
@@ -2307,6 +2798,10 @@ def validate_skill() -> None:
                 "conditional owner authorization", "conditions", "expiry",
                 "evidence", "source", "without automatic deletion",
             ),
+            (
+                "terminal state", "owner-decision record", "active spec revision",
+                "source/artifact identity", "revising/superseding", "current-claim pointers",
+            ),
             ("docs/work-packet-state.md", "delivery readiness model"),
         ],
     )
@@ -2402,6 +2897,17 @@ def validate_skill() -> None:
             ),
         ],
     )
+    runtime_source = _markdown_section(runtime_contract, "## Source Of Truth", 2)
+    _require_concept_groups(
+        runtime_source,
+        "Skill runtime one-fact authority",
+        [
+            ("active_spec", "scope", "behavior", "acceptance criteria"),
+            ("claim/evidence status", "ledger"),
+            ("owner authorization", "result acceptance", "owner-decision record"),
+            ("link", "authorities", "elsewhere"),
+        ],
+    )
 
     field_patterns = require_phrases(
         "skills/ai-spec-project-start/references/field-patterns.md",
@@ -2459,6 +2965,7 @@ def validate_templates() -> None:
         read(path)
     validate_canonical_template_contract()
     validate_public_v3_2_documentation_contract()
+    validate_long_running_lifecycle_contract()
     validate_doctor_checkout_contract()
     validate_doctor_gemini_documentation_contract()
     manifest = validate_install_source_manifest()
@@ -2728,6 +3235,18 @@ def validate_templates() -> None:
             "## On-Demand Playbooks",
         ],
     )
+    operating_rules = read(
+        "templates/project-control-files/docs/Repository-Operating-Rules.md"
+    )
+    _require_concept_groups(
+        _markdown_section(operating_rules, "## Source Of Truth", 2),
+        "Repository one-fact routing",
+        [
+            ("scope", "behavior", "acceptance-criteria", "active spec"),
+            ("owner authorization", "result acceptance", "durable owner-decision record"),
+            ("link", "several homes"),
+        ],
+    )
     project_readme = read("templates/project-control-files/README.md")
     for phrase in [
         "Optional product evidence files are create-on-demand",
@@ -2779,9 +3298,19 @@ def validate_templates() -> None:
     ]:
         if phrase not in save_state:
             fail(f"Save-state template missing: {phrase}")
+    _require_concept_groups(
+        _markdown_section(save_state, "## Context Stability Rule", 2),
+        "Legacy save-state one-fact routing",
+        [
+            ("scope", "behavior", "acceptance-criteria", "active spec"),
+            ("owner authorization", "result acceptance", "durable owner-decision record"),
+            ("leave only pointers",),
+        ],
+    )
     review_findings_template = read("templates/project-control-files/review-findings.md")
     for phrase in [
         "Active Findings",
+        "Future / Deferred Findings",
         "Recently Closed",
         "Do not leave closed findings",
     ]:
@@ -2796,6 +3325,7 @@ def validate_templates() -> None:
         "review-findings.md",
         "ADR",
         "hard to reverse",
+        "IMPL-NNNN",
     ]:
         if phrase not in implementation_notes_template:
             fail(f"Implementation-notes template missing: {phrase}")
@@ -2858,9 +3388,9 @@ def validate_templates() -> None:
         "Freshness Rules",
         "Negative Results",
         "Evidence status stops at review",
-        "Acceptance Tracking",
+        "Owner Decision References",
+        "Last observed status",
         "not_requested",
-        "pending_owner",
     ]:
         if phrase not in evidence_matrix:
             fail(f"Evidence matrix template missing: {phrase}")
@@ -2873,7 +3403,8 @@ def validate_templates() -> None:
         "Claim Scan Checklist",
         "README.md",
         "Stop Rules",
-        "Owner Acceptance",
+        "Owner Decision References",
+        "Last observed status",
     ]:
         if phrase not in claim_registry:
             fail(f"Claim registry template missing: {phrase}")
@@ -2904,7 +3435,16 @@ def validate_templates() -> None:
         "Release-candidate",
         "Production-ready",
         "Conditional Owner Authorization",
+        "Source/artifact identity",
         "Evidence required before action",
+        "Terminal Packet Decision Record",
+        "Decision ID: DEC-EXAMPLE",
+        "Revises/supersedes decisions",
+        "Decision claim scope",
+        "Active SPEC path and revision identity",
+        "Evidence references and claim limits",
+        "Affected current-claim pointers",
+        "expired authorization is non-reusable",
         "expired or failed condition is a stop",
         "`sdad-state.yaml` remains the",
     ]:

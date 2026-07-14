@@ -290,3 +290,67 @@ surface.
 Replace with: define only execution-relevant terms. Use active docs or SPEC for
 feature-local language, and create a small `docs/domain-language.md` routed from
 `docs/INDEX.md` only when terminology drift repeats.
+
+## 22. Filename-Decided SPEC Authority
+
+Symptom: `FINAL`, `COMPLETE`, a newer date, or a larger number makes a second
+SPEC the implementation target.
+
+Why it fails: file metadata cannot say whether the document amends, supplements,
+replaces, or merely proposes scope.
+
+Replace with: keep one state-declared `active_spec`; incorporate exact bounded
+scope or switch the pointer in a packet transaction before implementation.
+
+## 23. Accepted-Packet History Rewrite
+
+Symptom: a new requirement is inserted into an owner-accepted packet and the old
+validation is treated as evidence for it.
+
+Why it fails: acceptance and evidence were collected for a different boundary.
+
+Replace with: preserve accepted history, allocate a never-reused packet ID, and
+bind fresh validation to the changed requirement and gates.
+
+## 24. Ledger Closure Laundering
+
+Symptom: unresolved work disappears after moving it to Recently Closed,
+Future/Deferred, or an archive.
+
+Why it fails: moving text is not completion, deferral, or risk acceptance.
+
+Replace with: require a resolution kind plus completion evidence, an
+authoritative owner resolution/acceptance decision, or a superseding packet
+with a reciprocal active-item link. Deferral stays Future/Deferred with a reason
+and revisit trigger.
+
+## 25. Pre-Integration Green Evidence
+
+Symptom: branch-local checks remain credited after merge, rebase, cherry-pick,
+conflict resolution, generated-artifact change, or environment change.
+
+Why it fails: the tested tree or artifact is no longer the claimed result.
+
+Replace with: invalidate affected claims and rerun integration/release checks on
+the final integrated tree and exact artifact.
+
+## 26. Age-Only Implementation-Note Archiving
+
+Symptom: old notes are archived wholesale while they still constrain current
+code, or the same fact remains copied in SPEC, ADR, TODO, and notes.
+
+Why it fails: age is not current effect, and duplicate authorities drift.
+
+Replace with: classify by current effect, promote each fact to one authoritative
+home, leave a pointer, split remaining current notes by topic, and use stable
+`IMPL-NNNN` identities.
+
+## 27. Late Evidence As Automatic Completion
+
+Symptom: background, hardware, lab, or production output changes packet status
+without re-entering the work loop.
+
+Why it fails: late evidence may use stale scope, source, environment, or gates.
+
+Replace with: route it through Plan -> Route, verify identity and freshness, and
+never let it retroactively authorize an action or expand an approved queue.

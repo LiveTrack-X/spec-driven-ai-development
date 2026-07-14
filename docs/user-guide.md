@@ -109,25 +109,60 @@ Decision:
 Authorized action:
 Packet:
 Conditions:
+Source/artifact identity:
 Expires when:
 Evidence required before action:
 ```
 
-The AI may reuse it only while the action, packet, conditions, source, and
-expiry remain unchanged. A changed term or expiry requires a new decision.
+The AI may reuse it only while the action, packet, conditions,
+source/artifact identity, and expiry remain unchanged. A changed term or expiry
+requires a new decision.
 
 ## One Fact, One Home
 
 | Fact | Authoritative home |
 |---|---|
-| Requirement or acceptance change | SPEC |
+| Intended scope, behavior, or acceptance criteria | state-declared `active_spec` |
+| Observed behavior | current source, tests, runtime, and reproducible commands |
 | Small implementation-time non-spec decision | implementation notes |
 | Hard-to-reverse architecture decision | ADR |
 | Unresolved work | TODO or finding |
+| Owner authorization or acceptance | one authoritative owner-decision record |
 | Cross-session recovery links/results | handoff |
 | Current execution state | `sdad-state.yaml` |
 
 Handoffs link to these authorities instead of duplicating their contents.
+`SPEC-COMPLETE.md` means integrated baseline, not immutable final truth. In a
+stateful project, `active_spec` is the single normative SPEC entrypoint. A new
+or conflicting SPEC remains a proposal until its exact scope is incorporated
+there or a packet transaction switches the pointer. Material change after an
+accepted packet uses a new packet ID and fresh validation instead of rewriting
+the accepted history.
+
+Before state moves past a terminal packet, one durable decision record pins the
+packet ID, active SPEC path and exact revision, source/artifact identity,
+evidence and claim limits, unresolved risk, and final owner decision. This
+keeps accepted history reconstructible even when the same files change later.
+
+Long-running work re-enters Plan -> Route when a SPEC, source, dependency,
+environment, artifact, owner gate, or external result changes. Keep the same
+packet only for the same unfinished objective and acceptance boundary;
+otherwise create a never-reused packet. Validate the integrated branch and
+final artifact after merge/rebase/cherry-pick. Read-only review, planning, or a
+blocked packet may omit Implement or Verify, but the report must mark the phase
+not applicable or blocked and must not claim its missing evidence.
+
+An owner-decision record is one durable authority per decision, not a mandatory
+global file. It can be a repository approval, issue/PR decision, signed record,
+or a conditional authorization record. Authorization permits a named future
+action; acceptance evaluates the delivered result. Link the same record from
+evidence, claim, and handoff surfaces instead of copying its status.
+If the owner later corrects, limits, or revokes a terminal decision, append a
+new uniquely identified record that revises/supersedes the old one and update
+affected current-claim pointers. Never rewrite the prior decision history.
+If parallel decisions revise the same predecessor for overlapping claim scope,
+hold the claim until an owner reconciliation record retires/supersedes all
+competitors. A newer date or larger ID does not choose authority.
 
 ## Diagnose With SDAD Doctor
 
@@ -203,7 +238,10 @@ implementation.
 
 Existing projects receive a read-only migration preview before writes. Preserve
 state-v1 `intensity`, numeric autonomy `0..4`, legacy messages, and report schema
-1 until migration is accepted. See
+1 until migration is accepted. Preserve legacy evidence/claim acceptance rows
+as history; as each decision is touched, select one durable decision record and
+replace other mutable acceptance fields with links to it. No mass rewrite is
+required. See
 [autonomy-levels.md](autonomy-levels.md) and
 [operating-intensity.md](operating-intensity.md) for the legacy mapping.
 

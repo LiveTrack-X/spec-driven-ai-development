@@ -112,26 +112,50 @@ Decision:
 Authorized action:
 Packet:
 Conditions:
+Source/artifact identity:
 Expires when:
 Evidence required before action:
 ```
 
-当 `Authorized action`、`Packet`、`Conditions`、`Evidence required before action` 均未变化、
-批准后 source 未改变且尚未达到 `Expires when` 时，不要重复请求同一批准。其中任何一项
+当 `Authorized action`、`Packet`、`Conditions`、`Source/artifact identity`、
+`Evidence required before action` 均未变化且尚未达到 `Expires when` 时，不要重复请求同一批准。其中任何一项
 发生变化，授权即过期，必须取得新的 Owner 决定。
 
 ## 一个事实只记录在一个位置
 
 | 内容 | 规范位置 |
 |---|---|
-| requirements 和 acceptance 变更 | SPEC |
+| 预期 scope、behavior 与 acceptance criteria | state 声明的 `active_spec` |
+| 已观察 behavior | 当前 source、tests、runtime 与可复现命令 |
 | 小型的非 SPEC 实现判断 | `docs/implementation-notes.md` |
 | 难以撤销的结构决定 | ADR |
 | 未解决工作 | TODO 或 finding |
+| Owner authorization 或 acceptance | 一个权威 owner-decision record |
 | 下一会话的恢复信息 | handoff |
 | 当前执行 state | `sdad-state.yaml` |
 
 handoff 不复制这些文档的内容，只链接路径和关键结果。
+`SPEC-COMPLETE.md` 中的 COMPLETE 表示已集成 baseline，而不是不可变的最终版本。
+在 stateful project 中，`active_spec` 是唯一 normative SPEC entrypoint。新增或冲突
+SPEC 在其准确范围被纳入该入口，或 packet transaction 显式切换 pointer 前，只是
+proposal。accepted packet 之后的重大变更应使用新的 packet ID 与 validation，不应
+改写已接受的历史。
+
+state 离开 terminal packet 之前，一个 durable decision record 必须同时固定 packet ID、
+active SPEC path 与 exact revision、source/artifact identity、evidence 与 claim limits、
+unresolved risk 和 final owner decision。
+
+owner-decision record 表示每项 decision 只有一个权威来源，并不要求单一 global file。
+修正、限制或撤销 terminal decision 时，不要改写旧 record；应创建带 unique ID 的新
+record，填写 `Revises/supersedes`，并移动受影响的 current-claim pointer。
+如果 parallel decision 修改同一 predecessor 且 claim scope 重叠，应 hold affected claim；
+在 owner reconciliation record 处理所有 competing successor 前，不得用 date 或 ID
+选择 current authority。
+
+当 SPEC、source、dependency、environment、artifact、gate 或外部结果变化时，长期
+工作必须重新进入 Plan -> Route。只有未完成 objective 与 acceptance 边界都相同时才
+保留原 packet。read-only review 或 planning 可以省略 Implement，但报告必须标明 N/A
+或 blocked 原因，且不能声称获得了被省略 phase 才能产生的 evidence。
 
 ## Evidence 与声明边界
 
@@ -191,3 +215,7 @@ planning，实际 adapter 安装必须在 coding tool 中完成。
 而不是 execution scope。Q5 不是强制提问，operating intensity 也不是 state v2 field。
 历史 mapping 可参考 [autonomy-levels.md](autonomy-levels.md) 与
 [operating-intensity.md](operating-intensity.md)，但不要在新 state 中记录 legacy 术语。
+
+请把现有 evidence/claim 表中的 owner-acceptance 行保留为历史记录。下次修改某项
+decision 时，为它选择一个 durable decision record，并把其他可变 acceptance field
+改为指向该记录的 link；无需批量重写。

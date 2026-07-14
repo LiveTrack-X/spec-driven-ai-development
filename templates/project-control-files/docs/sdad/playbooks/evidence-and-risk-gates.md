@@ -18,7 +18,8 @@ deploy. Execution scope never substitutes for an owner gate.
 
 When a routed readiness record contains a conditional authorization, reuse it
 only while the packet, action, conditions, expiry, evidence prerequisite, and
-recorded source remain unchanged. An expired or failed condition is a stop.
+recorded source/artifact identity remain unchanged. An expired or failed
+condition is a stop.
 Do not copy the authorization into state or invent a gate registry.
 
 ## Fresh-Context Review
@@ -28,6 +29,16 @@ security boundary, or public effectiveness claim, request a fresh context,
 implementation-independent review when an isolated pass is available. Review the final diff,
 acceptance criteria, validation evidence, open findings, and residual risk.
 This is review evidence, not owner acceptance.
+
+## Deferred Finding Gate
+
+Before release, production, integration, or a public/package claim, run a
+targeted scan of `Future / Deferred Findings` against the exact artifact,
+dependency, and claim scope. If a finding intersects, restore or link it into
+the current packet's Active Findings. An intersecting Critical finding blocks
+the action unless an authoritative owner risk decision explicitly covers it.
+Leave unrelated deferred findings inactive; do not load all history. Doctor
+green does not perform this semantic intersection scan.
 
 ## Evidence Tiers
 
@@ -42,6 +53,20 @@ Match each claim to the strongest evidence actually obtained:
 
 A lower tier cannot unlock a higher-tier claim. Mark skipped, partial, degraded,
 simulated, stale, and unverified evidence explicitly.
+
+## Evidence Freshness And Invalidation
+
+Bind evidence to packet, active SPEC/acceptance criteria, source or artifact identity,
+target environment, and observed time. A relevant source, SPEC, validation,
+generator, lockfile, merge result, artifact, target, or environment change
+invalidates only the affected claim surface; preserve the old result as history
+and revalidate before restoring status.
+
+Run release and integration checks on the final integrated tree and exact
+artifact; bind release evidence to the exact commit/HEAD. Record skips, retries,
+flaky behavior, and unverified areas. Late
+external evidence re-enters through Plan/Route and cannot retroactively
+upgrade a packet, claim, authorization, or owner acceptance by itself.
 
 ## Optional Product Evidence
 

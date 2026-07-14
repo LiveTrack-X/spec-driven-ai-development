@@ -22,7 +22,7 @@ implementation notes, or long command/file logs into the handoff.
 ## 3. Authority Pointers
 
 - Current state: `sdad-state.yaml`
-- Active SPEC / acceptance:
+- Active SPEC / acceptance criteria:
 - Relevant TODO or finding:
 - Implementation note or ADR, if any:
 

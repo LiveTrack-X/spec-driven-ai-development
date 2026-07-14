@@ -60,9 +60,14 @@ Keep readiness lanes, evidence statuses, and owner acceptance separate:
 
 Evidence Matrix statuses remain evidence-specific, for example `missing`,
 `software_only`, `evidence_received`, `reviewed_pass`, `reviewed_warn`, and
-`reviewed_fail`. Owner acceptance is an acceptance field or ledger, not an
-evidence status. Evidence-ready is not owner-accepted, and owner acceptance
-cannot strengthen missing evidence.
+`reviewed_fail`. Authorization and acceptance live in one authoritative
+owner-decision record; the Evidence Matrix and Claim Registry store a pointer
+and last-observed status instead of duplicating that decision. Evidence-ready
+is not owner-accepted, and owner acceptance cannot strengthen missing evidence.
+Use one durable authority per decision: an existing repository approval,
+issue/PR decision, signed record, or conditional authorization entry is valid.
+Authorization and result acceptance remain distinct even when recorded in the
+same owner message.
 
 Older 3.1 records may contain `ai_complete`, `software_verified`,
 `tester_ready`, `hardware_verified`, `owner_accepted`, or `production_ready`.
@@ -116,11 +121,12 @@ Decision:
 Authorized action:
 Packet:
 Conditions:
+Source/artifact identity:
 Expires when:
 Evidence required before action:
 ```
 
-Reuse the authorization only while all recorded fields and relevant source stay
+Reuse the authorization only while all recorded fields and source/artifact identity stay
 unchanged. Expiry, failed conditions, missing required evidence, or source
 changes require re-approval. Acceptance remains a separate owner decision.
 

@@ -8,7 +8,7 @@ resume, handoff, or oversized control file
 
 Write each fact once:
 
-- requirement, behavior, non-goal, or acceptance change -> active SPEC;
+- requirement, behavior, non-goal, or acceptance-criteria change -> active SPEC;
 - small spec-unstated implementation decision -> implementation notes;
 - hard-to-reverse architecture decision -> numbered ADR;
 - unresolved work -> TODO or review finding;
@@ -18,6 +18,33 @@ Write each fact once:
 
 A handoff links to these authorities. It does not duplicate full SPEC decisions,
 implementation notes, ADR rationale, TODOs, findings, or long command/file logs.
+
+An ADR owns rationale and consequences, not normative requirements. If an ADR
+changes behavior or acceptance criteria, update the active SPEC in the same coherence
+transaction. Evidence and claim files point to one authoritative owner-decision
+record instead of copying acceptance fields.
+
+"One owner-decision record" means one authority per decision, not one global
+file. It may be a repository approval record, issue/PR decision, signed record,
+or the conditional authorization section in the Delivery Readiness Model; all
+other surfaces store only its path/URL/ID and last-observed status.
+Authorization permits a named future action under conditions and expiry;
+acceptance evaluates a delivered result. Keep them as distinct labeled
+decisions even when the owner states both together. Without a durable decision
+reference, report evidence-ready only and do not persist owner-accepted status.
+
+Before current state leaves a terminal packet, its authoritative decision
+record must bind the packet ID, active SPEC path and exact revision,
+source/artifact identity, evidence and claim limits, unresolved risk, and final
+owner decision. This record preserves accepted history when the same SPEC path
+changes later; other surfaces link it rather than duplicating its fields.
+If an owner later corrects, limits, or revokes that decision, append a unique
+decision record with a `Revises/supersedes` link and move affected current-claim
+pointers to it. Keep the prior record immutable as historical authority.
+Decision lineage cannot cycle or revise itself. Competing parallel successors
+for overlapping claim scope hold the claim until one owner reconciliation
+record explicitly supersedes/retires them and updates every current pointer;
+time or ID order never chooses authority.
 
 ## Routed Document Semantics
 
@@ -35,6 +62,34 @@ were actually read.
 Keep active files short. Move closed TODOs/findings and old evidence to a
 Recently Closed section or timestamped archive, then link them. Do not create a
 file solely to make the process look complete.
+
+## Active Record Compaction And Closure
+
+Classify before moving. A TODO/finding leaves an active section only with a
+resolution kind plus bounded completion evidence, an authoritative owner
+resolution/acceptance decision, or a named superseding packet with a reciprocal
+active-item link. Deferral stays Future/Deferred and records its reason and
+revisit trigger. An unresolved noncurrent finding stays under
+`Future / Deferred Findings` with its identity, severity, packet, evidence, and
+restore trigger intact; move it back to Active Findings when its packet becomes
+current. Moving text to a new section or archive is not resolution.
+
+For implementation notes, retain decisions that still constrain current code,
+promote requirements to SPEC and durable rationale to ADR, route unresolved
+work to TODO/findings, and replace promoted text with one pointer. If several
+current topics remain, keep `implementation-notes.md` as a small route map and
+split by topic. Verify inbound links before archive; never make archives part of
+default startup context.
+
+Dates and times on archive names are descriptive, not identity, order, or
+currentness. Prefer an existing packet/ADR/IMPL/EVID/CLAIM/ART ID in the name,
+never overwrite a collision, and resolve duplicate logical IDs before merge.
+Existing date-only archive paths remain valid.
+
+For a v3.1 project with mutable owner-acceptance columns in evidence or claim
+tables, preserve existing rows as history. Select one durable record for each
+decision, copy or link its provenance once, and replace other live decision
+fields with pointers as those records are touched. No mass rewrite is required.
 
 ## Documentation Update Check
 

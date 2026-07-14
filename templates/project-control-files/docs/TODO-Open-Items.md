@@ -17,6 +17,8 @@ Scope: Current implementation backlog only
 ## Future / Deferred
 
 - Record ideas here only when they are not active implementation work yet.
+- Moving active work here requires the original packet, defer reason, and an
+  explicit revisit trigger. Reclassification is not completion evidence.
 - If this file becomes a long journal, move old material to archive/history and
   keep this file focused on current active work.
 
@@ -26,5 +28,8 @@ Scope: Current implementation backlog only
 
 ## Recently Closed
 
-- Move recently completed packet records here with bounded evidence.
+- Move a record here only with a resolution kind plus bounded completion
+  evidence, an authoritative owner resolution/acceptance decision, or a named
+  superseding packet with a reciprocal active-item link.
+  Moving the text is not itself closure.
 - Archive older closed history when it no longer affects current decisions.

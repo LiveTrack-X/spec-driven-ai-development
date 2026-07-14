@@ -113,26 +113,51 @@ Decision:
 Authorized action:
 Packet:
 Conditions:
+Source/artifact identity:
 Expires when:
 Evidence required before action:
 ```
 
-`Authorized action`、`Packet`、`Conditions`、`Evidence required before action` が変わらず、
-承認後に source が変更されず、`Expires when` に到達していなければ、同じ承認を再度
+`Authorized action`、`Packet`、`Conditions`、`Source/artifact identity`、
+`Evidence required before action` が変わらず、`Expires when` に到達していなければ、同じ承認を再度
 求めません。いずれかが変わると承認は失効し、Owner の新しい判断が必要です。
 
 ## 1 つの事実は 1 か所に記録する
 
 | 内容 | 正本の場所 |
 |---|---|
-| requirements と acceptance の変更 | SPEC |
+| 意図された scope、behavior、acceptance criteria | state が宣言した `active_spec` |
+| 観測された behavior | 現在の source、tests、runtime、再現可能な command |
 | 小さな SPEC 外の実装判断 | `docs/implementation-notes.md` |
 | 戻しにくい構造判断 | ADR |
 | 未解決の作業 | TODO または finding |
+| Owner authorization または acceptance | 1 つの authoritative owner-decision record |
 | 次セッションの復元情報 | handoff |
 | 現在の実行 state | `sdad-state.yaml` |
 
 handoff は上記文書の内容を複製せず、path と重要な結果だけを結びます。
+`SPEC-COMPLETE.md` の COMPLETE は統合済み baseline を意味し、不変の最終版では
+ありません。stateful project では `active_spec` が唯一の normative SPEC entrypoint
+です。追加または競合する SPEC は、範囲がその entrypoint に取り込まれるか packet
+transaction で pointer が切り替わるまで proposal です。accepted packet 後の重要な
+変更には新しい packet ID と validation を使い、履歴を書き換えません。
+
+state が terminal packet を離れる前に、1 つの durable decision record が packet ID、
+active SPEC path と exact revision、source/artifact identity、evidence と claim limits、
+unresolved risk、final owner decision をまとめて固定する必要があります。
+
+owner-decision record は decision ごとに 1 つの authority であり、単一の global file
+を意味しません。terminal decision を修正・制限・撤回するときは過去の record を編集せず、
+unique ID を持つ新しい record に `Revises/supersedes` を記録し、影響する current-claim
+pointer を移動してください。
+同じ predecessor と重なる claim scope を変更する parallel decision が生じた場合は
+affected claim を hold し、owner reconciliation record がすべての competing successor
+を解決するまで date や ID で current authority を選ばないでください。
+
+SPEC、source、dependency、environment、artifact、gate、外部結果が変われば Plan ->
+Route に戻ります。同じ未完了 objective と acceptance 境界だけが同じ packet を維持
+できます。read-only review や planning は Implement を省略できますが、N/A または
+blocked の理由を報告し、省略した phase の evidence を主張してはいけません。
 
 ## Evidence と主張の限界
 
@@ -193,3 +218,7 @@ execution scope ではなく owner gates へ移します。Q5 は必須質問で
 state v2 field ではありません。過去の mapping は [autonomy-levels.md](autonomy-levels.md) と
 [operating-intensity.md](operating-intensity.md) を参照できますが、新しい state に legacy 用語を
 記録しないでください。
+
+既存の evidence/claim table にある owner-acceptance row は履歴として保持してください。
+各 decision を次に更新するとき、durable decision record を一つ選び、他の可変な
+acceptance field はその record への link に置き換えます。一括書き換えは不要です。

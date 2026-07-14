@@ -193,14 +193,15 @@ consistency check, even when no docs changed.
 
 ### 12. Handoff Is Context, Not Authority
 
-Rule: handoff files help continuation but do not outrank current code, tests,
-active docs, or current SPEC.
+Rule: handoff files help continuation but do not replace current behavior
+evidence, the state-declared active SPEC, or current execution state.
 
 Why it matters: handoffs can freeze a moment-in-time view that becomes stale.
 
 Operational form: read a handoff only when state v2 declares it through optional
-`current_handoff` and continuity is needed. Verify its pointers against the
-source-of-truth order before implementing. It is never operating-state authority.
+`current_handoff` and continuity is needed. Verify each pointer against the
+authority for that fact type before implementing. It is never operating-state
+authority.
 
 ### 13. Archive Preserves Memory, Not Active Work
 

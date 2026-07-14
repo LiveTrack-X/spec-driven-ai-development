@@ -114,8 +114,10 @@ control-file write. Report exactly these items in order:
 8. immediately selectable routes and targeted-read strategy
 9. current handoff existence and authority
 10. owner-controlled decisions and evidence gates
-11. proposed state, INDEX, ledger, and handoff writes without applying them
-12. post-change Doctor strict and separate project-validation comparison plan
+11. active SPEC entrypoint, competing/additional SPECs, and proposed lineage
+    reconciliation
+12. proposed state, INDEX, ledger, and handoff writes without applying them
+13. post-change Doctor strict and separate project-validation comparison plan
 
 Route One-shot or stateless Mini away from v2 migration; a deliberately stateful Mini remains on v1. New Standard/Full bootstrap and eligible existing
 Standard/Full migration use v2. Inventory v1 intensity, autonomy, save-state, and work-packet-state as legacy inputs and map authorization as follows:
@@ -129,12 +131,26 @@ Standard/Full migration use v2. Inventory v1 intensity, autonomy, save-state, an
 V2 uses `execution_scope: unit | packet`; v2 has no intensity or autonomy keys.
 Set `validation_for` to the active packet before changing the version. Preserve
 valid conditional owner authorization and reuse it only while packet, action,
-conditions, expiry, evidence, and source remain unchanged. Re-approval
+conditions, expiry, evidence, and source/artifact identity remain unchanged. Re-approval
 is required when any of those terms changes or the authorization expires.
 
 Link or move legacy save-state content into a current handoff or an archive
 without automatic deletion. Keep `docs/work-packet-state.md` as the legacy path
 for the optional Delivery Readiness Model; it is not current packet authority.
+
+For stateful work, normalize `active_spec` as the single normative SPEC
+entrypoint. `SPEC-COMPLETE.md` is an integrated baseline, not an immutable or
+automatically active document. Classify another SPEC as a proposal, amendment,
+bounded supplement, or replacement; record its baseline, effective packet, and
+baseline revision plus exact superseded scope before incorporating it or
+switching the pointer. Reject lineage cycles and implicit overlapping scope. A
+material change after owner acceptance starts a new, never-reused packet ID and
+fresh validation instead of rewriting the accepted packet.
+
+Before replacing terminal state, require one durable owner-decision record that
+pins the packet, active SPEC revision, source/artifact identity, evidence/claim
+limits, residual risk, and decision. Later corrections or revocations append a
+unique revising/superseding record and update affected current-claim pointers.
 
 Show all proposed writes without applying them. Existing adoption authority
 permits continuing after the preview unless scope, authority, data boundary,
@@ -274,6 +290,8 @@ expensive to reconstruct. Link authorities instead of copying their contents.
 - Do not create optional files without an active job.
 - Do not treat archived plans, product notes, external references, handoffs, or
   chat memory as current implementation authority.
+- Do not treat a second SPEC, filename, date, or document order as authority
+  without explicit active-SPEC incorporation or a packet pointer switch.
 - Do not let a lower evidence tier support a stronger claim.
 - Do not use broader execution scope to bypass owner gates.
 - Do not assume commit authorizes push, release, deployment, migration, or an

@@ -10,6 +10,7 @@ active_spec: SPEC/SPEC-COMPLETE.md
 active_packet:
   id: bootstrap
   objective: Replace with the current evidence-ready objective.
+  # Current dominant checkpoint only; evidence and acceptance history live elsewhere.
   status: not_started
 
 # Must equal active_packet.id after the validation contract is reviewed.

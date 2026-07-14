@@ -29,7 +29,7 @@ allows. Claims should link to evidence IDs from `docs/evidence-matrix.md`.
 | ID | Claim text or pattern | Status | Severity | Allowed locations | Required evidence | Required qualifier | Blocked locations | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | CLAIM-001 | Example product is software evidence-ready | allowed_with_qualifier | P2_qualified | README, handoff | EVID-001 | "software evidence-ready; hardware pending" | release title | Do not imply production readiness |
-| CLAIM-002 | Example product is production ready | blocked_until_evidence | P1_evidence_required | None | EVID-010, EVID-011, owner acceptance | None | README, UI, release notes, manifest | Requires release gate |
+| CLAIM-002 | Example product is production ready | blocked_until_evidence | P1_evidence_required | None | EVID-010, EVID-011 | None | README, UI, release notes, manifest | Requires separate release gate and owner decision |
 | CLAIM-003 | Example target compatibility guaranteed | forbidden | P0_forbidden | None | None | None | All public/user-facing text | Out of current scope |
 
 ## Claim Scan Checklist
@@ -54,8 +54,12 @@ or UI copy changes, scan:
 - Do not upgrade a claim because a bundle arrived. Upgrade only after evidence
   import, review, matrix update, and owner gate when required.
 
-## Owner Acceptance
+## Owner Decision References
 
-| Claim ID | Accepted by | Accepted at | Accepted scope | Evidence IDs | Remaining gaps |
+Claim wording status lives here; authorization and acceptance live in one
+authoritative owner-decision record. Keep only a last-observed pointer and
+recheck it before reuse.
+
+| Claim ID | Authoritative decision path / ID | Last observed status | Claim wording scope | Evidence IDs | Remaining gaps |
 | --- | --- | --- | --- | --- | --- |
-| CLAIM-001 | Owner name / role | YYYY-MM-DD | Software-only alpha wording | EVID-001 | Hardware evidence pending |
+| CLAIM-001 | None | not_requested | Software-only alpha wording | EVID-001 | Hardware evidence pending |

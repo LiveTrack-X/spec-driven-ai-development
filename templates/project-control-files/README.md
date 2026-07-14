@@ -63,3 +63,11 @@ control files just to look complete.
 When a real cross-session checkpoint is needed, create a compact handoff and
 declare its path once as `current_handoff` in `sdad-state.yaml`. Remove or
 replace that pointer on a packet switch.
+
+For stateful work, `sdad-state.yaml#active_spec` is the single normative SPEC
+entrypoint. Treat `SPEC-COMPLETE.md` as an integrated baseline and any later or
+conflicting SPEC as a proposal until exact incorporation or an explicit packet
+pointer switch. A material post-acceptance change uses a new packet ID and fresh
+validation. When ledgers or implementation notes grow, promote each fact to its
+authoritative home, split remaining current records by topic, and keep the main
+file as a compact router.

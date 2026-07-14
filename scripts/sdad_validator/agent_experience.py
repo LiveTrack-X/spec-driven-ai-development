@@ -101,6 +101,7 @@ TASK8_REQUIRED_PHRASES = {
     "templates/project-control-files/review-findings.md": (
         "## Active Findings",
         "None currently tracked.",
+        "## Future / Deferred Findings",
         "## Recently Closed",
     ),
 }

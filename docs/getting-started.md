@@ -156,7 +156,7 @@ Execution scope does not bypass them.
 
 Record a conditional owner authorization with Decision, Authorized action,
 Packet, Conditions, Expires when, and Evidence required before action. Reuse it
-only while those terms and source remain unchanged.
+only while those terms and source/artifact identity remain unchanged.
 
 ## Daily Recovery
 

@@ -11,8 +11,11 @@ Use these when the project has many docs, SPEC revisions, or AI sessions:
 
 - Start every session from `docs/INDEX.md`.
 - Keep `docs/Repository-Operating-Rules.md` as the durable rulebook.
-- Define source-of-truth order: code/tests first, active docs next, SPEC after
-  evidence, archive last.
+- Define authority by fact type: source/tests/runtime establish observed
+  behavior; state-declared `active_spec` establishes intended scope and
+  acceptance criteria; state owns execution; handoff owns continuity.
+- Treat other SPECs as proposals until exact incorporation or a packet pointer
+  switch; names, dates, and document order do not activate scope.
 - Prefer current active SPEC sections over older timeline/history sections when
   a SPEC spans past to present.
 - Separate active implementation gaps from review findings.

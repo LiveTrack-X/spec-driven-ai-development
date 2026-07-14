@@ -51,9 +51,18 @@ List evidence used to make the decision:
 
 ## Current-Over-Historical Rule
 
-If this ADR supersedes older SPEC sections, handoffs, or product notes, list
-them here. Older material becomes rationale unless reaffirmed by this ADR or a
-newer active SPEC path.
+An ADR owns rationale, alternatives, tradeoffs, and consequences. It does not
+override normative scope, behavior, or acceptance criteria in the active SPEC by itself.
+A proposed ADR is never implementation authority. When an accepted ADR changes
+normative behavior, update the active SPEC and ADR in the same coherence
+transaction; until then, the active SPEC controls.
+
+Use `Supersedes` primarily for earlier ADRs or decision records. List affected
+SPEC sections separately and link the accepted ADR from the active SPEC.
+
+Affected SPEC sections:
+
+- None
 
 Supersedes:
 

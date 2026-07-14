@@ -274,12 +274,22 @@ implementation, review, tests, or owner decisions.
 
 Implement from the active SPEC. Give each fact one authoritative home:
 
-- requirement or acceptance change -> SPEC,
+- intended scope, behavior, or acceptance criteria -> the state-declared `active_spec`,
+- observed behavior -> current source, tests, runtime, and reproducible commands,
 - small implementation-time non-spec decision -> implementation notes,
 - hard-to-reverse architecture decision -> ADR,
 - unresolved work -> TODO or finding,
+- owner authorization or acceptance -> one authoritative owner-decision record,
 - cross-session recovery links and results -> handoff,
 - current execution state -> `sdad-state.yaml`.
+
+For a stateful project, `sdad-state.yaml#active_spec` is the single normative
+SPEC entrypoint. `SPEC-COMPLETE.md` is an integrated baseline, not immutable or
+automatically active. Treat an additional or conflicting SPEC as a proposal
+until its exact scope is incorporated by the active entrypoint or a packet
+transaction switches the pointer. Reconcile conflicts before implementation;
+filenames, dates, and chat order cannot activate requirements. A material
+change after owner acceptance requires a new packet ID and fresh validation.
 
 Handoffs link to those authorities instead of copying them. Do not record raw
 internal reasoning, mechanical edits, or large logs. For Mini SDAD, include a
@@ -321,7 +331,7 @@ the packet changes or the handoff is retired.
 
 When I authorize a protected action conditionally, record: Decision, Authorized
 action, Packet, Conditions, Expires when, and Evidence required before action.
-Reuse that authorization only while the action, packet, conditions, source, and
+Reuse that authorization only while the action, packet, conditions, source/artifact identity, and
 expiry remain unchanged. Ask again when any term changes or the authorization
 expires.
 

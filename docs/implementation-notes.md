@@ -72,24 +72,34 @@ If the note creates future implementation work, record it in
 Use a compact table or bullet list:
 
 ```md
-## YYYY-MM-DD - Work packet or unit name
+## IMPL-0001 - Work packet or unit name
 
+- Date:
+- Applies to:
 - SPEC gap:
 - Decision:
 - Why:
 - Alternatives rejected:
 - Verification impact:
 - Follow-up:
+- Supersedes:
 ```
+
+Give new durable notes a never-reused `IMPL-NNNN` identity. The date is
+descriptive only. Existing unnumbered notes remain valid and do not need a mass
+rename.
 
 ## Context Stability
 
 Implementation notes are active operating state, not a permanent journal.
 
-Keep them short enough for a fresh AI session to read as current context. If the
-file becomes long, repetitive, or hard to audit, archive older entries and leave
-the active file focused on current decisions, unresolved gaps, and links to
-history.
+Classify a large file by current effect before moving entries by age. Promote
+normative scope or acceptance criteria to the active SPEC, hard-to-reverse rationale to
+an ADR, unresolved work to TODO/findings, and evidence/claims to their ledgers.
+Leave a pointer where a promoted fact used to be; do not keep two authoritative
+copies. Split the remaining notes by topic or active packet and keep
+`docs/implementation-notes.md` as the compact router. Verify links after every
+split and do not load archives at startup.
 
 Use bounded reads for archived implementation notes.
 
