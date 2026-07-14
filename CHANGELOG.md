@@ -2,9 +2,18 @@
 
 ## Unreleased
 
-- Added repository-logical `HNNNN` identifiers to new handoff filenames
-  (`YYYY-MM-DD-HNNNN-topic.md`) so device clock differences cannot define
-  sequence. Existing unnumbered handoffs remain valid, and `current_handoff`
+- No unreleased changes yet.
+
+## 3.2.2 - 2026-07-15
+
+- Made the current applicable Owner instruction an explicit interrupt and
+  redirect authority while keeping review, draft, question, hypothetical,
+  quotation, and reference-only input non-implementing.
+- Closed Core Rule 5 into a bounded finding -> root cause -> smallest durable
+  control -> regression evidence -> Keep/Refine/Merge/Retire lifecycle, with
+  optional human-readable adaptive-rule portability kept out of startup context.
+- Scoped `HNNNN` handoff identifiers to each filename date: a new date restarts
+  at `H0001`, the full date-plus-ID path is the identity, and `current_handoff`
   remains the sole currentness authority.
 - Hardened long-running lifecycle guidance around one normative `active_spec`,
   additional-SPEC lineage, post-acceptance packet replacement, revision-bound
@@ -13,6 +22,10 @@
   skipped loop phases, record closure/deferral, implementation-note compaction,
   and logical archive IDs without changing state/report schemas or Doctor
   finding IDs.
+- Updated Doctor and exact version guards to 3.2.2 while preserving state v1,
+  state v2, report schemas 1/2, the five-check order, and existing finding IDs.
+- Pinned all seven no-clone sources to immutable behavior baseline
+  `adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd` with refreshed SHA-256 values.
 
 ## 3.2.1 - 2026-07-14
 

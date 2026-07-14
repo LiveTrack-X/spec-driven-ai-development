@@ -9,10 +9,10 @@ The fastest path is the expanded
 to [No-Clone Option 1](no-clone-quick-install.md#option-1-give-this-to-your-ai-agent).
 Use that large prompt once for install, upgrade, migration, or repair.
 
-The stable v3.2.1 install sources are pinned by
+The stable v3.2.2 install sources are pinned by
 [`install-sources.json`](../install-sources.json) to immutable behavior baseline
-`f173aa398562d6a9d86b941dc79f75f9381148f4`. See the
-[v3.2.1 release notes](releases/v3.2.1.md) for the bounded change and evidence.
+`adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd`. See the
+[v3.2.2 release notes](releases/v3.2.2.md) for the bounded change and evidence.
 
 ## Choose The Three Controls
 
@@ -128,14 +128,14 @@ that adopts the `sdad-state.yaml` contract:
 
 ```text
 python <SDAD_CHECKOUT>/scripts/sdad.py --version
-python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.1 [--json] [--strict]
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.2 [--json] [--strict]
 ```
 
 Replace `<SDAD_CHECKOUT>` with the actual checkout path. A shell-neutral wrapper
 may resolve an operator-configured checkout; do not present PowerShell `$env:`
 syntax as portable validation.
 
-The guard identifies Doctor version 3.2.1. Doctor version, state schema version,
+The guard identifies Doctor version 3.2.2. Doctor version, state schema version,
 and report schema version are separate. Existing v1 JSON calls remain schema 1;
 guarded/state-v2 calls use schema 2. `root` and `state_version` may be null when
 state cannot be loaded. `--json` emits exactly one versioned JSON document.

@@ -188,12 +188,12 @@ Use a real SDAD checkout for a stateful Standard or Full project:
 
 ```text
 python <SDAD_CHECKOUT>/scripts/sdad.py --version
-python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.1 [--json] [--strict]
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.2 [--json] [--strict]
 ```
 
 Replace `<SDAD_CHECKOUT>` with the checkout path. A shell-neutral wrapper may
 resolve an operator-configured checkout and invoke `--strict
---require-version 3.2.1`; a PowerShell `$env:` example is not portable.
+--require-version 3.2.2`; a PowerShell `$env:` example is not portable.
 
 Doctor version, state schema version, and report schema version are separate.
 Existing v1 JSON calls remain report schema 1; guarded/state-v2 calls use report

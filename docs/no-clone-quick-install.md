@@ -53,7 +53,7 @@ files from different revisions. A full 40-character commit SHA provides the
 stable baseline; `/main/` is only for intentionally testing changing content.
 
 [install-sources.json](../install-sources.json) is the canonical
-revision/path/hash contract. Pins use the stable v3.2.1 release baseline; keep
+revision/path/hash contract. Pins use the stable v3.2.2 release baseline; keep
 the revision, source path, and checksum from that one manifest together.
 
 ## Option 1: Give This To Your AI Agent
@@ -162,8 +162,8 @@ migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/templates/mini-sdad/MINI-SDAD.md
-Expected SHA-256: f4385db320c3912456fac65db1234ca8285e5cf1ebb09d0dae8d1dca959f69dd
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/templates/mini-sdad/MINI-SDAD.md
+Expected SHA-256: 0bd02d52289bf92607520bec6ef3e08715ec91f586350ba31dda5cdb1d1db7b6
 
 Before fetching, state that you are installing Mini SDAD and explain why this
 scale was chosen.
@@ -192,12 +192,12 @@ Codex / Claude Code / Gemini CLI / Cursor / Copilot Chat / Generic.
 Claude Code means the local/CLI coding tool with project filesystem access. It
 does not mean Claude.ai chat.
 
-- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 f4cb4e31c2b04c409e0caffefc8d8c5dc8de9a43df0c6a8f1e54303c50155429
-- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 cde5185041a0fc734fa10bccbf47c6c70470bd326bfca0aaa127f6b59d7eb1c1
-- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 84df97b0a485d69796ac3437bc5299207c84e1ea9beb85e0b48a3600c5f645bd
-- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 6ce4615ad48f8835a58f48c7211c5fac895e55fbdcb515ec59e0d37131001b1a
-- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 a91ca64420d376aca352aea3897db1f9b500476422c105a50db71a987b3a0c24
-- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/f173aa398562d6a9d86b941dc79f75f9381148f4/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 721654bdff0978219de7c2df5114864ffdcf1aa21300a1069d01f38fcf87634f
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 8237f7905ba8ce0db95e77b5d40e54200062d2654adae45e667f04743f342e08
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 57a9431eecc5d8e2dfdfe71eb59ad673ff230db5c320197291a8a7a129f875ce
+- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 b3a6e16c21e14e594bdc5560838c664e3116ef1ee1366724a6b39a19a9e2e76b
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 789d378813f7b32f0e677265fa23c7908cf6b52342fc54e92455d05293038bfc
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 ee914a5ebaa5413c7bfd43d21b48e6919fc3e373afed5707bc6076acf5a573b3
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 15e02a42c32e46b332dc217ac43abad958d35e5a153f0f9746be42a32eee5ec2
 
 Before saving the adapter:
 1. show me the source URL,
@@ -366,7 +366,7 @@ commands are conveniences, not substitutes for SDAD state, handoff, or Doctor.
 For a stateful Standard or Full project, use a real SDAD checkout and run:
 
 python <SDAD_CHECKOUT>/scripts/sdad.py --version
-python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.1 [--json] [--strict]
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.2 [--json] [--strict]
 
 Doctor version, state schema version, and JSON report schema version are
 separate contracts. The version guard identifies the Doctor code being run.
@@ -403,15 +403,15 @@ Change `$adapter = "codex"` if you use another tool.
 ```powershell
 $ErrorActionPreference = "Stop"
 $adapter = "codex" # codex, claude-code, gemini-cli, cursor, github-copilot, generic
-$revision = "f173aa398562d6a9d86b941dc79f75f9381148f4" # stable v3.2.1 baseline
+$revision = "adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd" # stable v3.2.2 baseline
 $base = "https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/$revision"
 $files = @{
-  "codex" = @("adapters/codex/AGENTS.md", "AGENTS.md", "f4cb4e31c2b04c409e0caffefc8d8c5dc8de9a43df0c6a8f1e54303c50155429")
-  "claude-code" = @("adapters/claude-code/CLAUDE.md", "CLAUDE.md", "cde5185041a0fc734fa10bccbf47c6c70470bd326bfca0aaa127f6b59d7eb1c1")
-  "gemini-cli" = @("adapters/gemini-cli/GEMINI.md", "GEMINI.md", "84df97b0a485d69796ac3437bc5299207c84e1ea9beb85e0b48a3600c5f645bd")
-  "cursor" = @("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc", ".cursor/rules/spec-driven-ai-development.mdc", "6ce4615ad48f8835a58f48c7211c5fac895e55fbdcb515ec59e0d37131001b1a")
-  "github-copilot" = @("adapters/github-copilot/.github/copilot-instructions.md", ".github/copilot-instructions.md", "a91ca64420d376aca352aea3897db1f9b500476422c105a50db71a987b3a0c24")
-  "generic" = @("adapters/generic/AI-SESSION-INSTRUCTIONS.md", "AI-SESSION-INSTRUCTIONS.md", "721654bdff0978219de7c2df5114864ffdcf1aa21300a1069d01f38fcf87634f")
+  "codex" = @("adapters/codex/AGENTS.md", "AGENTS.md", "8237f7905ba8ce0db95e77b5d40e54200062d2654adae45e667f04743f342e08")
+  "claude-code" = @("adapters/claude-code/CLAUDE.md", "CLAUDE.md", "57a9431eecc5d8e2dfdfe71eb59ad673ff230db5c320197291a8a7a129f875ce")
+  "gemini-cli" = @("adapters/gemini-cli/GEMINI.md", "GEMINI.md", "b3a6e16c21e14e594bdc5560838c664e3116ef1ee1366724a6b39a19a9e2e76b")
+  "cursor" = @("adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc", ".cursor/rules/spec-driven-ai-development.mdc", "789d378813f7b32f0e677265fa23c7908cf6b52342fc54e92455d05293038bfc")
+  "github-copilot" = @("adapters/github-copilot/.github/copilot-instructions.md", ".github/copilot-instructions.md", "ee914a5ebaa5413c7bfd43d21b48e6919fc3e373afed5707bc6076acf5a573b3")
+  "generic" = @("adapters/generic/AI-SESSION-INSTRUCTIONS.md", "AI-SESSION-INSTRUCTIONS.md", "15e02a42c32e46b332dc217ac43abad958d35e5a153f0f9746be42a32eee5ec2")
 }
 if (-not $files.ContainsKey($adapter)) { throw "Unknown adapter: $adapter" }
 $source, $target, $expectedSha256 = $files[$adapter]
@@ -467,38 +467,38 @@ Change `adapter="codex"` if you use another tool.
 ```bash
 set -euo pipefail
 adapter="codex" # codex, claude-code, gemini-cli, cursor, github-copilot, generic
-revision="f173aa398562d6a9d86b941dc79f75f9381148f4" # stable v3.2.1 baseline
+revision="adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd" # stable v3.2.2 baseline
 base="https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/$revision"
 case "$adapter" in
   codex)
     source="adapters/codex/AGENTS.md"
     target="AGENTS.md"
-    expected_sha256="f4cb4e31c2b04c409e0caffefc8d8c5dc8de9a43df0c6a8f1e54303c50155429"
+    expected_sha256="8237f7905ba8ce0db95e77b5d40e54200062d2654adae45e667f04743f342e08"
     ;;
   claude-code)
     source="adapters/claude-code/CLAUDE.md"
     target="CLAUDE.md"
-    expected_sha256="cde5185041a0fc734fa10bccbf47c6c70470bd326bfca0aaa127f6b59d7eb1c1"
+    expected_sha256="57a9431eecc5d8e2dfdfe71eb59ad673ff230db5c320197291a8a7a129f875ce"
     ;;
   gemini-cli)
     source="adapters/gemini-cli/GEMINI.md"
     target="GEMINI.md"
-    expected_sha256="84df97b0a485d69796ac3437bc5299207c84e1ea9beb85e0b48a3600c5f645bd"
+    expected_sha256="b3a6e16c21e14e594bdc5560838c664e3116ef1ee1366724a6b39a19a9e2e76b"
     ;;
   cursor)
     source="adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc"
     target=".cursor/rules/spec-driven-ai-development.mdc"
-    expected_sha256="6ce4615ad48f8835a58f48c7211c5fac895e55fbdcb515ec59e0d37131001b1a"
+    expected_sha256="789d378813f7b32f0e677265fa23c7908cf6b52342fc54e92455d05293038bfc"
     ;;
   github-copilot)
     source="adapters/github-copilot/.github/copilot-instructions.md"
     target=".github/copilot-instructions.md"
-    expected_sha256="a91ca64420d376aca352aea3897db1f9b500476422c105a50db71a987b3a0c24"
+    expected_sha256="ee914a5ebaa5413c7bfd43d21b48e6919fc3e373afed5707bc6076acf5a573b3"
     ;;
   generic)
     source="adapters/generic/AI-SESSION-INSTRUCTIONS.md"
     target="AI-SESSION-INSTRUCTIONS.md"
-    expected_sha256="721654bdff0978219de7c2df5114864ffdcf1aa21300a1069d01f38fcf87634f"
+    expected_sha256="15e02a42c32e46b332dc217ac43abad958d35e5a153f0f9746be42a32eee5ec2"
     ;;
   *)
     echo "Unknown adapter: $adapter" >&2
@@ -567,9 +567,9 @@ echo "Next prompt: Read $target_path and bootstrap this project with the SDAD Pr
 
 ## After The Installer
 
-Check the capability disclosed above. The stable v3.2.1 manifest declares
+Check the capability disclosed above. The stable v3.2.2 manifest declares
 `progressive_control_plane=true`, so the prompt below applies to both a local
-v3.2.1 checkout and its pinned no-clone sources. Keep the revision, source path,
+v3.2.2 checkout and its pinned no-clone sources. Keep the revision, source path,
 and checksum from one manifest together.
 
 Open your AI coding tool in the target project and say:

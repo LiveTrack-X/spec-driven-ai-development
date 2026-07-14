@@ -91,6 +91,7 @@ REQUIRED_FILES = [
     "docs/releases/v3.1.0.md",
     "docs/releases/v3.2.0.md",
     "docs/releases/v3.2.1.md",
+    "docs/releases/v3.2.2.md",
     "docs/field-notes/repository-control-surface-method.md",
     "docs/field-notes/cost-aware-agent-routing-method.md",
     "docs/field-notes/documentation-governance-method.md",
@@ -195,45 +196,45 @@ INSTALL_SOURCE_SURFACES = {
     "docs/no-clone-quick-install.md": INSTALL_SOURCE_KEYS,
     "docs/mini-sdad.md": {"mini"},
 }
-STABLE_RELEASE_VERSION = "3.2.1"
-STABLE_RELEASE_TAG = "v3.2.1"
-STABLE_RELEASE_TITLE = "SDAD v3.2.1"
-STABLE_RELEASE_DATE = "2026-07-14"
-STABLE_RELEASE_REVISION = "f173aa398562d6a9d86b941dc79f75f9381148f4"
+STABLE_RELEASE_VERSION = "3.2.2"
+STABLE_RELEASE_TAG = "v3.2.2"
+STABLE_RELEASE_TITLE = "SDAD v3.2.2"
+STABLE_RELEASE_DATE = "2026-07-15"
+STABLE_RELEASE_REVISION = "adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd"
 STABLE_RELEASE_SOURCES = {
     "mini": {
         "path": "templates/mini-sdad/MINI-SDAD.md",
-        "sha256": "f4385db320c3912456fac65db1234ca8285e5cf1ebb09d0dae8d1dca959f69dd",
+        "sha256": "0bd02d52289bf92607520bec6ef3e08715ec91f586350ba31dda5cdb1d1db7b6",
     },
     "codex": {
         "path": "adapters/codex/AGENTS.md",
         "target": "AGENTS.md",
-        "sha256": "f4cb4e31c2b04c409e0caffefc8d8c5dc8de9a43df0c6a8f1e54303c50155429",
+        "sha256": "8237f7905ba8ce0db95e77b5d40e54200062d2654adae45e667f04743f342e08",
     },
     "claude-code": {
         "path": "adapters/claude-code/CLAUDE.md",
         "target": "CLAUDE.md",
-        "sha256": "cde5185041a0fc734fa10bccbf47c6c70470bd326bfca0aaa127f6b59d7eb1c1",
+        "sha256": "57a9431eecc5d8e2dfdfe71eb59ad673ff230db5c320197291a8a7a129f875ce",
     },
     "gemini-cli": {
         "path": "adapters/gemini-cli/GEMINI.md",
         "target": "GEMINI.md",
-        "sha256": "84df97b0a485d69796ac3437bc5299207c84e1ea9beb85e0b48a3600c5f645bd",
+        "sha256": "b3a6e16c21e14e594bdc5560838c664e3116ef1ee1366724a6b39a19a9e2e76b",
     },
     "cursor": {
         "path": "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
         "target": ".cursor/rules/spec-driven-ai-development.mdc",
-        "sha256": "6ce4615ad48f8835a58f48c7211c5fac895e55fbdcb515ec59e0d37131001b1a",
+        "sha256": "789d378813f7b32f0e677265fa23c7908cf6b52342fc54e92455d05293038bfc",
     },
     "github-copilot": {
         "path": "adapters/github-copilot/.github/copilot-instructions.md",
         "target": ".github/copilot-instructions.md",
-        "sha256": "a91ca64420d376aca352aea3897db1f9b500476422c105a50db71a987b3a0c24",
+        "sha256": "ee914a5ebaa5413c7bfd43d21b48e6919fc3e373afed5707bc6076acf5a573b3",
     },
     "generic": {
         "path": "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
         "target": "AI-SESSION-INSTRUCTIONS.md",
-        "sha256": "721654bdff0978219de7c2df5114864ffdcf1aa21300a1069d01f38fcf87634f",
+        "sha256": "15e02a42c32e46b332dc217ac43abad958d35e5a153f0f9746be42a32eee5ec2",
     },
 }
 SENSITIVE_DATA_SURFACES = [
@@ -260,7 +261,7 @@ EXTERNAL_CONTENT_BOUNDARY = (
 DOCTOR_VERSION_COMMAND = "python <SDAD_CHECKOUT>/scripts/sdad.py --version"
 DOCTOR_COMMAND = (
     "python <SDAD_CHECKOUT>/scripts/sdad.py doctor "
-    "[PROJECT_ROOT] --require-version 3.2.1 [--json] [--strict]"
+    "[PROJECT_ROOT] --require-version 3.2.2 [--json] [--strict]"
 )
 GEMINI_POWERSHELL_INSTALL = (
     ".\\scripts\\install-agent-adapter.ps1 -Adapter gemini-cli "
@@ -1648,7 +1649,7 @@ def validate_doctor_gemini_documentation_contract() -> None:
         limitations_doctor,
         "Known limitations Doctor section",
         [
-            ("checkout-only", "3.2.1"),
+            ("checkout-only", "3.2.2"),
             ("version", "does not prove", "clean checkout", "hash provenance"),
             ("read-only structural diagnostic",),
             ("does not execute validation commands", "mutate", "network"),
@@ -1731,7 +1732,7 @@ def _string_binding_sites(
 
 def _validate_doctor_source_versions(doctor_source: str) -> None:
     expected = {
-        "DOCTOR_VERSION": "3.2.1",
+        "DOCTOR_VERSION": "3.2.2",
         "LEGACY_REPORT_SCHEMA_VERSION": 1,
         "REPORT_SCHEMA_VERSION": 2,
     }
@@ -1992,7 +1993,7 @@ def validate_stable_release_contract(manifest: dict[str, object]) -> None:
             "execution_scope",
             "validation_for",
             "## SDAD Doctor 3.2",
-            "--require-version 3.2.1",
+            "--require-version 3.2.2",
             "report schema 1",
             "report schema 2",
             "## Handoff, INDEX, And Ledger Consistency",
@@ -2572,6 +2573,20 @@ def validate_canonical_template_contract() -> None:
             "Canonical handoff first Session Identity section must contain "
             "exactly one H0001 identity and bootstrap marker"
         )
+    authorization_fields = (
+        "- Authoritative authorization record, if any:",
+        "- Last-observed authorization status:",
+    )
+    for label, content in (
+        ("Session handoff template", handoff),
+        ("Session handoff guide", read("docs/session-handoff.md")),
+        ("Handoff prompt", read("prompts/handoff-prompt.md")),
+    ):
+        for field in authorization_fields:
+            if content.count(field) != 1:
+                fail(f"{label} must contain the authorization field exactly once: {field}")
+        if content.index(authorization_fields[0]) > content.index(authorization_fields[1]):
+            fail(f"{label} authorization fields are out of order")
 
     save_state = read("templates/project-control-files/save-state.md").lower()
     for phrase in (
@@ -3380,6 +3395,8 @@ def validate_templates() -> None:
         "Last Observed Validation",
         "Bounded claim supported",
         "Open Constraints And Gates",
+        "Authoritative authorization record, if any",
+        "Last-observed authorization status",
         "Resume Instructions",
         "First load the installed tool adapter",
         "current source/tests",

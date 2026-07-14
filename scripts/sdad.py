@@ -37,7 +37,7 @@ from sdad_validator.project_view import (  # noqa: E402
 )
 
 
-DOCTOR_VERSION = "3.2.1"
+DOCTOR_VERSION = "3.2.2"
 LEGACY_REPORT_SCHEMA_VERSION = 1
 REPORT_SCHEMA_VERSION = 2
 _CORE_VERSION = re.compile(

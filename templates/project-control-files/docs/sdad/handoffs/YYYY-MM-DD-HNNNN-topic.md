@@ -37,6 +37,8 @@ implementation notes, or long command/file logs into the handoff.
 
 - Constraints / do-not-touch areas:
 - Unsatisfied owner gates:
+- Authoritative authorization record, if any:
+- Last-observed authorization status:
 - Blockers or residual risk:
 
 ## 6. Resume Instructions
