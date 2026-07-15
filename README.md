@@ -18,6 +18,14 @@ coding agents.
 [Owner Guide](docs/owners-guide.md) |
 [AI Work Loop](docs/ai-work-loop.md)
 
+**Optional companion software:** [SDAD Inspector](https://github.com/LiveTrack-X/sdad-inspector)
+is a local, read-only desktop and browser viewer for SDAD repositories. It
+surfaces active packets, SPEC authority, TODOs, findings, owner gates, declared
+validation, and evidence provenance without editing the inspected project.
+The current alpha is experimental and unsigned. Inspector is not part of the
+SDAD core protocol and does not replace Doctor, tests, CI, review, technical
+enforcement, or owner judgment.
+
 <p>
   <a href="https://github.com/sponsors/LiveTrack-X">
     <img src="https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub">

@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- No unreleased changes yet.
+- Linked the optional, local read-only SDAD Inspector companion from the README
+  without presenting it as part of the SDAD core protocol or as a replacement
+  for Doctor, tests, CI, review, enforcement, or owner judgment.
 
 ## 3.2.2 - 2026-07-15
 
