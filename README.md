@@ -26,6 +26,12 @@ The current alpha is experimental and unsigned. Inspector is not part of the
 SDAD core protocol and does not replace Doctor, tests, CI, review, technical
 enforcement, or owner judgment.
 
+<p align="center">
+  <a href="https://github.com/LiveTrack-X/sdad-inspector">
+    <img src="https://raw.githubusercontent.com/LiveTrack-X/sdad-inspector/main/web/public/sdad-inspector-banner.png" alt="SDAD Inspector — read-only control plane for SPEC-Directed AI Development" width="520">
+  </a>
+</p>
+
 <p>
   <a href="https://github.com/sponsors/LiveTrack-X">
     <img src="https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub">
