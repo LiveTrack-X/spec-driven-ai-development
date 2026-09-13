@@ -6,14 +6,14 @@
 > The new direction is [SDAD 4.0](v4/README.md). Reuse requires an explicit fit
 > assessment against that plan; this record does not activate the old design.
 
-Status: Implemented and locally validated  
-Target: SDAD 3.2.2-compatible document profile  
-Source concepts: SDAD 4.0 Core, Companion, and long-horizon review  
-Implementation form: Markdown rules and templates only  
-Runtime dependency: None  
-Compatibility goal: Any LLM or human operator that can read the repository  
+Status: Implemented and locally validated
+Target: SDAD 3.2.2-compatible document profile
+Source concepts: SDAD 4.0 Core, Companion, and long-horizon review
+Implementation form: Markdown rules and templates only
+Runtime dependency: None
+Compatibility goal: Any LLM or human operator that can read the repository
 Authority: This repository copy is the implementation record; detached copies
-are reference input only.  
+are reference input only.
 
 ## 1. Executive Decision
 

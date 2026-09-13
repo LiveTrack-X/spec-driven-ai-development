@@ -433,7 +433,7 @@ class Task8MinimalExampleTests(DoctorAssertions, unittest.TestCase):
                     "doctor",
                     str(project),
                     "--strict",
-                    "--require-version=3.2.2",
+                    "--require-version=3.2.3",
                 ],
                 cwd=ROOT,
                 text=True,

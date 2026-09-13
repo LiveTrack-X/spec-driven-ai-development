@@ -7,7 +7,7 @@ implemented.
 
 Use any method. Keep scope, evidence, and owner authority clear.
 
-Status: `3.2.2` stable documentation/package release.
+Status: `3.2.3` stable documentation/package release.
 
 Effectiveness depends on project fit, owner discipline, and evidence quality.
 
@@ -211,7 +211,7 @@ migration, destructive action, real user data, auth, money, security, rollback,
 production claim, or other owner-controlled gates.
 
 For Mini SDAD, fetch this exact template:
-https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/templates/mini-sdad/MINI-SDAD.md
+https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/04a3e24569758237b702c5a2fbc6094a186d6cb0/templates/mini-sdad/MINI-SDAD.md
 Expected SHA-256: 0bd02d52289bf92607520bec6ef3e08715ec91f586350ba31dda5cdb1d1db7b6
 
 Before fetching, state that you are installing Mini SDAD and explain why this
@@ -241,12 +241,12 @@ Codex / Claude Code / Gemini CLI / Cursor / Copilot Chat / Generic.
 Claude Code means the local/CLI coding tool with project filesystem access. It
 does not mean Claude.ai chat.
 
-- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 8237f7905ba8ce0db95e77b5d40e54200062d2654adae45e667f04743f342e08
-- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 57a9431eecc5d8e2dfdfe71eb59ad673ff230db5c320197291a8a7a129f875ce
-- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 b3a6e16c21e14e594bdc5560838c664e3116ef1ee1366724a6b39a19a9e2e76b
-- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 789d378813f7b32f0e677265fa23c7908cf6b52342fc54e92455d05293038bfc
-- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 ee914a5ebaa5413c7bfd43d21b48e6919fc3e373afed5707bc6076acf5a573b3
-- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 15e02a42c32e46b332dc217ac43abad958d35e5a153f0f9746be42a32eee5ec2
+- Codex -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/04a3e24569758237b702c5a2fbc6094a186d6cb0/adapters/codex/AGENTS.md -> ./AGENTS.md -> SHA-256 9946d883e6db07d451af0d36b32612f41b1454b0c67c58c4876fd025e4e7c8ce
+- Claude Code -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/04a3e24569758237b702c5a2fbc6094a186d6cb0/adapters/claude-code/CLAUDE.md -> ./CLAUDE.md -> SHA-256 851e490c692b9f94e5ca2a1a7b9b2caa3cf1e3c1aafb21622118881ea2007c7d
+- Gemini CLI -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/04a3e24569758237b702c5a2fbc6094a186d6cb0/adapters/gemini-cli/GEMINI.md -> ./GEMINI.md -> SHA-256 0d7946490844cc32a7216e541c52d35207d487f6eca0df1356da832f16f4fac8
+- Cursor -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/04a3e24569758237b702c5a2fbc6094a186d6cb0/adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc -> ./.cursor/rules/spec-driven-ai-development.mdc -> SHA-256 0d90f97d84b18c9df3a20df914bc78c0ba4aed43e557db50d2e3064d8f5aa6e2
+- Copilot Chat -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/04a3e24569758237b702c5a2fbc6094a186d6cb0/adapters/github-copilot/.github/copilot-instructions.md -> ./.github/copilot-instructions.md -> SHA-256 0cb0d19f3e30539b483a770baab39f42797e5bf8cd639a53893003b2bd3cf745
+- Generic AI agent -> https://raw.githubusercontent.com/LiveTrack-X/spec-driven-ai-development/04a3e24569758237b702c5a2fbc6094a186d6cb0/adapters/generic/AI-SESSION-INSTRUCTIONS.md -> ./AI-SESSION-INSTRUCTIONS.md -> SHA-256 8cb0eaac6f0c4606b92a669413fefb70b36ee8726bfe9b655a47b38adb96b8d9
 
 Before saving the adapter:
 1. show me the source URL,
@@ -415,7 +415,7 @@ commands are conveniences, not substitutes for SDAD state, handoff, or Doctor.
 For a stateful Standard or Full project, use a real SDAD checkout and run:
 
 python <SDAD_CHECKOUT>/scripts/sdad.py --version
-python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.2 [--json] [--strict]
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.3 [--json] [--strict]
 
 Doctor version, state schema version, and JSON report schema version are
 separate contracts. The version guard identifies the Doctor code being run.
@@ -452,7 +452,7 @@ makes it immutable. Use `/main/` only when you explicitly want the latest,
 unpinned instructions, and record the chosen revision in setup notes. See
 [install-sources.json](install-sources.json) for the canonical revision/path/hash
 contract and [docs/known-limitations.md](docs/known-limitations.md) for its limits.
-See [the v3.2.2 release notes](docs/releases/v3.2.2.md) for the bounded change,
+See [the v3.2.3 release notes](docs/releases/v3.2.3.md) for the bounded change,
 compatibility, and verification record.
 
 ## Diagnose Stateful Projects
@@ -461,7 +461,7 @@ Use a real SDAD checkout for a stateful Standard or Full project:
 
 ```text
 python <SDAD_CHECKOUT>/scripts/sdad.py --version
-python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.2 [--json] [--strict]
+python <SDAD_CHECKOUT>/scripts/sdad.py doctor [PROJECT_ROOT] --require-version 3.2.3 [--json] [--strict]
 ```
 
 Doctor version, state schema version, and report schema version are separate
@@ -653,7 +653,7 @@ evidence or handoff records required by the current claim.
 - [Meta-Harness Method](docs/field-notes/meta-harness-method.md)
 - [Known Limitations](docs/known-limitations.md)
 - [Security](SECURITY.md)
-- [Stable v3.2.2 release notes](docs/releases/v3.2.2.md)
+- [Stable v3.2.3 release notes](docs/releases/v3.2.3.md)
 - [Historical v3.2.1 release notes](docs/releases/v3.2.1.md)
 - [Historical v3.2.0 release notes](docs/releases/v3.2.0.md)
 - [Historical v3.1.0 release notes](docs/releases/v3.1.0.md)

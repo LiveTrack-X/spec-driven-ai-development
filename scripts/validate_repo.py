@@ -91,7 +91,7 @@ REQUIRED_FILES = [
     "docs/releases/v3.1.0.md",
     "docs/releases/v3.2.0.md",
     "docs/releases/v3.2.1.md",
-    "docs/releases/v3.2.2.md",
+    "docs/releases/v3.2.3.md",
     "docs/field-notes/repository-control-surface-method.md",
     "docs/field-notes/cost-aware-agent-routing-method.md",
     "docs/field-notes/documentation-governance-method.md",
@@ -201,11 +201,11 @@ INSTALL_SOURCE_SURFACES = {
     "docs/no-clone-quick-install.md": INSTALL_SOURCE_KEYS,
     "docs/mini-sdad.md": {"mini"},
 }
-STABLE_RELEASE_VERSION = "3.2.2"
-STABLE_RELEASE_TAG = "v3.2.2"
-STABLE_RELEASE_TITLE = "SDAD v3.2.2"
-STABLE_RELEASE_DATE = "2026-07-15"
-STABLE_RELEASE_REVISION = "adfd40afd4e1d3fcaba64cc3f5be936c5feb51fd"
+STABLE_RELEASE_VERSION = "3.2.3"
+STABLE_RELEASE_TAG = "v3.2.3"
+STABLE_RELEASE_TITLE = "SDAD v3.2.3"
+STABLE_RELEASE_DATE = "2026-09-13"
+STABLE_RELEASE_REVISION = "04a3e24569758237b702c5a2fbc6094a186d6cb0"
 STABLE_RELEASE_SOURCES = {
     "mini": {
         "path": "templates/mini-sdad/MINI-SDAD.md",
@@ -214,32 +214,32 @@ STABLE_RELEASE_SOURCES = {
     "codex": {
         "path": "adapters/codex/AGENTS.md",
         "target": "AGENTS.md",
-        "sha256": "8237f7905ba8ce0db95e77b5d40e54200062d2654adae45e667f04743f342e08",
+        "sha256": "9946d883e6db07d451af0d36b32612f41b1454b0c67c58c4876fd025e4e7c8ce",
     },
     "claude-code": {
         "path": "adapters/claude-code/CLAUDE.md",
         "target": "CLAUDE.md",
-        "sha256": "57a9431eecc5d8e2dfdfe71eb59ad673ff230db5c320197291a8a7a129f875ce",
+        "sha256": "851e490c692b9f94e5ca2a1a7b9b2caa3cf1e3c1aafb21622118881ea2007c7d",
     },
     "gemini-cli": {
         "path": "adapters/gemini-cli/GEMINI.md",
         "target": "GEMINI.md",
-        "sha256": "b3a6e16c21e14e594bdc5560838c664e3116ef1ee1366724a6b39a19a9e2e76b",
+        "sha256": "0d7946490844cc32a7216e541c52d35207d487f6eca0df1356da832f16f4fac8",
     },
     "cursor": {
         "path": "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
         "target": ".cursor/rules/spec-driven-ai-development.mdc",
-        "sha256": "789d378813f7b32f0e677265fa23c7908cf6b52342fc54e92455d05293038bfc",
+        "sha256": "0d90f97d84b18c9df3a20df914bc78c0ba4aed43e557db50d2e3064d8f5aa6e2",
     },
     "github-copilot": {
         "path": "adapters/github-copilot/.github/copilot-instructions.md",
         "target": ".github/copilot-instructions.md",
-        "sha256": "ee914a5ebaa5413c7bfd43d21b48e6919fc3e373afed5707bc6076acf5a573b3",
+        "sha256": "0cb0d19f3e30539b483a770baab39f42797e5bf8cd639a53893003b2bd3cf745",
     },
     "generic": {
         "path": "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
         "target": "AI-SESSION-INSTRUCTIONS.md",
-        "sha256": "15e02a42c32e46b332dc217ac43abad958d35e5a153f0f9746be42a32eee5ec2",
+        "sha256": "8cb0eaac6f0c4606b92a669413fefb70b36ee8726bfe9b655a47b38adb96b8d9",
     },
 }
 SENSITIVE_DATA_SURFACES = [
@@ -266,7 +266,7 @@ EXTERNAL_CONTENT_BOUNDARY = (
 DOCTOR_VERSION_COMMAND = "python <SDAD_CHECKOUT>/scripts/sdad.py --version"
 DOCTOR_COMMAND = (
     "python <SDAD_CHECKOUT>/scripts/sdad.py doctor "
-    "[PROJECT_ROOT] --require-version 3.2.2 [--json] [--strict]"
+    "[PROJECT_ROOT] --require-version 3.2.3 [--json] [--strict]"
 )
 GEMINI_POWERSHELL_INSTALL = (
     ".\\scripts\\install-agent-adapter.ps1 -Adapter gemini-cli "
@@ -1660,7 +1660,7 @@ def validate_doctor_gemini_documentation_contract() -> None:
         limitations_doctor,
         "Known limitations Doctor section",
         [
-            ("checkout-only", "3.2.2"),
+            ("checkout-only", "3.2.3"),
             ("version", "does not prove", "clean checkout", "hash provenance"),
             ("read-only structural diagnostic",),
             ("does not execute validation commands", "mutate", "network"),
@@ -1743,7 +1743,7 @@ def _string_binding_sites(
 
 def _validate_doctor_source_versions(doctor_source: str) -> None:
     expected = {
-        "DOCTOR_VERSION": "3.2.2",
+        "DOCTOR_VERSION": "3.2.3",
         "LEGACY_REPORT_SCHEMA_VERSION": 1,
         "REPORT_SCHEMA_VERSION": 2,
     }
@@ -2004,7 +2004,7 @@ def validate_stable_release_contract(manifest: dict[str, object]) -> None:
             "execution_scope",
             "validation_for",
             "## SDAD Doctor 3.2",
-            "--require-version 3.2.2",
+            "--require-version 3.2.3",
             "report schema 1",
             "report schema 2",
             "## Handoff, INDEX, And Ledger Consistency",

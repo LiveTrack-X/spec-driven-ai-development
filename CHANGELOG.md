@@ -6,6 +6,13 @@
   without presenting it as part of the SDAD core protocol or as a replacement
   for Doctor, tests, CI, review, enforcement, or owner judgment.
 
+## 3.2.3 - 2026-09-13
+
+- Clarify intent routing, completion claims, evidence reuse and handoff recovery.
+- Harden long-running Doctor parsing and owner-gate diagnostics.
+- Add optional bounded context inspection and interaction-report guidance.
+- Preserve State v2; see [release notes](docs/releases/v3.2.3.md) for evidence and limits.
+
 ## 3.2.2 - 2026-07-15
 
 - Made the current applicable Owner instruction an explicit interrupt and
