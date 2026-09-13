@@ -74,7 +74,7 @@ class LongHorizonCliContractTests(unittest.TestCase):
 
     def test_missing_tilde_root_reports_the_same_expanded_path_it_attempted(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            home = Path(tmp) / "home"
+            home = Path(tmp) / "home~1"
             home.mkdir()
             environment = {
                 "HOME": str(home),
@@ -99,7 +99,10 @@ class LongHorizonCliContractTests(unittest.TestCase):
                 payload["diagnostic_error"]["kind"],
                 "unusable_root",
             )
-            self.assertNotIn("~", payload["diagnostic_error"]["message"])
+            # Windows short paths may legitimately contain a tilde. Reject the
+            # unexpanded input, not a character in the expanded directory name.
+            self.assertNotIn("~/missing", payload["diagnostic_error"]["message"])
+            self.assertIn(str(home / "missing"), payload["diagnostic_error"]["message"])
 
     def test_repeated_mixed_root_invocations_do_not_reuse_prior_cli_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
