@@ -36,6 +36,7 @@ docs/
   sdad/playbooks/
     context-and-data.md
     work-packets.md
+    coordination-and-decision-trace.md
     evidence-and-risk-gates.md
     documentation-and-handoff.md
     advanced-extensions.md

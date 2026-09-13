@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import importlib.util
 import re
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS = ROOT / "scripts"
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
 
 AGENT_SURFACES = (
     "templates/project-control-files/AGENTS.md",
@@ -199,7 +203,7 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
             "examples/minimal-project/docs/INDEX.md",
         ):
             with self.subTest(path=path):
-                self.assertEqual(read(path).count(source_line), 1)
+                self.assertEqual(read(path).splitlines().count(source_line), 1)
 
         for path, packet_id in (
             ("templates/project-control-files/docs/TODO-Open-Items.md", "bootstrap"),
@@ -953,8 +957,23 @@ class AgentExperienceSurfaceTests(unittest.TestCase):
             30,
             f"always-loaded AGENTS duplicates {len(overlap)} full-rulebook lines",
         )
-        self.assertIn("progressive", agents.lower())
+        # Check the selection boundary, not the presence of a slogan.
+        require_concept_groups(
+            agents,
+            (("current intent", "routed path", "heading", "targeted match",
+              "does not mean read the whole file"),),
+        )
         self.assertIn("on demand", agents.lower())
+
+    def test_active_finding_example_is_accepted_by_the_runtime_grammar(self) -> None:
+        from sdad_validator.checks.review_state import _V2_REVIEW_OPEN_RECORD
+
+        template = read("templates/project-control-files/review-findings.md")
+        match = re.search(r"Open record format: `([^`]+)`", template)
+        self.assertIsNotNone(match)
+        parsed = _V2_REVIEW_OPEN_RECORD.fullmatch(match.group(1))
+        self.assertIsNotNone(parsed, "The installed example must pass Doctor's actual grammar")
+        self.assertEqual(parsed.group("packet"), "bootstrap")
 
     def test_tool_adapters_stay_bounded_and_route_progressively(self) -> None:
         for path in AGENT_SURFACES[1:]:

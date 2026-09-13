@@ -48,6 +48,12 @@ green does not perform this semantic intersection scan.
 
 Match each claim to the strongest evidence actually obtained:
 
+At a completion checkpoint, reconcile all applicable acceptance criteria with
+their result, actual evidence and remaining limits. A passing check covers only
+the behavior it exercises; uncovered criteria remain unverified or incomplete.
+Reuse existing SPEC/TODO/evidence references. Do not add parallel evidence files
+or repeat unchanged tests just to increase report volume.
+
 1. static inspection or local unit test;
 2. local integration or rendered artifact;
 3. live runtime or persisted-state observation;
@@ -71,6 +77,24 @@ artifact; bind release evidence to the exact commit/HEAD. Record skips, retries,
 flaky behavior, and unverified areas. Late
 external evidence re-enters through Plan/Route and cannot retroactively
 upgrade a packet, claim, authorization, or owner acceptance by itself.
+
+| Change | Evidence that may remain valid | Recheck |
+| --- | --- | --- |
+| Explanation only | previous results still bound to the current target | currentness needed for the answer; no routine full rerun |
+| Comments or ordinary prose | unaffected behavior checks | document consistency and links; executable/generated docs need their actual checks |
+| Behavior code | checks shown to be independent | changed behavior and connected regressions |
+| SPEC or acceptance criteria | unchanged criteria | new criteria and affected prior claims |
+| Tests or verification scripts | unrelated checks | changed validation and the claims it supports |
+| Dependencies, generator, build config, merge or artifact | evidence with demonstrably separate impact | affected build, integration and exact artifact |
+| External environment or live-service claim | historical observations as history | observations needed to establish the current external state |
+
+Compare relevant source/test identities and scope before reuse; do not trust HEAD
+alone for dirty work. Label reused results with their original evidence reference,
+not as checks executed this session. If impact is uncertain, broaden the relevant
+checks and record why; do not assume no impact. Check selection never waives a
+required validation contract or release gate. Age alone is not invalidation,
+but volatile external claims require current observations. See the documentation
+playbook's Evidence Home And Concise Reporting for bounded evidence storage.
 
 ## Optional Product Evidence
 

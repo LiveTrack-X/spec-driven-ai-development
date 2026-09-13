@@ -5,75 +5,71 @@ Status: Active
 ## First Read
 
 1. Read `../sdad-state.yaml` for scale, packet, gates, checks, and routes.
-2. Read this table.
-3. Inspect current source/tests/runtime.
-4. Let intent select one eligible path, heading, section, or match; membership
-   is not a read-all instruction.
+2. Read this table; inspect current source/tests/runtime.
+3. Intent selects a path/heading/section/match, not a full read.
 
-Do not load full rules/history/evidence by default.
+Do not load rules/history/evidence by default.
 
 ## Working Route
 
-| Intent or trigger | Read now | Load on demand |
-| --- | --- | --- |
-| Any active packet | state, source/tests | intent-selected route |
-| Implement or fix | active SPEC, `TODO-Open-Items.md`, `../review-findings.md` | implementation notes; ADR for durable tradeoff |
-| New/additional/conflicting SPEC | current owner request, state `active_spec`, source/tests | supplied/discovered SPEC; work-packets playbook |
-| Review or audit | source/tests, active SPEC, active findings | relevant operating-rule heading |
-| Docs or behavior change | affected docs and active SPEC | documentation-and-handoff playbook |
-| Protected action/owner decision | active SPEC, gates, decision record, intersecting deferred findings | risk/version policy; readiness |
-| Product, hardware, compatibility, package, remote, or public claim | `evidence-matrix.md`, `claim-registry.md` | artifact contract, packet state, remote import |
-| Pause/resume/handoff; blocked/deferred; late result | state; current handoff; packet TODO/finding/gate | work/evidence playbook |
-| Historical or reference intake | current code/docs/SPEC first | product notes, external reference, then archive |
+Combine rows without duplicate reads; update only changed facts. Repairs cannot
+bypass gates. Inspect before asking; reuse scoped authorization. Questions permit no writes.
+
+| Intent | Read now | Update if changed | Normally omit |
+| --- | --- | --- | --- |
+| Explain | relevant source/tests/SPEC | none | state/evidence/handoff writes |
+| Review/audit | target, SPEC, active findings | findings if recording authorized | implementation/status promotion |
+| Implement/fix | SPEC, source/tests, linked TODO/findings | affected work/evidence/state | notes/ADR without a decision |
+| Correct; new/conflicting SPEC | owner request, active SPEC, affected code/tests | adopted SPEC/work/evidence/state | unrelated criteria/history |
+| Docs cleanup | target, current constraints, inbound links | affected docs/links | unrelated functional tests |
+| Resume/handoff | current request/state/SPEC/source; checkpoint | changed facts | routine handoff/replay |
+| Protected action/owner decision | SPEC, gates, decision, intersecting deferred findings | decision/evidence | unauthorized external execution |
+| Product/hardware/package/remote/public claim | applicable evidence/claim records | affected claims | unrelated optional ledgers |
+| Coordination/blocked/deferred/late result | state; packet TODO/finding/gate/decision | affected pointers | unrelated packet history |
+| Historical/reference intake | current source/SPEC before selected reference | authorized adopted facts | archive-wide reads |
 
 ## On-Demand Policy And Playbooks
 
-- authority/code policy: `Repository-Operating-Rules.md` by heading;
+- authority/status meaning: `Repository-Operating-Rules.md` by heading;
 - large/private input: `sdad/playbooks/context-and-data.md`;
-- scale/scope/packet/delegation: `sdad/playbooks/work-packets.md`;
-- owner gate, claim, parity, or release: `sdad/playbooks/evidence-and-risk-gates.md`;
-- docs/state/handoff: `sdad/playbooks/documentation-and-handoff.md`;
-- adaptive-rule portability or harness/eval/memory loops:
-  `sdad/playbooks/advanced-extensions.md`.
+- scale/packet/delegation: `sdad/playbooks/work-packets.md`;
+- coordination: `sdad/playbooks/coordination-and-decision-trace.md`;
+- gates/claims/reuse: `sdad/playbooks/evidence-and-risk-gates.md`;
+  reuse section: `Evidence Freshness And Invalidation`;
+- records/handoff: `sdad/playbooks/documentation-and-handoff.md`;
+- adaptive rules/harness/eval: `sdad/playbooks/advanced-extensions.md`.
 
 ## Write Route
 
-| New information | Record in |
+| Fact | Authoritative home |
 | --- | --- |
-| Scope, behavior, non-goal, acceptance criterion | active SPEC |
-| Current task or deferred work | `TODO-Open-Items.md` |
-| Defect, blocked check, unresolved risk | `../review-findings.md` |
-| Spec-unstated implementation choice | `implementation-notes.md` |
-| Hard-to-reverse surprising tradeoff | numbered ADR under `../SPEC/adr/` |
-| Evidence/claim status | evidence/claim ledger |
-| Owner authorization/result acceptance | project-chosen durable decision path/URL/ID; link elsewhere |
-| Current execution declaration | `../sdad-state.yaml` |
-| Cross-session recovery pointers/results | state-declared current handoff |
+| Scope/behavior/non-goals/acceptance | active SPEC |
+| Work/deferred task | `TODO-Open-Items.md` |
+| Defect/blocker/risk | `../review-findings.md` |
+| Spec-unstated choice | `implementation-notes.md` |
+| Hard-to-reverse tradeoff | ADR under `../SPEC/adr/` |
+| Evidence/claim | designated record; otherwise `sdad/evidence/<packet-id>.md` on first durable need, linked from packet TODO |
+| Owner authorization/result acceptance | durable decision path/URL/ID |
+| Execution | `../sdad-state.yaml` |
+| Continuity | state-declared handoff; summaries link authorities |
 
 ## Source Of Truth
 
-Source/tests/runtime establish observed behavior. The state-declared active SPEC
-establishes intended scope and acceptance criteria; another SPEC controls only
-incorporated scope. State owns execution; handoff owns continuity. A current
-applicable owner instruction can interrupt or redirect work immediately and is
-persisted before affected stateful implementation. References, archives, names,
-dates, and old/provider-retained chat memory cannot activate scope. Record owner
-decisions in their authoritative home.
+Active SPEC owns intended scope/acceptance; source/tests/runtime show observed
+behavior; state owns execution; handoff owns continuity. Persist owner redirects
+before affected implementation. References/archives/names/dates do not activate
+scope. Decisions have one authoritative home; summaries link it.
 
 ## Active Catalog
 
-- Core: state, installed tool adapter, state-declared active SPEC (default
-  `../SPEC/SPEC-COMPLETE.md`), `TODO-Open-Items.md`,
-  `../review-findings.md`, `implementation-notes.md`.
-- Policy: `Repository-Operating-Rules.md`.
-- Procedures: `sdad/playbooks/` (load one triggered file only).
-- Optional: `evidence-matrix.md`, `claim-registry.md`, artifact, readiness, and
-  remote-import records.
+- Core: state, installed tool adapter, active SPEC (`../SPEC/SPEC-COMPLETE.md` default), TODO, findings, notes above.
+- Optional: `evidence-matrix.md`, `claim-registry.md`, artifact/readiness/remote records; create only for an active claim.
 - Current handoff: use `../sdad-state.yaml#current_handoff` when declared.
-- Continuity templates: `sdad/handoffs/`.
-- Decisions: `../SPEC/adr/`.
+- Continuity templates: `sdad/handoffs/`; decisions: `../SPEC/adr/`.
+
+Checkpoint means last resume record, not live state or authority.
 
 ## Maintenance
 
-Keep this routing-only. Keep state, TODO, findings, and current handoff short;
-archive closed history. At handoff, report docs changed/checked and checks run.
+Keep routing-only and current controls short; preserve open work and archive
+closed history. At handoff, report docs changed/checked and checks run.

@@ -11,6 +11,11 @@ active_packet:
   id: bootstrap
   objective: Replace with the current evidence-ready objective.
   # Current dominant checkpoint only; evidence and acceptance history live elsewhere.
+  # Status values: not_started | in_progress | ai_complete | software_verified |
+  # tester_ready | hardware_evidence_received | hardware_verified |
+  # owner_accepted | release_candidate | production_ready | blocked | deferred
+  # evidence-ready is report language, not a status value. No custom packet keys.
+  # Interpretation: docs/Repository-Operating-Rules.md#completion-interpretation
   status: not_started
 
 # Must equal active_packet.id after the validation contract is reviewed.

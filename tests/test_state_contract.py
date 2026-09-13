@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import re
 import unittest
 from pathlib import Path
 
@@ -11,6 +12,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from sdad_validator.state_contract import (  # noqa: E402
+    ACTIVE_PACKET_STATUSES,
     KNOWN_TOP_LEVEL_KEYS_BY_VERSION,
     REQUIRED_TOP_LEVEL_KEYS_BY_VERSION,
     STATE_ENUMS_BY_VERSION,
@@ -92,6 +94,19 @@ def valid_v2_state() -> str:
 
 
 class StateContractTests(unittest.TestCase):
+    def test_template_status_guidance_matches_the_runtime_enum(self) -> None:
+        template = (ROOT / "templates/project-control-files/sdad-state.yaml").read_text(encoding="utf-8")
+        match = re.search(r"(?m)^  # Status values: (.*$(?:\n  # [a-z_ |]+$)*)", template)
+        self.assertIsNotNone(match, "State writers need the supported values at the write site")
+        values = match.group(1).replace("\n  # ", " ")
+        self.assertEqual({value.strip() for value in values.split("|") if value.strip()}, ACTIVE_PACKET_STATUSES)
+
+    def test_report_language_cannot_be_persisted_as_packet_status(self) -> None:
+        text = valid_v2_state().replace("status: not_started", "status: evidence_ready")
+        issues = inspect_state(text).issues
+        self.assertTrue(any(issue.id == "state.schema.unsupported-value" and
+                            "active_packet status" in issue.message for issue in issues))
+
     def test_parses_the_canonical_state_subset(self) -> None:
         result = inspect_state(valid_v1_state())
 

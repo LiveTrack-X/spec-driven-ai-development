@@ -384,8 +384,9 @@ Why it matters: real owners usually say "check this", "fix it", "release it",
 name the exact skill, the workflow is brittle.
 
 Operational form: classify the whole utterance, not isolated action words. A
-clear imperative authorizes only its named action and boundary; a question,
-hypothetical, quotation, negation, or reference-only request does not. Infer
+clear action request, including "can you fix it?", authorizes its named action
+and boundary; information questions, hypotheticals, quotations, negations, and
+reference-only requests do not authorize implementation. Infer
 matching intents from the wording and current repository, then decide whether
 multiple intents fit one approved packet. State the interpreted intent, scale,
 `execution_scope`, gates, and expected evidence. Ask one blocking question with
@@ -407,3 +408,9 @@ Operational form: keep the readable rule in the adapter or operating rules, but
 back it with CI, required tests, validators, hooks, permissions, deny rules,
 branch protection, release gates, artifact checks, or equivalent tooling. Use
 guidance for judgment and enforcement for non-negotiable guarantees.
+
+## SDAD 4.0 candidate clarification
+
+Action requests phrased as questions ("can you fix the save bug?", "고쳐줄 수 있어?") authorize the named repair. Information questions ("why does saving fail?"), hypotheses, quotations and negations do not authorize implementation. Existing valid authorization persists. Repair verification failures within the authorized scope; missing production evidence blocks only dependent claims/actions, not independent work.
+
+Evidence-ready is report language, not an active_packet.status value. Keep the existing state enum; software_verified requires executed relevant software checks, owner_accepted requires actual owner acceptance, and production_ready requires applicable production evidence and gates. Neither document presence nor Doctor success supplies those facts.

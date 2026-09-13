@@ -9,6 +9,12 @@ explicitly make.
 Do not use this as a transcript of raw internal reasoning or a mechanical edit
 log. Keep it short enough for a fresh AI session to read as current context.
 
+Routine test summaries and lists of documents read are evidence, not design
+decisions. Keep them in the chosen evidence record or bounded TODO resolution;
+link them here only when a current decision depends on them. If this file already
+serves as a run log, preserve prior rounds in a linked record and retain only
+current constraints and pointers here. Do not discard prior evidence to shorten it.
+
 ## Current Notes
 
 ```md
@@ -16,10 +22,21 @@ log. Keep it short enough for a fresh AI session to read as current context.
 
 - Date: YYYY-MM-DD
 - Applies to:
+- Origin (coordination profile only):
+  - Packet:
+  - TODO or finding:
 - SPEC gap:
 - Decision:
 - Why:
 - Alternatives rejected:
+- Direct impact references (coordination profile only):
+  - Work or TODO:
+  - Paths or artifacts:
+  - Claims or evidence:
+  - Validation:
+- Realized by (coordination profile only):
+  - Changed files:
+  - Evidence references:
 - Supersedes:
 - Verification impact:
 - Follow-up:
@@ -35,6 +52,12 @@ log. Keep it short enough for a fresh AI session to read as current context.
   surprise a future maintainer without context, and represents a real tradeoff.
 - New durable notes use a never-reused `IMPL-NNNN` ID. Existing unnumbered notes
   remain valid. Date is descriptive; identity and supersession use the note ID.
+- The coordination fields are optional while its playbook is dormant. When it
+  is active, a material decision names its originating packet and TODO or
+  finding, and uses pointers rather than copying mutable work or evidence facts.
+- `Direct impact references` list only immediate known effects. `Realized by`
+  points to bounded implementation and evidence, not raw reasoning or a
+  mechanical edit log.
 - At packet boundaries, classify each note by current effect rather than age:
   keep current small constraints here; promote requirements to SPEC, durable
   rationale to ADR, work to TODO, and defects/risks to findings.

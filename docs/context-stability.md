@@ -130,6 +130,28 @@ the split file and link it back from the active file.
 
 ## Tool Input Hygiene
 
+### Optional checkout helper
+
+`scripts/sdad_context.py` provides a read-only inventory and bounded UTF-8 pages:
+
+```bash
+python scripts/sdad_context.py --root "path/to/project" inspect
+python scripts/sdad_context.py --root "path/to/project" read docs/TODO-Open-Items.md --heading "Active Work" --lines 100
+python scripts/sdad_context.py --root "path/to/project" read docs/TODO-Open-Items.md --heading "Active Work" --start 120 --expect-sha256 HASH_FROM_FIRST_PAGE
+```
+
+Use the returned `next_start`, not the illustrative line 120, and keep the exact
+source hash between pages. A changed hash requires inspecting the current source.
+An ambiguous heading, oversized single line, invalid UTF-8, or path outside the
+project is rejected. Pages stop at 500 lines/50 KB; files over 1 MB are refused.
+The inventory covers fixed active control files, the active SPEC and state-declared handoff;
+it does not scan archives or read every routed document into the response.
+
+Size suggestions retain the soft thresholds above. They are not Doctor findings
+or evidence of completion. This helper never writes files or executes validation
+commands. If distributing it with a project, include the existing `sdad_validator`
+package alongside it and record its real invocation path in the project's router.
+
 Context stability also applies to tools that package or index repository
 content.
 

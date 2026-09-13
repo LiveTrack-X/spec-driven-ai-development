@@ -52,6 +52,8 @@ implementation.
 - large/private input: `docs/sdad/playbooks/context-and-data.md`;
 - scale, execution scope, packet, or delegation:
   `docs/sdad/playbooks/work-packets.md`;
+- parallel lanes or material decision-impact review:
+  `docs/sdad/playbooks/coordination-and-decision-trace.md`;
 - owner gates, claims, parity, or release:
   `docs/sdad/playbooks/evidence-and-risk-gates.md`;
 - docs/state/handoff: `docs/sdad/playbooks/documentation-and-handoff.md`;

@@ -33,7 +33,7 @@ authority/reference role, execution boundary, protected action/gate, or claim bo
 An explicit current owner command authorizes only its named direction/action and
 stated boundary; persist it and do not ask for the same decision again. It does
 not waive evidence, prerequisites, tool policy, or another protected action.
-Classify the whole utterance: questions, hypotheticals, quotations, negations,
+Classify the whole utterance: information questions, hypotheticals, quotations, negations,
 and review/reference-only requests do not authorize their mentioned actions.
 
 ## Packet And Delegation Envelope
@@ -47,6 +47,10 @@ Every packet or delegated assignment records:
 - expected evidence, required evidence, and claim limits;
 - owner gates and stop conditions;
 - the required report, including residual risk and unverified work.
+
+When two or more lanes or a material decision-impact review is active, load the
+coordination-and-decision-trace playbook. Its lane labels and reconciliation
+blocks remain subordinate to the packet identities and authorities here.
 
 A review-worthy unit is an internal slice large enough to review and small
 enough to verify. Delegated workers receive the full envelope because they may
@@ -222,9 +226,55 @@ age; promote or supersede a note before archiving it.
 
 ## Implement And Verify
 
-Read-only review or planning may mark Implement N/A; a blocked packet may mark
-Verify blocked. Report every omission and never claim evidence the skipped
-phase would have produced.
+### Request, Plan And Outcome Check
+
+Before non-trivial implementation, compare the requested outcome, affected
+users/data, retained behavior, scope and constraints against the proposed plan.
+An exclusion or shortcut must not silently remove a requested outcome. Correct
+the plan when current evidence resolves the mismatch; ask one blocking question
+only for a material choice that cannot be resolved within existing authority.
+Do not require a new approval or a separate planning document for this check.
+For a small clear repair, a short statement and the relevant test are enough.
+
+Use the active SPEC's acceptance criteria as the completion inventory. For each
+applicable criterion, identify its implementation/result, actual check/evidence,
+and remaining limitation or blocker. Reuse criterion labels in the existing
+SPEC/TODO/evidence record; do not create a duplicate mandatory ledger. A passing
+test suite supports only its covered claims. Do not narrow the requested result
+to fit the tests or count a declared command as executed evidence.
+
+Keep this inventory concise: criterion -> result/check -> remaining limit.
+Use existing test names or evidence links instead of copying full test output
+and scope into every control file. Persist changed facts and pointers; the final
+report can summarize them without creating another document.
+
+Before reporting control files coherent, validate changed controls with the
+installed Doctor when available. Otherwise check their declared schema and
+record that Doctor was not executed. `evidence-ready` is report language, not
+the wire value `evidence_ready`. Select only a supported status from the state
+template based on actual evidence; never invent packet keys for evidence or
+authorization. These facts belong in routed records, not extra state fields.
+
+### Correction Reconciliation
+
+After an authorized correction, identify the changed requirement and affected
+plan, TODOs, implementation and evidence. Amend the authoritative requirement
+and affected work records before continuing; mark old conclusions stale only
+where the change invalidates them. Preserve unaffected work and original
+acceptance boundaries. Then implement, run affected checks and report the
+remaining gaps against the corrected requirement. Acknowledgement or a document
+edit alone does not establish applied behavior. Do not replay completed work on
+resume when current source and evidence still support it.
+
+When this path is entered after a missing handoff, reconstruct from state ->
+INDEX -> the selected SPEC, current source/tests and active work records. A
+handoff is optional continuity evidence, never a prerequisite to recovery.
+An explicit cancellation remains stopped until owner reactivation.
+
+Read-only review or planning need no phase-by-phase N/A list or routine control
+writes. A blocked packet reports the blocked verification and dependent claim.
+Report material omissions and never claim evidence the skipped phase would have
+produced. Use the documentation playbook for concise reporting and evidence homes.
 
 ### Bounded Iteration
 
@@ -237,6 +287,8 @@ inside the Implement and Verify phases of the one work loop.
 
 Obey an explicit stop or redirect. Ask only when an unresolved fact changes
 objective/direction, authority/reference role, execution boundary, protected
-action/gate, or claim boundary; also stop for blocked verification or conflicting
+action/gate, or claim boundary; repair failed checks within scope and stop dependent claims/actions for blocked verification or conflicting
 evidence. Do not treat a clear owner expansion as ambiguity or silently cross an
 unrequested boundary.
+
+A polite action request such as "can you fix it?" authorizes the named repair. Continue independent authorized work when a dependent check is blocked; preserve the blocked claim and required evidence.

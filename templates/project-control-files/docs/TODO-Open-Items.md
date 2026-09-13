@@ -14,9 +14,18 @@ Scope: Current implementation backlog only
 
 - [ ] [packet:bootstrap] Define the first active SPEC slice, evidence, and completion condition.
 
+When parallel lanes or material decision-impact review triggers the coordination
+profile, keep the parent/integration item visible and use
+`sdad/playbooks/coordination-and-decision-trace.md`. A lane label never replaces
+packet identity. Only a completed lane with all required evidence satisfies a
+dependency; every other terminal result requires explicit disposition.
+
 ## Future / Deferred
 
 - Record ideas here only when they are not active implementation work yet.
+- Agent discovery does not activate scope. Link a duplicate, route an active
+  defect to findings, or keep an out-of-scope improvement here as a candidate
+  with its activation authority and revisit trigger.
 - Moving active work here requires the original packet, defer reason, and an
   explicit revisit trigger. Reclassification is not completion evidence.
 - If this file becomes a long journal, move old material to archive/history and

@@ -75,12 +75,42 @@ instead of choosing several homes.
 
 Keep these states distinct:
 
+These are evidence/claim descriptions, not literal `active_packet.status`
+values. Use only the wire values listed beside `status` in `sdad-state.yaml`.
+Do not write `evidence_ready` or add project-specific packet keys. The legacy
+`ai_complete` wire value does not establish executed verification or acceptance;
+`software_verified` requires the applicable executed software checks. Keep
+evidence, authorization and claim limits in their routed authoritative records.
+
 - planned: the packet has not produced evidence;
 - evidence-ready: scoped implementation and checks are shown;
 - software-verified: required local software evidence passed;
 - tester-ready or hardware-verified: the corresponding external evidence exists;
 - release-candidate or production-ready: every named release gate passed;
 - owner-accepted: the owner or delegated policy accepted the result.
+
+### Completion Interpretation
+
+Separate four meanings in the report: the current requested result, executed
+verification, external dependencies, and owner acceptance. These are reporting
+dimensions, not new YAML fields. Status is a current checkpoint, not a universal
+progress percentage or a strictly ordered ladder. Keep the existing wire values
+and their meanings; do not auto-migrate legacy `ai_complete`.
+
+| Situation | Interpretation |
+| --- | --- |
+| Implemented but required checks not executed | report the implementation and omission; do not claim software verification |
+| Applicable required software checks passed | `software_verified` only for the evidence-supported software scope; no implied external verification or acceptance |
+| External evidence required by current acceptance is unavailable | keep that criterion incomplete and the dependent claim blocked; report completed local parts separately |
+| External follow-up lies outside the current requested acceptance | retain the follow-up and distinguish it from the local result; do not change the whole packet's status meaning |
+| Owner says "good" without a clear acceptance scope | do not infer whole-project acceptance, release authority or risk acceptance |
+| Owner cancels work | follow existing `deferred` and explicit owner reactivation rules |
+
+Determine dependency scope from the approved SPEC and current owner instruction,
+not from the desire to show completion. Never narrow acceptance, move unresolved
+items away, or silently split a packet to make status or document size look better.
+Partial local success does not satisfy a required external criterion. Evidence
+belongs in routed records; `evidence_ready` and custom packet keys remain invalid.
 
 Owner acceptance cannot upgrade weak evidence. A passing evaluator cannot
 approve scope. A successful commit cannot authorize push, release, deploy,

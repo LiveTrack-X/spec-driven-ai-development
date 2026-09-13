@@ -121,29 +121,7 @@ def _read_optional_document(context: DoctorContext, path: str) -> str | None:
     return _read_control_document(context, path)
 
 
-def _section_lines(
-    lines: list[str],
-    heading: str,
-) -> list[tuple[int, str]] | None:
-    try:
-        heading_index = lines.index(heading)
-    except ValueError:
-        return None
-    end_index = len(lines)
-    for index in range(heading_index + 1, len(lines)):
-        if lines[index].startswith("## "):
-            end_index = index
-            break
-    return [
-        (index + 1, lines[index])
-        for index in range(heading_index + 1, end_index)
-    ]
-
-
-def _v2_section_lines(
-    lines: list[str],
-    heading: str,
-) -> list[tuple[int, str]] | None:
+def _visible_markdown_lines(lines: list[str]) -> list[tuple[int, str]]:
     visible_lines: list[tuple[int, str]] = []
     fence_character: str | None = None
     fence_length = 0
@@ -169,6 +147,15 @@ def _v2_section_lines(
                 fence_character = None
                 fence_length = 0
 
+    return visible_lines
+
+
+def _first_visible_section_lines(
+    lines: list[str],
+    heading: str,
+) -> list[tuple[int, str]] | None:
+    visible_lines = _visible_markdown_lines(lines)
+
     heading_index = next(
         (
             index
@@ -190,6 +177,33 @@ def _v2_section_lines(
     return visible_lines[heading_index + 1 : end_index]
 
 
+def _all_visible_section_lines(
+    lines: list[str],
+    heading: str,
+) -> list[tuple[int, str]] | None:
+    visible_lines = _visible_markdown_lines(lines)
+    heading_indexes = [
+        index
+        for index, (_, line) in enumerate(visible_lines)
+        if line == heading
+    ]
+    if not heading_indexes:
+        return None
+
+    section_lines: list[tuple[int, str]] = []
+    for heading_index in heading_indexes:
+        end_index = next(
+            (
+                index
+                for index in range(heading_index + 1, len(visible_lines))
+                if visible_lines[index][1].startswith("## ")
+            ),
+            len(visible_lines),
+        )
+        section_lines.extend(visible_lines[heading_index + 1 : end_index])
+    return section_lines
+
+
 def _captured_id(match: re.Match[str] | None, group: int) -> str | None:
     if match is None:
         return None
@@ -198,7 +212,7 @@ def _captured_id(match: re.Match[str] | None, group: int) -> str | None:
 
 
 def _review_items(text: str, packet_id: str | None) -> list[_ActiveItem] | None:
-    section = _section_lines(text.splitlines(), REVIEW_HEADING)
+    section = _all_visible_section_lines(text.splitlines(), REVIEW_HEADING)
     if section is None:
         return None
     items: list[_ActiveItem] = []
@@ -228,7 +242,9 @@ def _review_items(text: str, packet_id: str | None) -> list[_ActiveItem] | None:
 
 def _todo_items(text: str, packet_id: str | None) -> list[_ActiveItem] | None:
     lines = text.splitlines()
-    sections = [_section_lines(lines, heading) for heading in TODO_HEADINGS]
+    sections = [
+        _all_visible_section_lines(lines, heading) for heading in TODO_HEADINGS
+    ]
     if any(section is None for section in sections):
         return None
     items: list[_ActiveItem] = []
@@ -244,7 +260,7 @@ def _todo_items(text: str, packet_id: str | None) -> list[_ActiveItem] | None:
                     linked=packet_id is not None and captured == packet_id,
                 )
             )
-    return items
+    return sorted(items, key=lambda item: item.line)
 
 
 def _parse_v2_record(
@@ -298,7 +314,7 @@ def _parse_v2_record(
 
 
 def _parse_v2_review_records(text: str) -> list[_LedgerRecord] | None:
-    section = _v2_section_lines(text.splitlines(), REVIEW_HEADING)
+    section = _all_visible_section_lines(text.splitlines(), REVIEW_HEADING)
     if section is None:
         return None
     return [
@@ -315,7 +331,9 @@ def _parse_v2_review_records(text: str) -> list[_LedgerRecord] | None:
 
 def _parse_v2_todo_records(text: str) -> list[_LedgerRecord] | None:
     lines = text.splitlines()
-    sections = [_v2_section_lines(lines, heading) for heading in TODO_HEADINGS]
+    sections = [
+        _all_visible_section_lines(lines, heading) for heading in TODO_HEADINGS
+    ]
     if any(section is None for section in sections):
         return None
     records: list[_LedgerRecord] = []
@@ -331,7 +349,7 @@ def _parse_v2_todo_records(text: str) -> list[_LedgerRecord] | None:
             for line_number, line in section
             if line.startswith("- ")
         )
-    return records
+    return sorted(records, key=lambda record: record.line)
 
 
 def _finding(
@@ -460,7 +478,7 @@ def _handoff_findings(
     text = _read_control_document(context, path)
     if text is None:
         return []
-    section = _v2_section_lines(text.splitlines(), HANDOFF_HEADING)
+    section = _first_visible_section_lines(text.splitlines(), HANDOFF_HEADING)
     if section is None:
         return [
             _finding(
@@ -536,7 +554,7 @@ def _index_source_findings(context: DoctorContext) -> list[Finding]:
     if text is None:
         return []
 
-    section = _v2_section_lines(text.splitlines(), INDEX_HEADING)
+    section = _first_visible_section_lines(text.splitlines(), INDEX_HEADING)
     candidates = (
         []
         if section is None

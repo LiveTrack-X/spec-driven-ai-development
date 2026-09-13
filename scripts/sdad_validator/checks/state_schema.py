@@ -93,6 +93,11 @@ class StateSchemaCheck:
             for issue in context.state_result.issues
             if issue.id.startswith("state.")
         ]
+        # A future or malformed version has no usable semantic contract.  Keep
+        # its structural findings, but do not reinterpret fields such as
+        # ``updated`` using the current schema's freshness rules.
+        if context.state_result.state_version is None:
+            return tuple(findings)
         snapshot = context.state_result.snapshot
         if snapshot is None:
             return tuple(findings)

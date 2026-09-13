@@ -145,6 +145,12 @@ define the canonical terms here or route a small glossary from `docs/INDEX.md`.
 
 Define tests, docs, reproducible evidence, and owner approval required for completion.
 
+For non-trivial work, give each requested outcome a short criterion label and
+observable result. Preserve constraints and behavior that must remain intact.
+Completion reports connect each criterion to actual evidence and remaining
+limits; a test count alone does not show that all requested outcomes are covered.
+Use this section as the inventory rather than adding another mandatory ledger.
+
 ## Release / Production Readiness Gate
 
 Define the additional evidence required before stable release or production use:

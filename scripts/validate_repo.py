@@ -101,6 +101,7 @@ REQUIRED_FILES = [
     "adapters/README.md",
     "adapters/codex/AGENTS.md",
     "adapters/claude-code/CLAUDE.md",
+    "adapters/gemini-cli/GEMINI.md",
     "adapters/cursor/.cursor/rules/spec-driven-ai-development.mdc",
     "adapters/github-copilot/.github/copilot-instructions.md",
     "adapters/generic/AI-SESSION-INSTRUCTIONS.md",
@@ -146,6 +147,10 @@ REQUIRED_FILES = [
     "tests/test_project_view.py",
     "tests/test_doctor_checks.py",
     "tests/test_sdad_cli.py",
+    "tests/test_long_horizon_cli_contracts.py",
+    "tests/test_long_horizon_contracts.py",
+    "tests/test_long_horizon_render_contracts.py",
+    "tests/test_long_horizon_review_contracts.py",
     "tests/test_render_agent_surfaces.py",
     "tests/test_sync_copy_prompt.py",
     "tests/test_validate_repo.py",
@@ -1258,7 +1263,8 @@ def validate_long_running_lifecycle_contract() -> None:
     _require_concept_groups(
         _markdown_section(work_packets, "## Implement And Verify", 2),
         "Installed phase-omission contract",
-        [("read-only review", "planning", "implement n/a", "never claim evidence")],
+        [("read-only review", "planning", "need no phase-by-phase n/a list",
+          "report material omissions", "never claim evidence")],
     )
 
     documentation = read(
@@ -1450,7 +1456,12 @@ def validate_long_running_lifecycle_contract() -> None:
     _require_concept_groups(
         _markdown_section(index, "## Working Route", 2),
         "INDEX blocked and late-result route",
-        [("blocked/deferred", "late result", "packet todo/finding/gate", "work/evidence playbook")],
+        [("blocked/deferred", "late result", "packet todo/finding/gate", "affected pointers")],
+    )
+    _require_concept_groups(
+        _markdown_section(index, "## On-Demand Policy And Playbooks", 2),
+        "INDEX work/evidence playbook destinations",
+        [("sdad/playbooks/work-packets.md", "sdad/playbooks/evidence-and-risk-gates.md")],
     )
     _require_concept_groups(
         _markdown_section(index, "## Working Route", 2),
@@ -4326,10 +4337,57 @@ def validate_templates() -> None:
             fail(f"Meta-Harness field note missing: {phrase}")
 
 
-def main() -> None:
+def validate_workflow_clarity_contract() -> None:
+    """Check routed guidance, not model compliance or semantic correctness."""
+    base = "templates/project-control-files/"
+    contracts = (
+        ("docs/INDEX.md", "## Working Route", [
+            ("combine rows", "without duplicate reads", "changed facts"),
+            ("repairs cannot bypass gates", "questions permit no writes"),
+            ("explain", "none", "state/evidence/handoff writes"),
+            ("recording authorized", "implementation/status promotion"),
+        ]),
+        ("docs/Repository-Operating-Rules.md", "### Completion Interpretation", [
+            ("reporting dimensions", "not new yaml fields"),
+            ("external evidence required", "criterion incomplete"),
+            ("external follow-up", "retain the follow-up"),
+            ("never narrow acceptance", "unresolved", "silently split"),
+        ]),
+        ("docs/sdad/playbooks/documentation-and-handoff.md",
+         "## Evidence Home And Concise Reporting", [
+            ("designated evidence record first", "only when durable"),
+            ("docs/sdad/evidence/<packet-id>.md", "existing todo"),
+            ("explanation-only", "no evidence file"),
+            ("dirty work", "hashes", "patch/snapshot"),
+            ("do not label a reused result as a new run",),
+            ("documents actually read once", "not in every"),
+        ]),
+        ("docs/sdad/playbooks/evidence-and-risk-gates.md",
+         "## Evidence Freshness And Invalidation", [
+            ("head alone", "dirty work"),
+            ("impact is uncertain", "broaden", "do not assume no impact"),
+            ("never waives", "required validation contract", "release gate"),
+            ("age alone", "volatile external claims", "current observations"),
+        ]),
+    )
+    for path, heading, groups in contracts:
+        _require_concept_groups(
+            _markdown_section(read(base + path), heading, heading.count("#")),
+            f"Workflow clarity: {heading.lstrip('# ')}", groups,
+        )
+
+
+def main(arguments: list[str] | None = None) -> None:
+    raw_arguments = list(sys.argv[1:] if arguments is None else arguments)
+    if raw_arguments:
+        fail(
+            "validate_repo.py does not accept arguments: "
+            + " ".join(raw_arguments)
+        )
     validate_agent_experience_contract()
     validate_rendered_agent_surfaces()
     validate_cross_model_guidance_contract()
+    validate_workflow_clarity_contract()
     validate_local_markdown_links()
     validate_templates()
     validate_skill()

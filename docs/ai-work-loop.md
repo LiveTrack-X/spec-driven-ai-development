@@ -51,7 +51,8 @@ adapter -> sdad-state.yaml -> docs/INDEX.md
 
 Then select only the source, test, path, heading, active section, or targeted
 match needed for the current intent. `routed_docs` is an eligible selection set,
-not a read-all list. Report the routed documents actually read.
+not a read-all list. When read provenance is needed, record the routed documents
+actually read once in the evidence, audit or handoff record.
 An owner-named current input may be inspected within the request even when a
 stale route omits it. If adopted, update the active authority and routes before
 stateful implementation.
@@ -141,8 +142,10 @@ explicitly retires it.
 Not every packet executes every phase. A read-only review may mark Implement as
 not applicable; a planning packet may stop before implementation; a blocked
 packet may stop before verification; and a no-change review may report without
-a write. Skipping a phase is valid only when the report names it, explains why,
-and does not claim evidence that the omitted phase would have produced.
+a write. Skipping a phase requires a report that explains why a material check
+was omitted and does not claim evidence that the omitted phase would have
+produced. Ordinary read-only/planning replies do not need a
+phase-by-phase N/A list or routine control writes.
 
 ## Report
 
@@ -152,9 +155,14 @@ Report findings first, then:
 - changed files or artifacts,
 - validation evidence,
 - limits and unverified areas,
-- documents actually read or updated,
+- documents actually read or updated, once where evidence/audit/handoff needs provenance,
 - owner decision or acceptance needed,
 - next action.
+
+Scale this report to the request: ordinary replies focus on outcome, observed
+checks and material limits; preserve explicit audit and handoff requirements.
+Use the installed documentation playbook for evidence homes and scoped summaries;
+do not repeat the same logs or read-document list in every control file or reply.
 
 If this run confirms repeated pain or one high-risk missing control, record the
 finding/evidence and root cause, choose the smallest durable control plus

@@ -39,10 +39,10 @@ reconcile SPEC/state before stateful implementation. Old-boundary outputs stay
 stale until revalidated. Review/compare/explain/reference-only intent is read-only;
 a draft request may write only the draft, not activate implementation scope.
 
-An explicit current owner command authorizes only its named direction, acceptance,
-or protected action for the stated boundary; persist it without re-asking. It
+A clear action request, including "can you fix it?", authorizes its named boundary;
+persist it without re-asking. It
 does not waive evidence, prerequisites, tool policy, or another protected action.
-A question, hypothetical, quotation, negation, or review/reference-only request
+An information question, hypothetical, quotation, negation, or review/reference-only request
 does not authorize the action it mentions; classify the whole utterance.
 
 Treat carefully/thoroughly as inspection depth, fully/end-to-end as continuing
@@ -90,8 +90,8 @@ Those remain owner gates.
 Do not pause for owner input after every micro-task or internal review-worthy
 unit. Obey a current owner stop/redirect. Pause for input when scope expansion
 is unrequested or ambiguous, a risk/claim gate or irreversible action remains
-unauthorized, an owner-controlled tradeoff is unresolved, verification is
-blocked, or evidence conflicts with the requested plan.
+unauthorized, or an owner-controlled tradeoff is unresolved. Repair failed checks
+within scope; blocked verification or conflicts stop dependent claims/actions only.
 
 A later owner restriction, cancellation, or revocation immediately ends the affected
 authorization/execution boundary. Persist it before any further protected action;
@@ -202,19 +202,19 @@ and report project validation separately with its bounded claim.
 - Evidence/claim files: claim status and proof.
 - Handoff: cross-session resume links only.
 
-Create optional evidence files only for active product, hardware,
-compatibility, package, remote, public, or release claims. Do not create control
-files solely to make the process look complete.
+Create optional product evidence ledgers only for active product, hardware, compatibility,
+package, remote, public, or release claims. Ordinary check evidence uses the designated
+home first, otherwise the documentation playbook's packet path. Explanation-only creates
+none. Do not create control files solely to make the process look complete.
 
 ## Finish Contract
 
-Run the project validation commands named by current state or explain the block.
-Report Doctor and project evidence separately, including changed files,
-behavior, checks, claim limits, routed documents actually read, open findings,
-remaining risk, owner gates, acceptance status, and next step. Update only
-control files whose state changed.
+Run state-named project checks or explain the block. Report Doctor and project evidence separately, including changed files,
+behavior, checks, claim limits, open findings, remaining risk, owner gates, acceptance
+status, and next step. Record routed documents actually read once where evidence/audit/handoff
+needs provenance, not in every reply. Read-only/planning needs no phase-by-phase N/A list;
+material omissions remain explicit. Update only control files whose state changed.
 
-Create a handoff only when another session, tool, person, or machine needs actual
-continuity and reconstruction would otherwise be costly. Reconcile direction
-first; a stop, redirect, block, or partial result alone does not require a
-handoff. Link existing authorities instead of copying their contents.
+Create a handoff only when another session, tool, person, or machine needs actual continuity
+and reconstruction would otherwise be costly. Reconcile direction first; a stop, redirect,
+block, or partial result alone does not require a handoff. Link existing authorities instead of copying them.

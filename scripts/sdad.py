@@ -525,7 +525,12 @@ def run_cli(
     pre_acceptance_root = None if version_probe.present else attempted_root
 
     try:
-        view = FilesystemProjectView(root_input)
+        filesystem_root = (
+            Path(root_input).expanduser()
+            if str(root_input).startswith("~")
+            else root_input
+        )
+        view = FilesystemProjectView(filesystem_root)
     except DiagnosticError as exc:
         return _emit_error(
             exc,

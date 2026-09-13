@@ -6,7 +6,9 @@ resume, handoff, or oversized control file
 
 ## One Fact, One Authoritative Home
 
-Write each fact once:
+Keep one authoritative original per fact. Short, scoped summaries and links are
+allowed elsewhere; they are derived views, not independently editable authority.
+Write each fact in its appropriate home:
 
 - requirement, behavior, non-goal, or acceptance-criteria change -> active SPEC;
 - small spec-unstated implementation decision -> implementation notes;
@@ -53,6 +55,33 @@ the path, heading, active section, or targeted match actually read. Membership
 never means load every listed file in full. Report only routed documents that
 were actually read.
 
+## Evidence Home And Concise Reporting
+
+Use the project's designated evidence record first. If none exists, create
+`docs/sdad/evidence/<packet-id>.md` only when durable verification evidence is
+needed, and link it from the packet's existing TODO item. This is a path
+convention, not a new state field or mandatory startup file. Never overwrite
+an unrelated record at that path; preserve it and use a distinct evidence ID.
+Explanation-only requests create no evidence file or routine state update.
+
+Record criterion/scope, source or artifact identity, actual command and outcome,
+relevant environment, omissions/failures/limits, and reused or superseded evidence
+references. A clean relevant commit can identify the source; dirty work needs
+relevant file hashes or a retained patch/snapshot. A small repair does not require
+a repository-wide hash inventory. Do not label a reused result as a new run.
+
+Keep the current summary short and distinguish prior results from current ones.
+TODO owns work plus a result/evidence link, implementation notes own spec-unstated
+choices, and handoff owns recovery pointers. Preserve historical evidence outside
+default startup routes instead of copying command logs among these files.
+
+For ordinary delivery, report outcome, observed checks or omissions, claim limits,
+findings/risks, required owner decisions and useful next step. Map multiple
+acceptance criteria to results. Read-only/planning replies need no phase-by-phase
+N/A list. Record documents actually read once when an evidence, audit or handoff
+record needs that provenance, not in every control file or every reply. Preserve
+explicit audit/handoff reporting requirements. Metadata inventory is not a read.
+
 ## Control File Budget
 
 - Minimal: one changed active state or documentation surface.
@@ -62,6 +91,11 @@ were actually read.
 Keep active files short. Move closed TODOs/findings and old evidence to a
 Recently Closed section or timestamped archive, then link them. Do not create a
 file solely to make the process look complete.
+
+At a correction or resume, update the current result in its existing home.
+Record only the changed criterion, relevant evidence revision and remaining
+limit; do not append another copy of the objective, full plan or read-document
+list to every control file. Keep a brief current summary and link prior rounds.
 
 ## Active Record Compaction And Closure
 
@@ -81,15 +115,42 @@ current topics remain, keep `implementation-notes.md` as a small route map and
 split by topic. Verify inbound links before archive; never make archives part of
 default startup context.
 
+Per-round test summaries and documents-read lists are evidence, not spec-unstated
+design decisions. If implementation notes accumulated those rounds, preserve
+the original record in the project's evidence/history location and keep a short
+current pointer. Do not move the same growing transcript into another default
+startup file. Keep the latest result distinguishable from superseded checks.
+
 Dates and times on archive names are descriptive, not identity, order, or
 currentness. Prefer an existing packet/ADR/IMPL/EVID/CLAIM/ART ID in the name,
 never overwrite a collision, and resolve duplicate logical IDs before merge.
 Existing date-only archive paths remain valid.
 
+Before compaction, identify open work, unresolved risks, current constraints and
+evidence still needed to assess them. Keep these in active records. Move only
+resolved history, retain an exact recoverable copy, and repair inbound links.
+Afterwards verify the open-item identities, evidence links and archived content;
+then run Doctor when available. A smaller file alone is not a successful cleanup.
+If current text changed since inspection, re-read affected sections before editing.
+
 For a v3.1 project with mutable owner-acceptance columns in evidence or claim
 tables, preserve existing rows as history. Select one durable record for each
 decision, copy or link its provenance once, and replace other live decision
 fields with pointers as those records are touched. No mass rewrite is required.
+
+## Bounded Context Tools
+
+When a checkout or project supplies `sdad_context.py`, use its declared path to
+inspect active-file sizes or read one exact heading/page. The default page is
+100 lines; the hard page caps are 500 lines and 50 KB. Continue with the returned
+`next_start` and `--expect-sha256` so pages from different revisions cannot be
+silently combined. Treat a truncated page as partial evidence. Inspect summaries
+contain metadata, not proof that the listed documents were actually read.
+
+The helper only advises on size and reads explicit text. It does not archive,
+validate behavior or run commands. Use the project's actual Doctor command for
+control checks. Keep archives outside default routes; select a historical item
+only when a current decision or unresolved finding needs its evidence.
 
 ## Documentation Update Check
 
@@ -111,6 +172,18 @@ checkpoint while current control state is stale.
 `sdad-state.yaml` only when a real recovery document exists. Read it only for
 resume or continuity intent, and verify its pointers against current repository
 truth.
+
+Resume order: current owner request and state -> selected checkpoint sections ->
+compare goal, next action and evidence with current SPEC/source -> retain valid
+completed results -> replan/revalidate only changed claims. Use the evidence
+playbook's freshness section; age alone does not invalidate all evidence. A
+checkpoint cannot override current authority or reactivate cancelled work.
+
+If no handoff exists, recover through adapter -> state -> INDEX and current
+SPEC/source/tests/active work. Do not invent a handoff or ask for one merely to
+resume. Recheck the unfinished objective and authority; preserve completed work
+whose evidence remains valid. Explicitly cancelled work still requires owner
+reactivation. A supplied stale handoff is a pointer to verify, not current truth.
 
 On a packet switch, the old pointer must be removed or replaced in the same
 coherence transaction. A handoff for another packet cannot remain current.

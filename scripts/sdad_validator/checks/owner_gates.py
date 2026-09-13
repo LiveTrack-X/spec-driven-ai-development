@@ -105,7 +105,7 @@ class OwnerGatesCheck:
         if snapshot is None:
             return ()
 
-        owner_gates_invalid = any(
+        owner_gates_container_invalid = any(
             (
                 issue.id == "state.schema.missing-key"
                 and issue.evidence == "owner_gates"
@@ -114,14 +114,16 @@ class OwnerGatesCheck:
                 issue.id == "state.schema.wrong-kind"
                 and "State key owner_gates " in issue.message
             )
-            or (
-                issue.id == "state.collection.malformed-entry"
-                and issue.message.startswith("owner_gates entries ")
-            )
             for issue in context.state_result.issues
         )
-        if owner_gates_invalid:
+        if owner_gates_container_invalid:
             return ()
+
+        owner_gates_have_malformed_entries = any(
+            issue.id == "state.collection.malformed-entry"
+            and issue.message.startswith("owner_gates entries ")
+            for issue in context.state_result.issues
+        )
 
         status_scalar = snapshot.active_packet.get("status")
         status = (
@@ -144,6 +146,7 @@ class OwnerGatesCheck:
             and autonomy.value == "4"
             and status in AUTONOMY_FOUR_GATE_STATUSES
             and not gate_values
+            and not owner_gates_have_malformed_entries
         ):
             findings.append(
                 _finding(
@@ -168,7 +171,12 @@ class OwnerGatesCheck:
                 )
             )
 
-        if not gate_values and objective is not None and objective.value.strip():
+        if (
+            not gate_values
+            and not owner_gates_have_malformed_entries
+            and objective is not None
+            and objective.value.strip()
+        ):
             matched_keyword = _matches_q5(
                 objective.value,
                 context.policy.q5_keywords,

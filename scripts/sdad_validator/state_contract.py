@@ -153,9 +153,11 @@ def is_normalized_relative_posix_path(value: str) -> bool:
     if (
         not value
         or not value.strip()
+        or value == "."
         or value.startswith("/")
         or "\\" in value
         or ":" in value
+        or "\x00" in value
     ):
         return False
     path = PurePosixPath(value)
@@ -386,6 +388,11 @@ def _parse_block(lines: list[str], start: int, end: int) -> _Node:
 
 
 def _parse(text: str) -> tuple[_MappingItem, ...]:
+    # UTF-8 BOMs are a transport detail, not part of the first YAML key.  They
+    # are still emitted by some Windows editors, so accept exactly one at the
+    # start while keeping embedded BOM characters invalid.
+    if text.startswith("\ufeff"):
+        text = text[1:]
     lines = text.splitlines()
     top_level: list[_MappingItem] = []
     index = 0
